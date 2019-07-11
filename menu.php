@@ -83,7 +83,7 @@
             <li>
                 <a href="/<?php echo SARON_URI;?>app/database/extractDB.php">Extract</a>
             </li>
-            <li>
+            <li> 
                 <a href="/<?php echo SARON_URI;?>app/database/insertDB.php">Insert</a>
             </li>
         </ul>
