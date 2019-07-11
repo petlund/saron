@@ -14,7 +14,7 @@
 ?> 
 <!doctype html>
 <html>
-  <head>
+  <head> 
     <meta charset="UTF-8">
     <?php include ('app/util/js.php') ?>
     <link rel="icon" href=<?php echo Favicon;?> type="png"/>        
