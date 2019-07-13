@@ -21,8 +21,6 @@ define ("APPROVAL", "Jag godkänner att Baptistförsamlingen Saron Korskyrkan re
 // https://tcpdf.org/ 
 define("TCPDF_PATH", "/opt/registry_res/tcpdf");
 // http://jpgraph.net/
-define("JPGRAPH_PATH", "/opt/registry_res/jpgraph/src");
-define("PNGS", "statistics/pngs/");
 
 // Path to True Type Fonts for jpgraph
 define('TTF_DIR','/Library/Fonts/');

@@ -1,19 +1,4 @@
 <?php
-/*******************************************************************************
-*
-*  filename    : Reports/DirectoryReport.php
-*  last change : 2003-08-30
-*  description : Creates a Member directory
-*
-*  http://www.churchdb.org/
-*  Copyright 2003  Jason York, 2004-2005 Michael Wilt, Richard Bondi
-*
-*  ChurchInfo is free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-******************************************************************************/
 
 require_once "../access/wp-authenticate.php";
 require_once '../../config/config.php';
