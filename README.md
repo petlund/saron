@@ -22,6 +22,7 @@ The application builds on jtable (jtable.org) and a PHP-service layer in front o
 - Contact (Phone, Mobile, Email)
 - Membership (Member number, Start date, End date, Previous and Next congragation)
 - Baptism (Date of baptism, baptister, congregation of baptism)
+- Simple rolebased editiing
 ### Reports 
 - Member directory
 - Baptist directory
@@ -32,12 +33,10 @@ The application builds on jtable (jtable.org) and a PHP-service layer in front o
 ## Future
 ### Wished functionallity
 - Multi language
-- Rolebased editiing
- 
 # Installation
 ## Database
 - Use an existing database or set up a new MySql-Server instance.
-- Use the 'databasestructure.sql' (Config - dir ) to create and set up the database 
+- Use the 'databasestructure.sql' (database - dir ) to create and set up the database 
 -- The user is a localhost-user. Maybee you have to change that...? 
 - The script create the database 'saron', tables, index and an application user 'saron'
 - The script add an 'admin' user account.  
@@ -56,8 +55,7 @@ The application builds on jtable (jtable.org) and a PHP-service layer in front o
 - Set session time out to one hour. Saron-gui has a 30 minutes time out 
 
 ## Application
-- saron must be installed direct under web_root/wordpress/
+- Saron must be installed direct under web_root/wordpress/
 - Rename config_template.php to config.php. Update config.php with the database connection information
-- Add path to (TCPDF, JPGRAPH, /wordpress/wp-load.php)
-- The application need to have write access to directory www-pub/pdf/Statistics/pngs/ for dynamic generation of graphs
+- Add path to (TCPDF, /wordpress/wp-load.php)
 - Session time i set to 30 min (1800000 ms) in /wordpress/saron/saron/util/util.js. In the future this property should be moved to a better place...

@@ -17,7 +17,6 @@ require_once SARON_ROOT . "menu.php";
     <head>
         <title>Om <?php echo NameOfRegistry;?></title>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <Body>
     <div class="saron-about-text">
@@ -198,7 +197,8 @@ require_once SARON_ROOT . "menu.php";
         Behörighet sätts upp via Korskyrkans hemsida. Anvisning finns i den gemensamma lagringsfunktionen för FL. Se katalog Medlemsregister. 
     </ul>
      </ul>
-    </ul>
+    <H2>Git repository</H2>
+    Se <a href="https://github.com/petlund/saron/" target="_blank">git repository</a>
     </div>
    </body>
 </html>        

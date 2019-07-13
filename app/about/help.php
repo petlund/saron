@@ -16,8 +16,9 @@ require_once SARON_ROOT . "menu.php";
     <head>
         <title><?php echo NameOfRegistry;?>  - Hjälp</title>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
+<!--        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+-->
+</head>
     <Body>
     <div class="saron-about-text">
     <h1>Hjälp - Beskrivning av handgrepp</h1>

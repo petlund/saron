@@ -16,6 +16,8 @@
 <html>
   <head> 
     <meta charset="UTF-8">
+<!--        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+-->    
     <?php include ('app/util/js.php') ?>
     <link rel="icon" href=<?php echo Favicon;?> type="png"/>        
 
