@@ -66,28 +66,28 @@
         //"concat(FamilyName, '<BR>', IF(Address is null, 'Adress saknas', Address), '<BR>', IF(concat(Zip, ' ', City) is null, 'PA/Stad saknas', concat(Zip, ' ', City)), ')') as LongHomeName "
         define("ADDRESS_ALIAS_LONG_HOMENAME_MULTILINE", $longHomeNameMultiLine);
 
-        $all_People_FIELDS = "People.Id as PersonId, ";
-        $all_People_FIELDS.= DECRYPTED_ALIAS_FIRSTNAME . ", ";
-        $all_People_FIELDS.= DECRYPTED_ALIAS_LASTNAME . ", ";
-        $all_People_FIELDS.= "DateOfBirth, DateOfDeath, PreviousCongregation, MembershipNo, VisibleInCalendar, DateOfMembershipStart, DateOfMembershipEnd, NextCongregation, DateOfBaptism, ";
-        $all_People_FIELDS.= DECRYPTED_ALIAS_BAPTISTER . ", ";
-        $all_People_FIELDS.= "CongregationOfBaptism, CongregationOfBaptismThis, Gender, ";
-        $all_People_FIELDS.= DECRYPTED_ALIAS_EMAIL . ", ";
-        $all_People_FIELDS.= DECRYPTED_ALIAS_MOBILE . ", ";
-        $all_People_FIELDS.= "KeyToChurch, KeyToExp, ";
-        $all_People_FIELDS.= DECRYPTED_ALIAS_COMMENT . ", ";
-        $all_People_FIELDS.= "HomeId, Updater, Updated, Inserter, Inserted, " . DECRYPTED_ALIAS_COMMENT_KEY . " ";
-        define("SQL_STAR_PEOPLE", "Select " . $all_People_FIELDS);
+        $ALL_PEOPLE_FIELDS = "People.Id as PersonId, ";
+        $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_FIRSTNAME . ", ";
+        $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_LASTNAME . ", ";
+        $ALL_PEOPLE_FIELDS.= "DateOfBirth, DateOfDeath, PreviousCongregation, MembershipNo, VisibleInCalendar, DateOfMembershipStart, DateOfMembershipEnd, NextCongregation, DateOfBaptism, ";
+        $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_BAPTISTER . ", ";
+        $ALL_PEOPLE_FIELDS.= "CongregationOfBaptism, CongregationOfBaptismThis, Gender, ";
+        $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_EMAIL . ", ";
+        $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_MOBILE . ", ";
+        $ALL_PEOPLE_FIELDS.= "KeyToChurch, KeyToExp, ";
+        $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_COMMENT . ", ";
+        $ALL_PEOPLE_FIELDS.= "People.HomeId, Updater, Updated, Inserter, Inserted, " . DECRYPTED_ALIAS_COMMENT_KEY . " ";
+        define("SQL_STAR_PEOPLE", "Select " . $ALL_PEOPLE_FIELDS);
 
-        $all_HOME_FIELDS = "Homes.Id as HomeId, ";
-        $all_HOME_FIELDS.= DECRYPTED_ALIAS_FAMILYNAME . ", ";
-        $all_HOME_FIELDS.= DECRYPTED_ALIAS_ADDRESS . ", ";
-        $all_HOME_FIELDS.= DECRYPTED_ALIAS_CO . ", ";
-        $all_HOME_FIELDS.= "City, Zip, Country,  ";
-        $all_HOME_FIELDS.= DECRYPTED_ALIAS_PHONE . ", ";
-        $all_HOME_FIELDS.= "Letter  ";    
-        define("SQL_STAR_HOMES", "Select " . $all_HOME_FIELDS);
-        define("SQL_ALL_FIELDS", "select " . $all_People_FIELDS . ", " . $all_HOME_FIELDS);
+        $ALL_HOME_FIELDS = "Homes.Id as HomesId, ";
+        $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_FAMILYNAME . ", ";
+        $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_ADDRESS . ", ";
+        $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_CO . ", ";
+        $ALL_HOME_FIELDS.= "City, Zip, Country,  ";
+        $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_PHONE . ", ";
+        $ALL_HOME_FIELDS.= "Letter  ";    
+        define("SQL_STAR_HOMES", "Select " . $ALL_HOME_FIELDS);
+        define("SQL_ALL_FIELDS", "select " . $ALL_PEOPLE_FIELDS . ", " . $ALL_HOME_FIELDS);
 
         define("SQL_FROM_PEOPLE_LEFT_JOIN_HOMES", "FROM People left outer join Homes on People.HomeId=Homes.Id "); 
         define("SQL_WHERE", "Where ");  
