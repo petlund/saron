@@ -8,7 +8,6 @@ The application builds on jtable (jtable.org) and a PHP-service layer in front o
 - Database mysql - Storing member information
 - jtable - CRUD UI http://jtable.org
 - tcpdf - Dynamic creating pdf
-- jpgraph - Dynamic creating graphs (if ERROR 25128 occur http://colekcolek.com/2012/05/16/how-to-fix-jpgraph-error-the-function-imageantialias-is-not-available/)
 - Wordpress - WP-OTP plugin for enabling OTP-functionality
 
 ### You need to add funtionallity for
