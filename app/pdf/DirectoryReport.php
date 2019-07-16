@@ -32,14 +32,18 @@ require_once "../access/wp-authenticate.php";
         define ("FONT", 'times');
 
 
-        // Check for Create Directory user permission.
-
-
-        $sql =SQL_ALL_FIELDS;
-        $sql.=", (select count(*) from People as pp where pp.HomeId=Homes.Id) as fam_member_count ";
-        $sql.="from People left outer join Homes on People.HomeId = Homes.id ";  
+        $sql =SQL_ALL_FIELDS . ", SortList.GroupName, ";
+        $sql.="(select count(*) from People as pp where pp.HomeId=Homes.Id) as fam_member_count ";
+        $sql.="from "; 
+        $sql.="((Select HomeId, HomeId as hid, substr(" . DECRYPTED_LASTNAME . ", 1, 5) as SortName, ";
+        $sql.="(select max(" . DECRYPTED_LASTNAME . ") from People where hid=HomeId and substr(" . DECRYPTED_LASTNAME . ", 1, 5)=SortName and length(" . DECRYPTED_LASTNAME . ")=(select min(length(" . DECRYPTED_LASTNAME . ")) from People where hid=HomeId and substr(" . DECRYPTED_LASTNAME . ", 1, 5)=SortName)) as GroupName from People group by HomeId, SortName) as SortList "; 
+//        $sql.="MAX(" . DECRYPTED_LASTNAME . ") as GroupName from People group by HomeId, SortName) as SortList "; 
+        $sql.="inner join People on People.HomeId=SortList.HomeId) "; 
+        $sql.="left outer join Homes on People.HomeId = Homes.id ";  
+//        $sql.="People left outer join Homes on HomeId = Homes.id ";  
         $sql.="where DateOfMembershipStart is not null and  DateOfMembershipEnd is null and DateOfDeath is null and VisibleInCalendar=2 "; 
-        $sql.="order by " . DECRYPTED_FAMILYNAME . ", People.HomeId, DateOfBirth"; 
+        $sql.="order by SortList.GroupName, " . DECRYPTED_ADDRESS . ", Homes.Id, People.DateOfBirth"; 
+//        $sql.="order by " . DECRYPTED_FAMILYNAME . ", Homes.Id, DateOfBirth"; 
 
         // create new PDF document
         $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -98,6 +102,8 @@ require_once "../access/wp-authenticate.php";
         $listSpaceHight=$pdf->getPageHeight() - PDF_MARGIN_HEADER - PDF_MARGIN_FOOTER;
 
         $prevFamId=-1;
+        $prevGroupName="";
+        $GroupName="";
         $headerPos_Y=PDF_MARGIN_HEADER;
         $footerPos_Y=$pdf->getPageHeight() - CELL_HIGHT;
 
@@ -114,7 +120,9 @@ require_once "../access/wp-authenticate.php";
         }
         
         foreach($listResult as $aRow){
-            if($aRow['HomeId']!=$prevFamId){
+//            if($aRow['HomeId']!=$prevFamId){
+            if($aRow['GroupName']!=$prevGroupName or $aRow['HomeId']!=$prevFamId){
+                $GroupName=$aRow['GroupName'];
                 $line_count+=$aRow['fam_member_count']+1;
                 $restHight=$listSpaceHight-CELL_HIGHT*($aRow['fam_member_count']+1+$line_count);
                 if($restHight<0 or $firstFamily){
@@ -134,17 +142,19 @@ require_once "../access/wp-authenticate.php";
                     $pdf->MultiCell($cellWidth*5, CELL_HIGHT, '', 0, 'L', 0, 1, '', '', true, 1, false, true, MAX_CELL_HIGHT, 'T');        
                 }
 
-                $pdf->MultiCell($cellWidth * 2, CELL_HIGHT, $aRow['FamilyName'], 0, 'L', 1, 0, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T', true);
+                $pdf->MultiCell($cellWidth * 2, CELL_HIGHT, $aRow['GroupName'], 0, 'L', 1, 0, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T', true);
                 $pdf->MultiCell($cellWidth * 1, CELL_HIGHT, trimPhoneNumber($aRow['Phone']), 0, 'R', 1, 0, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T', true);
                 $pdf->MultiCell($cellWidth * 2, CELL_HIGHT, $aRow['Address'], 0, 'L', 1, 0, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T', true);
                 $pdf->MultiCell($cellWidth * 1, CELL_HIGHT, $aRow['Zip'], 0, 'R', 1, 0, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T', true);
                 $pdf->MultiCell($cellWidth * 1, CELL_HIGHT, $aRow['City'], 0, 'R', 1, 1, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T', true);
 
+                //$prevFamId=$aRow['HomeId'];
                 $prevFamId=$aRow['HomeId'];
+                $prevGroupName=$GroupName;
             }
 
             // Familymembers
-            if($aRow['LastName']==$aRow['FamilyName']){
+            if($aRow['LastName']==$GroupName){
                 $pdf->MultiCell($cellWidth * 2, CELL_HIGHT, $aRow['FirstName'], 0, 'L', 0, 0, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T', true);
             }
             else{
