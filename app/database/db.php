@@ -6,7 +6,6 @@ require_once SARON_ROOT . "app/access/wp-authenticate.php";
 class db {
     
     private $connection;
-    private $appErrorMsg;
     function __construct() {
         mysqli_report(MYSQLI_REPORT_STRICT);
         try{
@@ -176,7 +175,8 @@ class db {
     public function sqlQuery($sql){
         $listResult = $this->connection->query($sql);
         if(!$listResult){
-            echo $this->getPublicErrMessage("SQL-Error in select statement.", $sql); 
+            $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
+            echo "SQL-Error in statement: <br>" .  $sql . "<br>" .  $technicalErrMsg; 
             return false;
         }
         $resultArray = $this->resultSetToArray($listResult);
