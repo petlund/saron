@@ -205,7 +205,14 @@ require_once SARON_ROOT . 'app/database/db.php';
 
     function selectBirthday(){
         $sql = SQL_STAR_PEOPLE . ", ";
-        $sql.= "concat(" . FORMATTED_EMAILADDRESS . ",' '," . DECRYPTED_MOBILE . ",' '," . DECRYPTED_PHONE . ",' '," . DECRYPTED_ADDRESS . ",' ', Zip, ' ', City) as Contact, ";
+        $sql.= "concat(";
+        $sql.= "IF(" . FORMATTED_EMAILADDRESS . " like '', '', " . FORMATTED_EMAILADDRESS . "), ";
+        $sql.= "IF(" . DECRYPTED_MOBILE . " is null, '', concat(" . DECRYPTED_MOBILE . ", ', ')), ";
+        $sql.= "IF(" . DECRYPTED_PHONE . " is null, '', concat(" . DECRYPTED_PHONE . ", ', ')), ";
+        $sql.= "IF(" . DECRYPTED_ADDRESS . " is null, ' ', concat(" . DECRYPTED_ADDRESS . ", ', ')), "; 
+        $sql.= "IF(" . Zip. " is null, ' ', concat(" . Zip . ", ', ')), ";
+        $sql.= "IF(" . City . " is null, ' ', " . City . ")"; 
+        $sql.= ") as Contact, ";
         $sql.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . DATES_AS_ALISAS_MEMBERSTATES . ", ";
         $sql.= "extract(YEAR FROM NOW()) - extract(YEAR FROM DateOfBirth) as Age, ";
         $sql.= "concat(extract(year from now()),'-', DATE_FORMAT( STR_TO_DATE(extract(Month from DateOfBirth), '%m' ) , '%m' ),'-',DATE_FORMAT(STR_TO_DATE(extract(day from DateOfBirth), '%d' ) , '%d' )) as NextBirthday ";
