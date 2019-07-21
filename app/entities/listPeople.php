@@ -140,9 +140,6 @@ require_once SARON_ROOT . 'app/database/db.php';
         $sqlWhereSearch = "";
         $uppercaseSearchString = strtoupper((String)filter_input(INPUT_POST, "searchString", FILTER_SANITIZE_STRING));
 
-        if(substr(SALT_PREFIX, 0, 1) === substr($uppercaseSearchString, 0, 1)){
-            $uppercaseSearchString = "**************************";
-        }
         if($uppercaseSearchString != ""){
             $sqlWhereSearchSubString = " like '%" . $uppercaseSearchString . "%'";
             $sqlWhereSearch = "and (UPPER(CONVERT(BINARY ";
