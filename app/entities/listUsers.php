@@ -59,10 +59,11 @@ require_once WP_ROOT . 'wp-includes/user.php';
                 break;
                 case "wp_otp":
                     $otp_a = $a->get("wp-otp");
-                    if ($a->$otp_a["enabeled"] == $b->$otp_b["enabeled"]) {
+                    $otp_b = $b->get("wp-otp");   
+                    if ($otp_a["enabled"] == $otp_b["enabled"]) {
                         return 0;
                     }
-                    $comp = ($a->$otp_a["enabeled"] < $b->$otp_b["enabeled"]) ? -1 : 1;
+                    $comp = ($otp_a["enabled"] < $otp_b["enabled"]) ? -1 : 1;
                 break;
                 case "saron_reader":
                     $viewer_a = hasPrivilege($a->roles, SARON_ROLE_PREFIX . SARON_ROLE_VIEWER);
