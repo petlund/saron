@@ -24,7 +24,7 @@ require_once WP_ROOT . 'wp-includes/user.php';
         
         $users = Array();
         
-        $users = get_users(array('role__in' => array(SARON_ROLE_PREFIX . SARON_ROLE_EDITOR, SARON_ROLE_PREFIX . SARON_ROLE_VIEWER)));
+        $users = get_users(array('role__in' => array(SARON_ROLE_PREFIX . SARON_ROLE_EDITOR, SARON_ROLE_PREFIX . SARON_ROLE_VIEWER, "wp_otp")));
 
         $sort_dimension = "display_name";
         $sort_order = "asc";
@@ -53,6 +53,12 @@ require_once WP_ROOT . 'wp-includes/user.php';
                 break;
                 case "user_email":
                     if ($a->user_email == $b->user_email) {
+                        return 0;
+                    }
+                    $comp = ($a->user_email < $b->user_email) ? -1 : 1;
+                break;
+                case "wp_otp":
+                    if ($a->wp_otp == $b->wp_otp) {
                         return 0;
                     }
                     $comp = ($a->user_email < $b->user_email) ? -1 : 1;
@@ -87,6 +93,8 @@ require_once WP_ROOT . 'wp-includes/user.php';
             $result.= ',"display_name":"' . $users[$i]->display_name; 
             $result.= '","user_login":"' . $users[$i]->user_login; 
             $result.= '","user_email":"' . $users[$i]->user_email; 
+            $otp = $users[$i]->get("wp-otp");
+            $result.= '","wp_otp":"' . $otp["enabled"]; 
             $result.= '","saron_reader":' . $viewer; 
             $result.= ',"saron_updater":' . $editor . '}';
             if($i<$endIndex-1){

@@ -22,22 +22,32 @@ $(document).ready(function () {
             },
             display_name: {
                 title: 'Namn',
-                width: '25%',
+                width: '20%',
             },
             user_login: {
                 title: 'Användare',
-                width: '25%',
+                width: '20%',
             },
             user_email: {
                 title: 'Mail',
-                width: '25%',
+                width: '20%',
                 display: function (data) {
                     return _getMailLink(data.record.user_email, 0);
                 }
             },
+            wp_otp: {
+                title: 'OTP',
+                width: '12%',
+                display: function (data){
+                    if(data.record.wp_otp === "1")
+                        return "Ja";
+                    else
+                        return "";
+                }
+            },
             saron_reader: {
                 title: 'Läsanvändare',
-                width: '15%',
+                width: '12%',
                 display: function (data){
                     if(data.record.saron_reader === 1)
                         return "Ja";
@@ -47,18 +57,13 @@ $(document).ready(function () {
             },
             saron_updater: {
                 title: 'Uppdaterare',
-                width: '15%',
+                width: '12%',
                 display: function (data){
                     if(data.record.saron_updater === 1)
                         return "Ja";
                     else
                         return "";
                 }
-            },
-            Dummy: {
-                title: '',
-                width: '50%',
-                sorting:false 
             }
         }
     });
