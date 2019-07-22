@@ -86,8 +86,8 @@ class db {
         if(!$countResult = $this->connection->query($sqlCount)){
             throw new Exception($this->jsonErrorMessage("SQL-Error in selectHomeCount statement!", null, $this->connection->error));
         }
-        $unSaltedRowSet = $this->resultSetToArray($listResult);
-        $jsonResult = $this->processRowSet($user, $unSaltedRowSet, $countResult, $responstype);                
+        $arrayResult = $this->resultSetToArray($listResult);
+        $jsonResult = $this->processRowSet($user, $arrayResult, $countResult, $responstype);                
         return $jsonResult;           
     }
     
@@ -166,8 +166,8 @@ class db {
             throw new Exception($this->jsonErrorMessage("SQL-Error in select count statement!", null, $technicalErrMsg));
         }
 
-        $unSaltedRowSet = $this->resultSetToArray($listResult);
-        $jsonResult = $this->processRowSet($user, $unSaltedRowSet, $countResult, $responstype);   
+        $arrayResult = $this->resultSetToArray($listResult);
+        $jsonResult = $this->processRowSet($user, $arrayResult, $countResult, $responstype);   
             
         return $jsonResult;
     } 
