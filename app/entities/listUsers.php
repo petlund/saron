@@ -58,16 +58,27 @@ require_once WP_ROOT . 'wp-includes/user.php';
                     $comp = ($a->user_email < $b->user_email) ? -1 : 1;
                 break;
                 case "wp_otp":
-                    if ($a->wp_otp == $b->wp_otp) {
+                    $otp_a = $a->get("wp-otp");
+                    if ($a->$otp_a["enabeled"] == $b->$otp_b["enabeled"]) {
                         return 0;
                     }
-                    $comp = ($a->user_email < $b->user_email) ? -1 : 1;
+                    $comp = ($a->$otp_a["enabeled"] < $b->$otp_b["enabeled"]) ? -1 : 1;
                 break;
                 case "saron_reader":
-                    if ($a->display_name == $b->display_name) {
+                    $viewer_a = hasPrivilege($a->roles, SARON_ROLE_PREFIX . SARON_ROLE_VIEWER);
+                    $viewer_b = hasPrivilege($b->roles, SARON_ROLE_PREFIX . SARON_ROLE_VIEWER);
+                    if ($viewer_a == $viewer_b) {
                         return 0;
                     }
-                    $comp = ($a->display_name < $b->display_name) ? -1 : 1;
+                    $comp = ($viewer_a < $viewer_b) ? -1 : 1;
+                break;
+                case "saron_editor":
+                    $editor_a = hasPrivilege($a->roles, SARON_ROLE_PREFIX . SARON_ROLE_EDITOR);
+                    $editor_b = hasPrivilege($b->roles, SARON_ROLE_PREFIX . SARON_ROLE_EDITOR);
+                    if ($editor_a == $editor_b) {
+                        return 0;
+                    }
+                    $comp = ($editor_a < $editor_b) ? -1 : 1;
                 break;
             }
             if($sort_order === "ASC"){
@@ -96,7 +107,7 @@ require_once WP_ROOT . 'wp-includes/user.php';
             $otp = $users[$i]->get("wp-otp");
             $result.= '","wp_otp":"' . $otp["enabled"]; 
             $result.= '","saron_reader":' . $viewer; 
-            $result.= ',"saron_updater":' . $editor . '}';
+            $result.= ',"saron_editor":' . $editor . '}';
             if($i<$endIndex-1){
                 $result.=",";
             }

@@ -55,11 +55,11 @@ $(document).ready(function () {
                         return "";
                 }
             },
-            saron_updater: {
+            saron_editor: {
                 title: 'Uppdaterare',
                 width: '12%',
                 display: function (data){
-                    if(data.record.saron_updater === 1)
+                    if(data.record.saron_editor === 1)
                         return "Ja";
                     else
                         return "";
