@@ -6,7 +6,7 @@
     require_once SARON_ROOT . "app/access/wp-authenticate.php";
     require_once SARON_ROOT . "app/database/ping.php";
    
-    
+ 
     /*** REQUIRE USER AUTHENTICATION ***/
     isLoggedIn();
     $user = wp_get_current_user();
@@ -39,14 +39,14 @@
         <ul id="menu-bar">
             <li>
                 <a href="/<?php echo SARON_URI;?>">Hem</a>
-            </li> 
+            </li>   
             <li>
                 <a href="#">Register</a>
                 <ul>
                     <li><a href="/<?php echo SARON_URI;?>app/views/people.php?tableview=people">Personuppgifter</a></li>
                     <li><a href="/<?php echo SARON_URI;?>app/views/people.php?tableview=baptist"> - Dopuppgifter</a></li>
                     <li><a href="/<?php echo SARON_URI;?>app/views/people.php?tableview=member"> - Medlemsuppgifter</a></li>
-                    <li><a href="/<?php echo SARON_URI;?>app/views/people.php?tableview=keys">[ - Nyckelinnehav Används ej]</a></li>
+                    <li><a href="/<?php echo SARON_URI;?>app/views/people.php?tableview=keys"> - Nyckelinnehav</a></li>
                     <li><a href="/<?php echo SARON_URI;?>app/views/people.php?tableview=total">Registeröversikt</a></li>
                 </ul>
             </li>
