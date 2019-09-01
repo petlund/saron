@@ -127,8 +127,13 @@ require_once SARON_ROOT . "menu.php";
                 Klicka på <img src="/<?php echo SARON_URI;?>app/images/edit.png" title="ändra"/> till höger.
             </li>
             <li>
-            Uppdatera uppgifterna i formuläret.
+            Uppdatera uppgifterna i formuläret. 
             </li>
+                <ul>
+                    <li>
+                        Med brevutskick menas att adressen kommer med bland adressettiketter, när sådana skrivs ut.
+                    </li>
+                </ul>
             <li>
             Tryck på spara om du vill [Spara] om du vill spara eller på [Avbryt] om du inte vill spara.
             </li>

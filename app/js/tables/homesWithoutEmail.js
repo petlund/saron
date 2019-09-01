@@ -2,7 +2,7 @@
 $(document).ready(function () {
 
     $('#Homes').jtable({
-        title: 'Hem utan mailutskick',
+        title: 'Hem som saknar mailuppgifter, med eventuellt brevutskick',
         paging: true, //Enable paging
         pageList: 'minimal',
         sorting: true, //Enable sorting
