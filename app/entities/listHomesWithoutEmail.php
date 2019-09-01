@@ -30,11 +30,12 @@ require_once SARON_ROOT . 'app/database/db.php';
         $select.="Letter, ";
         $select.= DECRYPTED_ALIAS_PHONE . " ";
         $from   ="from Homes ";
-        $where = "where ";
+        $where = "where Letter=1 or (";
         $where.= "(Select count(*) from People where Homes.Id=People.HomeId and " . DECRYPTED_EMAIL . " like '%@%')=0 ";
         $where.= "and ";
         $where.= "(Select count(*) from People where Homes.Id=People.HomeId and DateOfMembershipStart is not null and DateOfMembershipEnd is null and DateOfDeath is null)>0 ";
-
+        $where.= ")";
+        
         try{
             $db = new db();
             $result = $db->select($user, $select, $from, $where, $sqlSorting, $sqlLimit);    
