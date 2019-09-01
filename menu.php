@@ -63,12 +63,8 @@
                     <li><a href="/<?php echo SARON_URI;?>app/views/charts.php">Medlemsstatistik grafik</a></li>
                     <li><a href="/<?php echo SARON_URI;?>app/pdf/DossierReport.php" target="_blank">Godkännande personuppgifter (pdf-fil för alla i registret)</a></li>
                     <li><a href="/<?php echo SARON_URI;?>app/views/users.php">Användare</a></li>
-                    <li><a href="#">[Adressetiketter (pdf-fil)]</a></li>
-                    <ul>
-                        <li><a href="/<?php echo SARON_URI;?>app/views/letterLabels.php" target="_blank">Format A</a></li>
-                        <li><a href="/<?php echo SARON_URI;?>app/views/letterLabels.php" target="_blank">Format B</a></li>
-                        <li><a href="/<?php echo SARON_URI;?>app/views/letterLabels.php" target="_blank">Format C</a></li>
-                    </ul>    
+                    <li><a href="/<?php echo SARON_URI;?>app/pdf/AddressLabels.php?type=9x3" target="_empty">Adressetiketter 9x3 (pdf-fil)</a></li>
+                    <li><a href="/<?php echo SARON_URI;?>app/pdf/AddressLabels.php?type=6x3" target="_empty">Adressetiketter 6x3 (pdf-fil)</a></li>
                 </ul>
             </li>
             <li>
