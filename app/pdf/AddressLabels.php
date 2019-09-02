@@ -122,6 +122,9 @@ require_once TCPDF_PATH . '/tcpdf.php';
             else{
                 $label="<<MEDLEMMAR SAKNAS>>\n(" . $aRow['FamilyName'] . ")\n";
             }
+            if(strlen($aRow['Co']) > 0){
+                $label.= "Co " . $aRow['Co'] . "\n";
+            }
             $label.= $aRow['Address'] . "\n"; 
             $label.= $aRow['Zip'] . " " . $aRow['City'];
 
