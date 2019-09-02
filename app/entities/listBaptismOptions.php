@@ -15,15 +15,15 @@ require_once SARON_ROOT . 'app/database/db.php';
         echo notPermittedMessage();
     }
     else{
-        $select = "SELECT 0 as Value, 'Nej' as DisplayText ";
-        $select.= "Union "; 
-        $select.= "SELECT 1 as Value, 'Ja, ange dopförsamling nedan.' as DisplayText ";
-        $select.= "Union "; 
-        $select.= "SELECT 2 as Value, 'Ja, i  " . FullNameOfCongregation . ".' as DisplayText ";
+        $sql = "SELECT 0 as Value, 'Nej' as DisplayText ";
+        $sql.= "Union "; 
+        $sql.= "SELECT 1 as Value, 'Ja, ange dopförsamling nedan.' as DisplayText ";
+        $sql.= "Union "; 
+        $sql.= "SELECT 2 as Value, 'Ja, i  " . FullNameOfCongregation . ".' as DisplayText ";
 
         try{
             $db = new db();
-            $result = $db->select($user, $select, "", "", " ORDER BY Value ", "", "Options");    
+            $result = $db->select($user, $sql, "", "", " ORDER BY Value ", "", "Options");    
             $db = null;
             echo $result;
         }

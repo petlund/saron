@@ -29,7 +29,6 @@
         define("DECRYPTED_COMMENT_KEY", "SUBSTR(AES_DECRYPT(CommentKeyEncrypt, " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
         define("DECRYPTED_ALIAS_COMMENT_KEY", DECRYPTED_COMMENT_KEY . " as CommentKey");
 
-//        define("DECRYPTED_FAMILYNAME", "SUBSTRING(AES_DECRYPT(FamilyNameEncrypt, " . PKEY . "), " . SALT_LENGTH . ")");
         define("DECRYPTED_FAMILYNAME", "SUBSTR(AES_DECRYPT(FamilyNameEncrypt, " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
         define("DECRYPTED_ALIAS_FAMILYNAME", DECRYPTED_FAMILYNAME . " as FamilyName");
         define("DECRYPTED_ADDRESS", "SUBSTR(AES_DECRYPT(AddressEncrypt, " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
@@ -91,6 +90,7 @@
 
         define("SQL_FROM_PEOPLE_LEFT_JOIN_HOMES", "FROM People left outer join Homes on People.HomeId=Homes.Id "); 
         define("SQL_WHERE", "Where ");  
+        define("SQL_WHERE_MEMBER", "DateOfMembershipStart is not null and DateOfMembershipEnd is null and DateOfDeath is null and " . DECRYPTED_LASTNAME . " not like '" . ANONYMOUS . "' ");  
 
         define("FORMATTED_EMAILADDRESS", "if(" . DECRYPTED_EMAIL . " not like \"\", concat(\"<p class='mailLink'><a href='mailto:\"," . DECRYPTED_EMAIL . ",\"'>\", " . DECRYPTED_EMAIL . ", \"</a></p>\"),'') ");
         define("NAMES_ALIAS_RESIDENTS", "(SELECT GROUP_CONCAT(" . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . " SEPARATOR '<BR>') FROM People as r where Homes.Id = r.HomeId  AND DateOfMembershipStart is not null AND DateOfMembershipEnd is null and DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' order by DateOfBirth) as Residents ");

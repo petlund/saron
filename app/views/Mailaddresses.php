@@ -11,11 +11,13 @@
     isLoggedIn();
 
     $db = new db();
-    $sql = "select " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME;
-    $sql.= ", ";
+    $sql = "select ";
     $sql.= DECRYPTED_ALIAS_EMAIL;
-    $sql.= " from People where " . DECRYPTED_EMAIL . " like '%@%' ";
-    $sql.= "and DateOfMembershipStart is not null and DateOfMembershipEnd is null and DateOfDeath is null order by Name"; 
+    $sql.= " from People ";
+    $sql.= "where " . DECRYPTED_EMAIL . " like '%@%' ";
+    $sql.= "and DateOfMembershipStart is not null and DateOfMembershipEnd is null and DateOfDeath is null ";
+    $sql.= "group by Email ";
+    $sql.= "order by Email"; 
 ?>
 <html>   
     <Head>

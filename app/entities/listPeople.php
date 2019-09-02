@@ -52,9 +52,9 @@ require_once SARON_ROOT . 'app/database/db.php';
         $sqlOrderByLatest="";
 
         //Medlemmar
-        $sqlWhereGroup = "DateOfMembershipStart is not null and DateOfMembershipEnd is null and DateOfDeath is null ";
         switch ($groupId){
             case 0:
+                $sqlWhereGroup = SQL_WHERE_MEMBER;
                 break;
 
             case 1:
@@ -100,26 +100,26 @@ require_once SARON_ROOT . 'app/database/db.php';
 
             case 9:
                 //Medlemmar som inte syns i adresskalendern
-                $sqlWhereGroup = "DateOfMembershipStart is not null and DateOfMembershipEnd is null and DateOfDeath is null and VisibleInCalendar != 2 ";
+                $sqlWhereGroup = SQL_WHERE_MEMBER . " and VisibleInCalendar != 2 ";
                 break;
 
             case 10:
                 //Medlemmar som dött
-                $sqlWhereGroup = "EXTRACT(YEAR FROM NOW())=EXTRACT(YEAR FROM DateOfDeath) and (" . DECRYPTED_LASTNAME . " not like '" . ANONYMOUS . "') ";
+                $sqlWhereGroup = "EXTRACT(YEAR FROM NOW())=EXTRACT(YEAR FROM DateOfDeath) and  DateOfMembershipStart is not null and " . DECRYPTED_LASTNAME . " not like '" . ANONYMOUS . "' ";
                 break;
 
             case 11:
                 //Medlemmar som dött föregående år
-                $sqlWhereGroup = "EXTRACT(YEAR FROM NOW())-1=EXTRACT(YEAR FROM DateOfDeath) and (" . DECRYPTED_LASTNAME . " not like '" . ANONYMOUS . "') ";
+                $sqlWhereGroup = "EXTRACT(YEAR FROM NOW())-1=EXTRACT(YEAR FROM DateOfDeath) and DateOfMembershipStart is not null and (" . DECRYPTED_LASTNAME . " not like '" . ANONYMOUS . "') ";
                 break;
 
             case 12:
-                //Hela refistret
+                //Hela registret
                 $sqlWhereGroup = "true ";
                 break;
             case 13:
-                //Hela registret
-                $sqlWhereGroup = "DateOfMembershipStart is not null and DateOfMembershipEnd is null and DateOfDeath is null and Zip not like '6%' ";
+                //Medlemmar utanför Norrköping
+                $sqlWhereGroup = SQL_WHERE_MEMBER . " and Zip not like '6%' ";
                 break;
             case 14:
                 //ej medlem
@@ -134,7 +134,7 @@ require_once SARON_ROOT . 'app/database/db.php';
                 $sqlWhereGroup = "(" . DECRYPTED_LASTNAME . " like '" . ANONYMOUS . "') ";
                 break;
             default :
-                //Medlemmar
+                $sqlWhereGroup = SQL_WHERE_MEMBER; 
         }
         
         $sqlWhereSearch = "";

@@ -22,15 +22,15 @@ require_once SARON_ROOT . 'app/database/db.php';
             $PersonId="null";
         }
 
-        $select = "SELECT 0 as Value, '[Inget medlemsnummer]' as DisplayText, 1 as ind ";
-        $select.= "Union "; 
-        $select.= "select MembershipNo as Value, Concat(MembershipNo, ' [Nuvarande]') as DisplayText, 2 as ind From People Where MembershipNo>0 and Id = " . $PersonId . " ";
-        $select.= "Union "; 
-        $select.= "select if(max(MembershipNo) is null, 0, max(MembershipNo)) + 1 as Value, CONCAT(if(max(MembershipNo) is null, 0, max(MembershipNo)) + 1, ' [Första lediga]') as DisplayText, 3 as ind ";
+        $sql = "SELECT 0 as Value, '[Inget medlemsnummer]' as DisplayText, 1 as ind ";
+        $sql.= "Union "; 
+        $sql.= "select MembershipNo as Value, Concat(MembershipNo, ' [Nuvarande]') as DisplayText, 2 as ind From People Where MembershipNo>0 and Id = " . $PersonId . " ";
+        $sql.= "Union "; 
+        $sql.= "select if(max(MembershipNo) is null, 0, max(MembershipNo)) + 1 as Value, CONCAT(if(max(MembershipNo) is null, 0, max(MembershipNo)) + 1, ' [Första lediga]') as DisplayText, 3 as ind ";
 
         try{
             $db = new db();
-            $result = $db->select($user, $select, "FROM People ", "", "ORDER BY ind ", "", "Options");
+            $result = $db->select($user, $sql, "FROM People ", "", "ORDER BY ind ", "", "Options");
             $db = null;
             echo $result;
         }
