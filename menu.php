@@ -59,6 +59,7 @@
                     <li><a href="/<?php echo SARON_URI;?>app/views/people.php?tableview=birthdays">Födelsedagslista</a></li>
                     <li><a href="/<?php echo SARON_URI;?>app/views/homes.php">Hem som saknar mailuppgifter</a></li>                    
                     <li><a href="/<?php echo SARON_URI;?>app/views/Mailaddresses.php">Mailadresser</a></li>
+                    <li><a href="/<?php echo SARON_URI;?>app/views/MobileNumber.php">Mobilnummer (Hem utan mail)</a></li>
                     <li><a href="/<?php echo SARON_URI;?>app/views/statistics.php">Medlemsstatistik</a></li>
                     <li><a href="/<?php echo SARON_URI;?>app/views/charts.php">Medlemsstatistik grafik</a></li>
                     <li><a href="/<?php echo SARON_URI;?>app/pdf/DossierReport.php" target="_blank">Godkännande personuppgifter (pdf-fil för alla i registret)</a></li>
