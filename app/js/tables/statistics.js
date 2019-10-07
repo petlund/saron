@@ -68,22 +68,22 @@ $(document).ready(function () {
                     return "<p class='numericString'>" + data.record.number_of_baptist_people + "</p>";
                 }                               
             },
-            average_age:  {
+            avg_age:  {
                 edit: false,
                 create: false, 
                 title: 'Medelålder',
                 width: '5%',
                 display: function (data){
-                    return "<p class='numericString'>" + data.record.average_age + "</p>";
+                    return "<p class='numericString'>" + data.record.avg_age + "</p>";
                 }                               
             },
-            average_membership_time:  {
+            avg_membership_time:  {
                 edit: false,
                 create: false, 
                 title: 'Medelålder',
                 width: '5%',
                 display: function (data){
-                    return "<p class='numericString'>" + data.record.average_membership_time + "</p>";
+                    return "<p class='numericString'>" + data.record.avg_membership_time + "</p>";
                 }                               
             },
             diff:  {

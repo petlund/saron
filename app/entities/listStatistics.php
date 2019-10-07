@@ -41,7 +41,9 @@ require_once 'updateStatistics.php';
         
         try{
             $db = new db();
-            $result = $db->select($user, "Select * ", "From Statistics ", "", $sqlOrderBy,  $sqlLimit);    
+            $sqlSelect = "SELECT year, number_of_members, number_of_new_members, number_of_finnished_members, number_of_dead, number_of_baptist_people, format(average_age, 1) as avg_age, format(average_membership_time, 1) as avg_membership_time, diff ";
+            //$sqlSelect = "SELECT * ";
+            $result = $db->select($user, $sqlSelect, "From Statistics ", "", $sqlOrderBy,  $sqlLimit);    
             $db = null;
             echo $result;
         }
