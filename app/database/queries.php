@@ -78,7 +78,7 @@
         $ALL_PEOPLE_FIELDS.= "People.HomeId, Updater, Updated, Inserter, Inserted, " . DECRYPTED_ALIAS_COMMENT_KEY . " ";
         define("SQL_STAR_PEOPLE", "Select " . $ALL_PEOPLE_FIELDS);
 
-        $ALL_HOME_FIELDS = "Homes.Id as HomesId, ";
+        $ALL_HOME_FIELDS = "Homes.Id as HomeId, ";
         $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_FAMILYNAME . ", ";
         $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_ADDRESS . ", ";
         $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_CO . ", ";
