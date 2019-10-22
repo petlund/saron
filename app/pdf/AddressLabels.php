@@ -138,7 +138,7 @@ require_once TCPDF_PATH . '/tcpdf.php';
             }           
             $pdf->MultiCell($cellWidth, $cellHeight, $label, 0, 'L', 1, $newRow, '', '', true, 0, false, true, $cellHeight, 'T', true);
         }
-        $pdf->Output();
+        $pdf->Output('Adressetiketter typ: ' . $type . " " . date("Y-m-d", time()) . '.pdf');
     }
 
 
