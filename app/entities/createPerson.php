@@ -23,33 +23,31 @@ require_once SARON_ROOT . 'app/entities/Person.php';
 
         $person = new Person();
         $checkResult=$person->checkData();
-        if($checkResult===true){
-        }
-        else{
+        if($checkResult!==true){
             echo $checkResult;
+            exit();
         }
-exit();
         try{
             $db = new db();            
             $db->transaction_begin();
             $db->exist($FirstName, $LastName, $DateOfBirth);
-            Switch ($HomeId){
+            $homeId = $person->getCurrentHomeId();
+            Switch ($homeId){
                 case 0: //inget hem
-                    $sqlInsert.= "null"; 
+                    $homeId= "null"; 
                     break;
                 case -1: //Nytt hem
-                    $NewHomeId = $db->insert("INSERT INTO Homes (FamilyNameEncrypt) VALUES (AES_ENCRYPT('" . salt() . $LastName . "', " . PKEY . "))", "Homes", "Id"); // New person i new Home
-                    $sqlInsert.= $NewHomeId;                                                
+                    $homeId = $db->insert("INSERT INTO Homes (FamilyNameEncrypt) VALUES (AES_ENCRYPT('" . salt() . $LastName . "', " . PKEY . "))", "Homes", "Id"); // New person i new Home
                     break; 
                 Default: //befintligt hem
-                    $sqlInsert.= $HomeId;        
+                    break;        
             }
 
-            $sqlInsert.= ")";
-            $sql = SQL_STAR_PEOPLE . ", ". DECRYPTED_FIRSTNAME_LASTNAME_AS_NAME . ", " . ADDRESS_ALIAS_LONG_HOMENAME . ", " . DATES_AS_ALISAS_MEMBERSTATES;     
+            $sqlInsert = $person->getInsertSql($homeId, $id);
             
             $NewPersonId = $db->insert($sqlInsert, "People", "Id");
 
+            $sql = SQL_STAR_PEOPLE . ", ". DECRYPTED_FIRSTNAME_LASTNAME_AS_NAME . ", " . ADDRESS_ALIAS_LONG_HOMENAME . ", " . DATES_AS_ALISAS_MEMBERSTATES;     
             $result = $db->select($user, $sql, SQL_FROM_PEOPLE_LEFT_JOIN_HOMES, "Where People.Id = " . $NewPersonId, "", "", "Record");
 
             $db->transaction_end();

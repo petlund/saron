@@ -702,7 +702,7 @@ $(document).ready(function () {
                 title: 'Avliden',
                 list: false,
                 type: 'date',
-                create: true,
+                create: false,
                 edit: true,
                 display: function (data) {
                     return _parseDate(data.record.DateOfDeath, false);
