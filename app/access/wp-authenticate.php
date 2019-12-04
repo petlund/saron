@@ -6,9 +6,9 @@ require_once "config.php";
 	/*** AUTHENTICATE LOGIN ATTEMPT ***/
 	$user = wp_signon();
 	if ( is_wp_error( $user ) ) {
-		return false;
+            return false;
 	}
-           
+
         if(! isSaronUser($user)){
             wp_logout();
             return false;
@@ -67,14 +67,16 @@ require_once "config.php";
         echo json_encode($error);                
     }
     
+  
     function isLoggedIn($requireEditor=false) { //
         $success=false;
 	$user = wp_get_current_user();
         $loginUri = SARON_URI . "app/access/login.php?logout=true";
-        //$loginUri = SARON_URI . "app/access/login.php";
-        $loginPageUrl = filter_input(INPUT_SERVER, 'HTTP_HOST', FILTER_SANITIZE_URL) . "/" . $loginUri;
+        $host = filter_input(INPUT_SERVER, 'HTTP_HOST', FILTER_SANITIZE_URL);
+        
+        $loginPageUrl = $host . "/" . $loginUri;
         $https = filter_input(INPUT_SERVER, 'HTTPS', FILTER_SANITIZE_URL); //  !== "on"
-        if(filter_input(INPUT_SERVER, 'HTTP_HOST', FILTER_SANITIZE_URL) !== "localhost"){
+        if($host !== LOCAL_DEV_APP_HOST){
             if(is_ssl()){
                 if(isPermitted($user, $requireEditor)){
                     $success = true;

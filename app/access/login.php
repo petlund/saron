@@ -5,12 +5,11 @@
     require_once("config.php");
     require_once(SARON_ROOT . "app/access/wp-authenticate.php");
     /*** Change to HTTPS ***/
-    if(filter_input(INPUT_SERVER, 'HTTP_HOST', FILTER_SANITIZE_URL) !== "localhost"){
+    if(filter_input(INPUT_SERVER, 'HTTP_HOST', FILTER_SANITIZE_URL) !== LOCAL_DEV_APP_HOST){
         if(filter_input(INPUT_SERVER, 'HTTPS', FILTER_SANITIZE_URL) !== "on"){
             header("Location: https://" . filter_input(INPUT_SERVER, 'HTTP_HOST', FILTER_SANITIZE_URL) . filter_input(INPUT_SERVER, 'REQUEST_URI', FILTER_SANITIZE_URL));
         }
     }
-    
     /*** LOG OUT CURRENT USER ***/
     $logout = (String)filter_input(INPUT_GET, "logout", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     if($logout === 'true'){
