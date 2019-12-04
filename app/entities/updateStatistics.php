@@ -29,8 +29,9 @@ class updateStatistics{
         if(!$listResult){
             return;
         }    
-        $aRow = mysqli_fetch_array($listResult);
-        if($aRow['YEAR']!=intval(date("Y", time()))){
+        $lastStatisticsYear = $listResult[0]["YEAR"];
+        $currentYear = intval(date("Y", time()));
+        if($lastStatisticsYear!=$currentYear){
             $rsUpdate = $db->sqlQuery($lastUpdatePrevYear);        
             if(!$rsUpdate){
                 return;
@@ -92,9 +93,6 @@ class updateStatistics{
 
         //$sql.="(Round(Avg(extract(YEAR from DateOfMembershipStart)-extract(YEAR from DateOfBirth)),1) as MembStartAge ";    
 
-        if(!$db->sqlQuery($sql)){
-            return;
-        }
         return;
 
     }
