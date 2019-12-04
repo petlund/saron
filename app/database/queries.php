@@ -9,7 +9,7 @@
         $res = openssl_pkey_get_private (PKEY_FILE);
         openssl_pkey_export($res, $privkey);
         define ("PKEY", "'" . $privkey . "'");
-        define(SALT_LENGTH, 13);
+        define("SALT_LENGTH", 13);
         DEFINE("MAX_STR_LEN", 250);
         
         define("DECRYPTED_FIRSTNAME", "SUBSTR(AES_DECRYPT(FirstNameEncrypt, " . PKEY . "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
