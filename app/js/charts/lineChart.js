@@ -11,8 +11,8 @@ function createMembersStatisticsChart() {
                                 '{"id":"number_of_finnished_members","label":"Avslutade medlemskap [Antal]"},' +
                                 '{"id":"number_of_dead", "label":"Avlidna medlemmar [Antal]"},' +
                                 '{"id":"number_of_baptist_people", "label":"Döpta [Antal]"},' +
-                                '{"id":"average_age", "label":"Medelålder för medlemmar [År]"},' +
-                                '{"id":"average_membership_time", "label":"Tid för medlemskap [ÅR]"}' +
+                                '{"id":"avg_age", "label":"Medelålder för medlemmar [År]"},' +
+                                '{"id":"avg_membership_time", "label":"Tid för medlemskap [ÅR]"}' +
                             ']'+
                         '}';
                         
@@ -36,6 +36,7 @@ function createMembershipLineChart(chartData, meta){
     for(var i = 0; i < chartData.Records.length; i++){
         labels.push(chartData.Records[i].year.substr(0,4));
         values.push(chartData.Records[i][meta.id]);
+        console.log(meta.id + ": " + chartData.Records[i].year.substr(0,4) + " = " + Number(chartData.Records[i][meta.id]) + " Text: " + chartData.Records[i][meta.id]);
     }
     
     var chart = new Chart(ctx, {
