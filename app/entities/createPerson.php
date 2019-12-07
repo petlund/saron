@@ -21,14 +21,15 @@ require_once SARON_ROOT . 'app/entities/Person.php';
             $id = (int) $user->ID;
         }
 
-        $person = new Person();
-        $checkResult=$person->checkData();
-        if($checkResult!==true){
-            echo $checkResult;
-            exit();
-        }
         try{
             $db = new db();            
+            $person = new Person();
+            $checkResult=$person->checkData();
+            if($checkResult!==true){
+                echo $checkResult;
+                exit();
+            }
+            
             $db->transaction_begin();
             $db->exist($FirstName, $LastName, $DateOfBirth);
             $homeId = $person->getCurrentHomeId();
@@ -48,7 +49,7 @@ require_once SARON_ROOT . 'app/entities/Person.php';
             $NewPersonId = $db->insert($sqlInsert, "People", "Id");
 
             $sql = SQL_STAR_PEOPLE . ", ". DECRYPTED_FIRSTNAME_LASTNAME_AS_NAME . ", " . ADDRESS_ALIAS_LONG_HOMENAME . ", " . DATES_AS_ALISAS_MEMBERSTATES;     
-            $result = $db->select($user, $sql, SQL_FROM_PEOPLE_LEFT_JOIN_HOMES, "Where People.Id = " . $NewPersonId, "", "", "Record");
+            $result = $db->select($user, $person->getSelectPersonSql(), SQL_FROM_PEOPLE_LEFT_JOIN_HOMES, "Where People.Id = " . $NewPersonId, "", "", "Record");
 
             $db->transaction_end();
             echo $result;     

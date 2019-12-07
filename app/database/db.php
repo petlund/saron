@@ -116,10 +116,9 @@ class db {
         mysqli_free_result($listResult);
         
         if($countRows !== "0"){
-            $this->php_dev_error_log("exist ", $FirstName . " " .  $LastName . " " . $DateOfBirth);
-            $errorMsg = "En person med identitet:<br><b>" . $FirstName . " " . $LastName . " " . $DateOfBirth . "</b><br>finns redan i databasen.";
-            throw new Exception($this->jsonErrorMessage($errorMsg));
-        }       
+            return true;
+        }
+        return false;
     }
     
         

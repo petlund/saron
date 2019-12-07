@@ -49,34 +49,7 @@ require_once SARON_ROOT . 'app/database/db.php';
             exit();
         }
 
-        $sqlUpdate = "UPDATE Homes ";
-        $sqlSet = "SET ";
-        $sqlSet.= "FamilyNameEncrypt = AES_ENCRYPT('" . salt() . $familyName . "', " . PKEY . "), ";
-        
-        if(strlen($address)>0){
-            $sqlSet.= "AddressEncrypt = AES_ENCRYPT('" . salt() . $address . "', " . PKEY . "), ";
-        }
-        else{
-            $sqlSet.= "AddressEncrypt = null, ";            
-        }
-        
-        if(strlen($phone)>0){
-            $sqlSet.= "PhoneEncrypt = AES_ENCRYPT('" . salt() . $phone . "', " . PKEY . "), ";
-        }
-        else{
-            $sqlSet.= "PhoneEncrypt = null, ";            
-        }
-        if(strlen($co)>0){
-            $sqlSet.= "CoEncrypt = AES_ENCRYPT('" . salt() . $co . "', " . PKEY . "), ";
-        }
-        else{
-            $sqlSet.= "CoEncrypt = null, ";            
-        }
-        
-        $sqlSet.= "City='" . $city . "', ";
-        $sqlSet.= "Zip='" . $zip . "', ";
-        $sqlSet.= "Letter='" . $letter . "', ";
-        $sqlSet.= "Country='" . $country . "' ";
+
 
         try{
             $db = new db();

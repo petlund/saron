@@ -641,9 +641,9 @@ $(document).ready(function () {
                 }                       
             },
             DateOfMembershipStart: {
-                edit: true,
-                title: 'Medlemskap start',
+                edit: false,
                 list: false,
+                title: 'Medlemskap start',
                 width: '5%',
                 type: 'date',
                 display: function (data) {
@@ -691,7 +691,7 @@ $(document).ready(function () {
             DateOfMembershipEnd: {
                 title: 'Medlemskap slut', //hidden
                 list: false,
-                edit: true,
+                edit: false,
                 type: 'date',
                 create: false,
                 display: function (data) {
