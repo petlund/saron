@@ -15,36 +15,29 @@ require_once SARON_ROOT . 'app/entities/Person.php';
 
     if(!isPermitted($user, $requireEditorRole)){
         echo notPermittedMessage();
+        exit();
     }
-    else{
-        $userId=-1;
-        if(isset( $user->ID )){
-            $userId = (int) $user->ID;
+
+    try{
+        $db = new db();
+
+        $person = new Person($db, $user);
+        $checkResult=$person->checkBaptistData();
+        if($checkResult!==true){
+            echo $checkResult;
+            exit();
         }
 
-
-        $sqlUpdate = "UPDATE People ";
-
-        try{
-            $db = new db();
-    
-            $person = new Person();
-            $checkResult=$person->checkBaptistData();
-            if($checkResult!==true){
-                echo $checkResult;
-                exit();
-            }
-            
-            $db->transaction_begin();
-            $updateResponse1 = $db->update($sqlUpdate, $person->getUpdateBaptimsSql($userId), "WHERE Id = " . $person->getCurrentPersonId());
-            $selectResponse = $db->select($user, SQL_STAR_PEOPLE . ", " . DATES_AS_ALISAS_MEMBERSTATES, "FROM People ", "WHERE Id = " . $person->getCurrentPersonId(), "", "");
-            $db->transaction_end();
-            echo $selectResponse;
-        }
-        catch(Exception $error){
-            $db->transaction_roll_back();
-            $db->transaction_end();
-            echo $error->getMessage();        
-            $db->dispose();            
-        }
+        $db->transaction_begin();
+        $response = $person->updateBaptistData();
+//            $updateResponse1 = $db->update($sqlUpdate, $person->getUpdateBaptimsSql($userId), "WHERE Id = " . $person->getCurrentPersonId());
+//            $selectResponse = $db->select($user, SQL_STAR_PEOPLE . ", " . DATES_AS_ALISAS_MEMBERSTATES, "FROM People ", "WHERE Id = " . $person->getCurrentPersonId(), "", "");
+        $db->transaction_end();
+        echo $response;
+    }
+    catch(Exception $error){
+        $db->transaction_roll_back();
+        $db->transaction_end();
+        echo $error->getMessage();        
+        $db->dispose();            
     }

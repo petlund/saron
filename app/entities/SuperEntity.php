@@ -19,10 +19,10 @@ class SuperEntity {
     
     function getZeroToNull($nr){
         if($nr === null){
-            return "null";
+            return 'null';
         }
         if($nr===0){
-            return "null";
+            return 'null';
         }
         else{
             return $nr;
@@ -35,7 +35,7 @@ class SuperEntity {
             return "AES_ENCRYPT('" . salt() . $str . "', " . PKEY . ")";
         }
         else{
-            return "null";                    
+            return 'null';                    
         }
     }
     
@@ -45,7 +45,7 @@ class SuperEntity {
             return "'" . $str . "'";
         }
         else{
-            return "null";                    
+            return 'null';                    
         }
     }
 
@@ -55,7 +55,7 @@ class SuperEntity {
             return "'" . $str . "'";
         }
         else{
-            return "null";                    
+            return 'null';                    
         }
     }
    

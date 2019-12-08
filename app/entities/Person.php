@@ -35,9 +35,13 @@ class Person extends SuperEntity{
     private $CommentKey;
     private $db;
     private $home;
+    private $user;
     
-    function __construct($db) {
+    function __construct($db, $user) {
+        //parent::__construct();
+
         $this->db=$db;
+        $this->user = $user;
         $this->PersonId = (int)filter_input(INPUT_POST, "PersonId", FILTER_SANITIZE_NUMBER_INT);
         $this->HomeId = (int)filter_input(INPUT_POST, "HomeId", FILTER_SANITIZE_NUMBER_INT);
         $this->LastName = (String)filter_input(INPUT_POST, "LastName", FILTER_SANITIZE_STRING);
@@ -78,17 +82,17 @@ class Person extends SuperEntity{
 
     function checkPersonData(){
         $error = array();
-        $error["Result"] = "ERROR";
+        $error["Result"] = "OK";
 
         if($this->db->exist($this->FirstName, $this->LastName, $this->DateOfBirth, $this->PersonId)){
-            $errorMsg = "En person med identitet:<br><b>" . $FirstName . " " . $LastName . " " . $DateOfBirth . "</b><br>finns redan i databasen.";
+            $error["Message"] = "En person med identitet:<br><b>" . $this->FirstName . " " . $this->LastName . " " . $this->DateOfBirth . "</b><br>finns redan i databasen.";
         }
-        
-        if(strlen($this->FirstName) === 0 or strlen($this->LastName)==0 or strlen($this->DateOfBirth) === 0){
+        else if(strlen($this->FirstName) === 0 or strlen($this->LastName)==0 or strlen($this->DateOfBirth) === 0){
             $error["Message"] = "Personen behöver ett för- och ett efternamn samt ett födelsedadum för att kunna lagras i registret";
         }
-
+        
         if(strlen($error["Message"])>0){
+            $error["Result"] = "ERROR";
             return json_encode($error);
         }
         
@@ -107,7 +111,7 @@ class Person extends SuperEntity{
         }    
         
         if($this->HomeId === -1){
-            $this->home = new Home($this->db);
+            $this->home = new Home($this->db, $this->user);
             $this->HomeId = $this->home->create($this->LastName);
         }
         return true;
@@ -115,21 +119,21 @@ class Person extends SuperEntity{
     
     function checkMembershipData(){
         $error = array();
-        $error["Result"] = "ERROR";
+        $error["Result"] = "OK";
 
         if(strlen($this->DateOfMembershipStart) === 0 and strlen($this->DateOfMembershipEnd) > 0){
             $error["Message"] = "Personen måste ha ett datum för medlemskapets start om den ska ha ett slutdatum för medlemskapet.";
         }
         
-        if($this->MembershipNo < 1 and strlen($this->DateOfMembershipStart) > 0){
+        else if($this->MembershipNo < 1 and strlen($this->DateOfMembershipStart) > 0){
             $error["Message"] = "Personen har ett datum för start av medlemskap men saknar medlemsnummer. Lägg till ett medlemsnummer.";
         }
 
-        if($this->VisibleInCalendar === 0 and strlen($this->DateOfMembershipStart) > 0){
+        else if($this->VisibleInCalendar === 0 and strlen($this->DateOfMembershipStart) > 0){
             $error["Message"] = "Ange om personen ska vara synlig i adresskalendern eller ej.";
         }
 
-        if($this->VisibleInCalendar === 2){
+        else if($this->VisibleInCalendar === 2){
             if((strlen($this->DateOfMembershipStart) === 0 and strlen($this->DateOfMembershipEnd) === 0) or strlen($this->DateOfMembershipEnd) > 0){
                 $error["Message"] = "Endast medlemmar ska vara synliga i adresskalendern.";
             }
@@ -140,6 +144,7 @@ class Person extends SuperEntity{
         }
         
         if(strlen($error["Message"])>0){
+            $error["Result"] = "ERROR";
             return json_encode($error);
         }
         
@@ -150,8 +155,8 @@ class Person extends SuperEntity{
         $error = array();
         $error["Result"] = "ERROR";
         
-        if(strlen($this->DateOfBaptism) === 0 and strlen($this->comment) === 0 and $this->CongregationOfBaptismThis > 0){
-            $error["Message"] = "Ge en kommentar till varför dopdatum saknas.";
+        if(strlen($this->DateOfBaptism) === 0 and strlen($this->Comment) === 0 and $this->CongregationOfBaptismThis > 0){
+            $error["Message"] = "Ge en kommentar till varför dopdatum saknas eller lägg till ett dopdatum.";
         }    
  
         if(strlen($this->DateOfBaptism)  > 0 and $this->CongregationOfBaptismThis === 0){
@@ -174,8 +179,21 @@ class Person extends SuperEntity{
             return true;
         }        
     }
+
+    function select(){
+       $sqlSelect = SQL_STAR_PEOPLE . ", ";
+       $sqlSelect.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
+       $sqlSelect.= ADDRESS_ALIAS_LONG_HOMENAME . ", ";  
+       $sqlSelect.= DECRYPTED_ALIAS_PHONE . ", "; 
+       $sqlSelect.= DATES_AS_ALISAS_MEMBERSTATES . ", " . NAMES_ALIAS_RESIDENTS; 
+       
+       $sqlWhere = "WHERE People.Id = " . $this->PersonId;
+       
+       return $this->db->select($this->user, $sqlSelect, SQL_FROM_PEOPLE_LEFT_JOIN_HOMES, $sqlWhere, "", "");
+    }
+
     
-    function insert($homeId, $inserter){
+    function insert(){
         $sqlInsert = "INSERT INTO People (LastNameEncrypt, FirstNameEncrypt, DateOfBirth, Gender, EmailEncrypt, MobileEncrypt, DateOfMembershipStart, MembershipNo, VisibleInCalendar, CommentEncrypt, Inserter, HomeId) ";
         $sqlInsert.= "VALUES (";
         $sqlInsert.= $this->getEncryptedSqlString($this->LastName) . ", ";
@@ -188,14 +206,15 @@ class Person extends SuperEntity{
         $sqlInsert.= $this->getZeroToNull($this->MembershipNo) . ", ";
         $sqlInsert.= $this->VisibleInCalendar . ", ";
         $sqlInsert.= $this->getEncryptedSqlString($this->Comment) . ", ";
-        $sqlInsert.= $inserter . ", ";
-        $sqlInsert.= $this->getZeroToNull($homeId) . ") ";
+        $sqlInsert.= "Inserter=" . $this->user->ID . ", ";
+        $sqlInsert.= $this->getZeroToNull($this->HomeId) . ") ";
  
-        return $this->db->insert($sqlInsert, "People", "PersonId");
+        $this->PersonId = $this->db->insert($sqlInsert, "People", "Id");
+        return $this->select();
     }
 
         
-    function updatePersonData($updater){
+    function updatePersonData(){
         $sqlUpdate = "UPDATE People ";
         $sqlSet = "SET ";
         $sqlSet.= "LastNameEncrypt=" . $this->getEncryptedSqlString($this->LastName) . ", ";
@@ -207,31 +226,34 @@ class Person extends SuperEntity{
         $sqlSet.= "DateOfDeath=" . $this->getSqlDateString($this->DateOfDeath) . ", ";        
         $sqlSet.= "HomeId=" . $this->getZeroToNull($this->HomeId) . ", ";
         $sqlSet.= "CommentEncrypt=" . $this->getEncryptedSqlString($this->Comment) . ", ";
-        $sqlSet.= "Updater = ". $updater . " ";
+        $sqlSet.= "Updater = " . $this->user->ID . " ";
         $sqlWhere = "where Id=" . $this->PersonId . ";";
 
-        return $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
+        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
+        return $this->select();
     }
     
     
-    function updateMembershipData($updater){
+    function updateMembershipData(){
         $sqlUpdate = "UPDATE People ";
         $sqlSet = "SET ";
-        $sqlSet.= "PreviousCongregation='" . $this->getSqlString($this->PreviousCongregation)  . "', ";
+        $sqlSet.= "PreviousCongregation=" . $this->getSqlString($this->PreviousCongregation)  . ", ";
         $sqlSet.= "DateOfMembershipStart=" . $this->getSqlDateString($this->DateOfMembershipStart) . ", ";         
         $sqlSet.= "MembershipNo=" . $this->getZeroToNull($this->MembershipNo)  . ", ";
         $sqlSet.= "VisibleInCalendar=" . $this->VisibleInCalendar . ", ";
         $sqlSet.= "DateOfMembershipEnd=" . $this->getSqlDateString($this->DateOfMembershipEnd) . ", ";        
-        $sqlSet.= "NextCongregation='" . $this->getSqlString($this->NextCongregation)  . "', ";
+        $sqlSet.= "NextCongregation=" . $this->getSqlString($this->NextCongregation) . ", ";
         $sqlSet.= "CommentEncrypt=" . $this->getEncryptedSqlString($this->Comment) . ", ";
-        $sqlSet.= "Updater = ". $updater . " ";
-        $sqlWhere = "where PersonId=" . $this->PersonId . ";";
+        $sqlSet.= "Updater = " . $this->user->ID  . " ";
+        $sqlWhere = "where Id=" . $this->PersonId . ";";
 
-        return $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
+        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
+        return $this->select();
+
     }
     
     
-    function updateBaptistData($updater){
+    function updateBaptistData(){
         $sqlUpdate = "UPDATE People ";
         $sqlSet = "SET ";
         $sqlSet.= "DateOfBaptism=" . $this->getSqlDateString($this->DateOfBaptism)  . ", ";
@@ -239,9 +261,12 @@ class Person extends SuperEntity{
         $sqlSet.= "CongregationOfBaptism=" . $this->getSqlString($this->CongregationOfBaptism)  . ", ";
         $sqlSet.= "CongregationOfBaptismThis=" . $this->CongregationOfBaptismThis  . ", ";
         $sqlSet.= "CommentEncrypt=" . $this->getEncryptedSqlString($this->Comment) . ", ";
-        $sqlSet.= "Updater = ". $updater . " ";
-        $sqlWhere = "where PersonId=" . $this->PersonId . ";";
-        return $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
+        $sqlSet.= "Updater = " . $this->user->ID . " ";
+        $sqlWhere = "where Id=" . $this->PersonId . ";";
+        
+        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
+        return $this->select();
+ 
     }
     
     function getDeleteSql(){

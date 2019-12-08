@@ -25,25 +25,26 @@ require_once SARON_ROOT . 'app/entities/Person.php';
 
         try{
             $db = new db();
-            $person = new Person();
-            $checkResult = $person->checkData($db);
+            $person = new Person($db, $user);
+            $checkResult = $person->checkMembershipData();
             if($checkResult!==true){
                 echo $checkResult;
                 exit();
             }
 
             $db->transaction_begin();
-            $updateResponse1 = $db->update($sqlUpdate, $person->getUpdateMembershipSql($Id), "WHERE Id = " . $person->getCurrentPerson());
-            $selectResponse = $db->select($user, SQL_STAR_PEOPLE . ", " . DATES_AS_ALISAS_MEMBERSTATES, "FROM People ", "WHERE Id = " . $PersonId, "", "");
+            $response = $person->updateMembershipData();
+//            $updateResponse1 = $db->update($sqlUpdate, $person->getUpdateMembershipSql($Id), "WHERE Id = " . $person->getCurrentPerson());
+//            $selectResponse = $db->select($user, SQL_STAR_PEOPLE . ", " . DATES_AS_ALISAS_MEMBERSTATES, "FROM People ", "WHERE Id = " . $PersonId, "", "");
             $db->transaction_end();
-            $db = null;           
-            echo $selectResponse;
+            $db->dispose();           
+            echo $response;
         }
         catch(Exception $error){
             $db->transaction_roll_back();
             $db->transaction_end();
             echo $error->getMessage();        
-            $db = null;            
+            $db->dispose();           
         }
     }
  

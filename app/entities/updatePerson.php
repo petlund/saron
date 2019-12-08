@@ -18,27 +18,21 @@ require_once SARON_ROOT . 'app/entities/Person.php';
         exit();
     }
     
-    $userId=-1;
-    if(isset( $user->ID )){
-        $userId = (int) $user->ID;
-    }
-    
     try{
         $db = new db();
-        $person = new Person($db);
+        $person = new Person($db, $user);
 
-        $checkResult = $person->checkPersonData($db);
+        $checkResult = $person->checkPersonData();
         if($checkResult!==true){
             echo $checkResult;
             exit();
         }
 
         $db->transaction_begin();
-        $person->updatePersonData($userId);
-        $selectResponse = $db->select($user, SQL_STAR_PEOPLE . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . ADDRESS_ALIAS_LONG_HOMENAME . ", "  . DECRYPTED_ALIAS_PHONE . ", " . DATES_AS_ALISAS_MEMBERSTATES . ", " . NAMES_ALIAS_RESIDENTS, SQL_FROM_PEOPLE_LEFT_JOIN_HOMES, "WHERE People.Id = " . $person->getCurrentPersonId(), "", "");
+        $respons = $person->updatePersonData();
         $db->transaction_end();
         $db->dispose();
-        echo $selectResponse;
+        echo $respons;
     }
     catch(Exception $error){
         $db->transaction_roll_back();

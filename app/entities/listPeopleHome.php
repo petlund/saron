@@ -13,17 +13,17 @@ require_once SARON_ROOT . 'app/database/db.php';
 
     if(!isPermitted($user, $requireEditorRole)){
         echo notPermittedMessage();
+        exit();
     }
-    else{
-        $HomeId = (int)filter_input(INPUT_GET, "HomeId", FILTER_SANITIZE_NUMBER_INT);
-        try{
-            $db = new db();
-            $result = $db->selectHome($user, $HomeId, "Records"); 
-            $db = null;
-            echo $result;
-        }
-        catch(Exception $error){
-            echo $error->getMessage();
-            $db = null;
-        }      
+
+    $HomeId = (int)filter_input(INPUT_GET, "HomeId", FILTER_SANITIZE_NUMBER_INT);
+    try{
+        $db = new db();
+        $result = $db->selectHome($user, $HomeId, "Records"); 
+        $db = null;
+        echo $result;
+    }
+    catch(Exception $error){
+        echo $error->getMessage();
+        $db = null;
     }
