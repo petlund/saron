@@ -109,7 +109,7 @@ $(document).ready(function () {
         },        
         formCreated: function (event, data){
             data.row[0].style.backgroundColor = "yellow";
-            data.form.css('width',inputFormWidth);
+            data.form.css('width', inputFormWidth);
             data.form.find('input[name=Baptister]').css('width',inputFormFieldWidth);
             data.form.find('input[name=CongregationOfBaptism]').css('width',inputFormFieldWidth);
             data.form.find('textarea[name=Comment]').css('width',inputFormFieldWidth);
@@ -135,11 +135,11 @@ $(document).ready(function () {
 
 function baptistFormAuto(data, selectedValue){
         var inp = data.form.find('input[name=CongregationOfBaptism]');
-        if(selectedValue==='0'){
+        if(selectedValue === '0'){
             inp[0].value = "";                                      
             inp[0].disabled=true;
         }
-        else if(selectedValue==='1'){
+        else if(selectedValue === '1'){
             inp[0].value = "";                                                                              
             inp[0].disabled=false;
         }

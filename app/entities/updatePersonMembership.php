@@ -6,6 +6,7 @@ require_once 'config.php';
 require_once SARON_ROOT . "app/access/wp-authenticate.php";
 require_once SARON_ROOT . 'app/database/queries.php'; 
 require_once SARON_ROOT . 'app/database/db.php';
+require_once SARON_ROOT . 'app/entities/Person.php';
 
 
     /*** REQUIRE USER AUTHENTICATION ***/
@@ -16,21 +17,23 @@ require_once SARON_ROOT . 'app/database/db.php';
         echo notPermittedMessage();
     }
     else{
-        $id=-1;
+        $userId=-1;
         if(isset( $user->ID )){
-            $id = (int) $user->ID;
+            $userId = (int) $user->ID;
         }
-
-        $PersonId = (int)filter_input(INPUT_POST, "PersonId", FILTER_SANITIZE_NUMBER_INT);
-//        if($PersonId===0){
-//            $PersonId = (int)filter_input(INPUT_GET, "PersonId", FILTER_SANITIZE_NUMBER_INT);        
-//        }
 
 
         try{
             $db = new db();
+            $person = new Person();
+            $checkResult = $person->checkData($db);
+            if($checkResult!==true){
+                echo $checkResult;
+                exit();
+            }
+
             $db->transaction_begin();
-            $updateResponse1 = $db->update($sqlUpdate, $sqlSet, "WHERE Id = " . $PersonId);
+            $updateResponse1 = $db->update($sqlUpdate, $person->getUpdateMembershipSql($Id), "WHERE Id = " . $person->getCurrentPerson());
             $selectResponse = $db->select($user, SQL_STAR_PEOPLE . ", " . DATES_AS_ALISAS_MEMBERSTATES, "FROM People ", "WHERE Id = " . $PersonId, "", "");
             $db->transaction_end();
             $db = null;           

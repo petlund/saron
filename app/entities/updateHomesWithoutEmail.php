@@ -15,9 +15,9 @@ require_once SARON_ROOT . 'app/database/db.php';
         echo notPermittedMessage();
     }
     else{
-        $id=-1;
+        $userId=-1;
         if(isset( $user->ID )){
-            $id = (int) $user->ID;
+            $userId = (int) $user->ID;
         }
 
         $HomeId = (int)filter_input(INPUT_GET, "HomeId", FILTER_SANITIZE_NUMBER_INT);
@@ -42,7 +42,7 @@ require_once SARON_ROOT . 'app/database/db.php';
             $db = new db();
             $db->transaction_begin();
             $updateResponse1 = $db->update($sqlUpdate, $sqlSet, "WHERE Id = " . $HomeId);
-            $updateResponse2 = $db->update("UPDATE People ", "Set Updated=Now(), Updater=" . $id . " ", "Where HomeId=" . $HomeId, ""); 
+            $updateResponse2 = $db->update("UPDATE People ", "Set Updated=Now(), Updater=" . $userId . " ", "Where HomeId=" . $HomeId, ""); 
             $selectResponse = $db->select($user, "select Letter ,Id as HomeId ", "FROM Homes ", "WHERE Id = " . $HomeId, "", "");
             $db->transaction_end();
             $db = null;            

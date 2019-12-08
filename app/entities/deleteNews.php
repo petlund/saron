@@ -15,12 +15,12 @@ require_once SARON_ROOT . 'app/database/db.php';
         echo notPermittedMessage();
     }
     else{            
-        $id = (int)filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT);
+        $userId = (int)filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT);
         $Today = date("Y-m-d") ;
 
-        $sql = "delete from News where id=" . $id;
+        $sql = "delete from News where id=" . $userId;
 
-        if($id<1){
+        if($userId<1){
             $error = array();
             $error["Result"] = "ERROR";
             $error["Message"] = "Ingen rad är vald.";

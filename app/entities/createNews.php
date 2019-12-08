@@ -30,9 +30,9 @@ require_once SARON_ROOT . 'app/database/db.php';
         try{
             $db = new db();
             $db->transaction_begin();            
-            $id = $db->insert($sqlInsert, "News", "id");
+            $userId = $db->insert($sqlInsert, "News", "id");
             $userRole = setUserRoleInQuery($user); 
-            $result = $db->select($user, "select *, " . $userRole , "FROM News ", "WHERE id = " . $id, "", "", "Record");
+            $result = $db->select($user, "select *, " . $userRole , "FROM News ", "WHERE id = " . $userId, "", "", "Record");
             $db->transaction_end();            
             echo $result;
             $db=null;

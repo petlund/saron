@@ -6,6 +6,7 @@ require_once 'config.php';
 require_once SARON_ROOT . "app/access/wp-authenticate.php";
 require_once SARON_ROOT . 'app/database/queries.php'; 
 require_once SARON_ROOT . 'app/database/db.php';
+require_once SARON_ROOT . 'app/entities/Person.php';
 
 
     /*** REQUIRE USER AUTHENTICATION ***/
@@ -17,33 +18,26 @@ require_once SARON_ROOT . 'app/database/db.php';
         exit();
     }
     
-    $id=-1;
+    $userId=-1;
     if(isset( $user->ID )){
-        $id = (int) $user->ID;
+        $userId = (int) $user->ID;
     }
-
     
-    $newHomeId=0;    
     try{
         $db = new db();
-        $db->transaction_begin();
-        $db->exist($FirstName, $LastName, $DateOfBirth, $PersonId);
-        $oldHomeId=$HomeId;        // reference UI update 
-        Switch ($HomeId){  
-            case 0: //inget hem
-                $newHomeId=0;            // person left his home
-                break;
-            case -1: //Nytt hem 
-                $newHomeId = $db->insert("INSERT INTO Homes (FamilyNameEncrypt) VALUES (AES_ENCRYPT('" . salt() . $LastName . "', " . PKEY . "));", "Homes", "Id"); // person move to new home
-                break; 
-            Default:
-                $newHomeId=$HomeId;        // Person stay in his home 
+        $person = new Person($db);
+
+        $checkResult = $person->checkPersonData($db);
+        if($checkResult!==true){
+            echo $checkResult;
+            exit();
         }
-        
-        $selectResponse = $db->update($sqlUpdate, $sqlSet, "WHERE Id = " . $PersonId);
-        $selectResponse = $db->select($user, SQL_STAR_PEOPLE . ", " . $oldHomeId . " as oldHomeId, " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . ADDRESS_ALIAS_LONG_HOMENAME . ", "  . DECRYPTED_ALIAS_PHONE . ", " . DATES_AS_ALISAS_MEMBERSTATES . ", " . NAMES_ALIAS_RESIDENTS, SQL_FROM_PEOPLE_LEFT_JOIN_HOMES, "WHERE People.Id = " . $PersonId, "", "");
+
+        $db->transaction_begin();
+        $person->updatePersonData($userId);
+        $selectResponse = $db->select($user, SQL_STAR_PEOPLE . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . ADDRESS_ALIAS_LONG_HOMENAME . ", "  . DECRYPTED_ALIAS_PHONE . ", " . DATES_AS_ALISAS_MEMBERSTATES . ", " . NAMES_ALIAS_RESIDENTS, SQL_FROM_PEOPLE_LEFT_JOIN_HOMES, "WHERE People.Id = " . $person->getCurrentPersonId(), "", "");
         $db->transaction_end();
-        $db=null;
+        $db->dispose();
         echo $selectResponse;
     }
     catch(Exception $error){

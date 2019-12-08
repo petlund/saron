@@ -16,35 +16,25 @@ require_once SARON_ROOT . 'app/entities/Person.php';
         echo notPermittedMessage();
     }
     else{
-        $id=-1;
+        $userId=-1;
         if(isset( $user->ID )){
-            $id = (int) $user->ID;
+            $userId = (int) $user->ID;
         }
 
         try{
             $db = new db();            
+
             $person = new Person();
-            $checkResult=$person->checkData();
-            if($checkResult!==true){
+            $personCheckResult = $person->checkPersonData($db);
+            $membershipCheckResult = $person->checkMembershipData($db);
+            if(($membershipCheckResult and $membershipCheckResult){
                 echo $checkResult;
                 exit();
             }
             
             $db->transaction_begin();
-            $db->exist($FirstName, $LastName, $DateOfBirth);
-            $homeId = $person->getCurrentHomeId();
-            Switch ($homeId){
-                case 0: //inget hem
-                    $homeId= "null"; 
-                    break;
-                case -1: //Nytt hem
-                    $homeId = $db->insert("INSERT INTO Homes (FamilyNameEncrypt) VALUES (AES_ENCRYPT('" . salt() . $LastName . "', " . PKEY . "))", "Homes", "Id"); // New person i new Home
-                    break; 
-                Default: //befintligt hem
-                    break;        
-            }
 
-            $sqlInsert = $person->getInsertSql($homeId, $id);
+            $sqlInsert = $person->getInsertSql($homeId, $userId);
             
             $NewPersonId = $db->insert($sqlInsert, "People", "Id");
 
@@ -53,12 +43,12 @@ require_once SARON_ROOT . 'app/entities/Person.php';
 
             $db->transaction_end();
             echo $result;     
-            $db = null;
+            $db->dispose();
         }
         catch(Exception $error){
             $db->transaction_roll_back();
             $db->transaction_end();
             echo $error->getMessage();        
-            $db = null;            
+            $db->dispose();            
         }
     }

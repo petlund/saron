@@ -22,12 +22,17 @@ class db {
     
     
     function __destruct(){
-        if($this->connection!=null){
-            $this->connection->close();
-        }                        
+        if($connection !== null){
+            if ($connection->connect_error) { 
+                die("Connection failed: " . $connection->connect_error); 
+            } 
+            $connection->close(); 
+        }
     }
     
-    
+    function dispose(){
+        $this->__destruct();
+    }
     
     function transaction_begin(){
         if(!$this->connection->autocommit(false)){

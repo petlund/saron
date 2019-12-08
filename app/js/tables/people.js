@@ -304,12 +304,11 @@ $(document).ready(function () {
                                         return $imgClose;
                                    }
                                 },
-                                Id: {
+                                PersonId: {
                                     key: true,
                                     update: false,
                                     create: false,
-                                    type: 'hidden',
-                                    defaultValue: memberData.record.PersonId
+                                    type: 'hidden'
                                 },
                                 PreviousCongregation: {
                                     title: 'Kommit från församling',
@@ -465,12 +464,11 @@ $(document).ready(function () {
                                    return $imgClose;
                                    }
                                 },
-                                Id: {
+                                PersonId: {
                                     key: true,
                                     update: false,
                                     create: false,
-                                    type: 'hidden',
-                                    defaultValue: baptistData.record.PersonId
+                                    type: 'hidden'
                                 },
                                 CongregationOfBaptismThis: {
                                     list: false,
@@ -679,7 +677,7 @@ $(document).ready(function () {
                 }
             },
             VisibleInCalendar: {
-                edit: true,
+                edit: false,
                 title: 'Kalender',
                 inputTitle: 'Synlig i adresskalendern',
                 width: '4%',              

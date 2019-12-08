@@ -11,11 +11,15 @@
  *
  * @author peter
  */
-class AbstractEntity {
+class SuperEntity {
+    function __construct() {
+        
+    }
+
     
     function getZeroToNull($nr){
         if($nr === null){
-            return null;
+            return "null";
         }
         if($nr===0){
             return "null";
@@ -38,7 +42,7 @@ class AbstractEntity {
     
     function getSqlString($str){
         if(strlen($str)>0){
-            return $str;
+            return "'" . $str . "'";
         }
         else{
             return "null";                    

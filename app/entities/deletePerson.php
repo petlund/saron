@@ -15,9 +15,9 @@ require_once SARON_ROOT . 'app/database/db.php';
         echo notPermittedMessage();
     }
     else{
-        $id=-1;
+        $userId=-1;
         if(isset( $user->ID )){
-            $id = (int) $user->ID;
+            $userId = (int) $user->ID;
         }
 
         $PersonId = (int)filter_input(INPUT_POST, "PersonId", FILTER_SANITIZE_NUMBER_INT);
@@ -51,7 +51,7 @@ require_once SARON_ROOT . 'app/database/db.php';
             $sql.= "PreviousCongregation = NULL, ";
             $sql.= "NextCongregation = NULL, ";
             $sql.= "CommentEncrypt = NULL, ";
-            $sql.= "Updater = ". $id . ", ";
+            $sql.= "Updater = ". $userId . ", ";
 
             $sql.= "HomeId = NULL ";
             $sql.= "where Id=" . $PersonId;
