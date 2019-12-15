@@ -32,7 +32,7 @@ class SuperEntity {
     
     function getEncryptedSqlString($str){
         if(strlen($str)>0){
-            return "AES_ENCRYPT('" . salt() . $str . "', " . PKEY . ")";
+            return "AES_ENCRYPT('" . $this->salt() . $str . "', " . PKEY . ")";
         }
         else{
             return 'null';                    
@@ -58,5 +58,16 @@ class SuperEntity {
             return 'null';                    
         }
     }
-   
+
+    
+    
+    function salt(){        
+        //$abc = "!#$%&()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+        $abc = "!#$%&()*+,-./0123456789:;=?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+        $str = "";
+        while(strlen($str)<SALT_LENGTH-1){
+            $str.= substr($abc, rand(0, strlen($abc)), 1);
+        }
+        return $str;
+    }   
 }

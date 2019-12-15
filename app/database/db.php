@@ -2,6 +2,7 @@
 require_once "config.php";
 require_once SARON_ROOT . "app/database/queries.php";
 require_once SARON_ROOT . "app/access/wp-authenticate.php";
+require_once SARON_ROOT . "app/entities/SaronUser.php";
  
 class db {
     
@@ -75,32 +76,6 @@ class db {
     } 
     
     
-    
-    
-    public function selectHome($user, $HomeId, $responstype){
-        $sql = SQL_STAR_HOMES . ", ";  
-        $sql.= ADDRESS_ALIAS_LONG_HOMENAME . ", "; 
-        $sql.= NAMES_ALIAS_RESIDENTS . ", ";
-        $sql.= setUserRoleInQuery($user); 
-        $sql.= "FROM Homes ";
-        $sql.= "WHERE Id = " . $HomeId . ";"; 
-        
-        $sqlCount = "Select count(*) as c from Homes WHERE Id = "  . $HomeId . ";";
-        
-        if(!$listResult = $this->connection->query($sql)){
-            $this->php_dev_error_log("selectHome", $sql);
-            throw new Exception($this->jsonErrorMessage("SQL-Error in selectHome statement!", null, $this->connection->error));
-        }
-
-        if(!$countResult = $this->connection->query($sqlCount)){
-            $this->php_dev_error_log("selectHome Count ", $sqlCount);
-            throw new Exception($this->jsonErrorMessage("SQL-Error in selectHomeCount statement!", null, $this->connection->error));
-        }
-        $arrayResult = $this->resultSetToArray($listResult);
-        $jsonResult = $this->processRowSet($user, $arrayResult, $countResult, $responstype);                
-        return $jsonResult;           
-    }
-    
     public function exist($FirstName, $LastName, $DateOfBirth, $Id=-1){
         $sql = "select count(*) as c from People where "; 
         $sql.= "UPPER(CONVERT(BINARY " . DECRYPTED_FIRSTNAME . " USING utf8)) like '%" . $FirstName . "' and ";
@@ -155,11 +130,11 @@ class db {
     }     
     
     
-    public function select($user, $select, $from, $where, $orderby, $limit, $responstype="Records"){
+    public function select($saronUser, $select, $from, $where, $orderby, $limit, $responstype="Records"){
         $sqlSelect = $select . $from . $where . $orderby . $limit;
         $sqlCount = "select count(*) as c " . $from . $where;
         try{
-            return $this->selectSeparate($user, $sqlSelect, $sqlCount, $responstype);
+            return $this->selectSeparate($saronUser, $sqlSelect, $sqlCount, $responstype);
         }
         catch(Exception $error){
             $this->php_dev_error_log("select", $select);
@@ -167,7 +142,7 @@ class db {
         }
     } 
     
-    public function selectSeparate($user, $sqlSelect, $sqlCount, $responstype="Records"){
+    public function selectSeparate($saronUser, $sqlSelect, $sqlCount, $responstype="Records"){
         if(!$listResult = $this->connection->query($sqlSelect)){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
             $this->php_dev_error_log("selectSeparate 1 ", $sqlSelect);
@@ -181,7 +156,7 @@ class db {
         }
 
         $arrayResult = $this->resultSetToArray($listResult);
-        $jsonResult = $this->processRowSet($user, $arrayResult, $countResult, $responstype);   
+        $jsonResult = $this->processRowSet($saronUser, $arrayResult, $countResult, $responstype);   
             
         return $jsonResult;
     } 
@@ -232,7 +207,7 @@ class db {
     
     
     
-    private function processRowSet($user, $listRows, $countResult, $responstype){
+    private function processRowSet($saronUser, $listRows, $countResult, $responstype){
         $jTableResult['Result'] = "OK";
         $jTableResult[$responstype] = $listRows;
         
@@ -243,12 +218,7 @@ class db {
         mysqli_free_result($countResult);
 
         $jTableResult['TotalRecordCount'] = $countRows;
-        if(isEditor($user)){
-            $jTableResult['user_role'] = SARON_ROLE_EDITOR;
-        }
-        else{
-            $jTableResult['user_role'] = SARON_ROLE_VIEWER;            
-        }
+        $jTableResult['user_role'] = $saronUser->getRole();
 
         $jsonResult = json_encode($jTableResult);
         

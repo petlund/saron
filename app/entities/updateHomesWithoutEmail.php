@@ -9,16 +9,13 @@ require_once SARON_ROOT . 'app/database/db.php';
 
     /*** REQUIRE USER AUTHENTICATION ***/
     $requireEditorRole = true;
-    $user = wp_get_current_user();    
+        $saronUser = new SaronUser(wp_get_current_user());    
 
-    if(!isPermitted($user, $requireEditorRole)){
+    if(!isPermitted($saronUser, $requireEditorRole)){
         echo notPermittedMessage();
     }
     else{
-        $userId=-1;
-        if(isset( $user->ID )){
-            $userId = (int) $user->ID;
-        }
+
 
         $HomeId = (int)filter_input(INPUT_GET, "HomeId", FILTER_SANITIZE_NUMBER_INT);
         if($HomeId===0){
@@ -42,8 +39,8 @@ require_once SARON_ROOT . 'app/database/db.php';
             $db = new db();
             $db->transaction_begin();
             $updateResponse1 = $db->update($sqlUpdate, $sqlSet, "WHERE Id = " . $HomeId);
-            $updateResponse2 = $db->update("UPDATE People ", "Set Updated=Now(), Updater=" . $userId . " ", "Where HomeId=" . $HomeId, ""); 
-            $selectResponse = $db->select($user, "select Letter ,Id as HomeId ", "FROM Homes ", "WHERE Id = " . $HomeId, "", "");
+            $updateResponse2 = $db->update("UPDATE People ", "Set Updated=Now(), Updater=" . $saronUserId . " ", "Where HomeId=" . $HomeId, ""); 
+            $selectResponse = $db->select($saronUser, "select Letter ,Id as HomeId ", "FROM Homes ", "WHERE Id = " . $HomeId, "", "");
             $db->transaction_end();
             $db = null;            
             echo $selectResponse;

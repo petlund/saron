@@ -10,9 +10,9 @@ require_once SARON_ROOT . 'app/database/db.php';
 
     /*** REQUIRE USER AUTHENTICATION ***/
     $requireEditorRole = true;
-    $user = wp_get_current_user();    
+        $saronUser = new SaronUser(wp_get_current_user());    
 
-    if(!isPermitted($user, $requireEditorRole)){
+    if(!isPermitted($saronUser, $requireEditorRole)){
         echo notPermittedMessage();
     }
     else{
@@ -31,12 +31,12 @@ require_once SARON_ROOT . 'app/database/db.php';
         }
         try{
             $db = new db();
-            $result = $db->select($user, $sql, "FROM Homes ", $where, "ORDER BY DisplayText ", "", "Options");    
-            $db = null;
+            $result = $db->select($saronUser, $sql, "FROM Homes ", $where, "ORDER BY DisplayText ", "", "Options");    
+            $db->dispose();
             echo $result;
         }
         catch(Exception $error){
             echo $error->getMessage();
-            $db = null;
+            $db->dispose();
         }
     }

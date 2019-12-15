@@ -10,9 +10,9 @@ require_once SARON_ROOT . 'app/database/db.php';
 
     /*** REQUIRE USER AUTHENTICATION ***/
     $requireEditorRole = true;
-    $user = wp_get_current_user();    
+        $saronUser = new SaronUser(wp_get_current_user());    
 
-    if(!isPermitted($user, $requireEditorRole)){
+    if(!isPermitted($saronUser, $requireEditorRole)){
         echo notPermittedMessage();
     }
     else{
@@ -30,7 +30,7 @@ require_once SARON_ROOT . 'app/database/db.php';
 
         try{
             $db = new db();
-            $result = $db->select($user, $sql, "FROM People ", "", "ORDER BY ind ", "", "Options");
+            $result = $db->select($saronUser, $sql, "FROM People ", "", "ORDER BY ind ", "", "Options");
             $db = null;
             echo $result;
         }

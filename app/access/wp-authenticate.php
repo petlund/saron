@@ -1,5 +1,11 @@
 <?php
+header("Cache-Control: no-cache, must-revalidate");
+header("Pragma: no-cache"); //HTTP 1.0
+header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 require_once "config.php";
+require_once SARON_ROOT . "/app/entities/SaronUser.php";
+
+
     init();
     
     function authenticate() {
@@ -8,8 +14,9 @@ require_once "config.php";
 	if ( is_wp_error( $user ) ) {
             return false;
 	}
-
-        if(! isSaronUser($user)){
+        $saronUser = new SaronUser($user);
+        if(! $saronUser->isSaronUser()){
+//        if(! isSaronUser($user)){
             wp_logout();
             return false;
         }
@@ -25,52 +32,53 @@ require_once "config.php";
         return true;
     }
     
-    function isSaronUser($user){
-        /*** Check if the user had a saron role ***/
-        for($i = 0; $i < count($user->roles); $i++){
-            if(substr($user->roles[$i], 0, strlen(SARON_ROLE_PREFIX)) === SARON_ROLE_PREFIX){ // CHECK IF THE USER IS A MEMBER OF THE GROUP  saron_edit
-                $otp = $user->get("wp-otp");
-                if($otp["enabled"] || TEST_ENV){ // In test environment OTP enabeled account is not necessary.
-                    return true;
-                }
-            }
-        }         
-        return false;
-    }
-    
-    
-    function isEditor($user){
-        /*** Check if the user had an editor role ***/
-        for($i = 0; $i < count($user->roles); $i++){
-            if(strpos($user->roles[$i],  SARON_ROLE_PREFIX . SARON_ROLE_EDITOR) !== FALSE){ // CHECK IF THE USER IS A MEMBER OF THE GROUP  (test)saron_edit
-                return true;
-            }
-        } 
-        return false;
-    }
-    
-    function isPermitted($user, $requireEditor){
+//    function isSaronUser($user){
+//        /*** Check if the user had a saron role ***/
+//        for($i = 0; $i < count($user->roles); $i++){
+//            if(substr($user->roles[$i], 0, strlen(SARON_ROLE_PREFIX)) === SARON_ROLE_PREFIX){ // CHECK IF THE USER IS A MEMBER OF THE GROUP  saron_edit
+//                $otp = $user->get("wp-otp");
+//                if($otp["enabled"] || TEST_ENV){ // In test environment OTP enabeled account is not necessary.
+//                    return true;
+//                }
+//            }
+//        }         
+//        return false;
+//    }
+//    
+//    
+//    function isEditor($user){
+//        /*** Check if the user had an editor role ***/
+//        for($i = 0; $i < count($user->roles); $i++){
+//            if(strpos($user->roles[$i],  SARON_ROLE_PREFIX . SARON_ROLE_EDITOR) !== FALSE){ // CHECK IF THE USER IS A MEMBER OF THE GROUP  (test)saron_edit
+//                return true;
+//            }
+//        } 
+//        return false;
+//    }
+//    
+    function isPermitted($saronUser, $requireEditor){
         if(! session_id()){
             return false;
         }
-        $userLoggedIn = is_user_logged_in();
-        $saronUser = isSaronUser($user);
-        $editor = isEditor($user);
         
-        return $userLoggedIn && $saronUser && ($editor || !$requireEditor);
+        $userLoggedIn = is_user_logged_in();
+        $sUser = $saronUser->isSaronUser();
+        $editor = $saronUser->isEditor();
+        
+        return $userLoggedIn && $sUser && ($editor || !$requireEditor);
     }
     
     function notPermittedMessage(){
         $error = array();
         $error["Result"] = "ERROR";
-        $error["Message"] = "Permission denied!";
+        $error["Message"] = "Du har inte rättigheter att göra denna åtgärd, eller så har du blivit utloggad.";
         echo json_encode($error);                
     }
     
   
     function isLoggedIn($requireEditor=false) { //
         $success=false;
-	$user = wp_get_current_user();
+	    $saronUser = new SaronUser(wp_get_current_user());
         $loginUri = SARON_URI . "app/access/login.php?logout=true";
         $host = filter_input(INPUT_SERVER, 'HTTP_HOST', FILTER_SANITIZE_URL);
         
@@ -78,7 +86,7 @@ require_once "config.php";
         $https = filter_input(INPUT_SERVER, 'HTTPS', FILTER_SANITIZE_URL); //  !== "on"
         if($host !== LOCAL_DEV_APP_HOST){
             if(is_ssl()){
-                if(isPermitted($user, $requireEditor)){
+                if(isPermitted($saronUser, $requireEditor)){
                     $success = true;
                 }
                 else{
@@ -94,7 +102,7 @@ require_once "config.php";
             }
         }
         else{ //is local host
-            if(isPermitted($user, $requireEditor)){
+            if(isPermitted($saronUser, $requireEditor)){
                 $success = true;
             }
             else{

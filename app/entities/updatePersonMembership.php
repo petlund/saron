@@ -11,21 +11,15 @@ require_once SARON_ROOT . 'app/entities/Person.php';
 
     /*** REQUIRE USER AUTHENTICATION ***/
     $requireEditorRole = true;
-    $user = wp_get_current_user();    
+        $saronUser = new SaronUser(wp_get_current_user());    
 
-    if(!isPermitted($user, $requireEditorRole)){
+    if(!isPermitted($saronUser, $requireEditorRole)){
         echo notPermittedMessage();
     }
     else{
-        $userId=-1;
-        if(isset( $user->ID )){
-            $userId = (int) $user->ID;
-        }
-
-
         try{
             $db = new db();
-            $person = new Person($db, $user);
+            $person = new Person($db, $saronUser);
             $checkResult = $person->checkMembershipData();
             if($checkResult!==true){
                 echo $checkResult;
@@ -35,7 +29,7 @@ require_once SARON_ROOT . 'app/entities/Person.php';
             $db->transaction_begin();
             $response = $person->updateMembershipData();
 //            $updateResponse1 = $db->update($sqlUpdate, $person->getUpdateMembershipSql($Id), "WHERE Id = " . $person->getCurrentPerson());
-//            $selectResponse = $db->select($user, SQL_STAR_PEOPLE . ", " . DATES_AS_ALISAS_MEMBERSTATES, "FROM People ", "WHERE Id = " . $PersonId, "", "");
+//            $selectResponse = $db->select($saronUser, SQL_STAR_PEOPLE . ", " . DATES_AS_ALISAS_MEMBERSTATES, "FROM People ", "WHERE Id = " . $PersonId, "", "");
             $db->transaction_end();
             $db->dispose();           
             echo $response;

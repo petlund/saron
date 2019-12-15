@@ -16,9 +16,9 @@ require_once 'updateStatistics.php';
 
     /*** REQUIRE USER AUTHENTICATION ***/
     $requireEditorRole = false;
-    $user = wp_get_current_user();    
+        $saronUser = new SaronUser(wp_get_current_user());    
 
-    if(!isPermitted($user, $requireEditorRole)){
+    if(!isPermitted($saronUser, $requireEditorRole)){
         echo notPermittedMessage();
     }
     else{            
@@ -43,7 +43,7 @@ require_once 'updateStatistics.php';
             $db = new db();
             $sqlSelect = "SELECT year, number_of_members, number_of_new_members, number_of_finnished_members, number_of_dead, number_of_baptist_people, format(average_age, 1) as avg_age, format(average_membership_time, 1) as avg_membership_time, diff ";
             //$sqlSelect = "SELECT * ";
-            $result = $db->select($user, $sqlSelect, "From Statistics ", "", $sqlOrderBy,  $sqlLimit);    
+            $result = $db->select($saronUser, $sqlSelect, "From Statistics ", "", $sqlOrderBy,  $sqlLimit);    
             $db = null;
             echo $result;
         }

@@ -12,9 +12,9 @@ require_once WP_ROOT . 'wp-includes/user.php';
 
     /*** REQUIRE USER AUTHENTICATION ***/
     $requireEditorRole = false;
-    $user = wp_get_current_user();    
+        $saronUser = new SaronUser(wp_get_current_user());    
 
-    if(!isPermitted($user, $requireEditorRole)){
+    if(!isPermitted($saronUser, $requireEditorRole)){
         echo notPermittedMessage();
     }
     else{
@@ -114,7 +114,7 @@ require_once WP_ROOT . 'wp-includes/user.php';
             }
         }
         $result.='],"TotalRecordCount":' . count($users);
-        if(isEditor($user)){
+        if($saronUser->isEditor()){
             $result.=',"user_role":"' . SARON_ROLE_EDITOR . '"';
         }
         else{

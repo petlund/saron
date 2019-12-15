@@ -3,9 +3,9 @@
     require_once SARON_ROOT . "app/access/wp-authenticate.php";
     /*** REQUIRE USER AUTHENTICATION ***/
     $requireEditorRole = false;
-    $user = wp_get_current_user(); 
+        $saronUser = new SaronUser(wp_get_current_user()); 
     
-    if(isPermitted($user, $requireEditorRole)){
+    if(isPermitted($saronUser, $requireEditorRole)){
         $res = openssl_pkey_get_private (PKEY_FILE);
         openssl_pkey_export($res, $privkey);
         define ("PKEY", "'" . $privkey . "'");
@@ -96,27 +96,7 @@
         define("NAMES_ALIAS_RESIDENTS", "(SELECT GROUP_CONCAT(" . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . " SEPARATOR '<BR>') FROM People as r where Homes.Id = r.HomeId  AND DateOfMembershipStart is not null AND DateOfMembershipEnd is null and DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' order by DateOfBirth) as Residents ");
     }
     
-    function setUserRoleInQuery($user){
-        $alias = " as user_role ";
-        $sql = "'";
-        if(isEditor($user)){
-            $sql.= SARON_ROLE_EDITOR . "'" . $alias;
-        }
-        else{
-            $sql.= SARON_ROLE_VIEWER . "'" . $alias;            
-        }
-        return $sql;
-    }
-    
-    function salt(){        
-        //$abc = "!#$%&()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~";
-        $abc = "!#$%&()*+,-./0123456789:;=?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~";
-        $str = "";
-        while(strlen($str)<SALT_LENGTH-1){
-            $str.= substr($abc, rand(0, strlen($abc)), 1);
-        }
-        return $str;
-    }
+
 
 
 

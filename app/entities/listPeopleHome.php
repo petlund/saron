@@ -6,24 +6,25 @@ require_once 'config.php';
 require_once SARON_ROOT . "app/access/wp-authenticate.php";
 require_once SARON_ROOT . 'app/database/queries.php'; 
 require_once SARON_ROOT . 'app/database/db.php';
+require_once SARON_ROOT . 'app/entities/Home.php';
 
     /*** REQUIRE USER AUTHENTICATION ***/
     $requireEditorRole = false;
-    $user = wp_get_current_user();    
+        $saronUser = new SaronUser(wp_get_current_user());    
 
-    if(!isPermitted($user, $requireEditorRole)){
+    if(!isPermitted($saronUser, $requireEditorRole)){
         echo notPermittedMessage();
         exit();
     }
 
-    $HomeId = (int)filter_input(INPUT_GET, "HomeId", FILTER_SANITIZE_NUMBER_INT);
     try{
         $db = new db();
-        $result = $db->selectHome($user, $HomeId, "Records"); 
-        $db = null;
+        $home = new Home($db, $saronUser);
+        $result = $home->select();
+        $db->dispose();
         echo $result;
     }
     catch(Exception $error){
         echo $error->getMessage();
-        $db = null;
+        $db->dispose();
     }

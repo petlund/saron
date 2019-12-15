@@ -9,9 +9,9 @@ require_once SARON_ROOT . 'app/database/db.php';
 
     /*** REQUIRE USER AUTHENTICATION ***/
     $requireEditorRole = true;
-    $user = wp_get_current_user();    
+        $saronUser = new SaronUser(wp_get_current_user());    
 
-    if(!isPermitted($user, $requireEditorRole)){
+    if(!isPermitted($saronUser, $requireEditorRole)){
         echo notPermittedMessage();
     }
     else{
@@ -45,7 +45,7 @@ require_once SARON_ROOT . 'app/database/db.php';
             $db = new db();
             $db->transaction_begin();
             $selectResponse = $db->update($sqlUpdate, $sqlSet, $sqlWhere);
-            $result =  $db->select($user, "Select Id, KeyToExp, KeyToChurch, " . DECRYPTED_ALIAS_COMMENT_KEY . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " .  setUserRoleInQuery($user) , " FROM People ", $sqlWhere, "", "", "Records");    
+            $result =  $db->select($saronUser, "Select Id, KeyToExp, KeyToChurch, " . DECRYPTED_ALIAS_COMMENT_KEY . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " .  setUserRoleInQuery($saronUser) , " FROM People ", $sqlWhere, "", "", "Records");    
             $db->transaction_end();
             $db = null;                        
             echo $result;

@@ -6,42 +6,28 @@ require_once 'config.php';
 require_once SARON_ROOT . "app/access/wp-authenticate.php";
 require_once SARON_ROOT . 'app/database/queries.php'; 
 require_once SARON_ROOT . 'app/database/db.php';
+require_once SARON_ROOT . 'app/entities/SaronUser.php';
+require_once SARON_ROOT . 'app/entities/News.php';
 
 
 
     /*** REQUIRE USER AUTHENTICATION ***/
     $requireEditorRole = false;
-    $user = wp_get_current_user();    
+    $saronUser = new SaronUser(wp_get_current_user());    
 
-    if(!isPermitted($user, $requireEditorRole)){
+    if(!isPermitted($saronUser, $requireEditorRole)){
         echo notPermittedMessage();
+        exit();
     }
-    else{
-        $jtSorting = (String)filter_input(INPUT_GET, "jtSorting", FILTER_SANITIZE_STRING);
-        if(Strlen($jtSorting)>0){
-            $sqlOrderBy = "ORDER BY " . $jtSorting . " ";
-        }
-        else{
-            $sqlOrderBy = "";
-        }
 
-        $jtPageSize = (int)filter_input(INPUT_GET, "jtPageSize", FILTER_SANITIZE_NUMBER_INT);
-        $jtStartIndex = (int)filter_input(INPUT_GET, "jtStartIndex", FILTER_SANITIZE_NUMBER_INT);
-        if($jtPageSize>0){
-            $sqlLimit = "LIMIT " . $jtStartIndex . "," . $jtPageSize . ";";
-        }
-        else{    
-            $sqlLimit = "";
-        }
-
-        try{
-            $db = new db(); 
-            $result =  $db->select($user, "Select * , " . setUserRoleInQuery($user) , "FROM News ", "", $sqlOrderBy, $sqlLimit, "Records");    
-            $db = null;
-            echo $result;        
-        }
-        catch(Exception $error){
-            echo $error->getMessage();        
-            $db = null;
-        }
+    try{
+        $db = new db(); 
+        $news = new News($db, $saronUser);
+        $result = $news->select();    
+        $db->dispose();
+        echo $result;        
+    }
+    catch(Exception $error){
+        echo $error->getMessage();        
+        $db->dispose();
     }

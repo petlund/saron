@@ -6,25 +6,26 @@ require_once 'config.php';
 require_once SARON_ROOT . "app/access/wp-authenticate.php";
 require_once SARON_ROOT . 'app/database/queries.php'; 
 require_once SARON_ROOT . 'app/database/db.php';
+require_once SARON_ROOT . 'app/entities/Person.php';
 
 
     /*** REQUIRE USER AUTHENTICATION ***/
     $requireEditorRole = false;
-    $user = wp_get_current_user();    
+    $saronUser = new SaronUser(wp_get_current_user());    
 
-    if(!isPermitted($user, $requireEditorRole)){
+    if(!isPermitted($saronUser, $requireEditorRole)){
         echo notPermittedMessage();
+        exit();
     }
-    else{    
-        $PersonId = (int)filter_input(INPUT_GET, "PersonId", FILTER_SANITIZE_NUMBER_INT);
-        try{
-            $db = new db();
-            $result = $db->select($user, SQL_STAR_PEOPLE . ", " . DATES_AS_ALISAS_MEMBERSTATES . ", " . setUserRoleInQuery($user), "FROM People ", "WHERE Id = " . $PersonId, "", "" );    
-            $db = null;
-            echo $result;
-        }
-        catch(Exception $error){
-            echo $error->getMessage();
-            $db = null;
-        }
+    
+    try{
+        $db = new db();
+        $person = new Person($db, $saronUser);
+        $result = $person->select();    
+        $db->dispose();
+        echo $result;
+    }
+    catch(Exception $error){
+        echo $error->getMessage();
+        $db->dispose();
     } 

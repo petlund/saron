@@ -11,9 +11,9 @@ require_once SARON_ROOT . 'app/database/db.php';
 
     /*** REQUIRE USER AUTHENTICATION ***/
     $requireEditorRole = false;
-    $user = wp_get_current_user();    
+        $saronUser = new SaronUser(wp_get_current_user());    
 
-    if(!isPermitted($user, $requireEditorRole)){
+    if(!isPermitted($saronUser, $requireEditorRole)){
         echo notPermittedMessage();
     }
     else{
@@ -25,7 +25,7 @@ require_once SARON_ROOT . 'app/database/db.php';
         $sqlSorting = "Order by " . $jtSorting . " ";
 
         //, ' ', if(Mobile is not null, Concat('(', Mobile, ')'))
-        $select ="Select Id as HomeId, ". ADDRESS_ALIAS_LONG_HOMENAME_MULTILINE . ", " . setUserRoleInQuery($user) . ", ";
+        $select ="Select Id as HomeId, ". ADDRESS_ALIAS_LONG_HOMENAME_MULTILINE . ", " . setUserRoleInQuery($saronUser) . ", ";
         $select.="(SELECT GROUP_CONCAT(" . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . ", ' ', if(MobileEncrypt is not null, Concat('(', " . DECRYPTED_MOBILE . ", ')'), '') SEPARATOR '<BR>') FROM People where Homes.Id = HomeId order by DateOfBirth) as  Residents, ";
         $select.="Letter, ";
         $select.= DECRYPTED_ALIAS_PHONE . " ";
@@ -38,7 +38,7 @@ require_once SARON_ROOT . 'app/database/db.php';
         
         try{
             $db = new db();
-            $result = $db->select($user, $select, $from, $where, $sqlSorting, $sqlLimit);    
+            $result = $db->select($saronUser, $select, $from, $where, $sqlSorting, $sqlLimit);    
             $db = null;
             echo $result;
         }

@@ -19,13 +19,12 @@ class Home extends SuperEntity{
     private $Letter;
     private $db;
     private $HomeId;
-    private $user;
+    private $saronUser;
         
-    function __construct($db, $user) {
-        //parent::__construct();
-
+    function __construct($db, $saronUser) {
+        parent::__construct();
         $this->db=$db;
-        $this->user=$user;
+        $this->user=$saronUser;
         $this->FamilyName = (String)filter_input(INPUT_POST, "FamilyName", FILTER_SANITIZE_STRING);
         $this->Address = (String)filter_input(INPUT_POST, "Address", FILTER_SANITIZE_STRING);
         $this->Phone = (String)filter_input(INPUT_POST, "Phone", FILTER_SANITIZE_STRING);

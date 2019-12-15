@@ -64,7 +64,8 @@ $(document).ready(function () {
             CongregationOfBaptismThis: {
                 list: false,
                 title: 'Döpt',
-                options: '/' + SARON_URI + 'app/entities/listBaptismOptions.php'
+                //options: '/' + SARON_URI + 'app/entities/listBaptismOptions.php'
+                options: {0:'Nej', 1: 'Ja, Ange församling nedan.', 2:'Ja, ' + FullNameOfCongregation + '.'}
             },
             CongregationOfBaptism: {
                 edit: true,

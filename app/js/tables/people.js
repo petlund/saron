@@ -474,7 +474,7 @@ $(document).ready(function () {
                                     list: false,
                                     with: '20%',
                                     title: 'Döpt',
-                                    options: '/' + SARON_URI + 'app/entities/listBaptismOptions.php'
+                                    options: {0:'Nej', 1: 'Ja, Ange församling nedan.', 2:'Ja, i Korskyrkan.'}
                                 },
                                 CongregationOfBaptism: {
                                     edit: true,

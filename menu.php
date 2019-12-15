@@ -9,7 +9,7 @@
  
     /*** REQUIRE USER AUTHENTICATION ***/
     isLoggedIn();
-    $user = wp_get_current_user();
+        $saronUser = new SaronUser(wp_get_current_user());
     
 ?> 
 <!doctype html>
@@ -33,7 +33,7 @@
             <Tr>
                 <td style='text-align: left'><?php echo ping()?></td><td id="demo"></td>
                 <td style='text-align: right'><?php include("app/includes/userDisplay.php")?></td>
-            </Tr>
+                </Tr>
         </Table>
         <!-- Use this navigation div as your menu bar div -->
         <ul id="menu-bar">

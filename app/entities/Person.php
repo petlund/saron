@@ -7,9 +7,15 @@
  */
 require_once SARON_ROOT . 'app/entities/SuperEntity.php';
 require_once SARON_ROOT . 'app/entities/Home.php';
+require_once SARON_ROOT . 'app/entities/TableViews.php';
+require_once SARON_ROOT . 'app/entities/GroupFilter.php';
 
 
 class Person extends SuperEntity{
+    private $db;
+    private $tableview;
+    private $groupId;
+    
     private $PersonId;
     private $HomeId;
     private $LastName;
@@ -33,16 +39,26 @@ class Person extends SuperEntity{
     private $KeyToExp;
     private $Comment;
     private $CommentKey;
-    private $db;
+
     private $home;
-    private $user;
+
+    private $saronUser;
+
+    private $jtPageSize;
+    private $jtStartIndex;
+    private $jtSorting;
+    private $uppercaseSearchString;
     
-    function __construct($db, $user) {
-        //parent::__construct();
+    
+    function __construct($db, $saronUser) {
+        parent::__construct();
 
         $this->db=$db;
-        $this->user = $user;
+        $this->saronUser = $saronUser;
         $this->PersonId = (int)filter_input(INPUT_POST, "PersonId", FILTER_SANITIZE_NUMBER_INT);
+        if($this->PersonId === 0){
+            $this->PersonId = (int)filter_input(INPUT_GET, "PersonId", FILTER_SANITIZE_NUMBER_INT);
+        }
         $this->HomeId = (int)filter_input(INPUT_POST, "HomeId", FILTER_SANITIZE_NUMBER_INT);
         $this->LastName = (String)filter_input(INPUT_POST, "LastName", FILTER_SANITIZE_STRING);
         $this->FirstName = (String)filter_input(INPUT_POST, "FirstName", FILTER_SANITIZE_STRING);
@@ -65,6 +81,13 @@ class Person extends SuperEntity{
         $this->KeyToExp = (int)filter_input(INPUT_POST, "KeyToExp", FILTER_SANITIZE_NUMBER_INT);
         $this->Comment = (String)filter_input(INPUT_POST, "Comment", FILTER_SANITIZE_STRING);
         $this->CommentKey = (String)filter_input(INPUT_POST, "Comment", FILTER_SANITIZE_STRING);
+        $this->jtPageSize = (int)filter_input(INPUT_GET, "jtPageSize", FILTER_SANITIZE_NUMBER_INT);
+        $this->jtStartIndex = (int)filter_input(INPUT_GET, "jtStartIndex", FILTER_SANITIZE_NUMBER_INT);
+        $this->jtSorting = (String)filter_input(INPUT_GET, "jtSorting", FILTER_SANITIZE_STRING);
+        $this->tableview = (String)filter_input(INPUT_POST, "tableview", FILTER_SANITIZE_STRING);
+        $this->uppercaseSearchString = strtoupper((String)filter_input(INPUT_POST, "searchString", FILTER_SANITIZE_STRING));
+        $this->groupId = (int)filter_input(INPUT_POST, "groupId", FILTER_SANITIZE_NUMBER_INT);    
+
     }
     
     
@@ -180,19 +203,57 @@ class Person extends SuperEntity{
         }        
     }
 
-    function select(){
-       $sqlSelect = SQL_STAR_PEOPLE . ", ";
-       $sqlSelect.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
-       $sqlSelect.= ADDRESS_ALIAS_LONG_HOMENAME . ", ";  
-       $sqlSelect.= DECRYPTED_ALIAS_PHONE . ", "; 
-       $sqlSelect.= DATES_AS_ALISAS_MEMBERSTATES . ", " . NAMES_ALIAS_RESIDENTS; 
+    function select($id = -1){
+       if($this->PersonId > 0){
+           $id=$this->PersonId;
+       } 
        
-       $sqlWhere = "WHERE People.Id = " . $this->PersonId;
+       if($id > 0){
+            $sqlSelect = SQL_STAR_PEOPLE . $this->saronUser->getRoleSql() . ", ";
+            $sqlSelect.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
+            $sqlSelect.= ADDRESS_ALIAS_LONG_HOMENAME . ", ";  
+            $sqlSelect.= DECRYPTED_ALIAS_PHONE . ", "; 
+            $sqlSelect.= DATES_AS_ALISAS_MEMBERSTATES;
+            $sqlWhere = "WHERE People.Id = " . $id;
+            return $this->db->select($this->saronUser, $sqlSelect, SQL_FROM_PEOPLE_LEFT_JOIN_HOMES, $sqlWhere, "", "");            
+       }
+       else{
+            $tw = new TableViews();
+            $sqlSelect = $tw->getTableViewSql($this->tableview, $this->saronUser);
+          
+            $gf = new GroupFilter();
+            $sqlWhere = "WHERE ";       
+            $sqlWhere.= $gf->getGroupFilterSql($this->groupId);
+            $sqlWhere.= $gf->getSearchFilterSql($this->uppercaseSearchString);
+            return $this->db->select($this->saronUser, $sqlSelect, SQL_FROM_PEOPLE_LEFT_JOIN_HOMES, $sqlWhere, $this->getSortSql(), $this->getPageSizeSql());
+       }
        
-       return $this->db->select($this->user, $sqlSelect, SQL_FROM_PEOPLE_LEFT_JOIN_HOMES, $sqlWhere, "", "");
     }
 
-    
+
+    function getSortSql(){
+        $sqlOrderBy = ""; 
+        if(Strlen($this->jtSorting)>0 and Strlen($this->sqlOrderByLatest)>0){
+            $sqlOrderBy = "ORDER BY " . $this->sqlOrderByLatest . ", " . $this->jtSorting . " ";
+        }
+        else if(Strlen($this->jtSorting)==0 and Strlen($this->sqlOrderByLatest)>0){
+            $sqlOrderBy = "ORDER BY " . $this->sqlOrderByLatest . " ";
+        }
+        else if(Strlen($this->jtSorting)>0 and Strlen($this->sqlOrderByLatest)==0){
+            $sqlOrderBy = "ORDER BY " . $this->jtSorting . " ";
+        }
+        else{
+            $sqlOrderBy = "";         
+        }
+        return $sqlOrderBy;
+    }
+
+
+    function getPageSizeSql(){
+        return "LIMIT " . $this->jtStartIndex . ", " . $this->jtPageSize . ";";
+    }        
+
+
     function insert(){
         $sqlInsert = "INSERT INTO People (LastNameEncrypt, FirstNameEncrypt, DateOfBirth, Gender, EmailEncrypt, MobileEncrypt, DateOfMembershipStart, MembershipNo, VisibleInCalendar, CommentEncrypt, Inserter, HomeId) ";
         $sqlInsert.= "VALUES (";
@@ -209,8 +270,8 @@ class Person extends SuperEntity{
         $sqlInsert.= "Inserter=" . $this->user->ID . ", ";
         $sqlInsert.= $this->getZeroToNull($this->HomeId) . ") ";
  
-        $this->PersonId = $this->db->insert($sqlInsert, "People", "Id");
-        return $this->select();
+        $id = $this->db->insert($sqlInsert, "People", "Id");
+        return $this->select($id);
     }
 
         
@@ -226,11 +287,11 @@ class Person extends SuperEntity{
         $sqlSet.= "DateOfDeath=" . $this->getSqlDateString($this->DateOfDeath) . ", ";        
         $sqlSet.= "HomeId=" . $this->getZeroToNull($this->HomeId) . ", ";
         $sqlSet.= "CommentEncrypt=" . $this->getEncryptedSqlString($this->Comment) . ", ";
-        $sqlSet.= "Updater = " . $this->user->ID . " ";
+        $sqlSet.= "Updater = " . $this->saronUser->ID . " ";
         $sqlWhere = "where Id=" . $this->PersonId . ";";
 
-        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
-        return $this->select();
+        $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
+        return $this->select($id);
     }
     
     
@@ -244,11 +305,11 @@ class Person extends SuperEntity{
         $sqlSet.= "DateOfMembershipEnd=" . $this->getSqlDateString($this->DateOfMembershipEnd) . ", ";        
         $sqlSet.= "NextCongregation=" . $this->getSqlString($this->NextCongregation) . ", ";
         $sqlSet.= "CommentEncrypt=" . $this->getEncryptedSqlString($this->Comment) . ", ";
-        $sqlSet.= "Updater = " . $this->user->ID  . " ";
+        $sqlSet.= "Updater = " . $this->saronUser->ID  . " ";
         $sqlWhere = "where Id=" . $this->PersonId . ";";
 
-        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
-        return $this->select();
+        $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
+        return $this->select($id);
 
     }
     
@@ -261,17 +322,26 @@ class Person extends SuperEntity{
         $sqlSet.= "CongregationOfBaptism=" . $this->getSqlString($this->CongregationOfBaptism)  . ", ";
         $sqlSet.= "CongregationOfBaptismThis=" . $this->CongregationOfBaptismThis  . ", ";
         $sqlSet.= "CommentEncrypt=" . $this->getEncryptedSqlString($this->Comment) . ", ";
-        $sqlSet.= "Updater = " . $this->user->ID . " ";
+        $sqlSet.= "Updater = " . $this->saronUser->ID . " ";
         $sqlWhere = "where Id=" . $this->PersonId . ";";
         
-        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
-        return $this->select();
+        $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
+        return $this->select($id);
  
     }
+   
     
-    function getDeleteSql(){
-        return;
+    function setUserRoleInQuery($saronUser){
+        $alias = " as user_role ";
+        $sql = "'";
+        if($saronUser->isEditor()){
+            $sql.= SARON_ROLE_EDITOR . "'" . $alias;
+        }
+        else{
+            $sql.= SARON_ROLE_VIEWER . "'" . $alias;            
+        }
+        return $sql;
     }
     
-
+    
 }

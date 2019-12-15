@@ -8,4 +8,4 @@ require_once SARON_ROOT . 'app/access/wp-authenticate.php';
 require_once SARON_ROOT . 'app/database/queries.php'; 
 require_once SARON_ROOT . 'app/database/db.php';
 
-$user = wp_get_current_user();    
+    $saronUser = new SaronUser(wp_get_current_user());    
