@@ -16,12 +16,12 @@ $(document).ready(function () {
         defaultSorting: 'LongHomeName ASC, DateOfBirth ASC', //Set default sorting   
         messages: {addNewRecord: 'Ny person'},
         actions: {
-            listAction:   '/' + SARON_URI + 'app/entities/listPeople.php',
-//            createAction: '/' + SARON_URI + 'app/entities/createPerson.php',
+            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php',
+//            createAction: '/' + SARON_URI + 'app/web-api/createPerson.php',
             createAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + SARON_URI + 'app/entities/createPerson.php',
+                        url: '/' + SARON_URI + 'app/web-api/createPerson.php',
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
@@ -42,7 +42,7 @@ $(document).ready(function () {
             updateAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + SARON_URI + 'app/entities/updatePerson.php',
+                        url: '/' + SARON_URI + 'app/web-api/updatePerson.php',
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
@@ -75,7 +75,7 @@ $(document).ready(function () {
                     });
                 });
             }
-            //deleteAction: 'app/entities/deletePerson.php'
+            //deleteAction: 'app/web-api/deletePerson.php'
         },       
         fields: {
             Homes: {
@@ -106,11 +106,11 @@ $(document).ready(function () {
                             title: '<p class="' + _getHomeClassName(homeData.record.HomeId) + '">Hem: ' + homeData.record.LongHomeName + '</p>',                            
                             showCloseButton: false,
                             actions: {
-                                listAction: '/' + SARON_URI + 'app/entities/listPeopleHome.php?HomeId=' + homeData.record.HomeId,                                
+                                listAction: '/' + SARON_URI + 'app/web-api/listHome.php?HomeId=' + homeData.record.HomeId,                                
                                 updateAction: function(postData) {
                                     return $.Deferred(function ($dfd) {
                                         $.ajax({
-                                            url: '/' + SARON_URI + 'app/entities/updatePeopleHome.php?HomeId=' + homeData.record.HomeId,
+                                            url: '/' + SARON_URI + 'app/web-api/updateHome.php?HomeId=' + homeData.record.HomeId,
                                             type: 'POST',
                                             dataType: 'json',
                                             data: postData,
@@ -224,7 +224,6 @@ $(document).ready(function () {
                                 data.form.find('input[name=Address]').css('width',inputFormFieldWidth);
                                 data.form.find('input[name=City]').css('width',inputFormFieldWidth);
                                 data.form.find('input[name=Country]').css('width',inputFormFieldWidth);
-                                data.form.find('input[name=Address]').css('width',inputFormFieldWidth);
 
                                 var dbox = document.getElementsByClassName('ui-dialog-title');            
                                 for (i=0; i<dbox.length; i++)
@@ -258,11 +257,11 @@ $(document).ready(function () {
                             title: '<p class="keyValue">Medlemsuppgifter för: ' +  memberData.record.Name + '</p>',
                             showCloseButton: false,
                             actions: {
-                                listAction: '/' + SARON_URI + 'app/entities/listPeopleMembership.php?PersonId=' + memberData.record.PersonId,                                           
+                                listAction: '/' + SARON_URI + 'app/web-api/listPerson.php?PersonId=' + memberData.record.PersonId,                                           
                                 updateAction: function(postData) {
                                     return $.Deferred(function ($dfd) {
                                         $.ajax({
-                                            url: '/' + SARON_URI + 'app/entities/updatePersonMembership.php?PersonId=' + memberData.record.PersonId,
+                                            url: '/' + SARON_URI + 'app/web-api/updatePersonMembership.php?PersonId=' + memberData.record.PersonId,
                                             type: 'POST',
                                             dataType: 'json',
                                             data: postData,
@@ -284,7 +283,7 @@ $(document).ready(function () {
                                         });
                                     });
                                 }
-                                //createAction: 'app/entities/createPeopleHome.php?HomeId=' + homeData.record.Id
+                                //createAction: 'app/web-api/createPeopleHome.php?HomeId=' + homeData.record.Id
                                 //deleteAction:
                             },
                             fields: {
@@ -336,7 +335,7 @@ $(document).ready(function () {
                                             data.clearCache();
                                             clearMembershipNoOptionCache=false;
                                         }
-                                        return '/' + SARON_URI + 'app/entities/listNextMembershipNo.php?PersonId=' + memberData.record.PersonId;
+                                        return '/' + SARON_URI + 'app/web-api/listNextMembershipNo.php?PersonId=' + memberData.record.PersonId;
                                     }
                                 },
                                 DateOfMembershipEnd: {
@@ -421,11 +420,11 @@ $(document).ready(function () {
                             title: '<p class="keyValue">Dopuppgifter för: ' +  baptistData.record.Name + '</p>',
                             showCloseButton: false,                                    
                             actions: {
-                                listAction: '/' + SARON_URI + 'app/entities/listPeopleBaptist.php?PersonId=' + baptistData.record.PersonId,                                           
+                                listAction: '/' + SARON_URI + 'app/web-api/listPerson.php?PersonId=' + baptistData.record.PersonId,                                           
                                 updateAction: function(postData) {
                                     return $.Deferred(function ($dfd) {
                                         $.ajax({
-                                            url: '/' + SARON_URI + 'app/entities/updatePersonBaptist.php?PersonId=' + baptistData.record.PersonId,
+                                            url: '/' + SARON_URI + 'app/web-api/updatePersonBaptist.php?PersonId=' + baptistData.record.PersonId,
                                             type: 'POST',
                                             dataType: 'json',
                                             data: postData,
@@ -445,7 +444,7 @@ $(document).ready(function () {
                                         });
                                     });
                                 }
-                                //createAction: 'app/entities/createPeopleHome.php?HomeId=' + homeData.record.Id
+                                //createAction: 'app/web-api/createPeopleHome.php?HomeId=' + homeData.record.Id
                                 //deleteAction:
                             },
                             fields: {
@@ -561,7 +560,7 @@ $(document).ready(function () {
                 options: function(data){
                     if(data.source !== 'list')
                         data.clearCache();
-                    return '/' + SARON_URI + 'app/entities/listHomesOptions.php';
+                    return '/' + SARON_URI + 'app/web-api/listHomeOptions.php';
                 }
             },
             PersonId: {
@@ -664,7 +663,7 @@ $(document).ready(function () {
                         data.clearCache();
                         clearMembershipNoOptionCache=false;
                     }
-                    return '/' + SARON_URI + 'app/entities/listNextMembershipNo.php?PersonId=null'
+                    return '/' + SARON_URI + 'app/web-api/listNextMembershipNo.php?PersonId=null'
                 }
             },
             MemberState: {
@@ -765,7 +764,7 @@ $(document).ready(function () {
                 data.row[0].style.backgroundColor = '';
         }
     });
- //Re-load records when user click 'load records' button.
+    //Re-load records when user click 'load records' button.
     $('#search_people').click(function (e) {
         e.preventDefault();
         filterPeople('people');

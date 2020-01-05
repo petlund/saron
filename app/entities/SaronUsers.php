@@ -1,43 +1,33 @@
 <?php
-header("Cache-Control: no-cache, must-revalidate");
-header("Pragma: no-cache"); //HTTP 1.0
-header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
-require_once 'config.php'; 
-require_once SARON_ROOT . "app/access/wp-authenticate.php";
-require_once SARON_ROOT . 'app/database/queries.php'; 
-require_once SARON_ROOT . 'app/database/db.php';
-require_once WP_ROOT . 'wp-includes/user.php';
 
+require_once "config.php";
+require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
-
-    /*** REQUIRE USER AUTHENTICATION ***/
-    $requireEditorRole = false;
-        $saronUser = new SaronUser(wp_get_current_user());    
-
-    if(!isPermitted($saronUser, $requireEditorRole)){
-        echo notPermittedMessage();
+class SaronUsers {
+    private $jtSorting;
+    private $jtPageSize;
+    private $jtStartIndex;
+    private $users = Array();
+    private $saronUser;
+    function __construct($saronUser){
+        
+        $this->saronUser = $saronUser;
+        $this->jtSorting = (String)filter_input(INPUT_GET, "jtSorting", FILTER_SANITIZE_STRING);
+        $this->jtPageSize = (int)filter_input(INPUT_GET, "jtPageSize", FILTER_SANITIZE_NUMBER_INT);
+        $this->jtStartIndex = (int)filter_input(INPUT_GET, "jtStartIndex", FILTER_SANITIZE_NUMBER_INT);
+        $this->users = get_users(array('role__in' => array(SARON_ROLE_PREFIX . SARON_ROLE_EDITOR, SARON_ROLE_PREFIX . SARON_ROLE_VIEWER, "wp_otp")));
     }
-    else{
-        $jtSorting = (String)filter_input(INPUT_GET, "jtSorting", FILTER_SANITIZE_STRING);
-        $jtPageSize = (int)filter_input(INPUT_GET, "jtPageSize", FILTER_SANITIZE_NUMBER_INT);
-        $jtStartIndex = (int)filter_input(INPUT_GET, "jtStartIndex", FILTER_SANITIZE_NUMBER_INT);
         
-        $users = Array();
-        
-        $users = get_users(array('role__in' => array(SARON_ROLE_PREFIX . SARON_ROLE_EDITOR, SARON_ROLE_PREFIX . SARON_ROLE_VIEWER, "wp_otp")));
-
-        $sort_dimension = "display_name";
-        $sort_order = "asc";
-
-        if(strlen($jtSorting)>0){
-            $pos = strpos($jtSorting, ' ');
+    function sort($sort_dimension = "display_name", $sort_order = "asc"){
+        if(strlen($this->jtSorting)>0){
+            $pos = strpos($this->jtSorting, ' ');
             if($pos>0){
-                $sort_dimension = substr($jtSorting, 0, $pos);
-                $sort_order = substr($jtSorting, $pos + 1, strlen($jtSorting));
+                $sort_dimension = substr($this->jtSorting, 0, $pos);
+                $sort_order = substr($this->jtSorting, $pos + 1, strlen($this->jtSorting));
             }
         }
 
-        usort($users, function ($a, $b) use($sort_dimension, $sort_order) {
+        usort($this->users, function ($a, $b) use($sort_dimension, $sort_order) {
             switch ($sort_dimension){
                 case "user_login":
                     if ($a->user_login == $b->user_login) {
@@ -91,21 +81,21 @@ require_once WP_ROOT . 'wp-includes/user.php';
         });
 
         $endIndex=0;
-        if(count($users) > $jtStartIndex + $jtPageSize){
-            $endIndex = $jtStartIndex + $jtPageSize;
+        if(count($this->users) > $this->jtStartIndex + $this->jtPageSize){
+            $endIndex = $this->jtStartIndex + $this->jtPageSize;
         }
         else{
-            $endIndex = count($users);
+            $endIndex = count($this->users);
         }
         $result = '{"Result":"OK","Records":[';
-        for($i = $jtStartIndex; $i<$endIndex; $i++){
-            $viewer = hasPrivilege($users[$i]->roles, SARON_ROLE_PREFIX . SARON_ROLE_VIEWER);
-            $editor = hasPrivilege($users[$i]->roles, SARON_ROLE_PREFIX . SARON_ROLE_EDITOR);
-            $result.= '{"id":' . $users[$i]->ID;
-            $result.= ',"display_name":"' . $users[$i]->display_name; 
-            $result.= '","user_login":"' . $users[$i]->user_login; 
-            $result.= '","user_email":"' . $users[$i]->user_email; 
-            $otp = $users[$i]->get("wp-otp");
+        for($i = $this->jtStartIndex; $i<$endIndex; $i++){
+            $viewer = $this->hasPrivilege($this->users[$i]->roles, SARON_ROLE_PREFIX . SARON_ROLE_VIEWER);
+            $editor = $this->hasPrivilege($this->users[$i]->roles, SARON_ROLE_PREFIX . SARON_ROLE_EDITOR);
+            $result.= '{"id":' . $this->users[$i]->ID;
+            $result.= ',"display_name":"' . $this->users[$i]->display_name; 
+            $result.= '","user_login":"' . $this->users[$i]->user_login; 
+            $result.= '","user_email":"' . $this->users[$i]->user_email; 
+            $otp = $this->users[$i]->get("wp-otp");
             $result.= '","wp_otp":"' . $otp["enabled"]; 
             $result.= '","saron_reader":' . $viewer; 
             $result.= ',"saron_editor":' . $editor . '}';
@@ -113,18 +103,15 @@ require_once WP_ROOT . 'wp-includes/user.php';
                 $result.=",";
             }
         }
-        $result.='],"TotalRecordCount":' . count($users);
-        if($saronUser->isEditor()){
-            $result.=',"user_role":"' . SARON_ROLE_EDITOR . '"';
-        }
-        else{
-            $result.=',"user_role":"' . SARON_ROLE_VIEWER . '"';
-        }
+        $result.='],"TotalRecordCount":' . count($this->users);
+        $result.=',"user_role":"' . $this->saronUser->getRole() . '"';
         $result.='}';
 
         echo $result;
+    
     }
-
+    
+    
     function hasPrivilege($user_roles, $privelege){
         for($i=0; $i<count($user_roles); $i++){
             if($user_roles[$i] === $privelege){
@@ -133,4 +120,4 @@ require_once WP_ROOT . 'wp-includes/user.php';
         }
         return 0;
     }
-    
+}

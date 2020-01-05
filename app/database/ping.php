@@ -1,9 +1,10 @@
 <?php
+require_once 'config.php'; 
 require_once SARON_ROOT . "app/database/db.php";
 require_once SARON_ROOT . "app/access/wp-authenticate.php";
 
 function ping(){
-        $saronUser = new SaronUser(wp_get_current_user());    
+    $saronUser = new SaronUser(wp_get_current_user());    
 
     $ping =  "Databas: " . DATABASE;
     try{
@@ -14,7 +15,7 @@ function ping(){
         echo $ping;
     }
     catch(Exception $error){
-        $ping.=  " - Fel: " . $result;
+        $ping.=  " - Fel: " . $error->getMessage();
         $db->dispose();
         return $ping;
     }

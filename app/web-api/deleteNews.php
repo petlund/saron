@@ -6,9 +6,10 @@ require_once 'config.php';
 require_once SARON_ROOT . "app/access/wp-authenticate.php";
 require_once SARON_ROOT . 'app/database/queries.php'; 
 require_once SARON_ROOT . 'app/database/db.php';
-require_once SARON_ROOT . 'app/entities/Person.php';
+require_once SARON_ROOT . 'app/entities/News.php';
 
-    $requireEditorRole = false;
+    /*** REQUIRE USER AUTHENTICATION ***/
+    $requireEditorRole = true;
     $saronUser = new SaronUser(wp_get_current_user());    
 
     if(!isPermitted($saronUser, $requireEditorRole)){
@@ -18,13 +19,12 @@ require_once SARON_ROOT . 'app/entities/Person.php';
 
     try{
         $db = new db();
-        $person = new Person($db, $saronUser);
-        $respons = $person->select(-1);        
-        $db->dispose();
-        echo $respons;
+        $news = new News($db, $saronUser);
+        $result = $news->delete(); 
+        $db->dispose();            
+        echo $result;
     }
     catch(Exception $error){
         echo $error->getMessage();        
         $db->dispose();            
-    }
-
+    }    

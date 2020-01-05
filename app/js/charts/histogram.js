@@ -17,7 +17,7 @@ function createAgeHistogram(){
 
     addTableCells("HistogramChart", 1, jsonChartsMeta);
     $.ajax({
-        url: '/' + SARON_URI + 'app/entities/listStatisticsDemographicHistogram.php?chart='
+        url: '/' + SARON_URI + 'app/web-api/listStatisticsDemographicHistogram.php?chart='
     }).then(function(data) {
         chartData = JSON.parse(data);      
         for(var i=0; i< jsonChartsMeta.charts.length; i++)              

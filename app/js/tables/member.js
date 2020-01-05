@@ -12,13 +12,13 @@ $(document).ready(function () {
             multiSorting: true,
             defaultSorting: 'FamilyName ASC, DateOfBirthr ASC', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/entities/listPeople.php',
+            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php',
             //createAction: 'create.php',
-            //updateAction: '/' + SARON_URI + 'app/entities/updatePersonMemberShip.php'
+            //updateAction: '/' + SARON_URI + 'app/web-api/updatePersonMemberShip.php'
             updateAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + SARON_URI + 'app/entities/updatePersonMembership.php',
+                        url: '/' + SARON_URI + 'app/web-api/updatePersonMembership.php',
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
@@ -82,7 +82,7 @@ $(document).ready(function () {
                         return '<p class="numericString"></p>';
                 },          
                 options: function (data){
-                    return '/' + SARON_URI + 'app/entities/listNextMembershipNo.php?PersonId=' + data.record.PersonId;
+                    return '/' + SARON_URI + 'app/web-api/listNextMembershipNo.php?PersonId=' + data.record.PersonId;
                 },                                            
                 title: 'Nr.'
             },
@@ -141,13 +141,13 @@ $(document).ready(function () {
             data.row[0].style.backgroundColor = '';
         }    
     });
- //Re-load records when user click 'load records' button.
-        $('#search_member').click(function (e) {
-            e.preventDefault();
-            filterPeople('member');
-        });
- 
-        //Load all records when page is first shown
-        $('#search_member').click();
+    //Re-load records when user click 'load records' button.
+    $('#search_member').click(function (e) {
+        e.preventDefault();
+        filterPeople('member');
+    });
+
+    //Load all records when page is first shown
+    $('#search_member').click();
 });
     

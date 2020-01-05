@@ -9,7 +9,7 @@ $(document).ready(function () {
             multiSorting: true,
             defaultSorting: 'NextBirthday ASC', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/entities/listPeople.php',
+            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php',
         },
         
         fields: {

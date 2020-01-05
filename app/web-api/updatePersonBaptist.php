@@ -30,8 +30,6 @@ require_once SARON_ROOT . 'app/entities/Person.php';
 
         $db->transaction_begin();
         $response = $person->updateBaptistData();
-//            $updateResponse1 = $db->update($sqlUpdate, $person->getUpdateBaptimsSql($saronUserId), "WHERE Id = " . $person->getCurrentPersonId());
-//            $selectResponse = $db->select($saronUser, SQL_STAR_PEOPLE . ", " . DATES_AS_ALISAS_MEMBERSTATES, "FROM People ", "WHERE Id = " . $person->getCurrentPersonId(), "", "");
         $db->transaction_end();
         echo $response;
     }

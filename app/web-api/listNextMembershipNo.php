@@ -31,11 +31,11 @@ require_once SARON_ROOT . 'app/database/db.php';
         try{
             $db = new db();
             $result = $db->select($saronUser, $sql, "FROM People ", "", "ORDER BY ind ", "", "Options");
-            $db = null;
+            $db->dispose();
             echo $result;
         }
         catch(Exception $error){
-            $db = null;
+            $db->dispose();
             echo $error->getMessage();
         }
     }

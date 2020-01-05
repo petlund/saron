@@ -12,12 +12,12 @@ $(document).ready(function () {
             multiSorting: true,
             defaultSorting: 'FamilyName ASC, DateOfBirthr ASC', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/entities/listPeople.php', 
+            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php', 
             //createAction: 
             updateAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + SARON_URI + 'app/entities/updatePersonBaptist.php',
+                        url: '/' + SARON_URI + 'app/web-api/updatePersonBaptist.php',
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
@@ -64,7 +64,7 @@ $(document).ready(function () {
             CongregationOfBaptismThis: {
                 list: false,
                 title: 'Döpt',
-                //options: '/' + SARON_URI + 'app/entities/listBaptismOptions.php'
+                //options: '/' + SARON_URI + 'app/web-api/listBaptismOptions.php'
                 options: {0:'Nej', 1: 'Ja, Ange församling nedan.', 2:'Ja, ' + FullNameOfCongregation + '.'}
             },
             CongregationOfBaptism: {

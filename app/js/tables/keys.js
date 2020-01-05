@@ -1,3 +1,5 @@
+var inputFormWidth = '500px';
+var inputFormFieldWidth = '480px';
 
 $(document).ready(function () {
 
@@ -10,8 +12,8 @@ $(document).ready(function () {
         multiSorting: true,
         defaultSorting: 'news_date desc', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/entities/listPeople.php',
-            updateAction:   '/' + SARON_URI + 'app/entities/updateKeyOwner.php'
+            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php',
+            updateAction:   '/' + SARON_URI + 'app/web-api/updateKeyOwner.php'
         },
         fields: {
             PersonId: {
@@ -90,12 +92,12 @@ $(document).ready(function () {
             }
         },        
         formCreated: function (event, data){
-            if(data.formType === 'edit')
+            if(data.formType === 'edit'){
                 data.row[0].style.backgroundColor = "yellow";
 
-            data.form.css('width','600px');
-            data.form.find('input[name=information]').css('width',inputFormWidth);
-            data.form.find('textarea[name=CommentKey]').css('width',inputFormFieldWidth);
+                data.form.css('width',inputFormWidth);
+                data.form.find('input[name=CommentKey]').css('width',inputFormFieldWidth);
+            }
         },
         formClosed: function (event, data){
             if(data.formType === 'edit')

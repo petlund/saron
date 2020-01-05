@@ -2,9 +2,9 @@
 require_once 'config.php'; 
 require_once SARON_ROOT . 'app/database/queries.php'; 
 
-class TableViews {
+class PeopleViews {
     
-    function getTableViewSql($tableview, $saronUser){
+    function getPeopleViewSql($tableview, $saronUser){
         switch ($tableview){
         case "people":
             return $this->selectPeople() . " " . $saronUser->getRoleSql();
@@ -15,7 +15,7 @@ class TableViews {
         case "baptist":
             return SQL_STAR_PEOPLE . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . DATES_AS_ALISAS_MEMBERSTATES .  " " . $saronUser->getRoleSql();
         case "keys":
-            return "Select People.Id as PersonId, KeyToExp, KeyToChurch, DateOfBirth, " . DECRYPTED_ALIAS_COMMENT_KEY . " " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . DATES_AS_ALISAS_MEMBERSTATES  . " " . $saronUser->getRoleSql();
+            return "Select People.Id as PersonId, KeyToExp, KeyToChurch, DateOfBirth, " . DECRYPTED_ALIAS_COMMENT_KEY . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . DATES_AS_ALISAS_MEMBERSTATES  . " " . $saronUser->getRoleSql();
         case "total":
             return $this->selectTotal() . " " . $saronUser->getRoleSql();
         default:    

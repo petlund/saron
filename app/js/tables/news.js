@@ -10,13 +10,13 @@ $(document).ready(function () {
         multiSorting: true,
         defaultSorting: 'news_date desc', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/entities/listNews.php',
-            createAction:   '/' + SARON_URI + 'app/entities/createNews.php',
-            //updateAction:   '/' + SARON_URI + 'app/entities/updateNews.php'
+            listAction:   '/' + SARON_URI + 'app/web-api/listNews.php',
+            createAction:   '/' + SARON_URI + 'app/web-api/createNews.php',
+            //updateAction:   '/' + SARON_URI + 'app/web-api/updateNews.php'
             updateAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + SARON_URI + 'app/entities/updateNews.php',
+                        url: '/' + SARON_URI + 'app/web-api/updateNews.php',
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
@@ -34,7 +34,7 @@ $(document).ready(function () {
                     });
                 });
             },
-            deleteAction: '/' + SARON_URI + 'app/entities/deleteNews.php',
+            deleteAction: '/' + SARON_URI + 'app/web-api/deleteNews.php',
         },
         fields: {
             id: {

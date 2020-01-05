@@ -9,6 +9,7 @@ class db {
     private $connection;
     function __construct() {
         mysqli_report(MYSQLI_REPORT_STRICT);
+        $appErrorMsg="";
         try{
             $appErrorMsg = "Error when try connect to database.";
             $this->connection = new mysqli(HOST, USER, PASSWORD, DATABASE);                     
@@ -109,7 +110,7 @@ class db {
                 throw new Exception($this->jsonErrorMessage("SQL-Error in insert statement!", null, $this->connection->error));
             }
             else{
-                $sql = "Select " . $keyColumn . " from " . $keyTable . " Where Id = LAST_INSERT_ID()";
+                $sql = "Select " . $keyColumn . " from " . $keyTable . " Where " . $keyColumn . " = LAST_INSERT_ID()";
                 if(!$listResult = $this->connection->query($sql)){
                     throw new Exception($this->jsonErrorMessage("SQL-Error in LAST_INSERT_ID() statement after insert.", null, $this->connection->error));
                 }
@@ -198,7 +199,7 @@ class db {
         
     
     private function resultSetToArray($listResult){
-        while($listRow = mysqli_fetch_array($listResult)){
+        while($listRow = mysqli_fetch_array($listResult, MYSQLI_ASSOC)){
             $listRows[] = $listRow;
         } 
         mysqli_free_result($listResult);

@@ -8,8 +8,6 @@ require_once SARON_ROOT . 'app/database/queries.php';
 require_once SARON_ROOT . 'app/database/db.php';
 require_once SARON_ROOT . 'app/entities/Person.php';
 
-
-    /*** REQUIRE USER AUTHENTICATION ***/
     $requireEditorRole = false;
     $saronUser = new SaronUser(wp_get_current_user());    
 
@@ -17,15 +15,16 @@ require_once SARON_ROOT . 'app/entities/Person.php';
         echo notPermittedMessage();
         exit();
     }
-    
+
     try{
         $db = new db();
         $person = new Person($db, $saronUser);
-        $result = $person->select();    
+        $result = $person->select();        
         $db->dispose();
         echo $result;
     }
     catch(Exception $error){
-        echo $error->getMessage();
-        $db->dispose();
-    } 
+        echo $error->getMessage();        
+        $db->dispose();            
+    }
+

@@ -1,39 +1,12 @@
 <?php
 
-/**
- * Description of Home
- *
- * @author peter
- */
+require_once SARON_ROOT . 'app/entities/Homes.php';
 
-require_once SARON_ROOT . 'app/entities/SuperEntity.php';
 
-class Home extends SuperEntity{
-    private $FamilyName;
-    private $Address;
-    private $Phone;
-    private $Co;
-    private $City;
-    private $Zip;
-    private $Country;
-    private $Letter;
-    private $db;
-    private $HomeId;
-    private $saronUser;
+class Home extends Homes{
         
     function __construct($db, $saronUser) {
-        parent::__construct();
-        $this->db=$db;
-        $this->user=$saronUser;
-        $this->FamilyName = (String)filter_input(INPUT_POST, "FamilyName", FILTER_SANITIZE_STRING);
-        $this->Address = (String)filter_input(INPUT_POST, "Address", FILTER_SANITIZE_STRING);
-        $this->Phone = (String)filter_input(INPUT_POST, "Phone", FILTER_SANITIZE_STRING);
-        $this->Co = (String)filter_input(INPUT_POST, "Co", FILTER_SANITIZE_STRING);
-        $this->City = (String)filter_input(INPUT_POST, "City", FILTER_SANITIZE_STRING);
-        $this->Zip = (String)filter_input(INPUT_POST, "Zip", FILTER_SANITIZE_STRING);
-        $this->Country = (String)filter_input(INPUT_POST, "Country", FILTER_SANITIZE_STRING);
-        $this->Letter = (int)filter_input(INPUT_POST, "Letter", FILTER_SANITIZE_NUMBER_INT);
-        $this->HomeId = (int)filter_input(INPUT_GET, "HomeId", FILTER_SANITIZE_NUMBER_INT);
+        parent::__construct($db, $saronUser);
     }
     
     
@@ -80,8 +53,10 @@ class Home extends SuperEntity{
     
 
     function select(){
-        $result = $this->db->select($this->user, SQL_STAR_HOMES . ", " . ADDRESS_ALIAS_LONG_HOMENAME . ", " . NAMES_ALIAS_RESIDENTS, "FROM Homes ", "WHERE Id = " . $this->HomeId, "", "");
-        return $result;
-        
+        $result = $this->db->select($this->saronUser, SQL_STAR_HOMES . $this->saronUser->getRoleSql() . ", ". ADDRESS_ALIAS_LONG_HOMENAME . ", " . NAMES_ALIAS_RESIDENTS, "FROM Homes ", "WHERE Id = " . $this->HomeId, "", "");
+        return $result;        
     }
+    
+    
+
 }

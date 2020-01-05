@@ -23,8 +23,8 @@ $(document).ready(function () {
             data.deleteConfirmMessage = message;
         },         
         actions: {
-            listAction:   '/' + SARON_URI + 'app/entities/listPeople.php',            
-            deleteAction: '/' + SARON_URI + 'app/entities/deletePerson.php'
+            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php',            
+            deleteAction: '/' + SARON_URI + 'app/web-api/deletePerson.php'
         },  
         fields: {
             PersonId:{

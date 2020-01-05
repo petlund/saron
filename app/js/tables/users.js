@@ -10,9 +10,9 @@ $(document).ready(function () {
             multiSorting: false,
             defaultSorting: 'AgeInterval ASC', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/entities/listUsers.php'
+            listAction:   '/' + SARON_URI + 'app/web-api/listUsers.php'
             //createAction: 'create.php',
-            //updateAction: '/' + SARON_URI + 'app/entities/updatePersonMemberShip.php'
+            //updateAction: '/' + SARON_URI + 'app/web-api/updatePersonMemberShip.php'
             //deleteAction: 'delete.php'
         },
         fields: {

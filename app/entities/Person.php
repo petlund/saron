@@ -5,89 +5,15 @@
  *
  * @author peter
  */
-require_once SARON_ROOT . 'app/entities/SuperEntity.php';
+require_once SARON_ROOT . 'app/entities/People.php';
 require_once SARON_ROOT . 'app/entities/Home.php';
-require_once SARON_ROOT . 'app/entities/TableViews.php';
-require_once SARON_ROOT . 'app/entities/GroupFilter.php';
 
 
-class Person extends SuperEntity{
-    private $db;
-    private $tableview;
-    private $groupId;
-    
-    private $PersonId;
-    private $HomeId;
-    private $LastName;
-    private $FirstName;
-    private $DateOfBirth;
-    private $DateOfDeath;
-    private $Gender;
-    private $Email;
-    private $Mobile;
-    private $DateOfBaptism;
-    private $Baptister;
-    private $CongregationOfBaptism;
-    private $CongregationOfBaptismThis;
-    private $PreviousCongregation;
-    private $DateOfMembershipStart;
-    private $MembershipNo;
-    private $VisibleInCalendar;
-    private $DateOfMembershipEnd;
-    private $NextCongregation;
-    private $KeyToChurch;
-    private $KeyToExp;
-    private $Comment;
-    private $CommentKey;
-
-    private $home;
-
-    private $saronUser;
-
-    private $jtPageSize;
-    private $jtStartIndex;
-    private $jtSorting;
-    private $uppercaseSearchString;
+class Person extends People{
     
     
     function __construct($db, $saronUser) {
-        parent::__construct();
-
-        $this->db=$db;
-        $this->saronUser = $saronUser;
-        $this->PersonId = (int)filter_input(INPUT_POST, "PersonId", FILTER_SANITIZE_NUMBER_INT);
-        if($this->PersonId === 0){
-            $this->PersonId = (int)filter_input(INPUT_GET, "PersonId", FILTER_SANITIZE_NUMBER_INT);
-        }
-        $this->HomeId = (int)filter_input(INPUT_POST, "HomeId", FILTER_SANITIZE_NUMBER_INT);
-        $this->LastName = (String)filter_input(INPUT_POST, "LastName", FILTER_SANITIZE_STRING);
-        $this->FirstName = (String)filter_input(INPUT_POST, "FirstName", FILTER_SANITIZE_STRING);
-        $this->DateOfBirth = (String)filter_input(INPUT_POST, "DateOfBirth", FILTER_SANITIZE_STRING);
-        $this->DateOfDeath = (String)filter_input(INPUT_POST, "DateOfDeath", FILTER_SANITIZE_STRING);
-        $this->Gender = (int)filter_input(INPUT_POST, "Gender", FILTER_SANITIZE_NUMBER_INT);
-        $this->Email = (String)filter_input(INPUT_POST, "Email", FILTER_SANITIZE_EMAIL);
-        $this->Mobile = (String)filter_input(INPUT_POST, "Mobile", FILTER_SANITIZE_STRING);
-        $this->DateOfBaptism = (String)filter_input(INPUT_POST, "DateOfBaptism", FILTER_SANITIZE_STRING);
-        $this->Baptister = (String)filter_input(INPUT_POST, "Baptister", FILTER_SANITIZE_STRING);
-        $this->CongregationOfBaptism = (String)filter_input(INPUT_POST, "CongregationOfBaptism", FILTER_SANITIZE_STRING);
-        $this->CongregationOfBaptismThis = (int)filter_input(INPUT_POST, "CongregationOfBaptismThis", FILTER_SANITIZE_NUMBER_INT);
-        $this->PreviousCongregation = (String)filter_input(INPUT_POST, "PreviousCongregation", FILTER_SANITIZE_STRING);
-        $this->DateOfMembershipStart = (String)filter_input(INPUT_POST, "DateOfMembershipStart", FILTER_SANITIZE_STRING);
-        $this->MembershipNo = (int)filter_input(INPUT_POST, "MembershipNo", FILTER_SANITIZE_NUMBER_INT);
-        $this->VisibleInCalendar = (int)filter_input(INPUT_POST, "VisibleInCalendar", FILTER_SANITIZE_NUMBER_INT);    
-        $this->DateOfMembershipEnd = (String)filter_input(INPUT_POST, "DateOfMembershipEnd", FILTER_SANITIZE_STRING);
-        $this->NextCongregation = (String)filter_input(INPUT_POST, "NextCongregation", FILTER_SANITIZE_STRING);
-        $this->KeyToChurch = (int)filter_input(INPUT_POST, "KeyToChurch", FILTER_SANITIZE_NUMBER_INT);
-        $this->KeyToExp = (int)filter_input(INPUT_POST, "KeyToExp", FILTER_SANITIZE_NUMBER_INT);
-        $this->Comment = (String)filter_input(INPUT_POST, "Comment", FILTER_SANITIZE_STRING);
-        $this->CommentKey = (String)filter_input(INPUT_POST, "Comment", FILTER_SANITIZE_STRING);
-        $this->jtPageSize = (int)filter_input(INPUT_GET, "jtPageSize", FILTER_SANITIZE_NUMBER_INT);
-        $this->jtStartIndex = (int)filter_input(INPUT_GET, "jtStartIndex", FILTER_SANITIZE_NUMBER_INT);
-        $this->jtSorting = (String)filter_input(INPUT_GET, "jtSorting", FILTER_SANITIZE_STRING);
-        $this->tableview = (String)filter_input(INPUT_POST, "tableview", FILTER_SANITIZE_STRING);
-        $this->uppercaseSearchString = strtoupper((String)filter_input(INPUT_POST, "searchString", FILTER_SANITIZE_STRING));
-        $this->groupId = (int)filter_input(INPUT_POST, "groupId", FILTER_SANITIZE_NUMBER_INT);    
-
+        parent::__construct($db, $saronUser);
     }
     
     
@@ -99,9 +25,6 @@ class Person extends SuperEntity{
         return $this->PersonId;
     }
     
-    function read(){
-        return;
-    }
 
     function checkPersonData(){
         $error = array();
@@ -134,7 +57,7 @@ class Person extends SuperEntity{
         }    
         
         if($this->HomeId === -1){
-            $this->home = new Home($this->db, $this->user);
+            $this->home = new Home($this->db, $this->saronUser);
             $this->HomeId = $this->home->create($this->LastName);
         }
         return true;
@@ -202,56 +125,35 @@ class Person extends SuperEntity{
             return true;
         }        
     }
+    
+    
+    function checkKeyHoldingData(){
+        $error = array();
+        $error["Result"] = "ERROR";
+        
+        if(($this->KeyToExp === 2 or $this->KeyToChurch === 2) and strlen($this->CommentKey)<5){
+            $error["Message"] = "Du behöver ange en längre kommentar för nyckelinnehavet (Minst 5 tecken).";
+        } 
 
-    function select($id = -1){
-       if($this->PersonId > 0){
-           $id=$this->PersonId;
-       } 
-       
-       if($id > 0){
-            $sqlSelect = SQL_STAR_PEOPLE . $this->saronUser->getRoleSql() . ", ";
-            $sqlSelect.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
-            $sqlSelect.= ADDRESS_ALIAS_LONG_HOMENAME . ", ";  
-            $sqlSelect.= DECRYPTED_ALIAS_PHONE . ", "; 
-            $sqlSelect.= DATES_AS_ALISAS_MEMBERSTATES;
-            $sqlWhere = "WHERE People.Id = " . $id;
-            return $this->db->select($this->saronUser, $sqlSelect, SQL_FROM_PEOPLE_LEFT_JOIN_HOMES, $sqlWhere, "", "");            
-       }
-       else{
-            $tw = new TableViews();
-            $sqlSelect = $tw->getTableViewSql($this->tableview, $this->saronUser);
-          
-            $gf = new GroupFilter();
-            $sqlWhere = "WHERE ";       
-            $sqlWhere.= $gf->getGroupFilterSql($this->groupId);
-            $sqlWhere.= $gf->getSearchFilterSql($this->uppercaseSearchString);
-            return $this->db->select($this->saronUser, $sqlSelect, SQL_FROM_PEOPLE_LEFT_JOIN_HOMES, $sqlWhere, $this->getSortSql(), $this->getPageSizeSql());
-       }
-       
-    }
-
-
-    function getSortSql(){
-        $sqlOrderBy = ""; 
-        if(Strlen($this->jtSorting)>0 and Strlen($this->sqlOrderByLatest)>0){
-            $sqlOrderBy = "ORDER BY " . $this->sqlOrderByLatest . ", " . $this->jtSorting . " ";
-        }
-        else if(Strlen($this->jtSorting)==0 and Strlen($this->sqlOrderByLatest)>0){
-            $sqlOrderBy = "ORDER BY " . $this->sqlOrderByLatest . " ";
-        }
-        else if(Strlen($this->jtSorting)>0 and Strlen($this->sqlOrderByLatest)==0){
-            $sqlOrderBy = "ORDER BY " . $this->jtSorting . " ";
+        if(strlen($error["Message"])>0){
+            return json_encode($error);
         }
         else{
-            $sqlOrderBy = "";         
+            return true;
         }
-        return $sqlOrderBy;
+        return true;
     }
 
-
-    function getPageSizeSql(){
-        return "LIMIT " . $this->jtStartIndex . ", " . $this->jtPageSize . ";";
-    }        
+    function select($rec = "Records"){
+        $sqlSelect = SQL_STAR_PEOPLE . $this->saronUser->getRoleSql() . ", ";
+        $sqlSelect.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
+        $sqlSelect.= ADDRESS_ALIAS_LONG_HOMENAME . ", ";  
+        $sqlSelect.= DECRYPTED_ALIAS_PHONE . ", "; 
+        $sqlSelect.= DATES_AS_ALISAS_MEMBERSTATES;
+        $sqlWhere = "WHERE People.Id = " . $this->PersonId;
+        $result =  $this->db->select($this->saronUser, $sqlSelect, SQL_FROM_PEOPLE_LEFT_JOIN_HOMES, $sqlWhere, "", "", $rec);            
+        return $result;
+    }
 
 
     function insert(){
@@ -267,11 +169,11 @@ class Person extends SuperEntity{
         $sqlInsert.= $this->getZeroToNull($this->MembershipNo) . ", ";
         $sqlInsert.= $this->VisibleInCalendar . ", ";
         $sqlInsert.= $this->getEncryptedSqlString($this->Comment) . ", ";
-        $sqlInsert.= "Inserter=" . $this->user->ID . ", ";
+        $sqlInsert.= "Inserter=" . $this->saronUser->ID . ", ";
         $sqlInsert.= $this->getZeroToNull($this->HomeId) . ") ";
  
-        $id = $this->db->insert($sqlInsert, "People", "Id");
-        return $this->select($id);
+        $this->PersonId = $this->db->insert($sqlInsert, "People", "Id");
+        return $this->select("Record");
     }
 
         
@@ -291,7 +193,7 @@ class Person extends SuperEntity{
         $sqlWhere = "where Id=" . $this->PersonId . ";";
 
         $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
-        return $this->select($id);
+        return $this->select("Records");
     }
     
     
@@ -309,7 +211,7 @@ class Person extends SuperEntity{
         $sqlWhere = "where Id=" . $this->PersonId . ";";
 
         $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
-        return $this->select($id);
+        return $this->select();
 
     }
     
@@ -326,22 +228,48 @@ class Person extends SuperEntity{
         $sqlWhere = "where Id=" . $this->PersonId . ";";
         
         $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
-        return $this->select($id);
+        return $this->select();
  
     }
    
     
-    function setUserRoleInQuery($saronUser){
-        $alias = " as user_role ";
-        $sql = "'";
-        if($saronUser->isEditor()){
-            $sql.= SARON_ROLE_EDITOR . "'" . $alias;
-        }
-        else{
-            $sql.= SARON_ROLE_VIEWER . "'" . $alias;            
-        }
-        return $sql;
+    function  updateKeyHoldning(){
+        $sqlUpdate = "UPDATE People ";  
+        $sqlSet = "SET ";
+        $sqlSet.= "KeyToChurch=" . $this->KeyToChurch . ", ";
+        $sqlSet.= "KeyToExp=" . $this->KeyToExp . ", ";
+        $sqlSet.= "CommentKeyEncrypt=" . $this->getEncryptedSqlString($this->CommentKey) . " ";
+        $sqlWhere = "WHERE Id=" . $this->getCurrentPersonId();
+        $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
+        return $this->select();
+        
     }
     
     
+    function anonymization(){
+        $Today = date("Y-m-d") ;
+        $result = $this->db->select($this->saronUser, "Select Id ", "From People ", "Where DateOfMembershipEnd is null and Id = " . $this->PersonId, "", "");
+        $jResult = json_decode($result);
+
+        $sql = "update People set ";
+        $sql.= "FirstNameEncrypt = " . $this->getEncryptedSqlString($Today)  . ", ";
+        $sql.= "LastNameEncrypt = " . $this->getEncryptedSqlString(ANONYMOUS) . ", ";
+        $sql.= "VisibleInCalendar = 0, ";
+        $sql.= "EmailEncrypt = NULL, ";
+        if($jResult->TotalRecordCount ==='1'){
+            $sql.= "DateOfMembershipEnd = '" . $Today . "', ";
+        }
+        $sql.= "MobileEncrypt = NULL, ";
+        $sql.= "BaptisterEncrypt = NULL, ";
+        $sql.= "CongregationOfBaptism = NULL, ";
+        $sql.= "PreviousCongregation = NULL, ";
+        $sql.= "NextCongregation = NULL, ";
+        $sql.= "CommentEncrypt = NULL, ";
+        $sql.= "Updater = ". $this->saronUser->ID . ", ";
+
+        $sql.= "HomeId = NULL ";
+        $sql.= "where Id=" . $this->PersonId;
+        return $this->db->delete($sql); 
+        
+    }    
 }

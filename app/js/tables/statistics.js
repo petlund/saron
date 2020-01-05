@@ -12,7 +12,7 @@ $(document).ready(function () {
         multiSorting: true,
         defaultSorting: 'year desc', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/entities/listStatistics.php'
+            listAction:   '/' + SARON_URI + 'app/web-api/listStatistics.php'
         },
         fields: {
             year: {
@@ -114,7 +114,7 @@ $(document).ready(function () {
                             defaultSorting: 'event_date desc, LastName ASC, FirstName ASC', //Set default sorting        
                             //showCloseButton: false,
                             actions: {
-                                listAction:   '/' + SARON_URI + 'app/entities/listStatisticsDetails.php?year=' + YEAR
+                                listAction:   '/' + SARON_URI + 'app/web-api/listStatisticsDetails.php?year=' + YEAR
                             },
                             fields: {
                                 event_date: {
