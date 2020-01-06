@@ -145,6 +145,15 @@ class Person extends People{
     }
 
     function select($rec = "Records"){
+        switch ($this->selection){
+        case "nextMembershipNo":
+            return $this->selectNextMembershipNo();       
+        default:
+            return $this->selectDefault($rec);
+        }
+    }    
+    
+    function selectDefault($rec){
         $sqlSelect = SQL_STAR_PEOPLE . $this->saronUser->getRoleSql() . ", ";
         $sqlSelect.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
         $sqlSelect.= ADDRESS_ALIAS_LONG_HOMENAME . ", ";  
@@ -156,6 +165,19 @@ class Person extends People{
     }
 
 
+    function selectNextMembershipNo(){
+        
+        $sql = "SELECT 0 as Value, '[Inget medlemsnummer]' as DisplayText, 1 as ind ";
+        $sql.= "Union "; 
+        $sql.= "select MembershipNo as Value, Concat(MembershipNo, ' [Nuvarande]') as DisplayText, 2 as ind From People Where MembershipNo>0 and Id = " . $this->PersonId . " ";
+        $sql.= "Union "; 
+        $sql.= "select if(max(MembershipNo) is null, 0, max(MembershipNo)) + 1 as Value, CONCAT(if(max(MembershipNo) is null, 0, max(MembershipNo)) + 1, ' [Första lediga]') as DisplayText, 3 as ind ";
+        $result = $this->db->select($this->saronUser, $sql, "FROM People ", "", "ORDER BY ind ", "", "Options");
+        
+        return $result;
+
+    }
+    
     function insert(){
         $sqlInsert = "INSERT INTO People (LastNameEncrypt, FirstNameEncrypt, DateOfBirth, Gender, EmailEncrypt, MobileEncrypt, DateOfMembershipStart, MembershipNo, VisibleInCalendar, CommentEncrypt, Inserter, HomeId) ";
         $sqlInsert.= "VALUES (";
@@ -176,6 +198,44 @@ class Person extends People{
         return $this->select("Record");
     }
 
+    
+    function update(){
+        switch ($this->selection){
+        case "person":
+            $checkResult = $this->checkPersonData();
+            if($checkResult!==true){
+                return $checkResult;
+            }
+            return $this->updatePersonData();       
+        case "membership":
+            $checkResult = $this->checkMembershipData();
+            if($checkResult!==true){
+                return $checkResult;
+            }
+            return $this->updateMembershipData();       
+        case "baptism":
+            $checkResult=$this->checkBaptistData();
+            if($checkResult!==true){
+                return $checkResult;
+            }
+            return $this->updateBaptistData();       
+        case "keyHolding":
+            $result = $this->checkKeyHoldingData();
+            if($result !== true){
+                echo $result;
+            }                
+            return $this->updateKeyHoldning();       
+        case "anonymization":
+            return $this->anonymization();       
+        default:
+            $error = array();
+            $error["Result"] = "ERROR";
+            $error["Message"] = "Uppdateringen misslyckades.";
+            return json_encode($error);
+        }        
+    }
+    
+    
         
     function updatePersonData(){
         $sqlUpdate = "UPDATE People ";

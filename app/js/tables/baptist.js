@@ -17,7 +17,7 @@ $(document).ready(function () {
             updateAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + SARON_URI + 'app/web-api/updatePersonBaptist.php',
+                        url: '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=baptism',
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
@@ -64,7 +64,6 @@ $(document).ready(function () {
             CongregationOfBaptismThis: {
                 list: false,
                 title: 'Döpt',
-                //options: '/' + SARON_URI + 'app/web-api/listBaptismOptions.php'
                 options: {0:'Nej', 1: 'Ja, Ange församling nedan.', 2:'Ja, ' + FullNameOfCongregation + '.'}
             },
             CongregationOfBaptism: {

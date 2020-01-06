@@ -16,11 +16,6 @@ require_once SARON_ROOT . 'app/entities/Person.php';
         echo notPermittedMessage();
         exit();
     }
-    $Id = (int)filter_input(INPUT_POST, "PersonId", FILTER_SANITIZE_NUMBER_INT);
-    $KeyToChurch = (int)filter_input(INPUT_POST, "KeyToChurch", FILTER_SANITIZE_NUMBER_INT);
-    $KeyToExp = (int)filter_input(INPUT_POST, "KeyToExp", FILTER_SANITIZE_NUMBER_INT);
-    $CommentKey = (String)filter_input(INPUT_POST, "CommentKey", FILTER_SANITIZE_STRING);
-
 
     try{
         $db = new db();

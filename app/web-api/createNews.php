@@ -15,26 +15,25 @@ require_once SARON_ROOT . 'app/entities/News.php';
 
     if(!isPermitted($saronUser, $requireEditorRole)){
         echo notPermittedMessage();
+        exit();
     }
-    else{
-        $writerName = 'Saknas';
-        if(isset( $saronUser->ID )){
-            $writerName = $saronUser->user_firstname . " " . $saronUser->user_lastname ;
-        }
-
-        try{
-            $db = new db();
-            $db->transaction_begin();
-            $news = new News($db, $saronUser);
-            $result = $news->insert();
-            $db->transaction_end();            
-            echo $result;
-            $db->dispose();
-        }
-        catch(Exception $error){
-            $db->transaction_roll_back();
-            $db->transaction_end();
-            echo $error->getMessage();        
-            $db->dispose();
-        }
+//    $writerName = 'Saknas';
+//    if(isset( $saronUser->ID )){
+//        $writerName = $saronUser->user_firstname . " " . $saronUser->user_lastname ;
+//    }
+//
+    try{
+        $db = new db();
+        $db->transaction_begin();
+        $news = new News($db, $saronUser);
+        $result = $news->insert();
+        $db->transaction_end();            
+        echo $result;
+        $db->dispose();
+    }
+    catch(Exception $error){
+        $db->transaction_roll_back();
+        $db->transaction_end();
+        echo $error->getMessage();        
+        $db->dispose();
     }

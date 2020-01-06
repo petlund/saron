@@ -42,7 +42,7 @@ $(document).ready(function () {
             updateAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + SARON_URI + 'app/web-api/updatePerson.php',
+                        url: '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=person',
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
@@ -261,7 +261,7 @@ $(document).ready(function () {
                                 updateAction: function(postData) {
                                     return $.Deferred(function ($dfd) {
                                         $.ajax({
-                                            url: '/' + SARON_URI + 'app/web-api/updatePersonMembership.php?PersonId=' + memberData.record.PersonId,
+                                            url: '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=membership&PersonId=' + memberData.record.PersonId,
                                             type: 'POST',
                                             dataType: 'json',
                                             data: postData,
@@ -335,7 +335,7 @@ $(document).ready(function () {
                                             data.clearCache();
                                             clearMembershipNoOptionCache=false;
                                         }
-                                        return '/' + SARON_URI + 'app/web-api/listNextMembershipNo.php?PersonId=' + memberData.record.PersonId;
+                                        return '/' + SARON_URI + 'app/web-api/listPerson.php?PersonId=' + memberData.record.PersonId + '&selection=nextMembershipNo';
                                     }
                                 },
                                 DateOfMembershipEnd: {
@@ -424,7 +424,7 @@ $(document).ready(function () {
                                 updateAction: function(postData) {
                                     return $.Deferred(function ($dfd) {
                                         $.ajax({
-                                            url: '/' + SARON_URI + 'app/web-api/updatePersonBaptist.php?PersonId=' + baptistData.record.PersonId,
+                                            url: '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=baptism&PersonId=' + baptistData.record.PersonId,
                                             type: 'POST',
                                             dataType: 'json',
                                             data: postData,
@@ -473,7 +473,7 @@ $(document).ready(function () {
                                     list: false,
                                     with: '20%',
                                     title: 'Döpt',
-                                    options: {0:'Nej', 1: 'Ja, Ange församling nedan.', 2:'Ja, i Korskyrkan.'}
+                                    options: {0:'Nej', 1: 'Ja, Ange församling nedan.', 2:'Ja, ' + FullNameOfCongregation + '.'}
                                 },
                                 CongregationOfBaptism: {
                                     edit: true,
@@ -560,7 +560,7 @@ $(document).ready(function () {
                 options: function(data){
                     if(data.source !== 'list')
                         data.clearCache();
-                    return '/' + SARON_URI + 'app/web-api/listHomeOptions.php';
+                    return '/' + SARON_URI + 'app/web-api/listHomes.php?selection=homeOptions';
                 }
             },
             PersonId: {
@@ -663,7 +663,7 @@ $(document).ready(function () {
                         data.clearCache();
                         clearMembershipNoOptionCache=false;
                     }
-                    return '/' + SARON_URI + 'app/web-api/listNextMembershipNo.php?PersonId=null'
+                    return '/' + SARON_URI + 'app/web-api/listPerson.php?PersonId=null' + '&selection=nextMembershipNo';
                 }
             },
             MemberState: {

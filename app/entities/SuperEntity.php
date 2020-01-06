@@ -26,6 +26,7 @@ class SuperEntity {
 
         $this->groupId = (int)filter_input(INPUT_POST, "groupId", FILTER_SANITIZE_NUMBER_INT);    
         $this->viewId = (String)filter_input(INPUT_POST, "groupId", FILTER_SANITIZE_STRING);    
+        $this->selection = (String)filter_input(INPUT_GET, "selection", FILTER_SANITIZE_STRING);    
 
         $this->uppercaseSearchString = strtoupper((String)filter_input(INPUT_POST, "searchString", FILTER_SANITIZE_STRING));
 

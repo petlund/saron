@@ -13,7 +13,7 @@ $(document).ready(function () {
         defaultSorting: 'news_date desc', //Set default sorting        
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php',
-            updateAction:   '/' + SARON_URI + 'app/web-api/updateKeyOwner.php'
+            updateAction:   '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=keyHolding'
         },
         fields: {
             PersonId: {

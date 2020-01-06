@@ -6,10 +6,11 @@ require_once 'config.php';
 require_once SARON_ROOT . "app/access/wp-authenticate.php";
 require_once SARON_ROOT . 'app/database/queries.php'; 
 require_once SARON_ROOT . 'app/database/db.php';
-require_once SARON_ROOT . 'app/entities/Home.php';
+require_once SARON_ROOT . 'app/entities/Statistics.php';
 
-    //header_remove(); 
 
+
+    /*** REQUIRE USER AUTHENTICATION ***/
     $requireEditorRole = false;
     $saronUser = new SaronUser(wp_get_current_user());    
 
@@ -18,15 +19,15 @@ require_once SARON_ROOT . 'app/entities/Home.php';
         exit();
     }
 
-
     try{
         $db = new db();
-        $homes = new Homes($db, $saronUser);
-        $result = $homes->select();    
+        $statistics = new Statistics($db, $saronUser);
+        $results = $statistics->selectStatisicsDetails();
+        echo $results;
         $db->dispose();
-        echo $result;
     }
     catch(Exception $error){
-        $db->dispose();
         echo $error->getMessage();
+        $db->dispose;
     }
+

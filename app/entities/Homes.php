@@ -33,11 +33,46 @@ class Homes extends SuperEntity{
 
     
     function select(){
+        switch ($this->selection){
+        case "homeOptions":
+            return $this->selectHomeOptions();       
+        default:
+            return $this->selectDefault();
+        }
+    }
+
+
+    function selectDefault(){
         $sqlWhere = "WHERE ";
         $filter = new HomesFilter();
         $sqlWhere.= $filter->getHomesFilterSql($this->groupId);
         $sqlWhere.= $filter->getSearchFilterSql($this->uppercaseSearchString);
         $result = $this->db->select($this->saronUser, SQL_STAR_HOMES . $this->saronUser->getRoleSql() . ", ". CONTACTS_ALIAS_RESIDENTS, "FROM Homes ", $sqlWhere, $this->getSortSql(), $this->getPageSizeSql());
         return $result;        
+    }
+
+    function selectHomeOptions(){
+        $this->deleteEmptyHomes(); // clean up
+
+        $where ="";
+        if($this->HomeId===0){
+            $sql = "SELECT 0 as Value, ' Inget hem' as DisplayText "; 
+            $sql.= "Union "; 
+            $sql.= "SELECT -1 as Value, '  Nytt hem (Lägg till adress och hemtelefon)' as DisplayText ";
+            $sql.= "Union "; 
+            $sql.= "select Id as Value, " . ADDRESS_ALIAS_LONG_HOMENAME;
+        }
+        else{
+            $sql.= "select Id as Value, " . ADDRESS_ALIAS_LONG_HOMENAME;
+            $where = "WHERE Value=" . $this->HomeId;
+        }
+        $result = $this->db->select($this->saronUser, $sql, "FROM Homes ", $where, "ORDER BY DisplayText ", "", "Options");    
+        return $result;
+    } 
+    
+    
+    function deleteEmptyHomes(){
+        $deleteSql = "delete from Homes where Homes.Id not in (select Homeid from People where HomeId is not null group by HomeId)";
+        $this->db->delete($deleteSql);
     }    
 }

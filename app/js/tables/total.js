@@ -24,7 +24,7 @@ $(document).ready(function () {
         },         
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php',            
-            deleteAction: '/' + SARON_URI + 'app/web-api/deletePerson.php'
+            deleteAction: '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=anonymization'
         },  
         fields: {
             PersonId:{

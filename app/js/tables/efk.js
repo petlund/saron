@@ -10,10 +10,7 @@ $(document).ready(function () {
             multiSorting: true,
             defaultSorting: 'AgeInterval ASC', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listStatisticsEFK.php'
-            //createAction: 'create.php',
-            //updateAction: '/' + SARON_URI + 'app/web-api/updatePersonMemberShip.php'
-            //deleteAction: 'delete.php'
+            listAction:   '/' + SARON_URI + 'app/web-api/listStatistics.php?selection=efk'
         },
         fields: {
             AgeInterval: {

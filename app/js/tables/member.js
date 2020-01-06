@@ -13,12 +13,10 @@ $(document).ready(function () {
             defaultSorting: 'FamilyName ASC, DateOfBirthr ASC', //Set default sorting        
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php',
-            //createAction: 'create.php',
-            //updateAction: '/' + SARON_URI + 'app/web-api/updatePersonMemberShip.php'
             updateAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + SARON_URI + 'app/web-api/updatePersonMembership.php',
+                        url: '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=membership',
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
@@ -82,7 +80,7 @@ $(document).ready(function () {
                         return '<p class="numericString"></p>';
                 },          
                 options: function (data){
-                    return '/' + SARON_URI + 'app/web-api/listNextMembershipNo.php?PersonId=' + data.record.PersonId;
+                    return '/' + SARON_URI + 'app/web-api/listPerson.php?PersonId=' + data.record.PersonId + '&selection=nextMembershipNo';
                 },                                            
                 title: 'Nr.'
             },

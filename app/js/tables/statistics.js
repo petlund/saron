@@ -114,7 +114,7 @@ $(document).ready(function () {
                             defaultSorting: 'event_date desc, LastName ASC, FirstName ASC', //Set default sorting        
                             //showCloseButton: false,
                             actions: {
-                                listAction:   '/' + SARON_URI + 'app/web-api/listStatisticsDetails.php?year=' + YEAR
+                                listAction:   '/' + SARON_URI + 'app/web-api/listStatistics.php?year=' + YEAR + '&selection=details'
                             },
                             fields: {
                                 event_date: {
