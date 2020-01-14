@@ -1,9 +1,4 @@
-var inputFormWidth = '500px';
-var inputFormFieldWidth = '480px';
-var NOT_VISIBLE = 'Ej synlig';
-var VISIBLE = 'Synlig';
-var newHomeId = -1;
-var clearMembershipNoOptionCache = true;
+"use strict";
 
 $(document).ready(function () {
     
@@ -31,7 +26,6 @@ $(document).ready(function () {
                             var filter = document.getElementById("groupId");
                             filter.value = 2;
                              $('#search_people').click();
-
                         },
                         error: function () {
                             $dfd.reject();
@@ -53,23 +47,20 @@ $(document).ready(function () {
                                     newHomeId=data.Records[0].HomeId;
 
                                 $dfd.resolve(data);
-                                var records = data['Records'];
                                 //Update Person
-                                _updateHome(records);
-                                _updatePhone(records);
-                                _updateName(records);
-                                _updateMemberState(records);
-                                _updateResidents(records);
-                                _updateCalendarVisability(records);
-                                _updateComment(records);
+                                _updateLongHomeName(data.Records);
+                                //_updatePhone(data.Records);
+                                _updateName(data.Records);
+                                _updateMemberState(data.Records);
+                                _updateResidents(data.Records);
+                                _updateCalendarVisability(data.Records);
+                                _updateComment(data.Records);
                             }
                             else
                                 $dfd.resolve(data);
 
                         },
                         error: function () {
-                            //alert('Error in updateAction\r\n' + $dfd.toString());
-                            //window.location.href = 'http://localhost/' + SARON_URI + 'app/';
                             $dfd.reject();
                         }
                     });
@@ -118,9 +109,9 @@ $(document).ready(function () {
                                                 if(data.Result !== 'ERROR'){
                                                     data.Records[0].oldHomeId=data.Records[0].HomeId;
                                                     $dfd.resolve(data);
-                                                    _updateHome(data.Records);
-                                                    _updatePhone(data.Records);
-                                                }
+                                                    _updateLongHomeName(data.Records);
+                                                    //_updatePhone(data.Records);
+                                                    _updateFields(data.Records[0], "Phone", HOME);                                                }
                                                 else
                                                     $dfd.resolve(data);
                                             },
@@ -155,10 +146,11 @@ $(document).ready(function () {
                                     title: 'Boende på adressen',
                                     width: '15%',
                                     display: function(data){
-                                        if(data.record.Residents===null)
-                                            data.record.Residents="";
-
-                                        return '<p class="' + _getResidentsClassName(data.record.HomeId) + '">' + data.record.Residents + '</>';
+                                        return _setClass(data, "Residents", HOME);
+//                                        if(data.record.Residents===null)
+//                                            data.record.Residents="";
+//
+//                                        return '<p class="' + _getResidentsClassName(data.record.HomeId) + '">' + data.record.Residents + '</>';
                                     }
                                 },
                                 FamilyName: {
@@ -170,10 +162,7 @@ $(document).ready(function () {
                                     inputTitle: 'Hemtelefon',
                                     width: '9%',
                                     display: function (data) {
-                                        if(data.record.Phone!==null)
-                                            return '<p class="numericString">' +  data.record.Phone + '</p>';
-                                        else
-                                            return '<p class="numericString"></p>';
+                                        return _setClass(data.record, "Phone", HOME);
                                     }                       
                                 },
                                 Co: {
@@ -187,11 +176,8 @@ $(document).ready(function () {
                                 Zip: {
                                     title: 'PA',
                                     width: '5%',
-                                    display: function (homeData){
-                                        if(homeData.record.Zip!==null)
-                                            return '<p class="numericString">' + homeData.record.Zip + '</p>';
-                                        else
-                                            return '<p class="numericString"></p>';
+                                    display: function (data){
+                                        return _formatZipCode(data.record.Zip);
                                     }
                                 },
                                 City: {
@@ -226,7 +212,7 @@ $(document).ready(function () {
                                 data.form.find('input[name=Country]').css('width',inputFormFieldWidth);
 
                                 var dbox = document.getElementsByClassName('ui-dialog-title');            
-                                for (i=0; i<dbox.length; i++)
+                                for(var i=0; i<dbox.length; i++)
                                     dbox[i].innerHTML='Uppdatera uppgifter för: ' + data.record.FamilyName;
                             },
                             formClosed: function (event, data){
@@ -269,8 +255,11 @@ $(document).ready(function () {
                                                 if(data.Result !== 'ERROR'){                                                
                                                     $dfd.resolve(data);
                                                     var records = data['Records'];
+                                                    data.Records[0].oldHomeId=data.Records[0].HomeId;
                                                     _updateMemberState(records);
-                                                    _updateCalendarVisability(records);                                               
+                                                    _updateCalendarVisability(records);
+                                                    _updateResidents(records);
+
                                                 }
                                                 else
                                                     $dfd.resolve(data);
@@ -324,10 +313,7 @@ $(document).ready(function () {
                                 MembershipNo: {
                                     width: '3%',
                                     display: function (memberData) {
-                                        if(memberData.record.MembershipNo>0)
-                                            return '<p class="numericString">' + memberData.record.MembershipNo + '</p>';
-                                        else
-                                            return '<p class="numericString"></p>';
+                                        return _formatNumericString(memberData.record.MembershipNo);
                                     },          
                                     title: 'Nr.',
                                     options: function(data){
@@ -387,7 +373,7 @@ $(document).ready(function () {
                                 data.form.find('textarea[name=Comment]').css('width',inputFormFieldWidth);                                
                     
                                 var dbox = document.getElementsByClassName('ui-dialog-title');            
-                                for (i=0; i<dbox.length; i++)
+                                for(var i=0; i<dbox.length; i++)
                                     dbox[i].innerHTML='Uppdatera uppgifter för: ' + data.record.FirstName + ' ' + data.record.LastName;
                             },
                             formClosed: function (event, data){
@@ -433,7 +419,7 @@ $(document).ready(function () {
                                                     $dfd.resolve(data);
                                                     var records = data['Records'];
                                                     _updateMemberState(records);
-                                                    _updateBaptistCongregation(records);
+                                                    _updateResidents(records);
                                                 }
                                                 else
                                                     $dfd.resolve(data);
@@ -527,7 +513,7 @@ $(document).ready(function () {
                                 data.form.find('select[name=CongregationOfBaptismThis]').change(function () {baptistFormAuto(data, this.value)});
 
                                 var dbox = document.getElementsByClassName('ui-dialog-title');            
-                                for (i=0; i<dbox.length; i++)
+                                for(var i=0; i<dbox.length; i++)
                                     dbox[i].innerHTML='Uppdatera uppgifter för: ' + data.record.FirstName + ' ' + data.record.LastName;
                                 //...
                             },
@@ -560,7 +546,7 @@ $(document).ready(function () {
                 options: function(data){
                     if(data.source !== 'list')
                         data.clearCache();
-                    return '/' + SARON_URI + 'app/web-api/listHomes.php?selection=homeOptions';
+                    return '/' + SARON_URI + 'app/web-api/listHomes.php?selection=options';
                 }
             },
             PersonId: {
@@ -573,16 +559,15 @@ $(document).ready(function () {
             LastName: {
                 title: 'Efternamn',
                 list: false,
-                display: function (data) {
-                    return '<p class="keyValue">' +  data.record.LastName + '</p>';
-                }          
+                edit: true,
+                create: true
+                
             },
             FirstName: {
                 title: 'Förnamn',
                 list: false,
-                display: function (data) {
-                    return '<p class="keyValue">' +  data.record.FirstName + '</p>';
-                }          
+                edit: true,
+                create: true
             },
             Name: {
                 title: 'Namn',
@@ -599,7 +584,7 @@ $(document).ready(function () {
                 width: '5%',
                 type: 'date',
                 display: function (data) {
-                    return _parseDate  (data.record.DateOfBirth, true);
+                    return _parseDate(data.record.DateOfBirth, true);
                 }          
             },
             Gender: {
@@ -619,10 +604,7 @@ $(document).ready(function () {
                 inputTitle: 'Mobil <BR> - Hemtelefonuppgifter matas in under "Adressuppgifter"',
                 width: '7%',
                 display: function (data) {
-                    if(data.record.Mobile!==null)
-                        return '<p class="numericString">' +  data.record.Mobile + '</p>';
-                    else
-                        return '<p class="numericString"></p>';
+                   return _formatPhoneNumber(data.record.Mobile);
                 }           
             },
             Phone: {
@@ -631,10 +613,7 @@ $(document).ready(function () {
                 width: '7%',
                 create: false,
                 display: function (data) {
-                    if(data.record.Phone!==null)
-                        return '<p class="numericString ' + _getPhoneClassName(data.record.HomeId) + '">' +  data.record.Phone + '</p>';
-                    else
-                        return '<p class="numericString ' + _getPhoneClassName(data.record.HomeId) + '"></p>';
+                    return _setClass(data.record, "Phone", HOME);
                 }                       
             },
             DateOfMembershipStart: {
@@ -652,10 +631,7 @@ $(document).ready(function () {
                 edit: false,
                 title: 'Medlemsnummer',
                 display: function (data) {
-                    if(data.record.MembershipNo>0)
-                        return '<p class="numericString">' + data.record.MembershipNo + '</p>';
-                    else
-                        return '<p class="numericString"></p>';
+                    return _formatNumericString(data.record.MembershipNo);
                 },          
                 
                 options: function (data){
@@ -671,8 +647,8 @@ $(document).ready(function () {
                 edit: false,
                 create: false,
                 width: '4%',
-                display: function (memberData){
-                    return '<p class="' + _getMemberStateClassName(memberData.record.PersonId) + '">' +  memberData.record.MemberState + '</p>';                    
+                display: function (data){
+                    return '<p class="' + _getMemberStateClassName(data.record.PersonId) + '">' +  data.record.MemberState + '</p>';                    
                 }
             },
             VisibleInCalendar: {
@@ -739,7 +715,7 @@ $(document).ready(function () {
                 headLine = 'Ange uppgifter för ny person';                
             }
             var dbox = document.getElementsByClassName('ui-dialog-title');            
-            for (i=0; i<dbox.length; i++){
+            for(var i=0; i<dbox.length; i++){
                 dbox[i].innerHTML=headLine;
             }
 
@@ -781,185 +757,5 @@ function filterPeople(viewId){
         tableview: viewId
     });
 }
-function _updateComment(records){
-    var commentClassName = _getCommentClassName(records[0].PersonId);
-    var classComment = document.getElementsByClassName(commentClassName);
-    for(i = 0; i<classComment.length;i++)
-        classComment[i].innerHTML = records[0].Comment;
-}
 
-
-function _updateBaptistCongregation(records){
-    var baptistConcregationClassName = _getBaptistConcregationClassName(records[0].PersonId);
-    var classBaptistConcregation = document.getElementsByClassName(baptistConcregationClassName);
-    for(i = 0; i<classBaptistConcregation.length;i++)
-        classBaptistConcregation[i].innerHTML = records[0].CongregationOfBaptism;
-}
-
-function _updatePhone(records){
-    var phoneClassName = _getPhoneClassName(records[0].oldHomeId);
-    var classPhone = document.getElementsByClassName(phoneClassName);
-    for(i = 0; i<classPhone.length;i++)
-        if(records[0].HomeId > 0)
-            classPhone[i].innerHTML = records[0].Phone;                                                                                                    
-        else
-            classPhone[i].innerHTML = "";
-}
-
-function _updateName(records){
-    var nameClassName = _getNameClassName(records[0].PersonId);
-    var className = document.getElementsByClassName(nameClassName);
-    for(i = 0; i<className.length;i++)
-        className[i].innerHTML = records[0].Name;                                                                                                        
-}
-
-function _updateHome(records){
-    var homeClassName = _getHomeClassName(records[0].oldHomeId);
-    var classHomes = document.getElementsByClassName(homeClassName);
-    for(i = 0; i<classHomes.length;i++){
-        if(classHomes[i].parentNode.getAttribute("class")==='jtable-title-text')
-            classHomes[i].innerHTML = 'Hem: ' + records[0].LongHomeName;
-        else
-            if(records[0].HomeId>0)
-                classHomes[i].innerHTML = records[0].LongHomeName;
-            else
-                classHomes[i].innerHTML = ' Inget hem';
-    }                                                                                        
-}
-
-function _updateCalendarVisability(records){
-    var calendarVisabilityClassName = _getCalendarVisabilityClassName(records[0].PersonId);
-    var classCalendarVisability = document.getElementsByClassName(calendarVisabilityClassName);
-    for(i = 0; i<classCalendarVisability.length;i++)
-        classCalendarVisability[i].innerHTML = _getVisabilityDisplayValue(records[0].VisibleInCalendar);
-}
-
-function _updateDateOfMembershipEnd(records){
-    var dateOfMembershipEndClassName = _getDateOfMembershipEndClassName(records[0].PersonId);
-    var classDateOfMembershipEnd = document.getElementsByClassName(dateOfMembershipEndClassName);
-    for(i = 0; i<classDateOfMembershipEnd.length;i++)
-        classDateOfMembershipEnd[i].innerHTML = _parseDate(records[0].DateOfMembershipEnd);
-}
-
-function _getVisabilityDisplayValue(id){
-    if(id==='1')
-        return NOT_VISIBLE;
-    else if(id==='2')
-        return VISIBLE;
-    else
-        return '';                      
-}
-
-function _updateResidents(records){
-    var residentsClassName = _getResidentsClassName(records[0].oldHomeId);
-    var classResidents = document.getElementsByClassName(residentsClassName);
-    for(i = 0; i<classResidents.length;i++)
-        classResidents[i].innerHTML = records[0].Residents;
-}
-
-function _updateMemberState(records){
-    var memberStateClassName = _getMemberStateClassName(records[0].PersonId);
-    var classMemeberState = document.getElementsByClassName(memberStateClassName);
-    for(i = 0; i<classMemeberState.length;i++)
-        classMemeberState[i].innerHTML = records[0].MemberState;                                                
-}
-
-function _getCommentClassName(PersonId){
-    return 'people Comment_' + PersonId;
-}
-
-function _getDateOfMembershipEndClassName(PersonId){
-    return 'people DateOfMembershipEnd_' + PersonId;
-}
-
-function _getHomePersonClassName(HomeId, PersonId){
-    return 'home home_' + HomeId + ' PersonId_' + PersonId;
-}
-
-function _getCalendarVisabilityClassName(PersonId){
-    return 'people visible_' + PersonId;
-}
-
-function _getEmailClassName(PersonId){
-    return 'email_' + PersonId;
-}
-
-function _getPersonClassName(PersonId){
-    return 'home personid_' + PersonId;
-}
-
-function _getNameClassName(PersonId){
-    return 'home name_' + PersonId;
-}
-
-function _getMemberStateClassName(PersonId){
-    return 'member memberstate_' + PersonId;
-}
-
-function _getHomeClassName(HomeId){
-    return 'home homeid_' + HomeId;
-}
-
-function _getResidentsClassName(HomeId){
-    return 'home residents_' + HomeId;
-}
-
-function _getPhoneClassName(HomeId){
-    return 'home phone_' + HomeId;
-}
-
-function _getBaptistConcregationClassName(PersonId){
-    return 'baptism congregationofbaptism_' + PersonId;
-}
-
-function _getMailLink(mail, PersonId){
-    if(mail!==null)
-        return '<p class="mailLink"><a href="mailto:' + mail + '">' + mail + '</a></p>';
-    else
-        return '<p class="mailLink ' + _getEmailClassName(PersonId) + '"></p>';
-}
-
-
-function _formatNumericString(number) {
-    if(number!==null)
-        return '<p class="numericString">' +  number + '</p>';
-    else
-        return '';
-}
-
-function _formatKeyValue(str) {
-    if(str!==null)
-        return '<p class="keyValue">' +  str + '</p>';
-    else
-        return '';
-}
-
-
-function _parseDate (dateString, keyValue) {
-if(keyValue)
-    classNames ="dateString keyValue";
-else
-    classNames ="dateString";
-
-if (dateString===null){
-    return '';
-}
-if (typeof dateString === 'undefined'){ 
-    return '';
-}
-if (dateString.indexOf('Date') >= 0) { //Format: /Date(1320259705710)/
-    return '<p class="' + classNames + '">' + $.datepicker.formatDate("yy-mm-dd", new Date(parseInt(dateString.substr(6), 10))) + '</p>';
-} 
-else if (dateString.length === 10) { //Format: 2011-01-01
-//    return new Date(parseInt(dateString.substr(0, 4), 10),parseInt(dateString.substr(5, 2), 10) - 1,parseInt(dateString.substr(8, 2), 10));
-    return '<p class="' + classNames + '">' + dateString + '</p>';
-} 
-else if (dateString.length === 19) { //Format: 2011-01-01 20:32:42
-    return new Date(parseInt(dateString.substr(0, 4), 10),parseInt(dateString.substr(5, 2), 10) - 1,parseInt(dateString.substr(8, 2, 10)),parseInt(dateString.substr(11, 2), 10),parseInt(dateString.substr(14, 2), 10),parseInt(dateString.substr(17, 2), 10));
-} 
-else {
-    this._logWarn('Given date is not properly formatted: ' + dateString);
-    return 'format error!';
-    }
-}
     
