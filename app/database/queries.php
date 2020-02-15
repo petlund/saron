@@ -10,7 +10,9 @@
         openssl_pkey_export($res, $privkey);
         define ("PKEY", "'" . $privkey . "'");
         define("SALT_LENGTH", 13);
-        DEFINE("MAX_STR_LEN", 250);
+        define("MAX_STR_LEN", 250);
+        define("DATE_FORMAT", "'%Y-%m-%d'");
+        define("DATE_OF_BIRTH", "DATE_FORMAT(DateOfBirth, " . DATE_FORMAT . ") AS DateOfBirth");
         
         define("DECRYPTED_FIRSTNAME", "SUBSTR(AES_DECRYPT(FirstNameEncrypt, " . PKEY . "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
         define("DECRYPTED_ALIAS_FIRSTNAME", DECRYPTED_FIRSTNAME . " as FirstName");
@@ -38,9 +40,9 @@
         define("DECRYPTED_PHONE", "SUBSTR(AES_DECRYPT(PhoneEncrypt, " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
         define("DECRYPTED_ALIAS_PHONE", DECRYPTED_PHONE . " as Phone");
 
-        define("DECRYPTED_FIRSTNAME_LASTNAME_AS_NAME", "concat(" . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . ") as Name");
+        define("DECRYPTED_FIRSTNAME_LASTNAME_AS_NAME_FL", "concat(" . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . ") as Name_FL");
         define("DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME", "concat(" . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ") as Name");
-        define("DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE", "concat(" . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ", ' ', DateOfBirth) ");
+        define("DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE", "concat(" . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ", ' ', " . DATE_OF_BIRTH . ") ");
         define("DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE_AS_APPIDENTITYNAME", DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . "as AppIdentityName ");
         define("DATES_AS_MEMBERSTATES", " IF(UPPER(CONVERT(BINARY " . DECRYPTED_LASTNAME . " USING utf8)) like '%" . ANONYMOUS . "%', 'Anonymiserad', IF(DateOfDeath is not null, 'Avliden', IF(DateOfMemberShipStart is null, IF(DateOfBaptism is null and CongregationOfBaptism is null, 'Ej medlem', 'Dopregister'), IF(DateOfMemberShipEnd is null, 'Medlem', 'Dopregister')))) ");
         define("DATES_AS_ALISAS_MEMBERSTATES", DATES_AS_MEMBERSTATES . "as MemberState ");
@@ -68,14 +70,14 @@
         $ALL_PEOPLE_FIELDS = "People.Id as PersonId, ";
         $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_FIRSTNAME . ", ";
         $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_LASTNAME . ", ";
-        $ALL_PEOPLE_FIELDS.= "DateOfBirth, DateOfDeath, PreviousCongregation, MembershipNo, VisibleInCalendar, DateOfMembershipStart, DateOfMembershipEnd, NextCongregation, DateOfBaptism, ";
+        $ALL_PEOPLE_FIELDS.= DATE_OF_BIRTH . ", DateOfDeath, PreviousCongregation, MembershipNo, VisibleInCalendar, DateOfMembershipStart, DateOfMembershipEnd, NextCongregation, DateOfBaptism, ";
         $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_BAPTISTER . ", ";
         $ALL_PEOPLE_FIELDS.= "CongregationOfBaptism, CongregationOfBaptismThis, Gender, ";
         $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_EMAIL . ", ";
         $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_MOBILE . ", ";
         $ALL_PEOPLE_FIELDS.= "KeyToChurch, KeyToExp, ";
         $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_COMMENT . ", ";
-        $ALL_PEOPLE_FIELDS.= "People.HomeId, Updater, Updated, Inserter, Inserted, " . DECRYPTED_ALIAS_COMMENT_KEY . " ";
+        $ALL_PEOPLE_FIELDS.= "People.HomeId, People.HomeId as OldHomeId, Updater, Updated, Inserter, Inserted, " . DECRYPTED_ALIAS_COMMENT_KEY . " ";
         define("SQL_STAR_PEOPLE", "Select " . $ALL_PEOPLE_FIELDS);
 
         $ALL_HOME_FIELDS = "Homes.Id as HomeId, ";

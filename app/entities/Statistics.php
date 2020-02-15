@@ -72,46 +72,54 @@ class Statistics extends SuperEntity{
     }
 
     function selectEFK(){
-        $sql = $this->getIntervallSql(11, 20);
-        $sql.= " union (";
-        $sql.= $this->getIntervallSql(21, 30);
-        $sql.= ") union (";
-        $sql.= $this->getIntervallSql(31, 40);
-        $sql.= ") union (";
-        $sql.= $this->getIntervallSql(41, 50);
-        $sql.= ") union (";
-        $sql.= $this->getIntervallSql(51, 60);
-        $sql.= ") union (";
-        $sql.= $this->getIntervallSql(61, null);
-        $sql.= ") union (";
-        $sql.= $this->getIntervallSql(null, null);
+        $interval = 10;
+        $intervals = 11;
+        
+        $sql = "(";
+        for($i = 0; $i<$intervals; $i++){
+            $sql.= $this->getIntervalSql($i * $interval + 1, ($i + 1) * $interval);
+            $sql.= ") union (";
+        }
+        
+        $sql.= $this->getIntervalSql(null, null);
         $sql.= ") ";
 
         $sql.= $this->getSortSql();
         $sql.= $this->getPageSizeSql();
 
-        $sqlCount = "select 6 as c"; 
+        $sqlCount = "select " . ($interval + 1) . " as c"; 
+
+        error_log($sql);
         
         $result = $this->db->selectSeparate($this->saronUser, $sql, $sqlCount);    
         return $result;
     }
     
     
-    private function getIntervallSql($minAge, $maxAge){
+    private function getIntervalSql($minAge, $maxAge){
         $sqlInterval="";
         $ageAlias = " as AgeInterval, ";
         $sqlWhereInterval = "and extract(year from now())-extract(year from DateOfBirth) "; 
-        if($minAge === null and $maxAge===null){
-            $sqlLabel="Select 'Totalt' " . $ageAlias;
-            $sqlInterval = $sqlWhereInterval . ">=11";
+
+        if($minAge < 100){
+            $empty = " ";
         }
         else{
+            $empty = "";
+        }
+            
+            
+        if($minAge === null and $maxAge===null){
+            $sqlLabel="Select 'Totalt' " . $ageAlias;
+            $sqlInterval = $sqlWhereInterval . ">0";
+        }   
+        else{
             if($maxAge!==null){
-                $sqlLabel="Select '" . $minAge . "-" . $maxAge ."'" . $ageAlias;        
+                $sqlLabel="Select '" . $empty . $minAge . "-" . $maxAge ."'" . $ageAlias;        
                 $sqlInterval = $sqlWhereInterval . "between ".  $minAge . " and " . $maxAge;
             }
             else{
-                $sqlLabel="Select '" . $minAge . "-...'" . $ageAlias;        
+                $sqlLabel="Select '" . $empty . $minAge . "-...'" . $ageAlias;        
                 $sqlInterval = $sqlWhereInterval . ">= " . $minAge;
             }
         }
@@ -120,7 +128,6 @@ class Statistics extends SuperEntity{
         $sqlCount.= "(extract(year from now()) = extract(year from DateOfMembershipEnd) or DateOfMembershipEnd is null)"; 
 
         $sql = $sqlLabel . $sqlCount . $sqlInterval;
-
         return $sql;
     }
     

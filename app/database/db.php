@@ -79,8 +79,8 @@ class db {
     
     public function exist($FirstName, $LastName, $DateOfBirth, $Id=-1){
         $sql = "select count(*) as c from People where "; 
-        $sql.= "UPPER(CONVERT(BINARY " . DECRYPTED_FIRSTNAME . " USING utf8)) like '%" . $FirstName . "' and ";
-        $sql.= "UPPER(CONVERT(BINARY " . DECRYPTED_LASTNAME . " USING utf8)) like '%" . $LastName . "' and ";
+        $sql.= "UPPER(CONVERT(BINARY " . DECRYPTED_FIRSTNAME . " USING utf8)) like '" . $FirstName . "' and ";
+        $sql.= "UPPER(CONVERT(BINARY " . DECRYPTED_LASTNAME . " USING utf8)) like '" . $LastName . "' and ";
         $sql.= "DateOfBirth like '" . $DateOfBirth . "'";
         if($Id>0){
             $sql.= " and ID <> '" . $Id . "'";            

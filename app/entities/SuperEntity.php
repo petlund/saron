@@ -25,7 +25,7 @@ class SuperEntity {
         $this->saronUser = $saronUser;
 
         $this->groupId = (int)filter_input(INPUT_POST, "groupId", FILTER_SANITIZE_NUMBER_INT);    
-        $this->viewId = (String)filter_input(INPUT_POST, "groupId", FILTER_SANITIZE_STRING);    
+        $this->tableview = (String)filter_input(INPUT_POST, "tableview", FILTER_SANITIZE_STRING);    
         $this->selection = (String)filter_input(INPUT_GET, "selection", FILTER_SANITIZE_STRING);    
 
         $this->uppercaseSearchString = strtoupper((String)filter_input(INPUT_POST, "searchString", FILTER_SANITIZE_STRING));
@@ -39,7 +39,7 @@ class SuperEntity {
     
     protected function getSortSql(){
         $sqlOrderBy = "";
-        if($this->groupId === 2 and viewId === "people"){
+        if($this->groupId === 2 and $this->tableview === "people"){
             $sqlOrderBy = "ORDER BY Updated desc ";            
         }
         else if(Strlen($this->jtSorting)>0){

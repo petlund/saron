@@ -10,10 +10,69 @@ require_once SARON_ROOT . 'app/entities/Home.php';
 
 
 class Person extends People{
+
+    protected $PersonId;
+    protected $HomeId;
+    protected $OldHomeId;
+    protected $LastName;
+    protected $FirstName;
+    protected $DateOfBirth;
+    protected $DateOfDeath;
+    protected $Gender;
+    protected $Email;
+    protected $Mobile;
+    protected $DateOfBaptism;
+    protected $Baptister;
+    protected $CongregationOfBaptism;
+    protected $CongregationOfBaptismThis;
+    protected $PreviousCongregation;
+    protected $DateOfMembershipStart;
+    protected $MembershipNo;
+    protected $VisibleInCalendar;
+    protected $DateOfMembershipEnd;
+    protected $NextCongregation;
+    protected $KeyToChurch;
+    protected $KeyToExp;
+    protected $Comment;
+    protected $CommentKey;
     
     
     function __construct($db, $saronUser) {
         parent::__construct($db, $saronUser);
+        $this->PersonId = (int)filter_input(INPUT_POST, "PersonId", FILTER_SANITIZE_NUMBER_INT);
+        if($this->PersonId === 0){
+            $this->PersonId = (int)filter_input(INPUT_GET, "PersonId", FILTER_SANITIZE_NUMBER_INT);
+        }
+        $this->HomeId = (int)filter_input(INPUT_POST, "HomeId", FILTER_SANITIZE_NUMBER_INT);
+        $this->OldHomeId = (int)filter_input(INPUT_POST, "OldHomeId", FILTER_SANITIZE_NUMBER_INT);
+        if($this->OldHomeId === 0){
+            $this->OldHomeId = (int)filter_input(INPUT_GET, "OldHomeId", FILTER_SANITIZE_NUMBER_INT);
+        }
+        $this->LastName = (String)filter_input(INPUT_POST, "LastName", FILTER_SANITIZE_STRING);
+        $this->FirstName = (String)filter_input(INPUT_POST, "FirstName", FILTER_SANITIZE_STRING);
+        $this->DateOfBirth = (String)filter_input(INPUT_POST, "DateOfBirth", FILTER_SANITIZE_STRING);
+        $this->DateOfDeath = (String)filter_input(INPUT_POST, "DateOfDeath", FILTER_SANITIZE_STRING);
+        $this->Gender = (int)filter_input(INPUT_POST, "Gender", FILTER_SANITIZE_NUMBER_INT);
+        $this->Email = (String)filter_input(INPUT_POST, "Email", FILTER_SANITIZE_EMAIL);
+        $this->Mobile = (String)filter_input(INPUT_POST, "Mobile", FILTER_SANITIZE_STRING);
+        $this->DateOfBaptism = (String)filter_input(INPUT_POST, "DateOfBaptism", FILTER_SANITIZE_STRING);
+        $this->Baptister = (String)filter_input(INPUT_POST, "Baptister", FILTER_SANITIZE_STRING);
+        $this->CongregationOfBaptism = (String)filter_input(INPUT_POST, "CongregationOfBaptism", FILTER_SANITIZE_STRING);
+        $this->CongregationOfBaptismThis = (int)filter_input(INPUT_POST, "CongregationOfBaptismThis", FILTER_SANITIZE_NUMBER_INT);
+        $this->PreviousCongregation = (String)filter_input(INPUT_POST, "PreviousCongregation", FILTER_SANITIZE_STRING);
+        
+        $this->DateOfMembershipStart = (String)filter_input(INPUT_POST, "DateOfMembershipStart_create", FILTER_SANITIZE_STRING);        
+        if(strlen($this->DateOfMembershipStart) === 0){
+            $this->DateOfMembershipStart = (String)filter_input(INPUT_POST, "DateOfMembershipStart", FILTER_SANITIZE_STRING);
+        }
+        $this->MembershipNo = (int)filter_input(INPUT_POST, "MembershipNo", FILTER_SANITIZE_NUMBER_INT);
+        $this->VisibleInCalendar = (int)filter_input(INPUT_POST, "VisibleInCalendar", FILTER_SANITIZE_NUMBER_INT);    
+        $this->DateOfMembershipEnd = (String)filter_input(INPUT_POST, "DateOfMembershipEnd", FILTER_SANITIZE_STRING);
+        $this->NextCongregation = (String)filter_input(INPUT_POST, "NextCongregation", FILTER_SANITIZE_STRING);
+        $this->KeyToChurch = (int)filter_input(INPUT_POST, "KeyToChurch", FILTER_SANITIZE_NUMBER_INT);
+        $this->KeyToExp = (int)filter_input(INPUT_POST, "KeyToExp", FILTER_SANITIZE_NUMBER_INT);
+        $this->Comment = (String)filter_input(INPUT_POST, "Comment", FILTER_SANITIZE_STRING);
+        $this->CommentKey = (String)filter_input(INPUT_POST, "CommentKey", FILTER_SANITIZE_STRING);
     }
     
     
@@ -44,22 +103,25 @@ class Person extends People{
         
         //Adjustments
         if(strlen($this->DateOfDeath) > 0){
-            if(strlen($this->DateOfMembershipEnd) === 0 and $this->DateOfMembershipStart > 0){
+            if(strlen($this->DateOfMembershipEnd) === 0 and strlen($this->DateOfMembershipStart) > 0){
                 $this->DateOfMembershipEnd = $this->DateOfDeath;
             }
-            $this->HomeId = 0;
+            
+            $this->OldHomeId = $this->HomeId;
+            $this->HomeId = null;
             $this->Email = null;
             $this->Mobile = null;
+        }
+
+        if($this->HomeId === -1){
+            $this->home = new Home($this->db, $this->saronUser);
+            $this->HomeId = $this->home->create($this->LastName);
         }
         
         if(strlen($this->DateOfMembershipEnd) > 0){    
             $this->VisibleInCalendar = 1;            
         }    
         
-        if($this->HomeId === -1){
-            $this->home = new Home($this->db, $this->saronUser);
-            $this->HomeId = $this->home->create($this->LastName);
-        }
         return true;
     }
     
@@ -158,10 +220,21 @@ class Person extends People{
         $sqlSelect.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
         $sqlSelect.= ADDRESS_ALIAS_LONG_HOMENAME . ", ";  
         $sqlSelect.= DECRYPTED_ALIAS_PHONE . ", "; 
-        $sqlSelect.= DATES_AS_ALISAS_MEMBERSTATES;
+        $sqlSelect.= DATES_AS_ALISAS_MEMBERSTATES . ", ";
+        $sqlSelect.= $this->OldHomeId . " as OldHomeId, ";
+        $sqlSelect.= $this->getResidentsSql($this->OldHomeId);            
+        $sqlSelect.= NAMES_ALIAS_RESIDENTS;
         $sqlWhere = "WHERE People.Id = " . $this->PersonId;
         $result =  $this->db->select($this->saronUser, $sqlSelect, SQL_FROM_PEOPLE_LEFT_JOIN_HOMES, $sqlWhere, "", "", $rec);            
         return $result;
+    }
+    
+    function getResidentsSql($HomeId){
+        $sql = "(SELECT GROUP_CONCAT(" . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . ", ' - ', " . DATES_AS_MEMBERSTATES . " SEPARATOR '<BR>') ";
+        $sql.= "FROM People as r ";
+        $sql.= "where HomeId = " . $HomeId . " AND DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' ";
+        $sql.= "order by DateOfBirth) as ResidentsOldHome, ";
+        return $sql;
     }
 
 
@@ -244,9 +317,11 @@ class Person extends People{
         $sqlSet.= "FirstNameEncrypt=" . $this->getEncryptedSqlString($this->FirstName) . ", ";
         $sqlSet.= "DateOfBirth=" . $this->getSqlDateString($this->DateOfBirth) . ", ";
         $sqlSet.= "Gender=" . $this->Gender . ", ";
+        $sqlSet.= "VisibleInCalendar=" . $this->VisibleInCalendar . ", ";
         $sqlSet.= "MobileEncrypt=" . $this->getEncryptedSqlString($this->Mobile) . ", ";
         $sqlSet.= "EmailEncrypt=" . $this->getEncryptedSqlString($this->Email) . ", ";
         $sqlSet.= "DateOfDeath=" . $this->getSqlDateString($this->DateOfDeath) . ", ";        
+        $sqlSet.= "DateOfMembershipEnd=" . $this->getSqlDateString($this->DateOfMembershipEnd) . ", ";        
         $sqlSet.= "HomeId=" . $this->getZeroToNull($this->HomeId) . ", ";
         $sqlSet.= "CommentEncrypt=" . $this->getEncryptedSqlString($this->Comment) . ", ";
         $sqlSet.= "Updater = " . $this->saronUser->ID . " ";

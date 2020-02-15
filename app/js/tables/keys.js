@@ -1,5 +1,4 @@
-var inputFormWidth = '500px';
-var inputFormFieldWidth = '480px';
+"use strict";
 
 $(document).ready(function () {
 
@@ -27,7 +26,7 @@ $(document).ready(function () {
                 create: false,
                 edit: false,
                 display: function (data) {
-                    return '<p class="keyValue '+ _getNameClassName(data.record.PersonId) +'">' +  data.record.Name + '</p>';
+                    return _styleSaronKeyString(data.record.Name);                    
                 }          
             },
             DateOfBirth: {
@@ -36,7 +35,7 @@ $(document).ready(function () {
                 width: '5%',
                 type: 'date',
                 display: function (data) {
-                    return _parseDate  (data.record.DateOfBirth, true);
+                    return _styleSaronKeyDateString(data.record.DateOfBirth);                    
                 }          
             },
             MemberState:{
@@ -53,11 +52,10 @@ $(document).ready(function () {
                 width: '5%',
                 display: function (data){
                     if(data.record.KeyToChurch === '2')
-                        return "<p class='numericString'>Ja</p>";
+                        return "<p class='booleanString'>Ja</p>";
                     else
                         return '';
-                },
-                options: {0: '-', 2:'Ja'}
+                }
             },
             KeyToExp: {
                 edit: true, 
@@ -67,11 +65,10 @@ $(document).ready(function () {
                 style: 'align: right',
                 display: function (data){
                     if(data.record.KeyToExp === '2')
-                        return "<p class='numericString'>Ja</p>";
+                        return "<p class='booleanString'>Ja</p>";
                     else
                         return '';
                 },
-                options: {0: '-', 2:'Ja'}
             },
             CommentKey: {
                 create: false,

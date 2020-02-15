@@ -1,3 +1,4 @@
+"use strict";
 
 $(document).ready(function () {
 
@@ -15,19 +16,22 @@ $(document).ready(function () {
         fields: {
             AgeInterval: {
                 title: 'Åldersgrupp',
-                width: '15%',
-                key: true
+                width: '10%',
+                key: true,
+                display: function(data){
+                    return _setClassAndValue(data.record, "AgeInterval", HOME);                   
+                }
             },
             Amount: {
                 title: 'Antal medlemmar',
-                width: '15%',
+                width: '10%',
                 display: function (data){
-                    return "<p class='numericString'>" + data.record.Amount + "</p>";
-                }
+                    return _setClassAndValue(data.record, "Amount", PERSON);
+                }       
             },
             Dummy: {
                 title: '',
-                width: '70%',
+                width: '80%',
                 sorting:false 
             }
         }

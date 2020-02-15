@@ -1,3 +1,4 @@
+"use strict";
     
 $(document).ready(function () {
 
@@ -98,7 +99,7 @@ function _updateNewsRecord(records){
     if(key===null)
         return;
     
-    for(i = 0; i<key.length;i++){
+    for(var i = 0; i<key.length;i++){
         if(key[i].dataset.recordKey === records[0].id){ 
             key[i].cells[0].innerHTML = (records[0].news_date).substring(0,10);                                              
             key[i].cells[2].innerHTML = records[0].writer;          

@@ -11,7 +11,7 @@
     isLoggedIn();
 
     $db = new db();
-    $sql ="Select " . DECRYPTED_FIRSTNAME_LASTNAME_AS_NAME . ", ";
+    $sql ="Select " . DECRYPTED_FIRSTNAME_LASTNAME_AS_NAME_FL . ", ";
     $sql.= DECRYPTED_ALIAS_MOBILE . " FROM People WHERE " . SQL_WHERE_MEMBER . " and " . DECRYPTED_MOBILE . " is not null and "; 
     $sql.= "(Select count(*) from People as p where People.HomeId=p.HomeId and " . DECRYPTED_EMAIL . " like '%@%')  = 0 ";
 
@@ -33,7 +33,7 @@
             }
             echo "<h1>Samma nummer med namn</h1>";
             foreach($rsRecords as $record){
-                echo $record['Name'] . ": " . $record['Mobile'] . "<br>"; 
+                echo $record['Name_FL'] . ": " . $record['Mobile'] . "<br>"; 
             }
 
         }

@@ -8,9 +8,9 @@ function addTableCells(tableId, tableWidth, chartMeta){
     var td;
     var tr;
     var canvas;
-    for(i = 0; i<chartMeta.charts.length / tableWidth; i++){
+    for(var i = 0; i<chartMeta.charts.length / tableWidth; i++){
         tr = document.createElement('tr');
-        for(j=0;j< tableWidth; j++){
+        for(var j=0;j< tableWidth; j++){
             td = tr.appendChild( document.createElement('td') );
             canvas = td.appendChild( document.createElement('canvas') );
             canvas.setAttribute("id",chartMeta.charts[i*tableWidth + j].id );

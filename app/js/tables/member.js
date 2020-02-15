@@ -1,5 +1,4 @@
-var inputFormWidth = '500px';
-var inputFormFieldWidth = '480px';
+"use strict";
 
 $(document).ready(function () {
 
@@ -13,19 +12,20 @@ $(document).ready(function () {
             defaultSorting: 'FamilyName ASC, DateOfBirthr ASC', //Set default sorting        
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php',
-            updateAction: function(postData) {
+            updateAction: function(data) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
                         url: '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=membership',
                         type: 'POST',
                         dataType: 'json',
-                        data: postData,
+                        data: data,
                         success: function (data) {
                             $dfd.resolve(data);
                             if(data.Result !== 'ERROR'){
-                                var records = data['Records'];
-                                _updateMemberState(records);
-                                _updateCalendarVisability(records);                                               
+                                _updateFields(data.Records[0], "MemberState", PERSON);                                                
+                                _updateFields(data.Records[0], "VisibleInCalendar", PERSON);                                                
+                                _updateFields(data.Records[0], "DateOfMembershipStart", PERSON);                                                
+                                _updateFields(data.Records[0], "DateOfMembershipEnd", PERSON);                                                
                             }
                         },
                         error: function () {
@@ -46,18 +46,18 @@ $(document).ready(function () {
                 title: 'Namn',
                 width: '15%',
                 edit: false,
-                display: function(data){
-                    return '<p class="keyValue">' + data.record.Name + '</p>'                    
-                }
+                display: function (data){
+                    return _setClassAndValue(data.record, "Name", PERSON);
+                }       
             },
             DateOfBirth: { 
                 title: 'Född',
                 width: '7%',
                 edit: false,
                 type: 'date',
-                display: function(data){
-                    return '<p class="keyValue dateString">' + data.record.DateOfBirth + '</p>'                    
-                },
+                display: function (data){
+                    return _setClassAndValue(data.record, "DateOfBirth", PERSON);
+                }       
             },
             PreviousCongregation: {
                 title: 'Kommit från församling',
@@ -65,33 +65,33 @@ $(document).ready(function () {
             },
             DateOfMembershipStart: {
                 width: '7%',
-                display: function (data) {
-                    return _parseDate(data.record.DateOfMembershipStart);
-                },              
                 type: 'date',
-                title: 'Start'
+                title: 'Start',
+                display: function (data){
+                    return _setClassAndValue(data.record, "DateOfMembershipStart", PERSON);
+                }       
             },
             MembershipNo: {
                 width: '3%',
-                display: function (data) {
-                    if(data.record.MembershipNo>0)
-                        return '<p class="numericString">' + data.record.MembershipNo + '</p>';
-                    else
-                        return '<p class="numericString"></p>';
-                },          
-                options: function (data){
+                title: 'Nr.',
+                display: function (data){
+                    return _setClassAndValue(data.record, "MembershipNo", PERSON);
+                },       
+                options: function(data){
+                    if(clearMembershipNoOptionCache){
+                        data.clearCache();
+                        clearMembershipNoOptionCache=false;
+                    }
                     return '/' + SARON_URI + 'app/web-api/listPerson.php?PersonId=' + data.record.PersonId + '&selection=nextMembershipNo';
-                },                                            
-                title: 'Nr.'
+                }
             },
             DateOfMembershipEnd: {
-                display: function (data) {
-                    return _parseDate(data.record.DateOfMembershipEnd);
-                },  
-                options: {0: 'A', 1: 'B'}, 
                 width: '7%',
                 type: 'date',
-                title: 'Avslut'
+                title: 'Avslut',
+                display: function (data){
+                    return _setClassAndValue(data.record, "DateOfMembershipEnd", PERSON);
+                }       
             },
             NextCongregation: {
                 width: '15%',
@@ -101,16 +101,16 @@ $(document).ready(function () {
                 width: '7',
                 edit: false,
                 title: 'Status',
-                display: function (memberData){
-                    return '<p class="' + _getMemberStateClassName(memberData.record.PersonId) + '">' +  memberData.record.MemberState + '</p>';                    
-                }
+                display: function (data){
+                    return _setClassAndValue(data.record, "MemberState", PERSON);
+                }       
             },
             VisibleInCalendar: {
                 edit: 'true',
                 title: 'Kalender',
                 inputTitle: 'Synlig i adresskalendern',
                 width: '4%',
-                options:{ 0: '', 1: 'Ej synlig', 2: 'Synlig'}
+                options: _visibilityOptions()
             },
             Comment: {
                 type: 'textarea',
@@ -132,7 +132,7 @@ $(document).ready(function () {
             data.form.find('textarea[name=Comment]').css('width',inputFormFieldWidth);                                
 
             var dbox = document.getElementsByClassName('ui-dialog-title');            
-            for (i=0; i<dbox.length; i++)
+            for(var i=0; i<dbox.length; i++)
                 dbox[i].innerHTML='Uppdatera uppgifter för: ' + data.record.FirstName + ' ' + data.record.LastName;
         },
         formClosed: function (event, data){

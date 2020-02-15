@@ -1,3 +1,5 @@
+"use strict";
+
 $(document).ready(function () {
 
     $('#birthdays').jtable({
@@ -22,32 +24,32 @@ $(document).ready(function () {
             Name: {
                 title: 'Namn',
                 width: '15%',
-                display: function(data){
-                    return '<p class="keyValue">' + data.record.Name + '</p>'                    
-                }
+                display: function (data){
+                    return _setClassAndValue(data.record, "Name", PERSON);
+                }       
             },
             DateOfBirth: {
                 title: 'Född',
                 width: '7%',
                 type: 'date',
-                display: function(data){
-                    return '<p class="keyValue dateString">' + data.record.DateOfBirth + '</p>'                    
-                }
+                display: function (data){
+                    return _setClassAndValue(data.record, "DateOfBirth", PERSON);
+                }       
             },
             Age: {
                 title: 'Blir',
                 width: '5%',
-                display: function(data){
-                    return '<p class="numericString">' + data.record.Age + '</p>'                    
-                }
+                display: function (data){
+                    return _setClassAndValue(data.record, "Age", PERSON);
+                }       
             },
             NextBirthday: {
                 title: 'När',
                 width: '7%',
                 type: 'date',
-                display: function(data){
-                    return '<p class="dateString">' + data.record.NextBirthday + '</p>'                    
-                }
+                display: function (data){
+                    return _setClassAndValue(data.record, "NextBirthday", PERSON);
+                }       
             },
             MemberState: {
                 title: 'Status',               

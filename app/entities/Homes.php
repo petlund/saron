@@ -34,7 +34,8 @@ class Homes extends SuperEntity{
     
     function select(){
         switch ($this->selection){
-        case "homeOptions":
+        case "options":
+            $this->deleteEmptyHomes(); // clean up
             return $this->selectHomeOptions();       
         default:
             return $this->selectDefault();
@@ -52,13 +53,12 @@ class Homes extends SuperEntity{
     }
 
     function selectHomeOptions(){
-        $this->deleteEmptyHomes(); // clean up
 
         $where ="";
         if($this->HomeId===0){
             $sql = "SELECT 0 as Value, ' Inget hem' as DisplayText "; 
             $sql.= "Union "; 
-            $sql.= "SELECT -1 as Value, '  Nytt hem (Lägg till adress och hemtelefon)' as DisplayText ";
+            $sql.= "SELECT -1 as Value, '  Nytt hem' as DisplayText ";
             $sql.= "Union "; 
             $sql.= "select Id as Value, " . ADDRESS_ALIAS_LONG_HOMENAME;
         }
@@ -76,3 +76,4 @@ class Homes extends SuperEntity{
         $this->db->delete($deleteSql);
     }    
 }
+//create ALTER TABLE `Homes` ADD `Created` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `Letter`

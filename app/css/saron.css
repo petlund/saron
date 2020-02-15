@@ -101,6 +101,12 @@ h3 {
     
 }
 
+.saronMenuTable{
+    padding: 0px;
+    border: none;
+}
+
+
 .saron-about-text{
     list-style: none;
     width: 800px;
@@ -112,6 +118,19 @@ li{
 }
 ul{
     padding-left: 16px;
+}
+ #timerProgress {
+  width: 100%;
+  background-color: white;
+  border-color: gray;
+  border-style: solid;
+  border-width: 1px;    
+}
+
+#timerBar {
+  width: 10%;
+  height: 10px;
+  background-color: white;
 }
 
 #menu-bar {
@@ -269,8 +288,7 @@ ul{
 }
 
 
-/*p.tablevalue .numericString .dateString .mailLink .keyvalue{*/
-p.tablevalue{    
+.Residents, .FamilyName, .Address, .City, .Country, .Co, .Letter, .PreviousCongregation, .NextCongregation, .VisibleInCalendar, .Comment, .CongregationOfBaptism, .Baptister, .Email, .user_email, .MemberState, .LongHomeName, .Gender, .event_type{    
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
@@ -278,69 +296,37 @@ p.tablevalue{
     text-align: left;    
 }
 
-.numericString {
+.AgeInterval, .Phone, .Zip, .Mobile, .DateOfMembershipStart, .MembershipNo, .DateOfMembershipEnd, .DateOfBaptism, .DateOfDeath, .Age, .NextBirthday, .event_date, .number_of_members, .number_of_new_members, .number_of_finnished_members, .number_of_dead, .number_of_baptist_people, .avg_age, .avg_membership_time, .diff, .Amount{
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
     margin-left: 0;
     text-align: right;    
 }
-.dateString {
+.Home {
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
     margin-left: 0;
-    text-align: right;
+    text-align: center;    
 }
-.keyValue {
+.DateOfBirth, .year, .event_date {
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
     margin-left: 0;
     font-weight: bold;
+    text-align: right;
 }
-.mailLink {
+.LastName, .FirstName, .Name {
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
     margin-left: 0;
+    font-weight: bold;
+    text-align: left;
 }
-.keyvalue{
-    margin-top: 0;
-    margin-right: 0;
-    margin-bottom: 0;
-    margin-left: 0;
-}
-.home{
-    margin-top: 0;
-    margin-right: 0;
-    margin-bottom: 0;
-    margin-left: 0;
-}
-.people{
-    margin-top: 0;
-    margin-right: 0;
-    margin-bottom: 0;
-    margin-left: 0;
-}
-.user{
-    margin-top: 0;
-    margin-right: 0;
-    margin-bottom: 0;
-    margin-left: 0;
-}
-.baptism{
-    margin-top: 0;
-    margin-right: 0;
-    margin-bottom: 0;
-    margin-left: 0;
-}
-.member{
-    margin-top: 0;
-    margin-right: 0;
-    margin-bottom: 0;
-    margin-left: 0;
-}
+
 .jtable-data-row{
     vertical-align: top;
 }

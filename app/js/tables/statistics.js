@@ -1,5 +1,6 @@
+"use strict";
 
-var TABLE_ID = '#STATISTICS';
+const TABLE_ID = '#STATISTICS';
 
 $(document).ready(function () {
 
@@ -20,8 +21,8 @@ $(document).ready(function () {
                 key: true,
                 width: '10%',
                 display: function (data){
-                    return "<p class='numericString'>" + data.record.year + "</p>";
-                }
+                    return _setClassAndValue(data.record, "year", PERSON);
+                }       
             },
             number_of_members: {
                 edit: false,
@@ -29,77 +30,78 @@ $(document).ready(function () {
                 title: 'Medlemmar',
                 width: '10%',
                 display: function (data){
-                    return "<p class='numericString'>" + data.record.number_of_members + "</p>";
-                }
+                    return _setClassAndValue(data.record, "number_of_members", PERSON);
+                }       
             },
             number_of_new_members:  {
                 edit: false,
                 create: false, 
                 title: 'Nya',
+                width: '10%',
                 display: function (data){
-                    return "<p class='numericString'>" + data.record.number_of_new_members + "</p>";
-                }                               
+                    return _setClassAndValue(data.record, "number_of_new_members", PERSON);
+                }       
             },
             number_of_finnished_members:  {
                 edit: false,
                 create: false, 
                 title: 'Avslutade',
                 format: 'number',
-                width: '5%',
+                width: '10%',
                 display: function (data){
-                    return "<p class='numericString'>" + data.record.number_of_finnished_members + "</p>";
-                }                               
+                    return _setClassAndValue(data.record, "number_of_finnished_members", PERSON);
+                }       
             },
             number_of_dead:  {
                 edit: false,
                 create: false, 
                 title: 'Avlidna',
-                width: '5%',
+                width: '10%',
                 display: function (data){
-                    return "<p class='numericString'>" + data.record.number_of_dead + "</p>";
-                }                               
+                    return _setClassAndValue(data.record, "number_of_dead", PERSON);
+                }       
             },
             number_of_baptist_people:  {
                 edit: false,
                 create: false, 
                 title: 'Döpta',
-                width: '5%',
+                width: '10%',
                 display: function (data){
-                    return "<p class='numericString'>" + data.record.number_of_baptist_people + "</p>";
-                }                               
+                    return _setClassAndValue(data.record, "number_of_baptist_people", PERSON);
+                }       
             },
             avg_age:  {
                 edit: false,
                 create: false, 
                 title: 'Medelålder',
-                width: '5%',
+                width: '10%',
                 display: function (data){
-                    return "<p class='numericString'>" + data.record.avg_age + "</p>";
-                }                               
+                    return _setClassAndValue(data.record, "avg_age", PERSON);
+                }       
             },
             avg_membership_time:  {
                 edit: false,
                 create: false, 
                 title: 'Medelålder',
-                width: '5%',
+                width: '10%',
                 display: function (data){
-                    return "<p class='numericString'>" + data.record.avg_membership_time + "</p>";
-                }                               
+                    return _setClassAndValue(data.record, "avg_membership_time", PERSON);
+                }       
             },
             diff:  {
                 edit: false,
                 create: false, 
                 title: 'Differens',
-                width: '5%',
+                width: '10%',
                 display: function (data){
-                    return "<p class='numericString'>" + data.record.diff + "</p>";
-                }                               
+                    return _setClassAndValue(data.record, "diff", PERSON);
+                }       
             },
             Details: {
-                title: '',
+                title: 'Detaljer',
                 key: true,
                 sorting: false,
-                width: '20%',
+                width: '10%',
                 display: function(data){
                     var $imgDetails = $('<img align="right" src="/' + SARON_URI + 'app/images/member.png" title="Detaljer" />');
                     var YEAR =data.record.year.substring(0, 4);
@@ -121,27 +123,39 @@ $(document).ready(function () {
                                     title: 'Datum',
                                     key: true,
                                     display: function (data){
-                                        return "<p class='numericString'>" + data.record.event_date + "</p>";
-                                    }
+                                        return _setClassAndValue(data.record, "event_date", PERSON);
+                                    }       
                                 },
                                 LastName: {
-                                    title: 'Efternamn'
+                                    title: 'Efternamn',
+                                    display: function (data){
+                                        return _setClassAndValue(data.record, "LastName", PERSON);
+                                    }       
                                 },
                                 FirstName: {
-                                    title: 'Förnamn'
+                                    title: 'Förnamn',
+                                    display: function (data){
+                                        return _setClassAndValue(data.record, "FirstName", PERSON);
+                                    }       
                                 },
                                 DateOfBirth: {
                                     title: 'Födelsedatum',
                                     display: function (data){
-                                        return "<p class='numericString'>" + data.record.DateOfBirth + "</p>";
-                                    }
+                                        return _setClassAndValue(data.record, "DateOfBirth", PERSON);
+                                    }       
                                 },
                                 event_type: {
-                                    title: 'Händelse'
+                                    title: 'Händelse',
+                                    display: function (data){
+                                        return _setClassAndValue(data.record, "event_type", PERSON);
+                                    }       
                                 },
                                 Comment: {
                                     title: 'Notering',
-                                    width: '50%'
+                                    width: '50%',
+                                    display: function (data){
+                                        return _setClassAndValue(data.record, "Comment", PERSON);
+                                    }       
                                 }
                             }
                         }, 

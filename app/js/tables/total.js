@@ -1,5 +1,4 @@
-var inputFormWidth = '500px';
-var inputFormFieldWidth = '480px';
+"use strict";
 
 $(document).ready(function () {
 
@@ -94,12 +93,9 @@ $(document).ready(function () {
         $('#search_total').click();
 
         var deleteButtons = document.getElementsByClassName('jtable-delete-command-button');
-        for(i=0; i<deleteButtons.length; i++){
+        for(var i=0; i<deleteButtons.length; i++){
             deleteButtons[i].addEventListener("click", deleteButtonClicked(this),false);
             deleteButtons[i].attr('onclick', 'deleteButtonClicked(this);');
         }
 });
     
-function deleteButtonClicked(button){
-    console.log(button);
-}

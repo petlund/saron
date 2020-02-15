@@ -1,3 +1,4 @@
+"use strict";
 
 $(document).ready(function () {
 
@@ -28,9 +29,9 @@ $(document).ready(function () {
             user_email: {
                 title: 'Mail',
                 width: '20%',
-                display: function (data) {
-                    return _getMailLink(data.record.user_email, 0);
-                }
+                display: function (data){
+                    return _setMailClassAndValue(data.record, "user_email", PERSON);
+                },       
             },
             wp_otp: {
                 title: 'OTP',

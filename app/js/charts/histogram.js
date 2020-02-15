@@ -41,7 +41,7 @@ function createMembershipBarChart(chartData, chart){
     var maxAgeGroup = 22;//chartData.Records[chartData.Records.length-1].ageGroup;
     
     var currentAgeGroup = -1;
-    for(i = minAgeGroup; i <= maxAgeGroup; i++){
+    for(var i = minAgeGroup; i <= maxAgeGroup; i++){
         histogramLabels.push('' + (i * 5) + ' - ' + ((i+1)*5 - 1));
         mValue.push(0);
         fValue.push(0);
@@ -50,7 +50,7 @@ function createMembershipBarChart(chartData, chart){
     
     
     var all=0;
-    for(i = 0; i < chartData.Records.length; i++){
+    for(var i = 0; i < chartData.Records.length; i++){
         all += Number(chartData.Records[i].amount);
         if(chartData.Records[i].Gender === '1')
             mValue[chartData.Records[i].ageGroup] = chartData.Records[i].amount;

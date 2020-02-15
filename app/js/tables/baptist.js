@@ -1,5 +1,4 @@
-var inputFormWidth = '500px';
-var inputFormFieldWidth = '480px';
+"use strict";
 
 $(document).ready(function () {
   
@@ -13,21 +12,18 @@ $(document).ready(function () {
             defaultSorting: 'FamilyName ASC, DateOfBirthr ASC', //Set default sorting        
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php', 
-            //createAction: 
-            updateAction: function(postData) {
+            updateAction: function(data) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
                         url: '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=baptism',
                         type: 'POST',
                         dataType: 'json',
-                        data: postData,
+                        data: data,
                         success: function (data) {
                             $dfd.resolve(data);
                             if(data.Result !== 'ERROR'){
-                                var records = data['Records'];
-                                _updateMemberState(records);
+                                _updateFields(data.Records[0], "DateOfBaptism", PERSON);                                                
                             }
-                            
                         },
                         error: function () {
                             $dfd.reject();
@@ -35,7 +31,6 @@ $(document).ready(function () {
                     });
                 });
             }
-            //deleteAction: 
         },
         
         fields: { 
@@ -48,40 +43,37 @@ $(document).ready(function () {
                 title: 'Namn',
                 width: '15%',
                 edit: false,
-                display: function(data){
-                    return '<p class="keyValue">' + data.record.Name + '</p>';                    
-                }
+                display: function (data){
+                    return _setClassAndValue(data.record, "Name", PERSON);
+                }       
             },
             DateOfBirth: {
                 title: 'Född',
                 width: '7%',
                 type: 'date',
                 edit: false,
-                display: function(data){
-                    return '<p class="keyValue dateString">' + data.record.DateOfBirth + '</p>'                    
-                }
+                display: function (data){
+                    return _setClassAndValue(data.record, "DateOfBirth", PERSON);
+                }       
             },
             CongregationOfBaptismThis: {
                 list: false,
                 title: 'Döpt',
-                options: {0:'Nej', 1: 'Ja, Ange församling nedan.', 2:'Ja, ' + FullNameOfCongregation + '.'}
+                options: _baptistOptions()
             },
             CongregationOfBaptism: {
                 edit: true,
                 create: false,
                 width: '20%',
-                title: 'Dopförsamling',
-                display: function(data){
-                    if(data.record.CongregationOfBaptism!==null)
-                        return '<p class="' + _getBaptistConcregationClassName(data.record.PersonId) + '">' + data.record.CongregationOfBaptism + '</p>';
-                    else
-                        return '<p class="' + _getBaptistConcregationClassName(data.record.PersonId) + '"></p>';
-                }
+                title: 'Dopförsamling'
             },
             DateOfBaptism: {
                 width: '7%',
                 type: 'date',
-                title: 'Dopdatum'
+                title: 'Dopdatum',
+                display: function (data){
+                    return _setClassAndValue(data.record, "DateOfBaptism", PERSON);
+                }       
             },
             Baptister: {
                 width: '15%',
@@ -90,10 +82,7 @@ $(document).ready(function () {
             MemberState:{
                 title: 'Status',
                 width: '7%',
-                edit: false,
-                display: function (memberData){
-                    return '<p class="' + _getMemberStateClassName(memberData.record.PersonId) + '">' +  memberData.record.MemberState + '</p>';                    
-                }
+                edit: false
             },
             Comment: {
                 width: '34%',
@@ -116,7 +105,7 @@ $(document).ready(function () {
             data.form.find('select[name=CongregationOfBaptismThis]').change(function () {baptistFormAuto(data, this.value)});
 
             var dbox = document.getElementsByClassName('ui-dialog-title');            
-            for (i=0; i<dbox.length; i++)
+            for(var i=0; i<dbox.length; i++)
                 dbox[i].innerHTML='Uppdatera uppgifter för: ' + data.record.FirstName + ' ' + data.record.LastName;
         },
         formClosed: function (event, data){
@@ -133,20 +122,5 @@ $(document).ready(function () {
     $('#search_baptist').click();
 });
 
-function baptistFormAuto(data, selectedValue){
-        var inp = data.form.find('input[name=CongregationOfBaptism]');
-        if(selectedValue === '0'){
-            inp[0].value = "";                                      
-            inp[0].disabled=true;
-        }
-        else if(selectedValue === '1'){
-            inp[0].value = "";                                                                              
-            inp[0].disabled=false;
-        }
-        else{
-            inp[0].value = FullNameOfCongregation; //see util/js.php
-            inp[0].disabled=true;
-        }
-    }
                                 
     

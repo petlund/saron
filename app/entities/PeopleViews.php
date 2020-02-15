@@ -46,7 +46,7 @@ class PeopleViews {
     }
 
     function selectTotal(){
-        $selectPerson = "select People.Id as PersonId, concat('<b>'," . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ", '</b><BR>', DateOfBirth, if(DateOfDeath is null,'', concat (' -- ', DateOfDeath)), '<BR><B>Status: </B>', " . DATES_AS_MEMBERSTATES. ") as Person, ";
+        $selectPerson = "select People.Id as PersonId, concat('<b>'," . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ", '<BR>Född: </b>', DateOfBirth, if(DateOfDeath is null,'', concat (' -- ', DateOfDeath)), '<BR><B>Status: </B>', " . DATES_AS_MEMBERSTATES. ") as Person, ";
         $selectMember = "concat (";
         $selectMember.= "'<B>Medlemskap start: </B>', if(DateOfMembershipStart is null,'',DateOfMembershipStart), '<BR>', ";
         $selectMember.= "'<B>Medlemskap avslut: </B>', if(DateOfMembershipEnd is null, '',DateOfMembershipEnd ), '<BR>', ";
