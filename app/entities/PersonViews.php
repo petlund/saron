@@ -7,11 +7,11 @@ class PersonViews {
     function getPersonViewSql($tableview, $saronUser){
         switch ($tableview){
         case "member":
-            return $this->selectPeople() . " " . $saronUser->getRoleSql();
+            return $this->selectPeople() . ", " . $saronUser->getRoleSql(false);
         case "baptist":
             return $this->selectBirthday();
         default:    
-            return $this->selectPeople() . " " . $saronUser->getRoleSql();
+            return $this->selectPeople() . ", " . $saronUser->getRoleSql(false);
         }
     }    
 }

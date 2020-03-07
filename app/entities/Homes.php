@@ -44,11 +44,12 @@ class Homes extends SuperEntity{
 
 
     function selectDefault(){
-        $sqlWhere = "WHERE ";
         $filter = new HomesFilter();
+        $sqlSelect = SQL_STAR_HOMES . ", " . $this->saronUser->getRoleSql(true) . CONTACTS_ALIAS_RESIDENTS;
+        $sqlWhere = "WHERE ";
         $sqlWhere.= $filter->getHomesFilterSql($this->groupId);
         $sqlWhere.= $filter->getSearchFilterSql($this->uppercaseSearchString);
-        $result = $this->db->select($this->saronUser, SQL_STAR_HOMES . $this->saronUser->getRoleSql() . ", ". CONTACTS_ALIAS_RESIDENTS, "FROM Homes ", $sqlWhere, $this->getSortSql(), $this->getPageSizeSql());
+        $result = $this->db->select($this->saronUser, $sqlSelect, "FROM Homes ", $sqlWhere, $this->getSortSql(), $this->getPageSizeSql());
         return $result;        
     }
 
@@ -56,14 +57,14 @@ class Homes extends SuperEntity{
 
         $where ="";
         if($this->HomeId===0){
-            $sql = "SELECT 0 as Value, ' Inget hem' as DisplayText "; 
+            $sql = "SELECT 0 as Value, ' Nytt hem' as DisplayText "; 
             $sql.= "Union "; 
-            $sql.= "SELECT -1 as Value, '  Nytt hem' as DisplayText ";
+            $sql.= "SELECT -1 as Value, '  Inget hem' as DisplayText ";
             $sql.= "Union "; 
-            $sql.= "select Id as Value, " . ADDRESS_ALIAS_LONG_HOMENAME;
+            $sql.= "select Id as Value, " . getLongHomeNameSql(ALIAS_CUR_HOMES, "DisplayText", false);
         }
         else{
-            $sql.= "select Id as Value, " . ADDRESS_ALIAS_LONG_HOMENAME;
+            $sql.= "select Id as Value, " . getLongHomeNameSql(ALIAS_CUR_HOMES, "DisplayText", false);
             $where = "WHERE Value=" . $this->HomeId;
         }
         $result = $this->db->select($this->saronUser, $sql, "FROM Homes ", $where, "ORDER BY DisplayText ", "", "Options");    
@@ -76,4 +77,3 @@ class Homes extends SuperEntity{
         $this->db->delete($deleteSql);
     }    
 }
-//create ALTER TABLE `Homes` ADD `Created` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `Letter`

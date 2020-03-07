@@ -29,7 +29,7 @@ class Home extends Homes{
         $this->FamilyName = $FamilyName;
         $sqlInsert = "INSERT INTO Homes (FamilyNameEncrypt) VALUES ";
         $sqlInsert.= "(" . $this->getEncryptedSqlString($FamilyName) . ");";
-        $HomeId = $this->db->insert($sqlInsert, "Homes", "Id");
+        $HomeId = $this->db->insert($sqlInsert, ALIAS_CUR_HOMES, "Id");
         return $HomeId;
     }
     
@@ -49,14 +49,29 @@ class Home extends Homes{
         $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
         
         return $this->select();
-    }
-    
+    }    
 
     function select(){
-        $result = $this->db->select($this->saronUser, SQL_STAR_HOMES . $this->saronUser->getRoleSql() . ", ". ADDRESS_ALIAS_LONG_HOMENAME . ", " . NAMES_ALIAS_RESIDENTS, "FROM Homes ", "WHERE Id = " . $this->HomeId, "", "");
+        $sqlSelect = "SELECT "; 
+        $sqlSelect.= $this->saronUser->getRoleSql(true);
+        $sqlSelect.= $this->getHomeSelectSql(ALIAS_CUR_HOMES, $this->HomeId, false);
+        
+        $result = $this->db->select($this->saronUser, $sqlSelect, "FROM Homes ", "WHERE Id = " . $this->HomeId, "", "");
         return $result;        
     }
     
-    
+    function getHomeSelectSql($tableAlias, $homeId, $continue){
+        $sql.= getLongHomeNameSql($tableAlias, "LongHomeName", true);
+        $sql.= getSelectedFieldSql($tableAlias, "FamilyName", "FamilyNameEncrypt", "", true, true);
+        $sql.= getSelectedFieldSql($tableAlias, "Address", "AddressEncrypt", "", true, true);
+        $sql.= getSelectedFieldSql($tableAlias, "Zip", "Zip", "", false, true);
+        $sql.= getSelectedFieldSql($tableAlias, "City", "City", "", false, true);
+        $sql.= getSelectedFieldSql($tableAlias, "Country", "Country", "", false, true);
+        $sql.= getSelectedFieldSql($tableAlias, "Phone", "PhoneEncrypt", "", true, true);
+        $sql.= getSelectedFieldSql($tableAlias, "Letter", "Letter", "", false, true);
+        $sql.= getSelectedFieldSql($tableAlias, "HomeId", "Id", "", false, true);
+        $sql.= getResidentsSql($tableAlias, "Residents", $homeId, $continue);   
+        return $sql;
+    }
 
 }

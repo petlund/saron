@@ -47,25 +47,20 @@
         define("DATES_AS_MEMBERSTATES", " IF(UPPER(CONVERT(BINARY " . DECRYPTED_LASTNAME . " USING utf8)) like '%" . ANONYMOUS . "%', 'Anonymiserad', IF(DateOfDeath is not null, 'Avliden', IF(DateOfMemberShipStart is null, IF(DateOfBaptism is null and CongregationOfBaptism is null, 'Ej medlem', 'Dopregister'), IF(DateOfMemberShipEnd is null, 'Medlem', 'Dopregister')))) ");
         define("DATES_AS_ALISAS_MEMBERSTATES", DATES_AS_MEMBERSTATES . "as MemberState ");
 
-        $longHomeName = "concat(";
-        $longHomeName.= DECRYPTED_FAMILYNAME;
-        $longHomeName.= ", ' (', IF(";
-        $longHomeName.= DECRYPTED_ADDRESS;
-        $longHomeName.= " is null, 'Adress saknas', ";
-        $longHomeName.= DECRYPTED_ADDRESS;
-        $longHomeName.= "), ', ', IF(City is null, 'Stad saknas', City), ')') as LongHomeName ";
-        //"concat(FamilyName, ' (', IF(Address is null, 'Adress saknas', Address), ', ', IF(City is null, 'Stad saknas', City), ')') as LongHomeName "
-        define("ADDRESS_ALIAS_LONG_HOMENAME", $longHomeName);
+        define("ALIAS_CUR_HOMES", "Homes");
+        define("ALIAS_OLD_HOMES", "OldHome");
 
-        $longHomeNameMultiLine = "concat(";
-        $longHomeNameMultiLine.= DECRYPTED_FAMILYNAME;
-        $longHomeNameMultiLine.= ", '<BR>', IF(";
-        $longHomeNameMultiLine.= DECRYPTED_ADDRESS;
-        $longHomeNameMultiLine.= " is null, 'Adress saknas', ";
-        $longHomeNameMultiLine.= DECRYPTED_ADDRESS;
-        $longHomeNameMultiLine.= "), '<BR>', IF(concat(Zip, ' ', City) is null, 'PA/Stad saknas', concat(Zip, ' ', City))   ) as LongHomeName ";    
-        //"concat(FamilyName, '<BR>', IF(Address is null, 'Adress saknas', Address), '<BR>', IF(concat(Zip, ' ', City) is null, 'PA/Stad saknas', concat(Zip, ' ', City)), ')') as LongHomeName "
-        define("ADDRESS_ALIAS_LONG_HOMENAME_MULTILINE", $longHomeNameMultiLine);
+//        define("ADDRESS_ALIAS_LONG_HOMENAME", getLongHomeNameSql(ALIAS_CUR_HOMES, "LongHomeName", false));
+
+        
+//        $longHomeNameMultiLine = "concat(";
+//        $longHomeNameMultiLine.= DECRYPTED_FAMILYNAME;
+//        $longHomeNameMultiLine.= ", '<BR>', IF(";
+//        $longHomeNameMultiLine.= DECRYPTED_ADDRESS;
+//        $longHomeNameMultiLine.= " is null, 'Adress saknas', ";
+//        $longHomeNameMultiLine.= DECRYPTED_ADDRESS;
+//        $longHomeNameMultiLine.= "), '<BR>', IF(concat(Zip, ' ', City) is null, 'PA/Stad saknas', concat(Zip, ' ', City))   ) as LongHomeName ";    
+//        define("ADDRESS_ALIAS_LONG_HOMENAME_MULTILINE", $longHomeNameMultiLine);
 
         $ALL_PEOPLE_FIELDS = "People.Id as PersonId, ";
         $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_FIRSTNAME . ", ";
@@ -97,10 +92,94 @@
         define("FORMATTED_EMAILADDRESS", "if(" . DECRYPTED_EMAIL . " not like \"\", concat(\"<p class='mailLink'><a href='mailto:\"," . DECRYPTED_EMAIL . ",\"'>\", " . DECRYPTED_EMAIL . ", \"</a></p>\"),'') ");
         define("CONTACTS_ALIAS_RESIDENTS", "(SELECT GROUP_CONCAT(" . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . ", ': ', " . DATES_AS_MEMBERSTATES . ", IF(" . DECRYPTED_EMAIL . " is NULL, '', CONCAT(', ', " . DECRYPTED_EMAIL . ")), IF(" . DECRYPTED_MOBILE . " is NULL, '', CONCAT(', ', " . DECRYPTED_MOBILE . ")) SEPARATOR '<BR>') FROM People as r where Homes.Id = r.HomeId  AND DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' order by DateOfBirth) as Residents ");
         define("NAMES_ALIAS_RESIDENTS", "(SELECT GROUP_CONCAT(" . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . ", ' - ', " . DATES_AS_MEMBERSTATES . " SEPARATOR '<BR>') FROM People as r where Homes.Id = r.HomeId  AND DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' order by DateOfBirth) as Residents ");
+    } 
+
+
+
+    function getResidentsSql($tableAlias, $fieldAlias, $HomeId, $continue){
+        $sql = "(SELECT GROUP_CONCAT(";
+        $sql.= getSelectedFieldSql($tableAlias . "Res", "", "FirstNameEncrypt", "", true, false);
+        $sql.= ", ' ', ";
+        $sql.= getSelectedFieldSql($tableAlias . "Res", "", "LastNameEncrypt", "", true, false);
+        $sql.= ", ' - ', ";
+        $sql.= DATES_AS_MEMBERSTATES;
+        $sql.= " SEPARATOR '<BR>') ";
+        $sql.= "FROM People as " . $tableAlias . "Res ";
+        $sql.= "where HomeId = " . $HomeId . " AND DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' ";
+        $sql.= "order by DateOfBirth) as ";
+        
+        if(strlen($tableAlias)>0 && $tableAlias !== ALIAS_CUR_HOMES){
+            $sql.= $tableAlias . "_";
+        }
+        
+        $sql.= $fieldAlias;
+
+        if($continue){
+            $sql.= ", ";
+        }
+        else{
+            $sql.= " ";            
+        }
+        return $sql;
     }
     
+    
+    function getLongHomeNameSql($tableAlias, $fieldAlias, $continue){
+        $sql.= "IF(" . $tableAlias . ".Id is null, 'Inget hem', ";
+        $sql.= "concat(";
+        $sql.= getSelectedFieldSql($tableAlias, "", "FamilyNameEncrypt", "", true, false);
+        $sql.= ",' (',";
+        $sql.= getSelectedFieldSql($tableAlias, "", "AddressEncrypt", "Adress saknas", true, false);
+        $sql.= ",', ', ";
+        $sql.= getSelectedFieldSql($tableAlias, "", "City", "Stad saknas", false, false);
+        $sql.= ",') ')) as ";
+        
+        if(strlen($tableAlias)>0 && $tableAlias !== ALIAS_CUR_HOMES){
+            $sql.= $tableAlias . "_";
+        }
+        
+        $sql.= $fieldAlias;
 
+        if($continue){
+            $sql.= ", ";
+        }
+        else{
+            $sql.= " ";            
+        }
 
+        return $sql;
+    }
+    
+    function getSelectedFieldSql($tableAlias, $fieldAlias, $fieldName, $nullValue, $encrypt, $continue){
+        $sql = "";
+        $sqlField = $tableAlias . "." . $fieldName;
+            
+        if($encrypt){
+            $sql = "SUBSTR(AES_DECRYPT(" . $sqlField . ", " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")";
+        }
+        else{
+            $sql = $sqlField;            
+        }
+        
+        if(strlen($nullValue) > 0){
+            $sql = "IF(" . $sql . " is null, '" . $nullValue . "', " . $sql . ")";
+        }
 
-
- 
+        if(strlen($fieldAlias)>0){
+            if(strlen($tableAlias)>0 && $tableAlias !== ALIAS_CUR_HOMES){            
+                $sql.= " as " . $tableAlias . "_" . $fieldAlias;
+            }
+            else{
+                $sql.= " as " . $fieldAlias;                
+            }
+        }
+      
+        if($continue){
+           $sql.= ", "; 
+        }
+        else{
+           $sql.= " ";             
+        }
+        return $sql; 
+    }
+    

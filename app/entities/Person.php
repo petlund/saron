@@ -43,7 +43,9 @@ class Person extends People{
         if($this->PersonId === 0){
             $this->PersonId = (int)filter_input(INPUT_GET, "PersonId", FILTER_SANITIZE_NUMBER_INT);
         }
+        
         $this->HomeId = (int)filter_input(INPUT_POST, "HomeId", FILTER_SANITIZE_NUMBER_INT);
+        
         $this->OldHomeId = (int)filter_input(INPUT_POST, "OldHomeId", FILTER_SANITIZE_NUMBER_INT);
         if($this->OldHomeId === 0){
             $this->OldHomeId = (int)filter_input(INPUT_GET, "OldHomeId", FILTER_SANITIZE_NUMBER_INT);
@@ -113,7 +115,7 @@ class Person extends People{
             $this->Mobile = null;
         }
 
-        if($this->HomeId === -1){
+        if($this->HomeId === 0){
             $this->home = new Home($this->db, $this->saronUser);
             $this->HomeId = $this->home->create($this->LastName);
         }
@@ -216,28 +218,23 @@ class Person extends People{
     }    
     
     function selectDefault($rec){
-        $sqlSelect = SQL_STAR_PEOPLE . $this->saronUser->getRoleSql() . ", ";
-        $sqlSelect.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
-        $sqlSelect.= ADDRESS_ALIAS_LONG_HOMENAME . ", ";  
-        $sqlSelect.= DECRYPTED_ALIAS_PHONE . ", "; 
+        $home = new Home($this->db, $this->saronUser);
+        $sqlSelect = SQL_STAR_PEOPLE . ", " . $this->saronUser->getRoleSql(true);
         $sqlSelect.= DATES_AS_ALISAS_MEMBERSTATES . ", ";
-        $sqlSelect.= $this->OldHomeId . " as OldHomeId, ";
-        $sqlSelect.= $this->getResidentsSql($this->OldHomeId);            
-        $sqlSelect.= NAMES_ALIAS_RESIDENTS;
-        $sqlWhere = "WHERE People.Id = " . $this->PersonId;
-        $result =  $this->db->select($this->saronUser, $sqlSelect, SQL_FROM_PEOPLE_LEFT_JOIN_HOMES, $sqlWhere, "", "", $rec);            
+        $sqlSelect.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
+        $sqlSelect.= $home->getHomeSelectSql(ALIAS_CUR_HOMES, $this->HomeId, true);
+        $sqlSelect.= $home->getHomeSelectSql(ALIAS_OLD_HOMES, $this->OldHomeId, false);
+                  
+        $sqlFrom ="FROM People left outer join Homes on People.HomeId=Homes.Id ";
+        $sqlFrom.="left outer join Homes as " . ALIAS_OLD_HOMES . " on " .  ALIAS_OLD_HOMES . ".Id = " . $this->OldHomeId . " ";
+        
+        $sqlWhere = "WHERE ";
+        $sqlWhere.= "People.Id = " . $this->PersonId;
+        
+        $result =  $this->db->select($this->saronUser, $sqlSelect, $sqlFrom, $sqlWhere, "", "", $rec);            
         return $result;
     }
     
-    function getResidentsSql($HomeId){
-        $sql = "(SELECT GROUP_CONCAT(" . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . ", ' - ', " . DATES_AS_MEMBERSTATES . " SEPARATOR '<BR>') ";
-        $sql.= "FROM People as r ";
-        $sql.= "where HomeId = " . $HomeId . " AND DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' ";
-        $sql.= "order by DateOfBirth) as ResidentsOldHome, ";
-        return $sql;
-    }
-
-
     function selectNextMembershipNo(){
         
         $sql = "SELECT 0 as Value, '[Inget medlemsnummer]' as DisplayText, 1 as ind ";

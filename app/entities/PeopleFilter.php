@@ -52,7 +52,14 @@ class PeopleFilter {
                 return "(DateOfMembershipStart is null and DateOfMembershipEnd is null) or ((DateOfMembershipEnd is not null)) and DateOfDeath is null and (" . DECRYPTED_LASTNAME . " NOT like '" . ANONYMOUS . "') ";
             case 15:
                 //underlag för anonymisering nästa år
-                return "(DateOfMembershipStart is null and DateOfMembershipEnd is null) or ((DateOfMembershipEnd is not null)) and DateOfDeath is null and (" . DECRYPTED_LASTNAME . " NOT like '" . ANONYMOUS . "') and (EXTRACT(YEAR FROM DateOfMembershipEnd) <> EXTRACT(YEAR FROM Now())) ";
+                $sqlWhere = DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "%' and DateOfDeath is null and (";
+                $sqlWhere.= "DateOfMembershipStart is null and DateOfMembershipEnd is null and DateOfBaptism is null ";
+                $sqlWhere.= "or ";
+                $sqlWhere.= "DateOfMembershipEnd is not null and (EXTRACT(YEAR FROM DateOfMembershipEnd) <> EXTRACT(YEAR FROM Now())) ";
+                $sqlWhere.= "or ";
+                $sqlWhere.= "DateOfBaptism is not null and (EXTRACT(YEAR FROM DateOfBaptism) <> EXTRACT(YEAR FROM Now())) ";
+                $sqlWhere.= ")";
+                return $sqlWhere; 
             case 16:
                 //anonymiserade
                 return "(" . DECRYPTED_LASTNAME . " like '" . ANONYMOUS . "') ";

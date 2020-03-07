@@ -4,8 +4,9 @@ require_once SARON_ROOT . "app/database/db.php";
 require_once SARON_ROOT . "app/access/wp-authenticate.php";
 
 function ping(){
+    $db = null;
     $saronUser = new SaronUser(wp_get_current_user());    
-
+    
     $ping =  "Databas: " . DATABASE;
     try{
         $db = new db();

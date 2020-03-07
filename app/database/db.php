@@ -138,7 +138,7 @@ class db {
             return $this->selectSeparate($saronUser, $sqlSelect, $sqlCount, $responstype);
         }
         catch(Exception $error){
-            $this->php_dev_error_log("select", $select);
+            $this->php_dev_error_log("Query select", $sqlSelect);
             throw new Exception($error->getMessage());
         }
     } 
@@ -222,7 +222,7 @@ class db {
         $jTableResult['user_role'] = $saronUser->getRole();
 
         $jsonResult = json_encode($jTableResult);
-        
+
         if($jsonResult===false){
             $this->php_dev_error_log("processRowSet", "");
             throw new Exception($this->jsonErrorMessage("Error i json_encode funktionen!", null, " -- processRowSet"));

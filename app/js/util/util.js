@@ -5,6 +5,7 @@
 const HOME = 1;
 const OLD_HOME = 3;
 const PERSON = 2;
+const OLD_HOME_PREFIX = "OldHome_";
 const NO_HOME = "Inget hem";
 const inputFormWidth = '500px';
 const inputFormFieldWidth = '480px';
@@ -67,10 +68,16 @@ function _setImageClass(record, field, src, type){
 
 
 function _getClassName_Id(record, field, type){
-    if(record.HomeId === -1 && type === HOME) // new Home HomeId from DB
-        return field + '_' + _getId(record, type);
-
     return field + '_' + _getId(record, type);
+}
+
+
+function getShortFieldName(field){
+    var pos = field.indexOf("_");
+    if(pos > 0)
+        return  field.substring(pos + 1);
+    
+    return field;
 }
 
 
@@ -81,38 +88,41 @@ function _styleSaronValue(clazz, val, altValue){
     if(clazz === null)
         return val;
     
-    return '<p class="' + clazz +'">' + val + '</p>';
+    return '<p class="' + clazz + '">' + val + '</p>';
 }
 
 
 function _getId(record, type){
     if(type === HOME)
-        if(record.HomeId === "-1")
+        if(record.HomeId === "0")
             return 'H' + localStorage.getItem('newHomeId')
         else
             return 'H' + record.HomeId;
     else if(type === OLD_HOME)
-        return 'H' + record.OldHomeId;
+        return 'H' + record[OLD_HOME_PREFIX + 'HomeId'];
     else if(type === PERSON)
         return 'P' + record.PersonId;
     else 
-        return -1;
+        return 0;
+}
+
+
+function _updatePersonChildHomeId(record){
+    
 }
 
 
 function _updateFields(record, field, type){
     var elementValue;
     
-    if(type === OLD_HOME)
-        elementValue = record["ResidentsOldHome"];
-    else if(field === "VisibleInCalendar")
+    if(field === "VisibleInCalendar")
         elementValue = _getVisibilityOption(record[field]);  
-    else if(field === "LongHomeName" && record.HomeId === null)
-        elementValue = NO_HOME;  
     else
-        elementValue = record[field];
- 
-    
+        if(type === OLD_HOME)
+            elementValue = record[OLD_HOME_PREFIX + field];
+        else
+            elementValue = record[field];
+  
     var className_Id = _getClassName_Id(record, field, type);
     var element = document.getElementsByClassName(className_Id);
     for(var i = 0; i<element.length;i++)
@@ -121,7 +131,7 @@ function _updateFields(record, field, type){
 
 
 function _closeEmptyOldHome(record, field, type){
-    if(record.ResidentsOldHome !== null && record.DateOfDeath === null)
+    if(record.OldHome_Residents !== null && record.DateOfDeath === null)
         return;
     
 

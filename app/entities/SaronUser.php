@@ -67,15 +67,25 @@ class SaronUser {
     }
     
 
-    function getRoleSql(){
+    function getRoleSql($continue){
         for($i = 0; $i < count($this->user->roles); $i++){
             if($this->user->roles[$i]===SARON_ROLE_PREFIX . SARON_ROLE_EDITOR){
-                return ", '" . SARON_ROLE_EDITOR . "' as user_role ";                
+                if($continue){
+                    return "'" . SARON_ROLE_EDITOR . "' as user_role, ";                
+                }
+                else{
+                    return "'" . SARON_ROLE_EDITOR . "' as user_role ";                    
+                }
             }
         }
         for($i = 0; $i < count($this->user->roles); $i++){
             if($this->user->roles[$i]===SARON_ROLE_PREFIX . SARON_ROLE_VIEWER){
-                return ", '" . SARON_ROLE_VIEWER . "' as user_role ";                
+                if($continue){
+                    return "'" . SARON_ROLE_VIEWER . "' as user_role, ";
+                }
+                else{
+                    return "'" . SARON_ROLE_VIEWER . "' as user_role ";                    
+                }
             }
         }   
         return "NO ROLE";

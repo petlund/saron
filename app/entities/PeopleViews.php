@@ -7,25 +7,30 @@ class PeopleViews {
     function getPeopleViewSql($tableview, $saronUser){
         switch ($tableview){
         case "people":
-            return $this->selectPeople() . " " . $saronUser->getRoleSql();
+            return $this->selectPeople() . ", " . $saronUser->getRoleSql(false);
         case "birthdays":
             return $this->selectBirthday();
         case "member":
-            return SQL_STAR_PEOPLE . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . DATES_AS_ALISAS_MEMBERSTATES . " " . $saronUser->getRoleSql();
+            return SQL_STAR_PEOPLE . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . DATES_AS_ALISAS_MEMBERSTATES . ", " . $saronUser->getRoleSql(false);
         case "baptist":
-            return SQL_STAR_PEOPLE . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . DATES_AS_ALISAS_MEMBERSTATES .  " " . $saronUser->getRoleSql();
+            return SQL_STAR_PEOPLE . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . DATES_AS_ALISAS_MEMBERSTATES .  ", " . $saronUser->getRoleSql(false);
         case "keys":
-            return "Select People.Id as PersonId, KeyToExp, KeyToChurch, DateOfBirth, " . DECRYPTED_ALIAS_COMMENT_KEY . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . DATES_AS_ALISAS_MEMBERSTATES  . " " . $saronUser->getRoleSql();
+            return "Select People.Id as PersonId, KeyToExp, KeyToChurch, DateOfBirth, " . DECRYPTED_ALIAS_COMMENT_KEY . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . DATES_AS_ALISAS_MEMBERSTATES  . ", " . $saronUser->getRoleSql(false);
         case "total":
-            return $this->selectTotal() . " " . $saronUser->getRoleSql();
+            return $this->selectTotal() . ", " . $saronUser->getRoleSql(false);
         default:    
-            return $this->selectPeople() . " " . $saronUser->getRoleSql();
+            return $this->selectPeople() . ", " . $saronUser->getRoleSql(false);
         }
     }
     
     
     function selectPeople(){
-        return SQL_STAR_PEOPLE . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . ADDRESS_ALIAS_LONG_HOMENAME . ", "  . DECRYPTED_ALIAS_PHONE . ", " . DATES_AS_ALISAS_MEMBERSTATES;
+        $sql = SQL_STAR_PEOPLE . ", ";
+        $sql.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
+        $sql.= getLongHomeNameSql(ALIAS_CUR_HOMES, "LongHomeName", true);
+        $sql.= DECRYPTED_ALIAS_PHONE . ", ";
+        $sql.= DATES_AS_ALISAS_MEMBERSTATES;
+        return $sql;
     }
 
 

@@ -25,7 +25,6 @@ $(document).ready(function () {
                             $dfd.resolve(data);
                             if(data.Result !== 'ERROR'){
                                 var records = data['Records'];
-                                //Update news
                                 _updateNewsRecord(records);
                             }
                         },
