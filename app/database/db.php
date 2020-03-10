@@ -144,13 +144,15 @@ class db {
     } 
     
     public function selectSeparate($saronUser, $sqlSelect, $sqlCount, $responstype="Records"){
-        if(!$listResult = $this->connection->query($sqlSelect)){
+        $listResult = $this->connection->query($sqlSelect);
+        if(!$listResult){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
             $this->php_dev_error_log("selectSeparate 1 ", $sqlSelect);
             throw new Exception($this->jsonErrorMessage("SQL-Error in select /list/ statement!", null, $technicalErrMsg));
         }
-
-        if(!$countResult = $this->connection->query($sqlCount)){
+        
+        $countResult = $this->connection->query($sqlCount);
+        if(!$countResult){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
             $this->php_dev_error_log("selectSeparate 2 ", $sqlSelect);
             throw new Exception($this->jsonErrorMessage("SQL-Error in select count statement!", null, $technicalErrMsg));
