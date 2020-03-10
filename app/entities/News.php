@@ -36,7 +36,7 @@ class News extends SuperEntity{
         $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "')";
         
         $id = $this->db->insert($sqlInsert, "News", "id");
-        return $this->select($id);
+        return $this->select($id, "Record");
     }
     
     
