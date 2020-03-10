@@ -89,8 +89,6 @@ class Statistics extends SuperEntity{
 
         $sqlCount = "select " . ($interval + 1) . " as c"; 
 
-        error_log($sql);
-        
         $result = $this->db->selectSeparate($this->saronUser, $sql, $sqlCount);    
         return $result;
     }
