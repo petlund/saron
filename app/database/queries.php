@@ -105,7 +105,16 @@
         $sql.= DATES_AS_MEMBERSTATES;
         $sql.= " SEPARATOR '<BR>') ";
         $sql.= "FROM People as " . $tableAlias . "Res ";
-        $sql.= "where HomeId = " . $HomeId . " AND DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' ";
+        $sql.= "where HomeId = ";
+
+        if($HomeId !== null){
+            $sql.= $HomeId . " "; 
+        } 
+        else{
+            $sql.= "null ";             
+        }
+
+        $sql.= "AND DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' ";
         $sql.= "order by DateOfBirth) as ";
         
         if(strlen($tableAlias)>0 && $tableAlias !== ALIAS_CUR_HOMES){
