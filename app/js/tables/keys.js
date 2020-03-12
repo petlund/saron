@@ -25,18 +25,18 @@ $(document).ready(function () {
                 list: true,
                 create: false,
                 edit: false,
-                display: function (data) {
-                    return _styleSaronKeyString(data.record.Name);                    
-                }          
+                display: function (data){
+                    return _setClassAndValue(data.record, "Name", PERSON);
+                }                 
             },
             DateOfBirth: {
                 title: 'Född',
                 edit: false,
                 width: '5%',
                 type: 'date',
-                display: function (data) {
-                    return _styleSaronKeyDateString(data.record.DateOfBirth);                    
-                }          
+                display: function (data){
+                    return _setClassAndValue(data.record, "DateOfBirth", PERSON);
+                }       
             },
             MemberState:{
                 edit: false,
@@ -48,27 +48,22 @@ $(document).ready(function () {
             KeyToChurch: {
                 edit: true,
                 create: true, 
-                title: 'Kyrkan',
+                title: 'Kodad nyckel',
                 width: '5%',
-                display: function (data){
-                    if(data.record.KeyToChurch === '2')
-                        return "<p class='booleanString'>Ja</p>";
-                    else
-                        return '';
-                }
+                 display: function (data){
+                    return _setClassAndValue(data.record, "KeyToChurch", PERSON);
+                },                  
+               options: _keyOptions()
             },
             KeyToExp: {
                 edit: true, 
                 create: true, 
-                title: 'Expedition',
+                title: 'Vanlig nyckel',
                 width: '5%',
-                style: 'align: right',
                 display: function (data){
-                    if(data.record.KeyToExp === '2')
-                        return "<p class='booleanString'>Ja</p>";
-                    else
-                        return '';
-                },
+                    return _setClassAndValue(data.record, "KeyToExp", PERSON);
+                },                  
+                options: _keyOptions()
             },
             CommentKey: {
                 create: false,

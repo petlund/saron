@@ -25,6 +25,8 @@ function refreschTableAndSetViewLatestUpdate(){
 function _setClassAndValue(record, field, type){
     if(field === "VisibleInCalendar")
         return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), _getVisibilityOption(record[field]), '');  
+    else if(field === "KeyToChurch" || field === "KeyToExp")
+        return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), _getKeyOption(record[field]), '');  
     else
         return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), record[field], '');    
 }
@@ -167,6 +169,15 @@ function _visibilityOptions(){
 
 function _letterOptions(){
     return { 0 : '', 1 : 'Ja'};
+}
+
+function _getKeyOption(i){
+    var ko = _keyOptions();
+    return ko[i];
+}
+
+function _keyOptions(){
+    return {1 : '', 2 : 'Ja'};
 }
 
 
