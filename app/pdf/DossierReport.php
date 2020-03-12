@@ -174,13 +174,13 @@ function createDossier(TCPDF $pdf, $PersonId){
                 $Gender = "Kvinna";
         }                            
         $pdf->MultiCell($rightColWidt, 5, $Gender, 0, 'L', 0, 1, '', '', true, 0, false, true, 10, 'T'); 
-        $pdf->MultiCell($leftColWidth, 5, "Kyrknyckel", 0, 'L', 0, 0, '', '', true, 0, false, true, 10, 'T');
+        $pdf->MultiCell($leftColWidth, 5, "Kodad nyckel", 0, 'L', 0, 0, '', '', true, 0, false, true, 10, 'T');
         $Key1="Nej";
         if($aRow['KeyToChurch'] == 2){
             $Key1="Ja";
         }
         $pdf->MultiCell($rightColWidt, 5, $Key1, 0, 'L', 0, 1, '', '', true, 0, false, true, 10, 'T'); 
-        $pdf->MultiCell($leftColWidth, 5, "Expeditionsnyckel", 0, 'L', 0, 0, '', '', true, 0, false, true, 10, 'T'); 
+        $pdf->MultiCell($leftColWidth, 5, "Vanlig nyckel", 0, 'L', 0, 0, '', '', true, 0, false, true, 10, 'T'); 
         $Key2="Nej";
         if($aRow['KeyToExp'] == 2){
             $Key2="Ja";

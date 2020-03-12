@@ -81,8 +81,8 @@ class PeopleViews {
 
         $selectOther = "concat (";
         $selectOther.= "'<B>Brevutskick: </B>', if(Letter=1,'Ja','Nej'), '<BR>', ";
-        $selectOther.= "'<B>Kyrknyckel: </B>', if(KeyToChurch=0,'Nej','Ja'), '<BR>', ";
-        $selectOther.= "'<B>Kyrknyckel (Exp): </B>', if(KeyToExp=0,'Nej', 'Ja'), '<BR>', ";
+        $selectOther.= "'<B>Kodad nyckel: </B>', if(KeyToChurch=0,'Nej','Ja'), '<BR>', ";
+        $selectOther.= "'<B>Vanlig nyckel: </B>', if(KeyToExp=0,'Nej', 'Ja'), '<BR>', ";
         $selectOther.= "'<B>Kommentar (Nyckel): </B>', if(CommentKeyEncrypt is null, ''," . DECRYPTED_COMMENT_KEY . "), '<BR>', ";
         $selectOther.= "'<B>Synlig i adresskalender: </B>', if(VisibleInCalendar=2,'Ja','Nej'), '<BR>', ";
         $selectOther.= "'<B>Kön: </B>', IF(Gender=0,'-', IF(Gender=1,'Man','Kvinna')) ";
