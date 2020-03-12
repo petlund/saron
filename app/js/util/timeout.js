@@ -1,63 +1,43 @@
 /* global SARON_URI, green */
 
 "use strict";
-const t0 = 300; //seconds
-var t;
+const t0 = 300; //timer time in seconds
+const LAST_ACTIVITY_TIMESTAMP = 'lastActivityTimeStamp';
+localStorage.setItem(LAST_ACTIVITY_TIMESTAMP, new Date().getTime());
     
     $(document).ready(function () {
 
-        setInterval(function(){ tick(); }, 1000);
-        reset();
+        setInterval(function(){ checkTimeDiff(); }, 1000);
+        newTimeStamp();
         //Comment
         document.addEventListener('mousemove',function (){
-            reset();
+            newTimeStamp();
         }); 
         document.addEventListener('click',function (){
-            reset();
+            newTimeStamp();
         }); 
         document.addEventListener('keypress',function (){
-            reset();
+            newTimeStamp();
         });
     });
 
 
 
-    function reset(){
-        t=0;
+    function newTimeStamp(){
+        localStorage.setItem('lastActivityTimeStamp', new Date().getTime());
     }
 
-    function tick(){
-        t++;
+
+    function checkTimeDiff(){
+        var diff = (new Date().getTime() - localStorage.getItem(LAST_ACTIVITY_TIMESTAMP))/1000;
         
-        if(t > t0){
-            reset();
+        if(diff > t0){
+            newTimeStamp();
             window.location='/' + SARON_URI + 'app/access/login.php?logout=true'; 
         } 
-        updateProgressbar(t);
+        updateProgressbar(diff);
     }
 
-
-    function eventFire(el, etype){
-        if (el.fireEvent) {
-            el.fireEvent('on' + etype);
-        } 
-        else {
-            var evObj = document.createEvent('Events');
-            evObj.initEvent(etype, true, false);
-            el.dispatchEvent(evObj);
-        }
-    }
-    
-    
-    window.addEventListener("oldURL", function (event) {
-        var e = event.toString();
-        console.log(e);
-//        var url ='/' + SARON_URI + 'app/access/login.php?logout=true'; 
-//        var xmlHttp = new XMLHttpRequest();
-//        xmlHttp.open( "GET", url, false ); // false for synchronous request
-//        xmlHttp.send( null );
-//        return xmlHttp.responseText;
-    });
 
     function updateProgressbar(t) {
         var elem = document.getElementById("timerBar");
