@@ -1,13 +1,15 @@
 /* global SARON_URI, green */
 
 "use strict";
-const t0 = 300; //timer time in seconds
+const t0 = 10; //timer time in seconds
 const LAST_ACTIVITY_TIMESTAMP = 'lastActivityTimeStamp';
+var timeout
 localStorage.setItem(LAST_ACTIVITY_TIMESTAMP, new Date().getTime());
     
     $(document).ready(function () {
-
-        setInterval(function(){ checkTimeDiff(); }, 1000);
+        timeout = false;
+        updateProgressbar(t0);
+        setInterval(function(){ checkTimerDiff(); }, 1000);
         newTimeStamp();
         //Comment
         document.addEventListener('mousemove',function (){
@@ -28,14 +30,15 @@ localStorage.setItem(LAST_ACTIVITY_TIMESTAMP, new Date().getTime());
     }
 
 
-    function checkTimeDiff(){
+    function checkTimerDiff(){
         var diff = (new Date().getTime() - localStorage.getItem(LAST_ACTIVITY_TIMESTAMP))/1000;
-        
-        if(diff > t0){
-            newTimeStamp();
-            window.location='/' + SARON_URI + 'app/access/login.php?logout=true'; 
-        } 
-        updateProgressbar(diff);
+        if(diff > t0 && !timeout){
+            timeout=true;
+            window.location.replace('/' + SARON_URI + 'app/access/login.php?logout=true'); 
+            updateProgressbar(t0);
+        }
+        else
+            updateProgressbar(diff);
     }
 
 
