@@ -1,5 +1,3 @@
-/* global SARON_URI, FullNameOfCongregation */
-
 "use strict";
 
 const HOME = 1;
@@ -38,10 +36,6 @@ function _setClassAndValuePrefix(record, field, type, prefix){
 
 
 function _setClassAndValueAltNull(record, field, nullValue, type){
-//    if(field === "Email" || field === "user_email"){
-//        return _setMailClassAndValue(record, field, nullValue, type);
-//    }
-//    else    
         return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), record[field], nullValue);    
 }
 
