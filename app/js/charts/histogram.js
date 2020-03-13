@@ -38,7 +38,7 @@ function createMembershipBarChart(chartData, chart){
     
     var age = chartData.Records[0].age;
     var minAgeGroup = 0;//chartData.Records[0].ageGroup;
-    var maxAgeGroup = 22;//chartData.Records[chartData.Records.length-1].ageGroup;
+    var maxAgeGroup = 22;//chartData.Records[chartData.Records.length - 1].ageGroup;
     
     var currentAgeGroup = -1;
     for(var i = minAgeGroup; i <= maxAgeGroup; i++){
