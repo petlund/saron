@@ -3,6 +3,7 @@
 const HOME = 1;
 const OLD_HOME = 3;
 const PERSON = 2;
+const NEW_HOME_ID = 'newHomeId';
 const OLD_HOME_PREFIX = "OldHome_";
 const NO_HOME = "Inget hem";
 const inputFormWidth = '500px';
@@ -25,6 +26,8 @@ function _setClassAndValue(record, field, type){
         return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), _getVisibilityOption(record[field]), '');  
     else if(field === "KeyToChurch" || field === "KeyToExp")
         return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), _getKeyOption(record[field]), '');  
+    else if(field === "Letter")
+        return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), _getLetterOption(record[field]), '');  
     else
         return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), record[field], '');    
 }
@@ -113,6 +116,10 @@ function _updateFields(record, field, type){
     
     if(field === "VisibleInCalendar")
         elementValue = _getVisibilityOption(record[field]);  
+    else if(field === "Letter")
+        elementValue = _getLetterOption(record[field]);  
+    else if(field === "KeyToChurch" || field === "KeyToExp")
+        elementValue = _getKeyOption(record[field]);  
     else
         if(type === OLD_HOME)
             elementValue = record[OLD_HOME_PREFIX + field];
@@ -160,6 +167,11 @@ function _visibilityOptions(){
         return { 0: '', 1: 'Ej synlig', 2: 'Synlig'};
 }
 
+
+function _getLetterOption(i){
+    var lo = _letterOptions();
+    return lo[i];
+}
 
 function _letterOptions(){
     return { 0 : '', 1 : 'Ja'};
