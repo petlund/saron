@@ -73,7 +73,11 @@ class Homes extends SuperEntity{
     
     
     function deleteEmptyHomes(){
-        $deleteSql = "delete from Homes where Homes.Id not in (select Homeid from People where HomeId is not null group by HomeId)";
+        $oldHomeIdString = "";
+        if($this->HomeId > 0){
+            "and HomeId is not " . $this->HomeId; 
+        }
+        $deleteSql = "delete from Homes where Homes.Id not in (select Homeid from People where HomeId is not null " . $oldHomeIdString . " group by HomeId)";
         $this->db->delete($deleteSql);
     }    
 }
