@@ -61,7 +61,7 @@
                         <input style='width: 100%' type="text" autocomplete="off" placeholder="Användarnamn" name="log"/><BR>
                         <input style='width: 100%' type="password" autocomplete="off" placeholder="Lösenord" name="pwd"/><BR>
                         <input style='width: 100%' type="text" autocomplete="off" placeholder="OTP code" name="wp_otp_code"/>
-                       <button type="submit" value="Submit" id="loginButton" disabled="true" style="align: right">Logga in</button>
+                       <button type="submit" value="Submit" id="loginButton" disabled="true" style="text-align: right">Logga in</button>
                     </form>
 
                     <p  class='saronSmallText'><a href="/<?php echo WP_URI;?>wp-login.php?action=lostpassword">Glömt lösenordet?</a></p>
