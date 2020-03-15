@@ -3,12 +3,12 @@
 "use strict";
 const t0 = 300; //timer time in seconds
 const LAST_ACTIVITY_TIMESTAMP = 'lastActivityTimeStamp';
-var timeout
+var timeout;
 localStorage.setItem(LAST_ACTIVITY_TIMESTAMP, new Date().getTime());
     
     $(document).ready(function () {
         timeout = false;
-        updateProgressbar(t0);
+        updateProgressbar(0);
         setInterval(function(){ checkTimerDiff(); }, 1000);
         newTimeStamp();
         //Comment
