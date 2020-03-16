@@ -50,18 +50,6 @@
         define("ALIAS_CUR_HOMES", "Homes");
         define("ALIAS_OLD_HOMES", "OldHome");
 
-//        define("ADDRESS_ALIAS_LONG_HOMENAME", getLongHomeNameSql(ALIAS_CUR_HOMES, "LongHomeName", false));
-
-        
-//        $longHomeNameMultiLine = "concat(";
-//        $longHomeNameMultiLine.= DECRYPTED_FAMILYNAME;
-//        $longHomeNameMultiLine.= ", '<BR>', IF(";
-//        $longHomeNameMultiLine.= DECRYPTED_ADDRESS;
-//        $longHomeNameMultiLine.= " is null, 'Adress saknas', ";
-//        $longHomeNameMultiLine.= DECRYPTED_ADDRESS;
-//        $longHomeNameMultiLine.= "), '<BR>', IF(concat(Zip, ' ', City) is null, 'PA/Stad saknas', concat(Zip, ' ', City))   ) as LongHomeName ";    
-//        define("ADDRESS_ALIAS_LONG_HOMENAME_MULTILINE", $longHomeNameMultiLine);
-
         $ALL_PEOPLE_FIELDS = "People.Id as PersonId, ";
         $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_FIRSTNAME . ", ";
         $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_LASTNAME . ", ";
