@@ -1,12 +1,12 @@
-/* global PERSON, HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME */
+/* global J_TABLE_ID, PERSON, HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID */
 
 "use strict";
 
 $(document).ready(function () {
-    localStorage.clear();
-    localStorage.setItem('newHomeId', -1);
+    //localStorage.clear();
+    localStorage.setItem(NEW_HOME_ID, -1);
     
-    $('#people').jtable({
+    $(J_TABLE_ID).jtable({
         title: 'Personuppgifter',
         paging: true, //Enable paging
         pageList: 'minimal',
@@ -24,8 +24,19 @@ $(document).ready(function () {
                         dataType: 'json',
                         data: postData,
                         success: function (data) {
-                            $dfd.resolve(data);
-                            refreschTableAndSetViewLatestUpdate();                            
+                            if(data.Result !== 'ERROR'){
+                                $dfd.resolve(data);
+                                var newPersonData = {record : data.Record[0]};
+
+                                var pData = {searchString: "", groupId: 2, tableview: "people"};
+
+                                $(J_TABLE_ID).jtable('load', pData, function (){
+                                    if(newPersonData.record.HomeId > 0)
+                                        openHomeChildTable(newPersonData);                                    
+                                });
+                            }
+                            else
+                                $dfd.resolve(data);
                         },
                         error: function () {
                             $dfd.reject();
@@ -42,52 +53,28 @@ $(document).ready(function () {
                         data: postData,
                         success: function (data) {
                             if(data.Result !== 'ERROR'){
-                                localStorage.setItem('newHomeId', data.Records[0].HomeId);
-                                //_closeEmptyOldHome(data.Records[0], "Home", OLD_HOME);
+                                var updatedHomeData = {record : data.Records[0]};
+                                localStorage.setItem(NEW_HOME_ID, updatedHomeData.record.HomeId);
 
                                 $dfd.resolve(data); //Mandatory
                                 
-                                if(data.Records[0].OldHome_HomeId > 0 && data.Records[0].OldHome_HomeId !== data.Records[0].HomeId)
-                                    closeChildTable(data.Records[0].PersonId)
-
-                                $('#people').jtable('reload');
-                                
-//                                var selectedRow = $("[data-record-key=" + data.Records[0].PersonId + "]"); // Find selected row
-//                                var isChildIsOpen = $('#People').jtable('isChildRowOpen', selectedRow);
-
-//                                _updateFields(data.Records[0], "HomeId", PERSON);                                                
-                                _updateFields(data.Records[0], "LongHomeName", HOME);                                                
-//                                _updateFields(data.Records[0], "LongHomeName", PERSON);                                                
-                                _updateFields(data.Records[0], "Residents", HOME);                                                
-                                _updateFields(data.Records[0], "Phone", HOME);                                                
-                                _updateFields(data.Records[0], "Name", PERSON);                                                
-                                _updateFields(data.Records[0], "DateOfBirth", PERSON);                                                
-                                _updateFields(data.Records[0], "DateOfMembershipEnd", PERSON);                                                
-                                _updateFields(data.Records[0], "MemberState", PERSON);                                                
-                                _updateFields(data.Records[0], "VisibleInCalendar", PERSON);                                                
-                                _updateFields(data.Records[0], "Comment", PERSON);                                                
-                                _updateFields(data.Records[0], "Mobile", PERSON);
-                                if(data.Records[0].HomeId !== data.Records[0].OldHome_HomeId && data.Records[0].OldHome_HomeId > 0){
-                                    _updateFields(data.Records[0], "HomeId", OLD_HOME);                                                
-                                    _updateFields(data.Records[0], "LongHomeName", OLD_HOME);                                                
-                                    _updateFields(data.Records[0], "Residents", OLD_HOME);                                                
-                                    _updateFields(data.Records[0], "Phone", OLD_HOME);            
+                                if(!(updatedHomeData.record.HomeId > 0 && updatedHomeData.record.OldHome_HomeId === updatedHomeData.record.HomeId)){
+                                    var $selectedRow = $("[data-record-key=" + updatedHomeData.record.PersonId + "]"); 
+                                    $(J_TABLE_ID).jtable('closeChildTable', $selectedRow, function(){
+                                        _updateHomeFields(updatedHomeData);
+                                        if(updatedHomeData.record.HomeId > 0)
+                                            openHomeChildTable(updatedHomeData);
+                                    });
                                 }
-                                
-//                                var childData = {record: data.Records[0]};
-//
-//                                $('#people').jtable('openChildTable', selectedRow,{
-//                                    title: _setClassAndValue(data.Records[0], "LongHomeName", HOME),
-//                                    actions: {
-//                                        listAction: '/' + SARON_URI + 'app/web-api/listHome.php?HomeId=' + childData.record.HomeId,                                
-//                                    },
-//                                    fields: homeFields(childData)
-//                                    }, 
-//                                    function (childData) { //opened handler
-//                                        childData.childTable.jtable('load');
-//                                    }
-//                                );
+                                else{
+                                    _updateHomeFields(updatedHomeData);
+                                    if(updatedHomeData.record.HomeId > 0)
+                                        openHomeChildTable(updatedHomeData);
+                                    
+                                }
                             }
+                            else
+                                $dfd.resolve(data);
                         },
                         error: function () {
                             $dfd.reject();
@@ -113,12 +100,6 @@ $(document).ready(function () {
                 list: false,
                 title: 'Hem',
                 inputTitle: 'Välj hem',
-//                defaultValue: function (data){
-//                    if(data.record.HomeId > 0 || data.record.HomeId < 0)
-//                       return data.record.HomeId;
-//                   
-//                    return "0";
-//                },
                 options: function(data){
                     if(data.source !== 'list')
                         data.clearCache();
@@ -126,7 +107,7 @@ $(document).ready(function () {
                 }
             },
             OldHomeId: { // for requests
-                list: false,
+                list: true,
                 create: false,
                 edit: true,
                 type: 'hidden',
@@ -135,6 +116,9 @@ $(document).ready(function () {
                        return data.record.HomeId;
                    
                     return "0";
+                },
+                display: function(data){
+                    return "OldHomeId: " + data.record.OldHomeId + " HomeId: " + data.record.HomeId;
                 }
             },
             LongHomeName: {
@@ -143,8 +127,9 @@ $(document).ready(function () {
                 list: true,
                 title: 'Hem',
                 display: function (data){
+                    data.record.OldHomeId = data.record.HomeId;
                     return _setClassAndValueAltNull(data.record, "LongHomeName", NO_HOME, PERSON);
-                },
+                }
             },
             LastName: {
                 title: 'Efternamn',
@@ -291,13 +276,10 @@ $(document).ready(function () {
         },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === 'edit'){ 
-                $('#people').find('.jtable-toolbar-item-add-record').show();
+                $(J_TABLE_ID).find('.jtable-toolbar-item-add-record').show();
             }
         },        
         formCreated: function (event, data){
-            if(data.record.HomeId === null)
-                data.record.HomeId = 0;
-            
             var headLine;
             if(data.formType === 'edit'){
                 data.row[0].style.backgroundColor = "yellow";
@@ -340,7 +322,7 @@ $(document).ready(function () {
     }); 
     //Load all records when page is first shown
     $('#search_people').click();
-    $('#people').find('.jtable-toolbar-item-add-record').hide();
+    $(J_TABLE_ID).find('.jtable-toolbar-item-add-record').hide();
 });
 
 function filterPeople(viewId){
@@ -368,75 +350,23 @@ function childTableHome() {
             var src = '"/' + SARON_URI + SARON_IMAGES_URI + 'home.png" title="Adressuppgifter"';
             var imgTag = _setImageClass(homeData.record, "Home", src, HOME);
             var $imgHome = $(imgTag);
-            var newHomeId = -1;
 
-            if(homeData.record.HomeId === "0") // new index from backend
-                newHomeId = localStorage.getItem('newHomeId');
-            else
-                newHomeId = homeData.record.HomeId;
-
-            $imgHome.click(function () {
-                $('#people').jtable('openChildTable', $imgHome.closest('tr'),{
-                    title: _setClassAndValue(homeData.record, "LongHomeName", HOME),                            
-                    showCloseButton: false,
-                    actions: {
-                        listAction: '/' + SARON_URI + 'app/web-api/listHome.php?HomeId=' + newHomeId,                                
-                        updateAction: function(postData) {
-                            return $.Deferred(function ($dfd) {
-                                $.ajax({
-                                    url: '/' + SARON_URI + 'app/web-api/updateHome.php?HomeId=' + newHomeId,
-                                    type: 'POST',
-                                    dataType: 'json',
-                                    data: postData,
-                                    success: function (responseHomeData) {
-                                        if(responseHomeData.Result !== 'ERROR'){
-
-                                            $dfd.resolve(responseHomeData);
-                                            for(var field in responseHomeData.Records[0]){
-                                                _updateFields(responseHomeData.Records[0], field, HOME);
-                                            }
-                                        }
-                                        else
-                                            $dfd.resolve(responseHomeData);
-                                    },
-                                    error: function () {
-                                        $dfd.reject();
-                                    }
-                                });
-                            });
-                        }
-                    },
-                    fields: homeFields(homeData, $imgHome),
-                    rowInserted: function(event, homeData){
-                        if (homeData.record.user_role !== 'edit'){
-                            homeData.row.find('.jtable-edit-command-button').hide();
-                            homeData.row.find('.jtable-delete-command-button').hide();
-                        }
-                    },        
-                    formCreated: function (event, homeData){
-                        homeData.row[0].style.backgroundColor = "yellow";
-                        homeData.form.css('width',inputFormWidth);
-                        homeData.form.find('input[name=FamilyName]').css('width',inputFormFieldWidth);
-                        homeData.form.find('input[name=Phone]').css('width',inputFormFieldWidth);
-                        homeData.form.find('input[name=Co]').css('width',inputFormFieldWidth);
-                        homeData.form.find('input[name=Address]').css('width',inputFormFieldWidth);
-                        homeData.form.find('input[name=City]').css('width',inputFormFieldWidth);
-                        homeData.form.find('input[name=Country]').css('width',inputFormFieldWidth);
-
-                        var dbox = document.getElementsByClassName('ui-dialog-title');            
-                        for(var i=0; i<dbox.length; i++)
-                            dbox[i].innerHTML='Uppdatera uppgifter för: ' + homeData.record.FamilyName;
-                    },
-                    formClosed: function (event, homeData){
-                        clearMembershipNoOptionCache=true;
-                        homeData.row[0].style.backgroundColor = '';
-                    }
-                }, 
-                function (homeData) { //opened handler
-                    homeData.childTable.jtable('load');
+            $imgHome.click(homeData, function (event){
+                var newHomeId = -1;
+                if(event.data.record.HomeId === "0") // zero is replaced by new index from backend
+                    newHomeId = localStorage.getItem(NEW_HOME_ID);
+                else
+                    newHomeId = event.data.record.HomeId;
+    
+                var $tr = $('.Name_P' + event.data.record.PersonId).closest('tr');
+                $(J_TABLE_ID).jtable('openChildTable', $tr, homeChildTableDef(event.data, newHomeId), function(data){
+                    data.childTable.jtable('load');
                 });
             });
-            if(homeData.record.HomeId > 0){
+            if(homeData.record.HomeId === null)
+                return null;
+            
+            if(homeData.record.HomeId >= 0){
                 return $imgHome;
             }
             else{
@@ -446,7 +376,91 @@ function childTableHome() {
     };
 }
 
-function homeFields(homeData, $imgHome) {
+
+function homeChildTableDef(homeData, newHomeId){
+    return {
+        title: _setClassAndValue(homeData.record, "LongHomeName", HOME),                            
+        showCloseButton: false,
+        actions: {
+            listAction: function(postData) {
+                return $.Deferred(function ($dfd) {
+                    $.ajax({
+                        url: '/' + SARON_URI + 'app/web-api/listHome.php?HomeId=' + newHomeId,
+                        type: 'POST',
+                        dataType: 'json',
+                        data: postData,
+                        success: function (responseHomeData) {
+                            if(responseHomeData.Result !== 'ERROR'){
+
+                                $dfd.resolve(responseHomeData);
+                                for(var field in responseHomeData.Records[0]){
+                                    _updateFields(responseHomeData.Records[0], field, HOME);
+                                }
+                            }
+                            else
+                                $dfd.resolve(responseHomeData);
+                        },
+                        error: function () {
+                            $dfd.reject();
+                        }
+                    });
+                });
+            },
+            updateAction: function(postData) {
+                return $.Deferred(function ($dfd) {
+                    $.ajax({
+                        url: '/' + SARON_URI + 'app/web-api/updateHome.php?HomeId=' + newHomeId,
+                        type: 'POST',
+                        dataType: 'json',
+                        data: postData,
+                        success: function (responseHomeData) {
+                            if(responseHomeData.Result !== 'ERROR'){
+
+                                $dfd.resolve(responseHomeData);
+                                for(var field in responseHomeData.Records[0]){
+                                    _updateFields(responseHomeData.Records[0], field, HOME);
+                                }
+                            }
+                            else
+                                $dfd.resolve(responseHomeData);
+                        },
+                        error: function () {
+                            $dfd.reject();
+                        }
+                    });
+                });
+            }
+        },
+        fields: homeFields(homeData),
+        rowInserted: function(event, homeData){
+            if (homeData.record.user_role !== 'edit'){
+                homeData.row.find('.jtable-edit-command-button').hide();
+                homeData.row.find('.jtable-delete-command-button').hide();
+            }
+        },        
+        formCreated: function (event, homeData){
+            homeData.row[0].style.backgroundColor = "yellow";
+            homeData.form.css('width',inputFormWidth);
+            homeData.form.find('input[name=FamilyName]').css('width',inputFormFieldWidth);
+            homeData.form.find('input[name=Phone]').css('width',inputFormFieldWidth);
+            homeData.form.find('input[name=Co]').css('width',inputFormFieldWidth);
+            homeData.form.find('input[name=Address]').css('width',inputFormFieldWidth);
+            homeData.form.find('input[name=City]').css('width',inputFormFieldWidth);
+            homeData.form.find('input[name=Country]').css('width',inputFormFieldWidth);
+
+            var dbox = document.getElementsByClassName('ui-dialog-title');            
+            for(var i=0; i<dbox.length; i++)
+                dbox[i].innerHTML='Uppdatera uppgifter för: ' + homeData.record.FamilyName;
+        },
+        formClosed: function (event, homeData){
+            clearMembershipNoOptionCache=true;
+            homeData.row[0].style.backgroundColor = '';
+        }
+    }
+}
+
+
+function homeFields(homeData) {
     return {
         CloseChild: fieldCloseChildTable(homeData.record.PersonId),
         PersonId: {
@@ -518,6 +532,9 @@ function homeFields(homeData, $imgHome) {
             inputTitle: 'Församlingspost via brev',
             title: 'Brev',
             width: '4%',
+            display: function (data){
+                return _setClassAndValue(data.record, "Letter", HOME);
+            },
             options: _letterOptions()
         }
     };
@@ -538,7 +555,7 @@ function childTableMembership(){
         display: function (memberData) {                    
             var $imgMember = $('<img src="/' + SARON_URI + SARON_IMAGES_URI + 'member.png" title="Medlemsuppgifter" />');
             $imgMember.click(function () {
-                $('#people').jtable('openChildTable', $imgMember.closest('tr'),{
+                $(J_TABLE_ID).jtable('openChildTable', $imgMember.closest('tr'),{
                     title: _setClassAndValuePrefix(memberData.record, "Name", PERSON, "Medlemsuppgifter för: "),
                     showCloseButton: false,
                     actions: {
@@ -690,7 +707,7 @@ function childTableBaptism(){
             var $imgBaptist = $('<img src="/' + SARON_URI + SARON_IMAGES_URI + 'baptist.png" title="Dopuppgifter" />');
             
             $imgBaptist.click(function () {
-                    $('#people').jtable('openChildTable', $imgBaptist.closest('tr'),{
+                    $(J_TABLE_ID).jtable('openChildTable', $imgBaptist.closest('tr'),{
                     title: _setClassAndValuePrefix(baptistData.record, "Name", PERSON, "Dopuppgifter för: "),
                     showCloseButton: false,                                    
                     actions: {
@@ -819,6 +836,39 @@ function fieldCloseChildTable(personId){
 
 function closeChildTable(personId){
     var $selectedRow = $("[data-record-key=" + personId + "]"); 
-     $('#people').jtable('closeChildTable', $selectedRow);
-
+    $(J_TABLE_ID).jtable('closeChildTable', $selectedRow);
 }
+
+
+function openHomeChildTable(updatedHomeData){
+    var rowRef = "[data-record-key=" + updatedHomeData.record.PersonId + "]";
+    var $selectedRow = $(rowRef);
+    $(J_TABLE_ID).jtable('openChildTable', $selectedRow, homeChildTableDef(updatedHomeData, updatedHomeData.record.HomeId), function(data){
+        data.childTable.jtable('load');
+    });    
+}
+
+function _updateHomeFields(updatedHomeData){
+    _updateFields(updatedHomeData.record, "LongHomeName", HOME);                                                
+    _updateFields(updatedHomeData.record, "LongHomeName", PERSON);                                                
+    _updateFields(updatedHomeData.record, "Residents", HOME);                                                
+    _updateFields(updatedHomeData.record, "Letter", HOME);                                                
+    _updateFields(updatedHomeData.record, "Phone", HOME);                                                
+    _updateFields(updatedHomeData.record, "Name", PERSON);                                                
+    _updateFields(updatedHomeData.record, "DateOfBirth", PERSON);                                                
+    _updateFields(updatedHomeData.record, "DateOfMembershipEnd", PERSON);                                                
+    _updateFields(updatedHomeData.record, "MemberState", PERSON);                                                
+    _updateFields(updatedHomeData.record, "VisibleInCalendar", PERSON);                                                
+    _updateFields(updatedHomeData.record, "Comment", PERSON);                                                
+    _updateFields(updatedHomeData.record, "Mobile", PERSON);
+
+    if(updatedHomeData.record.HomeId !== updatedHomeData.record.OldHome_HomeId && updatedHomeData.record.OldHome_HomeId > 0){
+        _updateFields(updatedHomeData.record, "HomeId", OLD_HOME);                                                
+        _updateFields(updatedHomeData.record, "LongHomeName", OLD_HOME);                                                
+        _updateFields(updatedHomeData.record, "Residents", OLD_HOME);                                                
+        _updateFields(updatedHomeData.record, "Phone", OLD_HOME);            
+    }
+}
+
+
+

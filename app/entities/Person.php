@@ -75,7 +75,7 @@ class Person extends People{
         $this->KeyToExp = (int)filter_input(INPUT_POST, "KeyToExp", FILTER_SANITIZE_NUMBER_INT);
         $this->Comment = (String)filter_input(INPUT_POST, "Comment", FILTER_SANITIZE_STRING);
         $this->CommentKey = (String)filter_input(INPUT_POST, "CommentKey", FILTER_SANITIZE_STRING);
-    }
+        }
     
     
     function getCurrentHomeId(){
@@ -97,6 +97,9 @@ class Person extends People{
         else if(strlen($this->FirstName) === 0 or strlen($this->LastName)==0 or strlen($this->DateOfBirth) === 0){
             $error["Message"] = "Personen behöver ett för- och ett efternamn samt ett födelsedadum för att kunna lagras i registret";
         }
+        else if(strlen($this->DateOfDeath) > 0 and $this->HomeId !== -1){
+            $error["Message"] = "En avliden person ska inte vara kopplad till något hem.<BR><BR>Välj: 'Inget hem'.";
+        }
         
         if(strlen($error["Message"])>0){
             $error["Result"] = "ERROR";
@@ -109,8 +112,8 @@ class Person extends People{
                 $this->DateOfMembershipEnd = $this->DateOfDeath;
             }
             
-            $this->OldHomeId = $this->HomeId;
-            $this->HomeId = null;
+//            $this->OldHomeId = $this->HomeId;
+//            $this->HomeId = null;
             $this->Email = null;
             $this->Mobile = null;
         }
@@ -292,7 +295,7 @@ class Person extends People{
         case "keyHolding":
             $result = $this->checkKeyHoldingData();
             if($result !== true){
-                echo $result;
+                return $result;
             }                
             return $this->updateKeyHoldning();       
         case "anonymization":

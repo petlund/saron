@@ -1,5 +1,6 @@
 "use strict";
 
+const J_TABLE_ID = "#people";
 const HOME = 1;
 const OLD_HOME = 3;
 const PERSON = 2;
@@ -14,12 +15,6 @@ const SARON_IMAGES_URI = 'app/images/';
 
 
 var clearMembershipNoOptionCache = true;
-
-function refreschTableAndSetViewLatestUpdate(){
-    var filter = document.getElementById("groupId");
-    filter.value = 2;
-    $('#search_people').click();
-}
     
 function _setClassAndValue(record, field, type){
     if(field === "VisibleInCalendar")
@@ -106,11 +101,6 @@ function _getId(record, type){
 }
 
 
-function _updatePersonChildHomeId(record){
-    
-}
-
-
 function _updateFields(record, field, type){
     var elementValue;
     
@@ -132,19 +122,6 @@ function _updateFields(record, field, type){
         element[i].innerHTML = elementValue;
 }
 
-
-function _closeEmptyOldHome(record, field, type){
-    if(record.OldHome_Residents !== null && record.DateOfDeath === null)
-        return;
-    
-
-    var className_Id = _getClassName_Id(record, field, type);
-    var element = document.getElementsByClassName(className_Id);
-    for(var i = 0; i<element.length;i++){
-        var $tr = $(element[i].closest('tr'));
-        $('#people').jtable('closeChildTable', $tr);
-    }
-}
 
 
 function _membershipOptions(personId){
