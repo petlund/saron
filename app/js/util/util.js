@@ -4,6 +4,7 @@ const J_TABLE_ID = "#people";
 const HOME = 1;
 const OLD_HOME = 3;
 const PERSON = 2;
+const PERSON_AND_HOME = 4;
 const NEW_HOME_ID = 'newHomeId';
 const OLD_HOME_PREFIX = "OldHome_";
 const NO_HOME = "Inget hem";
@@ -33,8 +34,14 @@ function _setClassAndValuePrefix(record, field, type, prefix){
 }
 
 
+
 function _setClassAndValueAltNull(record, field, nullValue, type){
-        return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), record[field], nullValue);    
+        if(type === PERSON_AND_HOME){
+            var classNames = field + ' ' + _getClassName_Id(record, field, PERSON) + ' ' + _getClassName_Id(record, field, HOME);
+            return _styleSaronValue(classNames, record[field], nullValue);
+        }
+        else    
+            return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), record[field], nullValue);    
 }
 
 

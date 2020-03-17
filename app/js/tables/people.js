@@ -1,4 +1,4 @@
-/* global J_TABLE_ID, PERSON, HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID */
+/* global J_TABLE_ID, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID */
 
 "use strict";
 
@@ -27,7 +27,7 @@ $(document).ready(function () {
                             if(data.Result !== 'ERROR'){
                                 $dfd.resolve(data);
                                 var newPersonData = {record : data.Record[0]};
-
+                                $("#groupId").val("2");
                                 var pData = {searchString: "", groupId: 2, tableview: "people"};
 
                                 $(J_TABLE_ID).jtable('load', pData, function (){
@@ -128,7 +128,7 @@ $(document).ready(function () {
                 title: 'Hem',
                 display: function (data){
                     data.record.OldHomeId = data.record.HomeId;
-                    return _setClassAndValueAltNull(data.record, "LongHomeName", NO_HOME, PERSON);
+                    return _setClassAndValueAltNull(data.record, "LongHomeName", NO_HOME, PERSON_AND_HOME);
                 }
             },
             LastName: {
