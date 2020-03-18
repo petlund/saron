@@ -43,8 +43,6 @@ require_once SARON_ROOT . "menu.php";
                         <option value="7">Döpta <?php include('../util/CurrentYear.php');?></option>
                         <option value="8">Döpta <?php include('../util/PrevYear.php');?></option>
                         <option value="9">Medlemmar som inte syns i adresskalendern</option>
-                        <option value="9.5">Hem som saknar mail</option>
-                        
                         <option value="10">Avlidna <?php include('../util/CurrentYear.php');?></option>
                         <option value="11">Avlidna <?php include('../util/PrevYear.php');?></option>
                         <option value="12">Hela registret</option>

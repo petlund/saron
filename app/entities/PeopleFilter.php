@@ -52,13 +52,13 @@ class PeopleFilter {
                 return "(DateOfMembershipStart is null and DateOfMembershipEnd is null) or ((DateOfMembershipEnd is not null)) and DateOfDeath is null and (" . DECRYPTED_LASTNAME . " NOT like '" . ANONYMOUS . "') ";
             case 15:
                 //underlag för anonymisering nästa år
-                $sqlWhere = DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "%' and DateOfDeath is null and (";
-                $sqlWhere.= "DateOfMembershipStart is null and DateOfMembershipEnd is null and DateOfBaptism is null ";
-                $sqlWhere.= "or ";
-                $sqlWhere.= "DateOfMembershipEnd is not null and (EXTRACT(YEAR FROM DateOfMembershipEnd) <> EXTRACT(YEAR FROM Now())) ";
-                $sqlWhere.= "or ";
-                $sqlWhere.= "DateOfBaptism is not null and (EXTRACT(YEAR FROM DateOfBaptism) <> EXTRACT(YEAR FROM Now())) ";
-                $sqlWhere.= ")";
+                $sqlWhere = DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "%' AND DateOfDeath is null AND NOT (";
+                $sqlWhere.= "if(DateOfMembershipEnd is null, false, EXTRACT(YEAR FROM DateOfMembershipEnd) = EXTRACT(YEAR FROM Now())) ";
+                $sqlWhere.= "OR ";
+                $sqlWhere.= "if(DateOfBaptism is null, false, EXTRACT(YEAR FROM DateOfBaptism) = EXTRACT(YEAR FROM Now())) ";
+                $sqlWhere.= "OR ";
+                $sqlWhere.= "(DateOfMembershipStart is NOT null and DateOfMembershipEnd is null) ";
+                $sqlWhere.= ") ";
                 return $sqlWhere; 
             case 16:
                 //anonymiserade
