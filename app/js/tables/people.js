@@ -55,20 +55,21 @@ $(document).ready(function () {
                             if(data.Result !== 'ERROR'){
                                 var updatedHomeData = {record : data.Records[0]};
                                 localStorage.setItem(NEW_HOME_ID, updatedHomeData.record.HomeId);
-
                                 $dfd.resolve(data); //Mandatory
+                                var isChildRowOpen = false;
                                 
+                                var $selectedRow = $("[data-record-key=" + updatedHomeData.record.PersonId + "]"); 
                                 if(!(updatedHomeData.record.HomeId > 0 && updatedHomeData.record.OldHome_HomeId === updatedHomeData.record.HomeId)){
-                                    var $selectedRow = $("[data-record-key=" + updatedHomeData.record.PersonId + "]"); 
+                                    isChildRowOpen = $(J_TABLE_ID).jtable('isChildRowOpen', $selectedRow)
                                     $(J_TABLE_ID).jtable('closeChildTable', $selectedRow, function(){
                                         _updateHomeFields(updatedHomeData);
-                                        if(updatedHomeData.record.HomeId > 0)
+                                        if(updatedHomeData.record.HomeId > 0 && isChildRowOpen)
                                             openHomeChildTable(updatedHomeData);
                                     });
                                 }
                                 else{
                                     _updateHomeFields(updatedHomeData);
-                                    if(updatedHomeData.record.HomeId > 0)
+                                    if(updatedHomeData.record.HomeId > 0 && isChildRowOpen)
                                         openHomeChildTable(updatedHomeData);
                                     
                                 }
@@ -282,6 +283,10 @@ $(document).ready(function () {
         formCreated: function (event, data){
             var headLine;
             if(data.formType === 'edit'){
+                if(data.record.HomeId === "0"){
+                    data.record.HomeId = localStorage.getItem(NEW_HOME_ID);
+                    $('#Edit-HomeId').val(data.record.HomeId).change();
+                }                 
                 data.row[0].style.backgroundColor = "yellow";
                 headLine = 'Uppdatera uppgifter för: ' + data.record.FirstName + ' ' + data.record.LastName;
                 //data.form.find('input[name=DateOfMembershipStart]').hide();
