@@ -22,7 +22,7 @@ $(document).ready(function () {
                         success: function (data) {
                             $dfd.resolve(data);
                             if(data.Result !== 'ERROR'){
-                                _updateFields(data.Records[0], "DateOfBaptism", PERSON);                                                
+                                _updateFields(data.Record[0], "DateOfBaptism", PERSON);                                                
                             }
                         },
                         error: function () {

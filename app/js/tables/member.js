@@ -22,10 +22,10 @@ $(document).ready(function () {
                         success: function (data) {
                             $dfd.resolve(data);
                             if(data.Result !== 'ERROR'){
-                                _updateFields(data.Records[0], "MemberState", PERSON);                                                
-                                _updateFields(data.Records[0], "VisibleInCalendar", PERSON);                                                
-                                _updateFields(data.Records[0], "DateOfMembershipStart", PERSON);                                                
-                                _updateFields(data.Records[0], "DateOfMembershipEnd", PERSON);                                                
+                                _updateFields(data.Record[0], "MemberState", PERSON);                                                
+                                _updateFields(data.Record[0], "VisibleInCalendar", PERSON);                                                
+                                _updateFields(data.Record[0], "DateOfMembershipStart", PERSON);                                                
+                                _updateFields(data.Record[0], "DateOfMembershipEnd", PERSON);                                                
                             }
                         },
                         error: function () {

@@ -328,7 +328,7 @@ class Person extends People{
         $sqlWhere = "where Id=" . $this->PersonId . ";";
 
         $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
-        return $this->select("Records");
+        return $this->select("Record");
     }
     
     
@@ -346,7 +346,7 @@ class Person extends People{
         $sqlWhere = "where Id=" . $this->PersonId . ";";
 
         $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
-        return $this->select();
+        return $this->select("Record");
 
     }
     
@@ -363,7 +363,7 @@ class Person extends People{
         $sqlWhere = "where Id=" . $this->PersonId . ";";
         
         $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
-        return $this->select();
+        return $this->select("Record");
  
     }
    
@@ -376,7 +376,7 @@ class Person extends People{
         $sqlSet.= "CommentKeyEncrypt=" . $this->getEncryptedSqlString($this->CommentKey) . " ";
         $sqlWhere = "WHERE Id=" . $this->getCurrentPersonId();
         $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
-        return $this->select();
+        return $this->select("Record");
         
     }
     

@@ -53,25 +53,23 @@ $(document).ready(function () {
                         data: postData,
                         success: function (data) {
                             if(data.Result !== 'ERROR'){
-                                var updatedHomeData = {record : data.Records[0]};
+                                var updatedHomeData = {record : data.Record[0]};
                                 localStorage.setItem(NEW_HOME_ID, updatedHomeData.record.HomeId);
                                 $dfd.resolve(data); //Mandatory
                                 var isChildRowOpen = false;
                                 
                                 var $selectedRow = $("[data-record-key=" + updatedHomeData.record.PersonId + "]"); 
+                                var moveToNewHome = (updatedHomeData.record.HomeId > 0 && updatedHomeData.record.OldHome_HomeId !== updatedHomeData.record.HomeId);
                                 if(!(updatedHomeData.record.HomeId > 0 && updatedHomeData.record.OldHome_HomeId === updatedHomeData.record.HomeId)){
                                     isChildRowOpen = $(J_TABLE_ID).jtable('isChildRowOpen', $selectedRow)
                                     $(J_TABLE_ID).jtable('closeChildTable', $selectedRow, function(){
                                         _updateHomeFields(updatedHomeData);
-                                        if(updatedHomeData.record.HomeId > 0 && isChildRowOpen)
+                                        if(updatedHomeData.record.HomeId > 0 && (isChildRowOpen || moveToNewHome))
                                             openHomeChildTable(updatedHomeData);
                                     });
                                 }
-                                else{
-                                    _updateHomeFields(updatedHomeData);
-                                    if(updatedHomeData.record.HomeId > 0 && isChildRowOpen)
-                                        openHomeChildTable(updatedHomeData);
-                                    
+                                else{ // no move to another home
+                                    _updateHomeFields(updatedHomeData);                                
                                 }
                             }
                             else
