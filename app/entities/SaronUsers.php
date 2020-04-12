@@ -120,4 +120,22 @@ class SaronUsers {
         }
         return 0;
     }
+    
+    
+    function getUsersListJson(){
+        $optionsArray = array();
+        $userArray = array();
+        $usersArray = array();
+        $cnt = count($this->users);
+        for($i=0; $i<$cnt; $i++){
+            $usr = $this->users[$i];
+            $userArray["DisplayText"] = $usr->display_name;
+            $userArray["Value"] = $usr->ID;
+            $usersArray[] = $userArray;
+        }
+        $optionsArray["Result"] = "OK";
+        $optionsArray["Options"] = $usersArray;
+        
+        return json_encode($optionsArray); 
+    }
 }

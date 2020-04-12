@@ -144,7 +144,7 @@ require_once SARON_ROOT . "menu.php";
     </ul>
     <H3>Uppdatera personuppgifter som är kopplade till medlemskap</H3>
     <ul>
-        Använd menyn [Register][Personuppgifter] samt ikonen <img src="/<?php echo SARON_URI;?>app/images/member.png" title="Uppdatera hem"/> till vänster.
+        Använd menyn [Register][Personuppgifter] samt ikonen <img src="/<?php echo SARON_URI . SARON_IMAGES_URI;?>member.png" title="Uppdatera hem"/> till vänster.
         <ul>
             <li>
                 Klicka på <img src="/<?php echo SARON_URI;?>app/images/edit.png" title="ändra"/> till höger.

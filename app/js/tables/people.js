@@ -619,12 +619,12 @@ function childTableMembership(){
                             display: function (memberData){
                                 return _setClassAndValue(memberData.record, "MembershipNo", PERSON);
                             }, 
-                            options: function(meberData){
+                            options: function(memberData){
                                 if(clearMembershipNoOptionCache){
-                                    meberData.clearCache();
+                                    memberData.clearCache();
                                     clearMembershipNoOptionCache=false;
                                 }
-                                return '/' + SARON_URI + 'app/web-api/listPerson.php?PersonId=' + meberData.record.PersonId + '&selection=nextMembershipNo';
+                                return '/' + SARON_URI + 'app/web-api/listPerson.php?PersonId=' + memberData.record.PersonId + '&selection=nextMembershipNo';
                             }
                         },
                         DateOfMembershipEnd: {

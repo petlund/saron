@@ -12,7 +12,6 @@ const inputFormWidth = '500px';
 const inputFormFieldWidth = '480px';
 const NOT_VISIBLE = 'Ej synlig';
 const VISIBLE = 'Synlig';
-const SARON_IMAGES_URI = 'app/images/';
 
 
 var clearMembershipNoOptionCache = true;

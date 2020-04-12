@@ -84,6 +84,14 @@
                             </ul>
                         </li>
                         <li>
+                            <a href="">Organisation</a>
+                            <ul>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php">Organisatoriska enheter</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php">Organisatoriskt meta struktur</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php">Organisationsträd</a></li>
+                            </ul>
+                        </li>
+                        <li>
                             <a href="">Om <?php echo NameOfRegistry;?></a>
                             <ul>
                                 <li><a href="/<?php echo SARON_URI;?>app/about/about.php">Om <?php echo NameOfRegistry;?></a></li>
