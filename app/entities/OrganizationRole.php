@@ -2,13 +2,14 @@
 require_once SARON_ROOT . 'app/entities/SuperEntity.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
-class OrganizationUnit extends SuperEntity{
+class OrganizationRole extends SuperEntity{
     
     private $id;
     private $name;
     private $description;
+    private $isRole;
     private $hasSubUnit;
-    private $roleId;
+    private $orgId;
     
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
@@ -18,8 +19,8 @@ class OrganizationUnit extends SuperEntity{
         $this->businessRole_FK = (int)filter_input(INPUT_POST, "BusinessRole_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->businessPosStatus_FK = (int)filter_input(INPUT_POST, "BusinessPosStatus_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->personId = (int)filter_input(INPUT_POST, "PersonId", FILTER_SANITIZE_NUMBER_INT);
+        $this->orgId = (int)filter_input(INPUT_GET, "OrgId", FILTER_SANITIZE_NUMBER_INT);
         $this->prePersonId = (int)filter_input(INPUT_POST, "PrePersonId", FILTER_SANITIZE_NUMBER_INT);
-        $this->roleId = (int)filter_input(INPUT_GET, "RoleId", FILTER_SANITIZE_NUMBER_INT);
     }
 
 
@@ -35,9 +36,9 @@ class OrganizationUnit extends SuperEntity{
     
     function selectDefault($id = -1, $rec="Records"){
         $select = "SELECT *, " . $this->saronUser->getRoleSql(false) . " ";
-        $from = "FROM BusinessUnitType as T left outer join BusinessUnitRole as UnitRole on BusinessUnit_FK = T.Id ";
-        if($this->roleId >= 0){
-            $where = "WHERE BusinessRole_FK = " . $this->roleId . " ";
+        $from = "FROM BusinessRole as Role left outer join BusinessUnitRole as UnitRole on BusinessRole_FK=Role.Id ";
+        if($this->orgId >= 0){
+            $where = "WHERE BusinessUnit_FK = " . $this->orgId . " ";
         }
         else{
             $where = "";
@@ -47,7 +48,7 @@ class OrganizationUnit extends SuperEntity{
             return $result;
         }
         else{
-            $result = $this->db->select($this->saronUser, $select , "FROM BusinessUnitType as T ", "WHERE id = " . $id . " ", $this->getSortSql(), $this->getPageSizeSql(), $rec);        
+            $result = $this->db->select($this->saronUser, $select , "FROM BusinessRole as Role ", "WHERE id = " . $id . " ", $this->getSortSql(), $this->getPageSizeSql(), $rec);        
             return $result;
         }
     }
@@ -56,7 +57,7 @@ class OrganizationUnit extends SuperEntity{
 //        $sql = "SELECT 0 as Value, ' Topp' as DisplayText "; 
 //        $sql.= "Union "; 
         $select = "SELECT id as Value, Name as DisplayText ";
-        $result = $this->db->select($this->saronUser, $select , "FROM BusinessUnitType ", "", "Order by DisplayText ", "", "Options");    
+        $result = $this->db->select($this->saronUser, $select , "FROM BusinessRole ", "", "Order by DisplayText ", "", "Options");    
         return $result; 
     }
     

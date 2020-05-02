@@ -2,16 +2,21 @@
 "use strict";
     
 $(document).ready(function () {
-    const TABLE_ID = "#ORG_UNIT";
+    const TABLE_ID = "#ORG_ROLE";
 
-    $(TABLE_ID).jtable(orgTableDef(TABLE_ID, -1, null));
+    $(TABLE_ID).jtable(roleTableDef(TABLE_ID, -1, null));
     $(TABLE_ID).jtable('load');
-    $(TABLE_ID).find('.jtable-toolbar-item-add-record').hide();
-});
+    }
+);
 
-function orgTableDef(tableId, roleId, roleName){
+function roleTableDef(tableId, orgId, orgName){
     return {
-        title: 'Organisatoriska enheter',
+        title: function (){
+            if(orgName !== null)
+                return 'Roller för ' + orgName;
+            else
+                return 'Roller';
+        },
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
@@ -19,13 +24,13 @@ function orgTableDef(tableId, roleId, roleName){
         multiSorting: true,
         defaultSorting: 'Name', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php?RoleId=' + roleId,
-            createAction:   '/' + SARON_URI + 'app/web-api/createOrganizationUnit.php',
+            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationRole.php?OrgId=' + orgId,
+            createAction:   '/' + SARON_URI + 'app/web-api/createOrganizationRole.php',
             //updateAction:   '/' + SARON_URI + 'app/web-api/updateNews.php'
             updateAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + SARON_URI + 'app/web-api/updateOrganizationUnit.php',
+                        url: '/' + SARON_URI + 'app/web-api/updateOrganizationRole.php',
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
@@ -42,25 +47,25 @@ function orgTableDef(tableId, roleId, roleName){
                     });
                 });
             },
-            deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationUnit.php'
+            deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationRole.php'
         },
         fields: {
             Id: {
                 key: true,
                 list: false
             },
-            Role:{
+            Org:{
                 width: '1%',
                 sorting: false,
                 display: function(data){
-                    if(data.record.BusinessRole_FK !==  null){
-                        var src = '"/' + SARON_URI + SARON_IMAGES_URI + 'roles.png" title="Roller"';
+                    if(data.record.BusinessRole_FK !== null){
+                        var src = '"/' + SARON_URI + SARON_IMAGES_URI + 'child.png" title="Organisation"';
                         var imgTag = _setImageClass(data.record, "Role", src, -1);
                         var $imgChild = $(imgTag);
 
                         $imgChild.click(data, function (event){
                             var $tr = $imgChild.closest('tr');
-                            $(tableId).jtable('openChildTable', $tr, roleTableDef(tableId, data.record.Id, data.record.Name), function(data){
+                            $(tableId).jtable('openChildTable', $tr, orgTableDef(tableId, data.record.Id, data.record.Name), function(data){
                                 data.childTable.jtable('load');
                             });
                         });
@@ -74,11 +79,6 @@ function orgTableDef(tableId, roleId, roleName){
             Name: {
                 title: 'Benämning',
                 width: '15%'
-            },
-            HasSubUnit: {
-                title: 'Har underenheter',
-                width: '10%',
-                options: {"0":"", "1":"Ja"}
             },
             Description: {
                 title: 'Beskrivning',
@@ -107,7 +107,7 @@ function orgTableDef(tableId, roleId, roleName){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
-            if(data.record.BusinessRole_FK !==  null)
+            if(data.record.BusinessRole_FK !== null)
                 data.row.find('.jtable-delete-command-button').hide();
         },        
         recordsLoaded: function(event, data) {
@@ -131,19 +131,6 @@ function orgTableDef(tableId, roleId, roleName){
         },
         deleteFormClosed: function (event, data){
             data.row[0].style.backgroundColor = '';
-        }
-    }    
-}
-
-
-function _updateOrganizationUnitTypeRecord(records){
-    var key = document.getElementsByClassName("jtable-data-row");
-    if(key===null)
-        return;
-    
-    for(var i = 0; i<key.length;i++){
-        if(key[i].dataset.recordKey === records[0].Id){ 
-            key[i].cells[3].innerHTML = (records[0].Updated).substring(0,10);                                              
         }
     }
 }

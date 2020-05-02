@@ -12,8 +12,9 @@
         define("SALT_LENGTH", 13);
         define("MAX_STR_LEN", 250);
         define("DATE_FORMAT", "'%Y-%m-%d'");
-        define("DATE_OF_BIRTH", "DATE_FORMAT(DateOfBirth, " . DATE_FORMAT . ") AS DateOfBirth");
-        
+        define("DATE_OF_BIRTH", "DATE_FORMAT(DateOfBirth, " . DATE_FORMAT . ")");
+        define("DATE_OF_BIRTH_ALIAS_DATE_OF_BIRTH", DATE_OF_BIRTH . " AS DateOfBirth");
+      
         define("DECRYPTED_FIRSTNAME", "SUBSTR(AES_DECRYPT(FirstNameEncrypt, " . PKEY . "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
         define("DECRYPTED_ALIAS_FIRSTNAME", DECRYPTED_FIRSTNAME . " as FirstName");
 
@@ -53,7 +54,7 @@
         $ALL_PEOPLE_FIELDS = "People.Id as PersonId, ";
         $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_FIRSTNAME . ", ";
         $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_LASTNAME . ", ";
-        $ALL_PEOPLE_FIELDS.= DATE_OF_BIRTH . ", DateOfDeath, PreviousCongregation, MembershipNo, VisibleInCalendar, DateOfMembershipStart, DateOfMembershipEnd, NextCongregation, DateOfBaptism, ";
+        $ALL_PEOPLE_FIELDS.= DATE_OF_BIRTH_ALIAS_DATE_OF_BIRTH . ", DateOfDeath, PreviousCongregation, MembershipNo, VisibleInCalendar, DateOfMembershipStart, DateOfMembershipEnd, NextCongregation, DateOfBaptism, ";
         $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_BAPTISTER . ", ";
         $ALL_PEOPLE_FIELDS.= "CongregationOfBaptism, CongregationOfBaptismThis, Gender, ";
         $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_EMAIL . ", ";
@@ -84,11 +85,116 @@
 
 
 
+   
+    function getFieldSql($tableAlias, $fieldAlias, $fieldName, $nullValue, $encrypt, $continue){
+        $sql = "";
+        IF(strlen($tableAlias) > 0){
+            $sqlField = $tableAlias . "." . $fieldName;
+        }
+        else{
+            $sqlField = $fieldName;
+        }
+        if($encrypt){
+            $sql = "SUBSTR(AES_DECRYPT(" . $sqlField . ", " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")";
+        }
+        else{
+            $sql = $sqlField;            
+        }
+        
+        if(strlen($nullValue) > 0){
+            $sql = "IF(" . $sql . " is null, '" . $nullValue . "', " . $sql . ")";
+        }
+
+        if(strlen($fieldAlias)>0){
+            if(strlen($tableAlias)>0 && $tableAlias !== ALIAS_CUR_HOMES){            
+                $sql.= " as " . $tableAlias . "_" . $fieldAlias;
+            }
+            else{
+                $sql.= " as " . $fieldAlias;                
+            }
+        }
+      
+        if($continue){
+           $sql.= ", "; 
+        }
+        else{
+           $sql.= " ";             
+        }
+        return $sql; 
+    }
+
+
+    function getMemberStateSql($tableAlias, $fieldAlias, $continue){
+        $sql = "IF(UPPER(CONVERT(BINARY " . getFieldSql($tableAlias, null, "LastNameEncrypt", null, true, false) . " USING utf8)) like '%" . ANONYMOUS . "%', 'Anonymiserad', ";
+        $sql.= "IF(" . getFieldSql($tableAlias, null, "DateOfDeath", null, false, false) . " is not null, 'Avliden', ";
+        $sql.= "IF(" . getFieldSql($tableAlias, null, "DateOfMemberShipStart", null, false, false) . " is null, ";
+        $sql.= "IF(" . getFieldSql($tableAlias, null, "DateOfBaptism", null, false, false) . " is null and " . getFieldSql($tableAlias, null, "CongregationOfBaptism", null, false, false) . " is null, 'Ej medlem', 'Dopregister'), ";
+        $sql.= "IF(" . getFieldSql($tableAlias, null, "DateOfMemberShipEnd", null, false, false) . " is null, 'Medlem', 'Dopregister')))) ";
+        if(strlen($fieldAlias) > 0){
+            $sql.= " AS " . $fieldAlias;
+        }
+        if($continue){
+            $sql.= ", ";
+        }
+        else{
+            $sql.= " ";            
+        }
+        return $sql;
+    }
+    
+    function getPersonSql($tableAlias, $fieldAlias, $continue){
+        $sql = "CONCAT(";
+        $sql.= getFieldSql($tableAlias, null, "LastNameEncrypt", null, true, false);
+        $sql.= ", ' ', "; 
+        $sql.= getFieldSql($tableAlias, null, "FirstNameEncrypt", null, true, false);
+        $sql.= ", ' ', "; 
+        $sql.= getFieldSql($tableAlias, null, "DateOfBirth", null, false, false);
+        $sql.= ")";
+        if(strlen($fieldAlias) > 0){
+            $sql.= " AS " . $fieldAlias;
+        }
+        if($continue){
+            $sql.= ", ";
+        }
+        else{
+            $sql.= " ";            
+        }
+        return $sql;
+    }
+    
+    function getLongHomeNameSql($tableAlias, $fieldAlias, $continue){
+        $sql.= "IF(" . $tableAlias . ".Id is null, 'Inget hem', ";
+        $sql.= "concat(";
+        $sql.= getFieldSql($tableAlias, "", "FamilyNameEncrypt", "", true, false);
+        $sql.= ",' (',";
+        $sql.= getFieldSql($tableAlias, "", "AddressEncrypt", "Adress saknas", true, false);
+        $sql.= ",', ', ";
+        $sql.= getFieldSql($tableAlias, "", "City", "Stad saknas", false, false);
+        $sql.= ",') ')) as ";
+        
+        if(strlen($tableAlias)>0 && $tableAlias !== ALIAS_CUR_HOMES){
+            $sql.= $tableAlias . "_";
+        }
+        
+        $sql.= $fieldAlias;
+
+        if($continue){
+            $sql.= ", ";
+        }
+        else{
+            $sql.= " ";            
+        }
+
+        return $sql;
+    }
+ 
+    
+    
     function getResidentsSql($tableAlias, $fieldAlias, $HomeId, $continue){
         $sql = "(SELECT GROUP_CONCAT(";
-        $sql.= getSelectedFieldSql($tableAlias . "Res", "", "FirstNameEncrypt", "", true, false);
+        $sql.= getFieldSql($tableAlias . "Res", "", "FirstNameEncrypt", "", true, false);
         $sql.= ", ' ', ";
-        $sql.= getSelectedFieldSql($tableAlias . "Res", "", "LastNameEncrypt", "", true, false);
+        $sql.= getFieldSql($tableAlias . "Res", "", "LastNameEncrypt", "", true, false);
         $sql.= ", ' - ', ";
         $sql.= DATES_AS_MEMBERSTATES;
         $sql.= " SEPARATOR '<BR>') ";
@@ -120,63 +226,4 @@
         return $sql;
     }
     
-    
-    function getLongHomeNameSql($tableAlias, $fieldAlias, $continue){
-        $sql.= "IF(" . $tableAlias . ".Id is null, 'Inget hem', ";
-        $sql.= "concat(";
-        $sql.= getSelectedFieldSql($tableAlias, "", "FamilyNameEncrypt", "", true, false);
-        $sql.= ",' (',";
-        $sql.= getSelectedFieldSql($tableAlias, "", "AddressEncrypt", "Adress saknas", true, false);
-        $sql.= ",', ', ";
-        $sql.= getSelectedFieldSql($tableAlias, "", "City", "Stad saknas", false, false);
-        $sql.= ",') ')) as ";
-        
-        if(strlen($tableAlias)>0 && $tableAlias !== ALIAS_CUR_HOMES){
-            $sql.= $tableAlias . "_";
-        }
-        
-        $sql.= $fieldAlias;
-
-        if($continue){
-            $sql.= ", ";
-        }
-        else{
-            $sql.= " ";            
-        }
-
-        return $sql;
-    }
-    
-    function getSelectedFieldSql($tableAlias, $fieldAlias, $fieldName, $nullValue, $encrypt, $continue){
-        $sql = "";
-        $sqlField = $tableAlias . "." . $fieldName;
-            
-        if($encrypt){
-            $sql = "SUBSTR(AES_DECRYPT(" . $sqlField . ", " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")";
-        }
-        else{
-            $sql = $sqlField;            
-        }
-        
-        if(strlen($nullValue) > 0){
-            $sql = "IF(" . $sql . " is null, '" . $nullValue . "', " . $sql . ")";
-        }
-
-        if(strlen($fieldAlias)>0){
-            if(strlen($tableAlias)>0 && $tableAlias !== ALIAS_CUR_HOMES){            
-                $sql.= " as " . $tableAlias . "_" . $fieldAlias;
-            }
-            else{
-                $sql.= " as " . $fieldAlias;                
-            }
-        }
-      
-        if($continue){
-           $sql.= ", "; 
-        }
-        else{
-           $sql.= " ";             
-        }
-        return $sql; 
-    }
-    
+ 

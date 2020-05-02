@@ -86,9 +86,12 @@
                         <li>
                             <a href="">Organisation</a>
                             <ul>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php">Organisatoriska enheter</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php">Organisatoriskt meta struktur</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php">Organisationsträd</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_GRAPH">Bemanning</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_GRAPH">Struktur grafiskt</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_STRUCT">Struktur</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_UNIT">Enheter och roller</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_ROLE">Roller och enheter</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_ROLE_STATUS">Status bemanning</a></li>
                             </ul>
                         </li>
                         <li>

@@ -2,24 +2,18 @@
 require_once SARON_ROOT . 'app/entities/SuperEntity.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
-class OrganizationUnit extends SuperEntity{
+class OrganizationStatus extends SuperEntity{
     
     private $id;
     private $name;
     private $description;
-    private $hasSubUnit;
-    private $roleId;
     
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
         
         $this->id = (int)filter_input(INPUT_POST, "Id", FILTER_SANITIZE_NUMBER_INT);
-        $this->businessUnitTree_FK = (int)filter_input(INPUT_POST, "BusinessUnitTree_FK", FILTER_SANITIZE_NUMBER_INT);
-        $this->businessRole_FK = (int)filter_input(INPUT_POST, "BusinessRole_FK", FILTER_SANITIZE_NUMBER_INT);
-        $this->businessPosStatus_FK = (int)filter_input(INPUT_POST, "BusinessPosStatus_FK", FILTER_SANITIZE_NUMBER_INT);
-        $this->personId = (int)filter_input(INPUT_POST, "PersonId", FILTER_SANITIZE_NUMBER_INT);
-        $this->prePersonId = (int)filter_input(INPUT_POST, "PrePersonId", FILTER_SANITIZE_NUMBER_INT);
-        $this->roleId = (int)filter_input(INPUT_GET, "RoleId", FILTER_SANITIZE_NUMBER_INT);
+        $this->name = (String)filter_input(INPUT_POST, "Name", FILTER_SANITIZE_STRING);
+        $this->description = (String)filter_input(INPUT_POST, "Description", FILTER_SANITIZE_STRING);
     }
 
 
@@ -29,34 +23,27 @@ class OrganizationUnit extends SuperEntity{
             return $this->selectOptions();       
         default:
             return $this->selectDefault($Id);
-        }
+        }   
     }
 
     
     function selectDefault($id = -1, $rec="Records"){
         $select = "SELECT *, " . $this->saronUser->getRoleSql(false) . " ";
-        $from = "FROM BusinessUnitType as T left outer join BusinessUnitRole as UnitRole on BusinessUnit_FK = T.Id ";
-        if($this->roleId >= 0){
-            $where = "WHERE BusinessRole_FK = " . $this->roleId . " ";
+        $from = "FROM BusinessPosStatus ";
+        if($this->id > 0){
+            $where = "WHERE Id = " . $this->id . " ";
         }
         else{
             $where = "";
         }
-        if($id < 0){
-            $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $rec);    
-            return $result;
-        }
-        else{
-            $result = $this->db->select($this->saronUser, $select , "FROM BusinessUnitType as T ", "WHERE id = " . $id . " ", $this->getSortSql(), $this->getPageSizeSql(), $rec);        
-            return $result;
-        }
+
+        $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $rec);    
+        return $result;
     }
 
     function selectOptions(){
-//        $sql = "SELECT 0 as Value, ' Topp' as DisplayText "; 
-//        $sql.= "Union "; 
         $select = "SELECT id as Value, Name as DisplayText ";
-        $result = $this->db->select($this->saronUser, $select , "FROM BusinessUnitType ", "", "Order by DisplayText ", "", "Options");    
+        $result = $this->db->select($this->saronUser, $select , "FROM BusinessPosStatus ", "", "Order by DisplayText ", "", "Options");    
         return $result; 
     }
     

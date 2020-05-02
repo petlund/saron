@@ -8,11 +8,8 @@ require_once SARON_ROOT . 'app/entities/PeopleFilter.php';
 class People extends SuperEntity{
 
     protected $tableview;
-  
-
     protected $home;
     protected $uppercaseSearchString;
-    
 
     function __construct($db, $saronUser) {
         parent::__construct($db, $saronUser);
@@ -20,7 +17,18 @@ class People extends SuperEntity{
     }
     
     
-    function select($rec = "Records"){
+    function select(){
+        switch ($this->selection){
+        case "options":
+            return $this->selectPeopleOptions();       
+        default:
+            return $this->selectDefault();
+        }
+    }
+
+
+    
+    function selectDefault($rec = "Records"){
         $tw = new PeopleViews();
         $sqlSelect = $tw->getPeopleViewSql($this->tableview, $this->saronUser);
 
@@ -33,4 +41,14 @@ class People extends SuperEntity{
         
     }
     
+    function selectPeopleOptions(){
+
+        $select = "SELECT 0 as Value, ' ' as DisplayText "; 
+        $select.= "Union "; 
+        $select.= "select Id as Value, " . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . "as DisplayText ";
+        $where = "WHERE " . SQL_WHERE_MEMBER;
+        $where = "";
+        $result = $this->db->select($this->saronUser, $select, "FROM People ", $where, "ORDER BY DisplayText ", "", "Options");    
+        return $result;
+    }     
 }

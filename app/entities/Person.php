@@ -220,7 +220,7 @@ class Person extends People{
         }
     }    
     
-    function selectDefault($rec){
+    function selectDefault($rec = "Records"){
         $home = new Home($this->db, $this->saronUser);
         $sqlSelect = SQL_STAR_PEOPLE . ", " . $this->saronUser->getRoleSql(true);
         $sqlSelect.= DATES_AS_ALISAS_MEMBERSTATES . ", ";

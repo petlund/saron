@@ -19,10 +19,13 @@ header("Cache-Control: no-cache, must-revalidate");
         <script type="text/javascript" src="/<?php echo SARON_URI;?>jtable/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
  
         <script type="text/JavaScript" src="/<?php echo SARON_URI;?>app/js/tables/organization.unit.js"></script>     
+        <script type="text/JavaScript" src="/<?php echo SARON_URI;?>app/js/tables/organization.structure.js"></script>     
+        <script type="text/JavaScript" src="/<?php echo SARON_URI;?>app/js/tables/organization.role.js"></script>     
+        <script type="text/JavaScript" src="/<?php echo SARON_URI;?>app/js/tables/organization.status.js"></script>     
         <script type="text/javascript" src="/<?php echo SARON_URI;?>jtable/jquery.jtable.min.js"></script>
         <script type="text/javascript" src="/<?php echo SARON_URI;?>jtable/jquery.jtable.js"></script>
         <script type="text/javascript" src="/<?php echo SARON_URI;?>jtable/localization/jquery.jtable.se.js"></script>   
         <div class='saronSmallText'></div>
-        <div id="ORG_UNIT"></div> 
+        <div id="<?php include('../includes/viewId.php');?>"></div>
     </body>
 </html> 
