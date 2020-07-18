@@ -87,7 +87,7 @@ class SaronUsers {
         else{
             $endIndex = count($this->users);
         }
-        $result = '{"Result":"OK","Records":[';
+        $result = '{"Result":"OK",RECORDS:[';
         for($i = $this->jtStartIndex; $i<$endIndex; $i++){
             $viewer = $this->hasPrivilege($this->users[$i]->roles, SARON_ROLE_PREFIX . SARON_ROLE_VIEWER);
             $editor = $this->hasPrivilege($this->users[$i]->roles, SARON_ROLE_PREFIX . SARON_ROLE_EDITOR);

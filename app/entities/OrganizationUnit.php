@@ -7,37 +7,38 @@ class OrganizationUnit extends SuperEntity{
     private $id;
     private $name;
     private $description;
-    private $hasSubUnit;
-    private $roleId;
+    private $subUnitEnabled;
+    private $posEnabled;
     
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
         
         $this->id = (int)filter_input(INPUT_POST, "Id", FILTER_SANITIZE_NUMBER_INT);
-        $this->businessUnitTree_FK = (int)filter_input(INPUT_POST, "BusinessUnitTree_FK", FILTER_SANITIZE_NUMBER_INT);
-        $this->businessRole_FK = (int)filter_input(INPUT_POST, "BusinessRole_FK", FILTER_SANITIZE_NUMBER_INT);
-        $this->businessPosStatus_FK = (int)filter_input(INPUT_POST, "BusinessPosStatus_FK", FILTER_SANITIZE_NUMBER_INT);
-        $this->personId = (int)filter_input(INPUT_POST, "PersonId", FILTER_SANITIZE_NUMBER_INT);
-        $this->prePersonId = (int)filter_input(INPUT_POST, "PrePersonId", FILTER_SANITIZE_NUMBER_INT);
-        $this->roleId = (int)filter_input(INPUT_GET, "RoleId", FILTER_SANITIZE_NUMBER_INT);
+        $this->name = (String)filter_input(INPUT_POST, "Name", FILTER_SANITIZE_STRING);
+        $this->description = (String)filter_input(INPUT_POST, "Description", FILTER_SANITIZE_STRING);
+        $this->subUnitEnabled = (int)filter_input(INPUT_POST, "SubUnitEnabled", FILTER_SANITIZE_NUMBER_INT);
+        $this->posEnabled = (int)filter_input(INPUT_POST, "PosEnabled", FILTER_SANITIZE_NUMBER_INT);
     }
 
 
-    function select($Id = -1){
+    function select($id = -1, $rec=RECORDS){
         switch ($this->selection){
         case "options":
             return $this->selectOptions();       
         default:
-            return $this->selectDefault($Id);
+            return $this->selectDefault($id, $rec);
         }
     }
 
     
-    function selectDefault($id = -1, $rec="Records"){
-        $select = "SELECT *, " . $this->saronUser->getRoleSql(false) . " ";
-        $from = "FROM BusinessUnitType as T left outer join BusinessUnitRole as UnitRole on BusinessUnit_FK = T.Id ";
-        if($this->roleId >= 0){
-            $where = "WHERE BusinessRole_FK = " . $this->roleId . " ";
+    function selectDefault($id = -1, $rec=RECORDS){
+        $select = "SELECT Typ.Id, Typ.PosEnabled, Typ.SubUnitEnabled, Typ.Name, Typ.Description, Typ.Updater, Typ.Updated, "; 
+        $select.= "(Select count(*) from `Org_Role-UnitType` as UnitRole WHERE UnitRole.OrgUnitType_FK = Typ.Id) as HasPos, ";
+        $select.= $this->saronUser->getRoleSql(false) . " ";
+        $from = "FROM Org_UnitType as Typ ";
+        if($this->posEnabled > 0){
+            $from = "FROM Org_UnitType as Typ inner join `Org_Role-UnitType` as Rut on Rut.OrgUnitType_FK = Typ.Id ";
+            $where = "WHERE OrgRole_FK = " . $this->posEnabled . " ";
         }
         else{
             $where = "";
@@ -47,7 +48,7 @@ class OrganizationUnit extends SuperEntity{
             return $result;
         }
         else{
-            $result = $this->db->select($this->saronUser, $select , "FROM BusinessUnitType as T ", "WHERE id = " . $id . " ", $this->getSortSql(), $this->getPageSizeSql(), $rec);        
+            $result = $this->db->select($this->saronUser, $select , "FROM Org_UnitType as Typ ", "WHERE typ.id = " . $id . " ", $this->getSortSql(), $this->getPageSizeSql(), $rec);        
             return $result;
         }
     }
@@ -56,31 +57,31 @@ class OrganizationUnit extends SuperEntity{
 //        $sql = "SELECT 0 as Value, ' Topp' as DisplayText "; 
 //        $sql.= "Union "; 
         $select = "SELECT id as Value, Name as DisplayText ";
-        $result = $this->db->select($this->saronUser, $select , "FROM BusinessUnitType ", "", "Order by DisplayText ", "", "Options");    
+        $result = $this->db->select($this->saronUser, $select , "FROM Org_UnitType ", "", "Order by DisplayText ", "", "Options");    
         return $result; 
     }
     
     
     function insert(){
-        $sqlInsert = "INSERT INTO BusinessUnitType (Name, IsRole, HasSubUnit, Description, Updater) ";
+        $sqlInsert = "INSERT INTO Org_UnitType (Name, Description, PosEnabled, SubUnitEnabled, Updater) ";
         $sqlInsert.= "VALUES (";
         $sqlInsert.= "'" . $this->name . "', ";
-        $sqlInsert.= "'" . $this->isRole . "', ";
-        $sqlInsert.= "'" . $this->hasSubUnit . "', ";
         $sqlInsert.= "'" . $this->description . "', ";
+        $sqlInsert.= "'" . $this->posEnabled . "', ";
+        $sqlInsert.= "'" . $this->subUnitEnabled . "', ";
         $sqlInsert.= "'" . $this->saronUser->ID . "')";
         
-        $id = $this->db->insert($sqlInsert, "BusinessUnitType", "Id");
-        return $this->select($id, "Record");
+        $id = $this->db->insert($sqlInsert, "Org_UnitType", "Id");
+        return $this->select($id, RECORD);
     }
     
     
     function update(){
-        $update = "UPDATE BusinessUnitType ";
+        $update = "UPDATE Org_UnitType ";
         $set = "SET ";        
         $set.= "Name='" . $this->name . "', ";        
-        $set.= "IsRole='" . $this->isRole . "', ";        
-        $set.= "HasSubUnit='" . $this->hasSubUnit . "', ";        
+        $set.= "PosEnabled='" . $this->posEnabled . "', ";        
+        $set.= "SubUnitEnabled='" . $this->subUnitEnabled . "', ";        
         $set.= "Description='" . $this->description . "', ";        
         $set.= "Updater='" . $this->saronUser->ID . "' ";
         $where = "WHERE id=" . $this->id;
@@ -89,6 +90,6 @@ class OrganizationUnit extends SuperEntity{
     }
 
     function delete(){
-        return $this->db->delete("delete from BusinessUnitType where Id=" . $this->id);
+        return $this->db->delete("delete from Org_UnitType where Id=" . $this->id);
     }
 }

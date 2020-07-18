@@ -7,13 +7,16 @@ class OrganizationStatus extends SuperEntity{
     private $id;
     private $name;
     private $description;
+    private $sortOrder;
     
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
         
+        $this->statusfilter = (String)filter_input(INPUT_GET, "statusfilter", FILTER_SANITIZE_STRING);
         $this->id = (int)filter_input(INPUT_POST, "Id", FILTER_SANITIZE_NUMBER_INT);
         $this->name = (String)filter_input(INPUT_POST, "Name", FILTER_SANITIZE_STRING);
         $this->description = (String)filter_input(INPUT_POST, "Description", FILTER_SANITIZE_STRING);
+        $this->sortOrder = (String)filter_input(INPUT_POST, "SortOrder", FILTER_SANITIZE_STRING);
     }
 
 
@@ -27,9 +30,9 @@ class OrganizationStatus extends SuperEntity{
     }
 
     
-    function selectDefault($id = -1, $rec="Records"){
+    function selectDefault($id = -1, $rec=RECORDS){
         $select = "SELECT *, " . $this->saronUser->getRoleSql(false) . " ";
-        $from = "FROM BusinessPosStatus ";
+        $from = "FROM Org_PosStatus ";
         if($this->id > 0){
             $where = "WHERE Id = " . $this->id . " ";
         }
@@ -42,33 +45,29 @@ class OrganizationStatus extends SuperEntity{
     }
 
     function selectOptions(){
-        $select = "SELECT id as Value, Name as DisplayText ";
-        $result = $this->db->select($this->saronUser, $select , "FROM BusinessPosStatus ", "", "Order by DisplayText ", "", "Options");    
+        $select = "SELECT Id as Value, Name as DisplayText ";
+        
+        $where = "";
+        switch ($this->statusfilter) {
+        case "engagement":
+            $where = "WHERE Id < 3 "; // only "Avstämd" and "Förslag"
+            break;
+        default:
+            $where = "";
+        }
+        
+        $result = $this->db->select($this->saronUser, $select , "FROM Org_PosStatus ", $where, "Order by DisplayText ", "", "Options");    
         return $result; 
     }
     
     
-    function insert(){
-        $sqlInsert = "INSERT INTO BusinessUnitType (Name, IsRole, HasSubUnit, Description, Updater) ";
-        $sqlInsert.= "VALUES (";
-        $sqlInsert.= "'" . $this->name . "', ";
-        $sqlInsert.= "'" . $this->isRole . "', ";
-        $sqlInsert.= "'" . $this->hasSubUnit . "', ";
-        $sqlInsert.= "'" . $this->description . "', ";
-        $sqlInsert.= "'" . $this->saronUser->ID . "')";
-        
-        $id = $this->db->insert($sqlInsert, "BusinessUnitType", "Id");
-        return $this->select($id, "Record");
-    }
-    
     
     function update(){
-        $update = "UPDATE BusinessUnitType ";
+        $update = "UPDATE Org_PosStatus ";
         $set = "SET ";        
         $set.= "Name='" . $this->name . "', ";        
-        $set.= "IsRole='" . $this->isRole . "', ";        
-        $set.= "HasSubUnit='" . $this->hasSubUnit . "', ";        
         $set.= "Description='" . $this->description . "', ";        
+        $set.= "SortOrder='" . $this->sortOrder . "', ";        
         $set.= "Updater='" . $this->saronUser->ID . "' ";
         $where = "WHERE id=" . $this->id;
         $this->db->update($update, $set, $where);
@@ -76,6 +75,6 @@ class OrganizationStatus extends SuperEntity{
     }
 
     function delete(){
-        return $this->db->delete("delete from BusinessUnitType where Id=" . $this->id);
+        return $this->db->delete("delete from Org_UnitType where Id=" . $this->id);
     }
 }

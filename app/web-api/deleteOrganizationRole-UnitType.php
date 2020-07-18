@@ -6,19 +6,11 @@ require_once 'config.php';
 require_once SARON_ROOT . "app/access/wp-authenticate.php";
 require_once SARON_ROOT . 'app/database/queries.php'; 
 require_once SARON_ROOT . 'app/database/db.php';
-require_once SARON_ROOT . 'app/entities/SaronUser.php';
-require_once SARON_ROOT . 'app/entities/News.php';
-
-
-        $db = new db();
+require_once SARON_ROOT . 'app/entities/OrganizationRoleUnitType.php';
 
     /*** REQUIRE USER AUTHENTICATION ***/
-        $db->perf("requireEditorRole");
-    $requireEditorRole = false;
-        $db->perf("SaronUser");
+    $requireEditorRole = true;
     $saronUser = new SaronUser(wp_get_current_user());    
-
-        $db->perf("isPermitted");
 
     if(!isPermitted($saronUser, $requireEditorRole)){
         echo notPermittedMessage();
@@ -26,16 +18,13 @@ require_once SARON_ROOT . 'app/entities/News.php';
     }
 
     try{
-        $db->perf("Start list news");
-        $news = new News($db, $saronUser);
-        $result = $news->select();    
-        $db->perf("Stop list news");
-        $db->dispose();
-        echo $result;        
-            $db->perf("echo News");
-
+        $db = new db();
+        $org = new OrganizationRoleUnitType($db, $saronUser);
+        $result = $org->delete(); 
+        $db->dispose();            
+        echo $result;
     }
     catch(Exception $error){
         echo $error->getMessage();        
-        $db->dispose();
-    }
+        $db->dispose();            
+    }    

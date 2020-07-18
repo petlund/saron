@@ -2,8 +2,14 @@
 "use strict";
     
 $(document).ready(function () {
+    $('#NEWS').jtable(newsTableDef());
+    $('#NEWS').jtable('load');
+    $('#NEWS').find('.jtable-toolbar-item-add-record').hide();
+});
 
-    $('#NEWS').jtable({
+
+function newsTableDef(){
+    return {
         title: 'Nyheter',
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
@@ -12,7 +18,7 @@ $(document).ready(function () {
         multiSorting: true,
         defaultSorting: 'news_date desc', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listNews.php',
+            listAction:   '/' + SARON_URI + 'app/web-api/listNews.php?ts=' + Date.now() * 1000,
             createAction:   '/' + SARON_URI + 'app/web-api/createNews.php',
             //updateAction:   '/' + SARON_URI + 'app/web-api/updateNews.php'
             updateAction: function(postData) {
@@ -35,7 +41,7 @@ $(document).ready(function () {
                     });
                 });
             },
-            deleteAction: '/' + SARON_URI + 'app/web-api/deleteNews.php',
+            deleteAction: '/' + SARON_URI + 'app/web-api/deleteNews.php'
         },
         fields: {
             id: {
@@ -89,10 +95,9 @@ $(document).ready(function () {
         deleteFormClosed: function (event, data){
             data.row[0].style.backgroundColor = '';
         }
-    });
-    $('#NEWS').jtable('load');
-    $('#NEWS').find('.jtable-toolbar-item-add-record').hide();
-});
+    };
+
+};
     
 function _updateNewsRecord(records){
     var key = document.getElementsByClassName("jtable-data-row");

@@ -28,7 +28,7 @@ class People extends SuperEntity{
 
 
     
-    function selectDefault($rec = "Records"){
+    function selectDefault($rec = RECORDS){
         $tw = new PeopleViews();
         $sqlSelect = $tw->getPeopleViewSql($this->tableview, $this->saronUser);
 

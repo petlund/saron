@@ -211,7 +211,7 @@ class Person extends People{
         return true;
     }
 
-    function select($rec = "Records"){
+    function select($rec = RECORDS){
         switch ($this->selection){
         case "nextMembershipNo":
             return $this->selectNextMembershipNo();       
@@ -220,7 +220,7 @@ class Person extends People{
         }
     }    
     
-    function selectDefault($rec = "Records"){
+    function selectDefault($rec = RECORDS){
         $home = new Home($this->db, $this->saronUser);
         $sqlSelect = SQL_STAR_PEOPLE . ", " . $this->saronUser->getRoleSql(true);
         $sqlSelect.= DATES_AS_ALISAS_MEMBERSTATES . ", ";
@@ -268,7 +268,7 @@ class Person extends People{
         $sqlInsert.= $this->getZeroToNull($this->HomeId) . ") ";
  
         $this->PersonId = $this->db->insert($sqlInsert, "People", "Id");
-        return $this->select("Record");
+        return $this->select(RECORD);
     }
 
     
@@ -328,7 +328,7 @@ class Person extends People{
         $sqlWhere = "where Id=" . $this->PersonId . ";";
 
         $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
-        return $this->select("Record");
+        return $this->select(RECORD);
     }
     
     
@@ -346,7 +346,7 @@ class Person extends People{
         $sqlWhere = "where Id=" . $this->PersonId . ";";
 
         $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
-        return $this->select("Record");
+        return $this->select(RECORD);
 
     }
     
@@ -363,7 +363,7 @@ class Person extends People{
         $sqlWhere = "where Id=" . $this->PersonId . ";";
         
         $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
-        return $this->select("Record");
+        return $this->select(RECORD);
  
     }
    
@@ -376,7 +376,7 @@ class Person extends People{
         $sqlSet.= "CommentKeyEncrypt=" . $this->getEncryptedSqlString($this->CommentKey) . " ";
         $sqlWhere = "WHERE Id=" . $this->getCurrentPersonId();
         $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
-        return $this->select("Record");
+        return $this->select(RECORD);
         
     }
     

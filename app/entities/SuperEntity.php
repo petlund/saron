@@ -24,6 +24,8 @@ class SuperEntity {
         $this->db = $db;
         $this->saronUser = $saronUser;
 
+        $this->db->perf("ClientCall1 client time " . (int)filter_input(INPUT_GET, "ts", FILTER_SANITIZE_NUMBER_INT), (int)filter_input(INPUT_GET, "ts", FILTER_SANITIZE_NUMBER_INT)); // Client timestamp dev    
+        $this->db->perf("ClientCall1 server time"); // Client timestamp dev    
         $this->groupId = (int)filter_input(INPUT_POST, "groupId", FILTER_SANITIZE_NUMBER_INT);    
         $this->tableview = (String)filter_input(INPUT_POST, "tableview", FILTER_SANITIZE_STRING);    
         $this->selection = (String)filter_input(INPUT_GET, "selection", FILTER_SANITIZE_STRING);    

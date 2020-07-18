@@ -11,6 +11,11 @@
         define ("PKEY", "'" . $privkey . "'");
         define("SALT_LENGTH", 13);
         define("MAX_STR_LEN", 250);
+        
+        define ("RECORD", "Record");
+        define ("RECORDS", "Records");
+        define ("OPTIONS", "Options");
+        
         define("DATE_FORMAT", "'%Y-%m-%d'");
         define("DATE_OF_BIRTH", "DATE_FORMAT(DateOfBirth, " . DATE_FORMAT . ")");
         define("DATE_OF_BIRTH_ALIAS_DATE_OF_BIRTH", DATE_OF_BIRTH . " AS DateOfBirth");
@@ -78,8 +83,8 @@
         define("SQL_WHERE", "Where ");  
         define("SQL_WHERE_MEMBER", "DateOfMembershipStart is not null and DateOfMembershipEnd is null and DateOfDeath is null and " . DECRYPTED_LASTNAME . " not like '" . ANONYMOUS . "' ");  
 
-        define("FORMATTED_EMAILADDRESS", "if(" . DECRYPTED_EMAIL . " not like \"\", concat(\"<p class='mailLink'><a href='mailto:\"," . DECRYPTED_EMAIL . ",\"'>\", " . DECRYPTED_EMAIL . ", \"</a></p>\"),'') ");
-        define("CONTACTS_ALIAS_RESIDENTS", "(SELECT GROUP_CONCAT(" . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . ", ': ', " . DATES_AS_MEMBERSTATES . ", IF(" . DECRYPTED_EMAIL . " is NULL, '', CONCAT(', ', " . DECRYPTED_EMAIL . ")), IF(" . DECRYPTED_MOBILE . " is NULL, '', CONCAT(', ', " . DECRYPTED_MOBILE . ")) SEPARATOR '<BR>') FROM People as r where Homes.Id = r.HomeId  AND DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' order by DateOfBirth) as Residents ");
+        define("FORMATTED_EMAILADDRESS", "if(" . DECRYPTED_EMAIL . " not like \"\", concat(\"<p class='Email'><a href='mailto:\"," . DECRYPTED_EMAIL . ",\"'>\", " . DECRYPTED_EMAIL . ", \"</a></p>\"),'') ");
+        define("CONTACTS_ALIAS_RESIDENTS", "(SELECT GROUP_CONCAT('<b>', " . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . ", ':</b> ', " . DATES_AS_MEMBERSTATES . ", IF(" . DECRYPTED_EMAIL . " is NULL, '', CONCAT(', ', " . DECRYPTED_EMAIL . ")), IF(" . DECRYPTED_MOBILE . " is NULL, '', CONCAT(', ', " . DECRYPTED_MOBILE . ")) SEPARATOR '<BR>') FROM People as r where Homes.Id = r.HomeId  AND DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' order by DateOfBirth) as Residents ");
         define("NAMES_ALIAS_RESIDENTS", "(SELECT GROUP_CONCAT(" . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . ", ' - ', " . DATES_AS_MEMBERSTATES . " SEPARATOR '<BR>') FROM People as r where Homes.Id = r.HomeId  AND DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' order by DateOfBirth) as Residents ");
     } 
 
@@ -126,10 +131,11 @@
 
     function getMemberStateSql($tableAlias, $fieldAlias, $continue){
         $sql = "IF(UPPER(CONVERT(BINARY " . getFieldSql($tableAlias, null, "LastNameEncrypt", null, true, false) . " USING utf8)) like '%" . ANONYMOUS . "%', 'Anonymiserad', ";
+        $sql.= "IF(" . getFieldSql($tableAlias, null, "DateOfBirth", null, false, false) . " is null, '', ";
         $sql.= "IF(" . getFieldSql($tableAlias, null, "DateOfDeath", null, false, false) . " is not null, 'Avliden', ";
         $sql.= "IF(" . getFieldSql($tableAlias, null, "DateOfMemberShipStart", null, false, false) . " is null, ";
         $sql.= "IF(" . getFieldSql($tableAlias, null, "DateOfBaptism", null, false, false) . " is null and " . getFieldSql($tableAlias, null, "CongregationOfBaptism", null, false, false) . " is null, 'Ej medlem', 'Dopregister'), ";
-        $sql.= "IF(" . getFieldSql($tableAlias, null, "DateOfMemberShipEnd", null, false, false) . " is null, 'Medlem', 'Dopregister')))) ";
+        $sql.= "IF(" . getFieldSql($tableAlias, null, "DateOfMemberShipEnd", null, false, false) . " is null, 'Medlem', 'Dopregister'))))) ";
         if(strlen($fieldAlias) > 0){
             $sql.= " AS " . $fieldAlias;
         }

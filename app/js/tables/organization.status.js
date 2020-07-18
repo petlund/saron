@@ -17,32 +17,10 @@ function statusTableDef(tableId){
         pageList: 'minimal',
         sorting: true, //Enable sorting
         multiSorting: true,
-        defaultSorting: 'Name', //Set default sorting        
+        defaultSorting: 'SortOrder', //Set default sorting        
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationStatus.php',
-            createAction:   '/' + SARON_URI + 'app/web-api/createOrganizationStatus.php',
-            //updateAction:   '/' + SARON_URI + 'app/web-api/updateNews.php'
-            updateAction: function(postData) {
-                return $.Deferred(function ($dfd) {
-                    $.ajax({
-                        url: '/' + SARON_URI + 'app/web-api/updateOrganizationStatus.php',
-                        type: 'POST',
-                        dataType: 'json',
-                        data: postData,
-                        success: function (data) {
-                            $dfd.resolve(data);
-                            if(data.Result !== 'ERROR'){
-                                var records = data['Records'];
-                                _updateOrganizationUnitTypeRecord(records);
-                            }
-                        },
-                        error: function () {
-                            $dfd.reject();
-                        }
-                    });
-                });
-            },
-            deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationStatus.php'
+            updateAction:   '/' + SARON_URI + 'app/web-api/updateOrganizationStatus.php',
         },
         fields: {
             Id: {
@@ -56,6 +34,10 @@ function statusTableDef(tableId){
             Description: {
                 title: 'Beskrivning',
                 width: '50%'
+            },
+            SortOrder: {
+                title: 'Sorteringsordning',
+                width: '10%'
             },
             Updater: {
                 edit: false,
@@ -80,7 +62,7 @@ function statusTableDef(tableId){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
-            if(data.record.BusinessRole_FK !== null)
+            if(data.record.OrgRole_FK !== null)
                 data.row.find('.jtable-delete-command-button').hide();
         },        
         recordsLoaded: function(event, data) {

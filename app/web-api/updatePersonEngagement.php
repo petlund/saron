@@ -6,36 +6,30 @@ require_once 'config.php';
 require_once SARON_ROOT . "app/access/wp-authenticate.php";
 require_once SARON_ROOT . 'app/database/queries.php'; 
 require_once SARON_ROOT . 'app/database/db.php';
-require_once SARON_ROOT . 'app/entities/SaronUser.php';
-require_once SARON_ROOT . 'app/entities/News.php';
+require_once SARON_ROOT . 'app/entities/PersonEngagement.php';
 
-
-        $db = new db();
 
     /*** REQUIRE USER AUTHENTICATION ***/
-        $db->perf("requireEditorRole");
-    $requireEditorRole = false;
-        $db->perf("SaronUser");
+    $requireEditorRole = true;
     $saronUser = new SaronUser(wp_get_current_user());    
-
-        $db->perf("isPermitted");
 
     if(!isPermitted($saronUser, $requireEditorRole)){
         echo notPermittedMessage();
         exit();
     }
-
+    
     try{
-        $db->perf("Start list news");
-        $news = new News($db, $saronUser);
-        $result = $news->select();    
-        $db->perf("Stop list news");
+        $db = new db();
+        $personEngagement = new PersonEngagement($db, $saronUser);
+        $db->transaction_begin();
+        $respons = $personEngagement->update();
+        $db->transaction_end();
         $db->dispose();
-        echo $result;        
-            $db->perf("echo News");
-
+        echo $respons;
     }
     catch(Exception $error){
+        $db->transaction_roll_back();
+        $db->transaction_end();
         echo $error->getMessage();        
         $db->dispose();
-    }
+    } 

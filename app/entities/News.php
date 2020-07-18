@@ -17,7 +17,7 @@ class News extends SuperEntity{
         $this->id = (int)filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT);
     }
     
-    function select($id = -1, $rec="Records"){
+    function select($id = -1, $rec=RECORDS){
         $select = "SELECT *, " . $this->saronUser->getRoleSql(false) . " ";
         if($id < 0){
             $result = $this->db->select($this->saronUser, $select , "FROM News ", "", $this->getSortSql(), $this->getPageSizeSql(), $rec);    
@@ -36,7 +36,8 @@ class News extends SuperEntity{
         $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "')";
         
         $id = $this->db->insert($sqlInsert, "News", "id");
-        return $this->select($id, "Record");
+        $result =  $this->select($id, RECORD);
+        return $result;
     }
     
     
@@ -54,3 +55,4 @@ class News extends SuperEntity{
         return $this->db->delete("delete from News where id=" . $this->id);
     }
 }
+//{"Result":"OK","Record":"{'id':'167', 'news_date':'2020-06-16 18:52:14', 'information':'q', 'writer':'saron utvecklare', 'user_role':'edit'}","TotalRecordCount":"1","user_role":"edit"}"

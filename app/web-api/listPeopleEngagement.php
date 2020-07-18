@@ -7,18 +7,13 @@ require_once SARON_ROOT . "app/access/wp-authenticate.php";
 require_once SARON_ROOT . 'app/database/queries.php'; 
 require_once SARON_ROOT . 'app/database/db.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
-require_once SARON_ROOT . 'app/entities/News.php';
+require_once SARON_ROOT . 'app/entities/PeopleEngagement.php';
 
 
-        $db = new db();
 
     /*** REQUIRE USER AUTHENTICATION ***/
-        $db->perf("requireEditorRole");
     $requireEditorRole = false;
-        $db->perf("SaronUser");
     $saronUser = new SaronUser(wp_get_current_user());    
-
-        $db->perf("isPermitted");
 
     if(!isPermitted($saronUser, $requireEditorRole)){
         echo notPermittedMessage();
@@ -26,14 +21,11 @@ require_once SARON_ROOT . 'app/entities/News.php';
     }
 
     try{
-        $db->perf("Start list news");
-        $news = new News($db, $saronUser);
-        $result = $news->select();    
-        $db->perf("Stop list news");
+        $db = new db(); 
+        $engagement = new PeopleEngagement($db, $saronUser);
+        $result = $engagement->select();    
         $db->dispose();
         echo $result;        
-            $db->perf("echo News");
-
     }
     catch(Exception $error){
         echo $error->getMessage();        

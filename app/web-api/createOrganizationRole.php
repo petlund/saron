@@ -6,33 +6,28 @@ require_once 'config.php';
 require_once SARON_ROOT . "app/access/wp-authenticate.php";
 require_once SARON_ROOT . 'app/database/queries.php'; 
 require_once SARON_ROOT . 'app/database/db.php';
-require_once SARON_ROOT . 'app/entities/Statistics.php'; 
+require_once SARON_ROOT . 'app/entities/OrganizationRole.php';
 
-
-    $requireEditorRole = false;
-    $saronUser = new SaronUser(wp_get_current_user());    
+    /*** REQUIRE USER AUTHENTICATION ***/
+    $requireEditorRole = true;
+        $saronUser = new SaronUser(wp_get_current_user());    
 
     if(!isPermitted($saronUser, $requireEditorRole)){
         echo notPermittedMessage();
         exit();
     }
-
     try{
         $db = new db();
-        $statistics = new Statistics($db, $saronUser);
         $db->transaction_begin();
-        $result = $statistics->select();    
+        $org = new OrganizationRole($db, $saronUser);
+        $respons = $org->insert();        
         $db->transaction_end();
-        $db->dispose();
-        echo $result;
-
+        $db->dispose();            
+        echo $respons;
     }
     catch(Exception $error){
         $db->transaction_roll_back();
         $db->transaction_end();
-        echo $error->getMessage();
-        $db->dispose();
-    }
-
-    
-    
+        echo $error->getMessage();        
+        $db->dispose();            
+    } 
