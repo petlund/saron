@@ -86,12 +86,12 @@
                         <li>
                             <a href="">Organisation</a>
                             <ul>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_GRAPH">Bemanning</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_GRAPH">Struktur grafiskt</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_STRUCT">Struktur</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_UNIT">Enheter och roller</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_ROLE">Roller och enheter</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_ROLE_STATUS">Status bemanning</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=PEOPLE_ENG">Person & Ansvar</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_STRUCT">Organisation & Bemanning</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_ROLE_STATUS">Bemanningsstatus</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_ROLE">Organisationsroller</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_UNIT">Organisationsenheter</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_GRAPH">Grafisk presentation</a></li>
                             </ul>
                         </li>
                         <li>

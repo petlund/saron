@@ -236,10 +236,28 @@ function posTableDef(tableId, orgTreeNode_FK, unitName, orgUnitType_FK){
                 type: 'hidden'
             },
             MultiPos:{
-                list: false,
-                edit: false,
-                create: false,
-                type: 'hidden'
+                sorting: false,
+                width: "1%",
+                display: function (data) {
+                    if(data.record.MultiPos === '1'){
+                        var src;
+                            src = '"/' + SARON_URI + SARON_IMAGES_URI + 'multipos.png" title="Rollen finns på fler ställen"';
+                        
+                        var imgTag = _setImageClass(data.record, "Role", src, -1);
+                        var $imgRole = $(imgTag);
+
+                        $imgRole.click(data, function (event){
+                            var $tr = $imgRole.closest('tr');
+                            $(tableId).jtable('openChildTable', $tr, treeListTableDef(tableId, data.record.PosId, data.record.Name), function(data){
+                                data.childTable.jtable('load');
+                            });
+                        });
+                        return $imgRole;
+                        }
+                    else{
+                        return null;
+                    }
+                }                
             },
             OrgRole_FK: {
                 width: '10%',
@@ -338,4 +356,61 @@ function posTableDef(tableId, orgTreeNode_FK, unitName, orgUnitType_FK){
             data.row[0].style.backgroundColor = '';
         }
     };
-}    
+    
+    
+function treeListTableDef(tableId, Org_Pos_FK, parentName){
+        return {
+            title: parentName + " finns på nedanstående platser i organisationen.",
+            paging: true, //Enable paging
+            pageSize: 10, //Set page size (default: 10)
+            pageList: 'minimal',
+            sorting: true, //Enable sorting
+            multiSorting: true,
+            defaultSorting: 'Name', //Set default sorting        
+            actions: {
+                listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationUnitMember.php?Org_Pos_FK=' + Org_Pos_FK,
+                createAction: '/' + SARON_URI + 'app/web-api/createOrganizationUnitMember.php?Org_Pos_FK=' + Org_Pos_FK,
+                updateAction: '/' + SARON_URI + 'app/web-api/updateOrganizationUnitMember.php?Org_Pos_FK=' + Org_Pos_FK,
+                deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationUnitMember.php'
+            }, 
+            fields: {
+                Org_Tree_FK: {
+                    title: 'Organisatorsik enhet',
+                    key: true,
+                    options: function(){
+                       return '/' + SARON_URI + 'app/web-api/listOrganizationStructure.php?selection=options';
+                    } 
+                }
+            },
+            rowInserted: function(event, data){
+                if (data.record.user_role !== 'edit'){
+                    data.row.find('.jtable-edit-command-button').hide();
+                    data.row.find('.jtable-delete-command-button').hide();
+                }
+            },        
+            recordsLoaded: function(event, data) {
+                if(data.serverResponse.user_role === 'edit'){ 
+                    $(tableId).find('.jtable-toolbar-item-add-record').show();
+                }
+            },        
+            formCreated: function (event, data){
+                if(data.formType === 'edit')
+                    data.row[0].style.backgroundColor = "yellow";
+
+                data.form.css('width','600px');
+                data.form.find('input[name=Description]').css('width','580px');
+            },
+            formClosed: function (event, data){
+                if(data.formType === 'edit')
+                    data.row[0].style.backgroundColor = '';
+            },
+            deleteFormCreated: function (event, data){
+                data.row[0].style.backgroundColor = 'red';
+            },
+            deleteFormClosed: function (event, data){
+                data.row[0].style.backgroundColor = '';
+            }
+        };
+    };
+}
+    

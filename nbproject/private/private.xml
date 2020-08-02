@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/config/config.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/organization.structure.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/web-api/listOrganizationStructure.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationPos.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/web-api/listOrganizationUnitMember.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/PeopleEngagement.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/organization.unit.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/db.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/people.engagement.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationStructure.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/access/wp-authenticate.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/organization.role.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationUnitMember.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationRole.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/access/login.php</file>
+        </group>
+    </open-files>
+</project-private>

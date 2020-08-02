@@ -68,27 +68,34 @@ class SaronUser {
     
 
     function getRoleSql($continue){
+        $SQL_ALIAS = ' as user_role';
+        $userRole = "";
+        
         for($i = 0; $i < count($this->user->roles); $i++){
             if($this->user->roles[$i]===SARON_ROLE_PREFIX . SARON_ROLE_EDITOR){
-                if($continue){
-                    return "'" . SARON_ROLE_EDITOR . "' as user_role, ";                
-                }
-                else{
-                    return "'" . SARON_ROLE_EDITOR . "' as user_role ";                    
-                }
+                $userRole = SARON_ROLE_EDITOR;                    
             }
         }
-        for($i = 0; $i < count($this->user->roles); $i++){
-            if($this->user->roles[$i]===SARON_ROLE_PREFIX . SARON_ROLE_VIEWER){
-                if($continue){
-                    return "'" . SARON_ROLE_VIEWER . "' as user_role, ";
-                }
-                else{
+        if(strlen($userRole) === 0){
+            for($i = 0; $i < count($this->user->roles); $i++){
+                if($this->user->roles[$i]===SARON_ROLE_PREFIX . SARON_ROLE_VIEWER){
                     return "'" . SARON_ROLE_VIEWER . "' as user_role ";                    
                 }
-            }
-        }   
-        return "NO ROLE";
+            }   
+        }
+        
+        if(strlen($userRole) === 0){
+            $userRole = "NO_ROLE";
+        }
+            
+        $sql = "'" . $userRole . "'" . $SQL_ALIAS;
+            
+        if($continue){
+            return $sql . ", ";
+        }
+        else{
+            return $sql . " ";            
+        }
     }
     
 

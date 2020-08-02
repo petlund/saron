@@ -35,9 +35,17 @@ class OrganizationStructure extends SuperEntity{
         }
     }
 
-    function selectOptions(){
+    function selectOptions_OLD(){
         $select = "SELECT Tree.Id as Value, Concat(Role.Name, ' ', Typ.Name, ' ', Tree.Name) as DisplayText ";
         $result = $this->db->select($this->saronUser, $select , "FROM Org_Tree as Tree inner join Org_UnitType as Typ on Typ.Id= Tree.OrgUnitType_FK inner join Org_Role as Role on Role.Id = Tree.OrgRole_FK ", "", "Order by DisplayText ", "", "Options");    
+        return $result; 
+    }
+    
+    
+    function selectOptions(){
+        $select = "SELECT Tree.Id as Value, Concat(Tree.Name, ' (', Typ.Name, ')')  as DisplayText ";
+        $from = "FROM Org_Tree as Tree inner join Org_UnitType as Typ on Typ.Id= Tree.OrgUnitType_FK ";
+        $result = $this->db->select($this->saronUser, $select , $from, "", "Order by DisplayText ", "", "Options");    
         return $result; 
     }
     
