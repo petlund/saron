@@ -11,7 +11,7 @@
     isLoggedIn();
         $saronUser = new SaronUser(wp_get_current_user());
     
-?> 
+?>  
 <!doctype html>
 <html>
   <head> 

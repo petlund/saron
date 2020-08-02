@@ -64,12 +64,12 @@ class SaronUsers {
                     $comp = ($viewer_a < $viewer_b) ? -1 : 1;
                 break;
                 case "saron_editor":
-                    $editor_a = hasPrivilege($a->roles, SARON_ROLE_PREFIX . SARON_ROLE_EDITOR);
-                    $editor_b = hasPrivilege($b->roles, SARON_ROLE_PREFIX . SARON_ROLE_EDITOR);
-                    if ($editor_a == $editor_b) {
+                    $edit_a = hasPrivilege($a->roles, SARON_ROLE_PREFIX . SARON_ROLE_EDITOR);
+                    $edit_b = hasPrivilege($b->roles, SARON_ROLE_PREFIX . SARON_ROLE_EDITOR);
+                    if ($edit_a == $edit_b) {
                         return 0;
                     }
-                    $comp = ($editor_a < $editor_b) ? -1 : 1;
+                    $comp = ($edit_a < $edit_b) ? -1 : 1;
                 break;
             }
             if($sort_order === "ASC"){
@@ -88,9 +88,9 @@ class SaronUsers {
             $endIndex = count($this->users);
         }
         $result = '{"Result":"OK","Records":[';
-        for($i = $this->jtStartIndex; $i<$endIndex; $i++){
+        for($i = $this->jtStartIndex; $i < $endIndex; $i++){
             $viewer = $this->hasPrivilege($this->users[$i]->roles, SARON_ROLE_PREFIX . SARON_ROLE_VIEWER);
-            $editor = $this->hasPrivilege($this->users[$i]->roles, SARON_ROLE_PREFIX . SARON_ROLE_EDITOR);
+            $edit = $this->hasPrivilege($this->users[$i]->roles, SARON_ROLE_PREFIX . SARON_ROLE_EDITOR);
             $result.= '{"id":' . $this->users[$i]->ID;
             $result.= ',"display_name":"' . $this->users[$i]->display_name; 
             $result.= '","user_login":"' . $this->users[$i]->user_login; 
@@ -98,7 +98,7 @@ class SaronUsers {
             $otp = $this->users[$i]->get("wp-otp");
             $result.= '","wp_otp":"' . $otp["enabled"]; 
             $result.= '","saron_reader":' . $viewer; 
-            $result.= ',"saron_editor":' . $editor . '}';
+            $result.= ',"saron_editor":' . $edit . '}';
             if($i<$endIndex-1){
                 $result.=",";
             }
