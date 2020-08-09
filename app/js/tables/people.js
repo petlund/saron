@@ -26,7 +26,7 @@ $(document).ready(function () {
                         success: function (data) {
                             if(data.Result !== 'ERROR'){
                                 $dfd.resolve(data);
-                                var newPersonData = {record : data.Record[0]};
+                                var newPersonData = {record : data.Records[0]};
                                 $("#groupId").val("2");
                                 var pData = {searchString: "", groupId: 2, tableview: "people"};
 
