@@ -1,3 +1,4 @@
+/* global SARON_URI, PERSON, inputFormWidth, inputFormFieldWidth */
 "use strict";
 
 $(document).ready(function () {
@@ -82,7 +83,7 @@ $(document).ready(function () {
                 edit: true,
                 width: '5%',
                 options:_letterOptions()
-            },
+            }
         },
         rowInserted: function(event, data){
             if (data.record.user_role !== 'edit'){

@@ -16,8 +16,10 @@ class db {
             $appErrorMsg = "Error when try to set UTF-8";
             $this->connection->set_charset("utf8");    
             $appErrorMsg="";
+            $this->perf("DB Construct");
         }
-        catch(Exception $error){            
+        catch(Exception $error){  
+            echo $this->jsonErrorMessage($appErrorMsg, $error, $sql="");
             throw new Exception($this->jsonErrorMessage($appErrorMsg, $error, $sql=""));                               
         }            
     }
@@ -131,9 +133,28 @@ class db {
     }     
     
     
-    public function select($saronUser, $select, $from, $where, $orderby, $limit, $responstype="Records"){
+    public function perf($label, $ts=0){
+        $fiteredHost = (String)filter_input(INPUT_SERVER, "HTTP_HOST", FILTER_SANITIZE_STRING);
+        if((strpos($fiteredHost, LOCAL_DEV_APP_HOST) !== FALSE)){
+            $keyTable = "perf";
+        
+            $keyColumn = "Id";
+            $mt = explode(' ', microtime());
+            if($ts === 0){
+                $ts = ((int)$mt[1]) * 1000000 + ((int)round($mt[0] * 1000000));
+            }
+            $insert = "Insert into " . $keyTable . " (Label, TS) Values ('";
+            $insert.= $label . "', ";
+            $insert.=  $ts . ")";
+
+            $this->insert($insert, $keyTable, $keyColumn);
+        }
+    }
+    
+    public function select($saronUser, $select, $from, $where, $orderby, $limit, $responstype=RECORDS){
         $sqlSelect = $select . $from . $where . $orderby . $limit;
         $sqlCount = "select count(*) as c " . $from . $where;
+        $this->perf("SELECT .... " . $from);
         try{
             return $this->selectSeparate($saronUser, $sqlSelect, $sqlCount, $responstype);
         }
@@ -143,7 +164,7 @@ class db {
         }
     } 
     
-    public function selectSeparate($saronUser, $sqlSelect, $sqlCount, $responstype="Records"){
+    public function selectSeparate($saronUser, $sqlSelect, $sqlCount, $responstype=RECORDS){
         $listResult = $this->connection->query($sqlSelect);
         if(!$listResult){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
@@ -158,8 +179,8 @@ class db {
             throw new Exception($this->jsonErrorMessage("SQL-Error in select count statement!", null, $technicalErrMsg));
         }
 
-        $arrayResult = $this->resultSetToArray($listResult);
-        $jsonResult = $this->processRowSet($saronUser, $arrayResult, $countResult, $responstype);   
+//        $result = $this->resultSetToArray($listResult, $responstype);
+        $jsonResult = $this->processRowSet($saronUser, $listResult, $countResult, $responstype);   
             
         return $jsonResult;
     } 
@@ -172,9 +193,9 @@ class db {
             $this->php_dev_error_log("sqlQuery", $sql);
             return false;
         }
-        $resultArray = $this->resultSetToArray($listResult);
+        $result = $this->resultSetToArray($listResult);
     
-        return $resultArray;
+        return $result;
     }
 
     private function jsonErrorMessage($appErrorMsg, $connectionError=null, $sqlError=""){
@@ -198,7 +219,8 @@ class db {
         $this->php_dev_error_log("jsonErrorMessage", $errMsg);
         return json_encode($error);        
     }
-        
+    
+    
     
     private function resultSetToArray($listResult){
         while($listRow = mysqli_fetch_array($listResult, MYSQLI_ASSOC)){
@@ -210,9 +232,35 @@ class db {
     
     
     
-    private function processRowSet($saronUser, $listRows, $countResult, $responstype){
+    private function resultSetToJSONString($listResult){
+        $listRow = mysqli_fetch_array($listResult, MYSQLI_ASSOC);
+        $jsonListRow = "{";
+        $first = true;
+        foreach($listRow as $key => $value){
+            if($first){
+                $first = false;
+            }
+            else{
+                $jsonListRow .= ", ";
+            }
+            $jsonListRow .= "'" . $key . "':'" . $value . "'";
+        }
+        $jsonListRow .= "}";
+        
+        mysqli_free_result($listResult);
+        return $jsonListRow;
+    }    
+    
+    
+    
+    private function processRowSet($saronUser, $listResult, $countResult, $responstype){
         $jTableResult['Result'] = "OK";
-        $jTableResult[$responstype] = $listRows;
+        if($responstype === RECORDS or $responstype === OPTIONS){
+            $jTableResult[$responstype] = $this->resultSetToArray($listResult);
+        }
+        else{
+            $jTableResult[$responstype] = $this->resultSetToJSONString($listResult);            
+        }
         
         $countRows = "0";
         while($countRow = mysqli_fetch_array($countResult)){
@@ -220,11 +268,19 @@ class db {
         } 
         mysqli_free_result($countResult);
 
-        $jTableResult['TotalRecordCount'] = $countRows;
-        $jTableResult['user_role'] = $saronUser->getRole();
+        if($responstype === RECORDS){
+            $jTableResult['TotalRecordCount'] = $countRows;
+            $jTableResult['user_role'] = $saronUser->getRole();
+        }
 
         $jsonResult = json_encode($jTableResult);
 
+        if($responstype === RECORD AND $countRows > 1){
+            $this->php_dev_error_log("processRowSet", "");
+            throw new Exception($this->jsonErrorMessage("Error i json_encode funktionen! Not a unic Record", null, " -- processRowSet"));            
+        }
+        
+        
         if($jsonResult===false){
             $this->php_dev_error_log("processRowSet", "");
             throw new Exception($this->jsonErrorMessage("Error i json_encode funktionen!", null, " -- processRowSet"));

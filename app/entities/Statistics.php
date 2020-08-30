@@ -213,9 +213,9 @@ class Statistics extends SuperEntity{
                 . "concat(DATE_FORMAT( MAX( Year ), '%Y' ) - 1, '-12-31') as lastTimestampOfPrevYear, "
                 . "DATE_FORMAT( MAX( Year ),  '%Y' ) - 1 AS prevStatisticTimeStampYear ";
         
-        $sqlFrom = "FROM Statistics";
+        $sqlFrom = "FROM Statistics ";
 
-        $jsonLastTimeStamp = $this->db->select($this->saronUser, $sqlSelect, $sqlFrom, "", "", ""); // get last update
+        $jsonLastTimeStamp = $this->db->select($this->saronUser, $sqlSelect, $sqlFrom, "", "GROUP BY year ORDER BY year Desc ", ""); // get last update
         $lastTimeStamp = json_decode($jsonLastTimeStamp);
         return $lastTimeStamp->Records[0];
     }

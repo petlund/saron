@@ -12,7 +12,7 @@ require_once SARON_ROOT . 'app/entities/Person.php';
     $saronUser = new SaronUser(wp_get_current_user());    
 
     if(!isPermitted($saronUser, $requireEditorRole)){
-        echo notPermittedMessage();
+        echo notPermitteMessage();
         exit();
     }
 

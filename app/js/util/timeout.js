@@ -44,6 +44,9 @@ localStorage.setItem(LAST_ACTIVITY_TIMESTAMP, new Date().getTime());
 
     function updateProgressbar(t) {
         var elem = document.getElementById("timerBar");
+        if(elem === null)
+            return;
+        
         var tr = (t0-t)/t0 * 100; 
         if(tr > 40)
             elem.style.background = 'lightgreen';

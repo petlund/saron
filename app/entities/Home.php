@@ -48,28 +48,28 @@ class Home extends Homes{
         $sqlWhere = "WHERE Id=" . $this->HomeId . ";";
         $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
         
-        return $this->select();
+        return $this->select(RECORD);
     }    
 
-    function select(){
+    function select($rec = RECORDS){
         $sqlSelect = "SELECT "; 
         $sqlSelect.= $this->saronUser->getRoleSql(true);
         $sqlSelect.= $this->getHomeSelectSql(ALIAS_CUR_HOMES, $this->HomeId, false);
         
-        $result = $this->db->select($this->saronUser, $sqlSelect, "FROM Homes ", "WHERE Id = " . $this->HomeId, "", "");
+        $result = $this->db->select($this->saronUser, $sqlSelect, "FROM Homes ", "WHERE Id = " . $this->HomeId, "", $rec);
         return $result;        
     }
     
     function getHomeSelectSql($tableAlias, $homeId, $continue){
         $sql.= getLongHomeNameSql($tableAlias, "LongHomeName", true);
-        $sql.= getSelectedFieldSql($tableAlias, "FamilyName", "FamilyNameEncrypt", "", true, true);
-        $sql.= getSelectedFieldSql($tableAlias, "Address", "AddressEncrypt", "", true, true);
-        $sql.= getSelectedFieldSql($tableAlias, "Zip", "Zip", "", false, true);
-        $sql.= getSelectedFieldSql($tableAlias, "City", "City", "", false, true);
-        $sql.= getSelectedFieldSql($tableAlias, "Country", "Country", "", false, true);
-        $sql.= getSelectedFieldSql($tableAlias, "Phone", "PhoneEncrypt", "", true, true);
-        $sql.= getSelectedFieldSql($tableAlias, "Letter", "Letter", "", false, true);
-        $sql.= getSelectedFieldSql($tableAlias, "HomeId", "Id", "", false, true);
+        $sql.= getFieldSql($tableAlias, "FamilyName", "FamilyNameEncrypt", "", true, true);
+        $sql.= getFieldSql($tableAlias, "Address", "AddressEncrypt", "", true, true);
+        $sql.= getFieldSql($tableAlias, "Zip", "Zip", "", false, true);
+        $sql.= getFieldSql($tableAlias, "City", "City", "", false, true);
+        $sql.= getFieldSql($tableAlias, "Country", "Country", "", false, true);
+        $sql.= getFieldSql($tableAlias, "Phone", "PhoneEncrypt", "", true, true);
+        $sql.= getFieldSql($tableAlias, "Letter", "Letter", "", false, true);
+        $sql.= getFieldSql($tableAlias, "HomeId", "Id", "", false, true);
         $sql.= getResidentsSql($tableAlias, "Residents", $homeId, $continue);   
         return $sql;
     }

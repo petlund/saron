@@ -21,12 +21,17 @@
     <?php include ('app/util/js.php') ?>
     <link rel="icon" href=<?php echo Favicon;?> type="png"/>        
 
-    <script type="text/javascript" src="/<?php echo SARON_URI;?>jtable/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="/<?php echo SARON_URI;?>jtable/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript" src="/<?php echo SARON_URI;?>jtable/jquery-3.5.1.js"></script>
+    <script type="text/javascript" src="/<?php echo SARON_URI;?>jtable/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+
+    <link href="/<?php echo SARON_URI;?>jtable/lib/themes/lightcolor/gray/jtable.min.css" rel="stylesheet" type="text/css" />        
+    <link href="/<?php echo SARON_URI;?>jtable/jquery-ui-1.12.1.custom/jquery-ui.css" rel="stylesheet" type="text/css" />          
+
     <script src="/<?php echo SARON_URI;?>app/js/util/menu.js"></script>
     <script src="/<?php echo SARON_URI;?>app/js/util/timeout.js"></script>
     <script src="/<?php echo SARON_URI;?>app/js/util/util.js"></script>
-    <link href="/<?php echo SARON_URI;?>jtable/themes/lightcolor/gray/jtable.min.css" rel="stylesheet" type="text/css" />        
-    <link href="/<?php echo SARON_URI;?>jtable/jquery-ui-1.12.1.custom/jquery-ui.css" rel="stylesheet" type="text/css" />          
+    
     <link rel="stylesheet" type="text/css" href="/<?php echo SARON_URI;?>app/css/saron.css" />
 
     <body >
@@ -83,6 +88,17 @@
                                 <li><a href="/<?php echo SARON_URI;?>app/views/efk.php">EFK-statistik</a></li>
                             </ul>
                         </li>
+                        <li><!--
+                            <a href="">Organisation</a>
+                            <ul>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=PEOPLE_ENG">Person & Ansvar</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_STRUCT">Organisation & Bemanning</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_ROLE_STATUS">Bemanningsstatus</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_ROLE">Organisationsroller</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_UNIT">Organisationsenheter</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_GRAPH">Grafisk presentation</a></li>
+                            </ul>
+                        </li>-->
                         <li>
                             <a href="">Om <?php echo NameOfRegistry;?></a>
                             <ul>

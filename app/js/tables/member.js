@@ -1,3 +1,5 @@
+/* global DATE_FORMAT, SARON_URI, PERSON, inputFormWidth, inputFormFieldWidth */
+
 "use strict";
 
 $(document).ready(function () {
@@ -55,6 +57,7 @@ $(document).ready(function () {
                 width: '7%',
                 edit: false,
                 type: 'date',
+                //displayFormat: DATE_FORMAT,
                 display: function (data){
                     return _setClassAndValue(data.record, "DateOfBirth", PERSON);
                 }       
@@ -66,6 +69,7 @@ $(document).ready(function () {
             DateOfMembershipStart: {
                 width: '7%',
                 type: 'date',
+                //displayFormat: DATE_FORMAT,
                 title: 'Start',
                 display: function (data){
                     return _setClassAndValue(data.record, "DateOfMembershipStart", PERSON);
@@ -88,6 +92,7 @@ $(document).ready(function () {
             DateOfMembershipEnd: {
                 width: '7%',
                 type: 'date',
+                //displayFormat: DATE_FORMAT,
                 title: 'Avslut',
                 display: function (data){
                     return _setClassAndValue(data.record, "DateOfMembershipEnd", PERSON);

@@ -1,3 +1,4 @@
+/* global DATE_FORMAT, SARON_URI, PERSON */
 "use strict";
 
 $(document).ready(function () {
@@ -11,7 +12,7 @@ $(document).ready(function () {
             multiSorting: true,
             defaultSorting: 'NextBirthday ASC', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php',
+            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php'
         },
         
         fields: {
@@ -32,6 +33,7 @@ $(document).ready(function () {
                 title: 'Född',
                 width: '7%',
                 type: 'date',
+                //displayFormat: DATE_FORMAT,                
                 display: function (data){
                     return _setClassAndValue(data.record, "DateOfBirth", PERSON);
                 }       
@@ -47,6 +49,7 @@ $(document).ready(function () {
                 title: 'När',
                 width: '7%',
                 type: 'date',
+                //displayFormat: DATE_FORMAT,
                 display: function (data){
                     return _setClassAndValue(data.record, "NextBirthday", PERSON);
                 }       

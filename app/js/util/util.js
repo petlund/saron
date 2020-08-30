@@ -1,3 +1,4 @@
+/* global SARON_URI, FullNameOfCongregation */
 "use strict";
 
 const J_TABLE_ID = "#people";
@@ -5,6 +6,7 @@ const HOME = 1;
 const OLD_HOME = 3;
 const PERSON = 2;
 const PERSON_AND_HOME = 4;
+const NEWS = 5;
 const NEW_HOME_ID = 'newHomeId';
 const OLD_HOME_PREFIX = "OldHome_";
 const NO_HOME = "Inget hem";
@@ -12,7 +14,7 @@ const inputFormWidth = '500px';
 const inputFormFieldWidth = '480px';
 const NOT_VISIBLE = 'Ej synlig';
 const VISIBLE = 'Synlig';
-const SARON_IMAGES_URI = 'app/images/';
+const DATE_FORMAT = '';//yyyy-MM-dd';
 
 
 var clearMembershipNoOptionCache = true;
@@ -96,13 +98,15 @@ function _styleSaronValue(clazz, val, altValue){
 function _getId(record, type){
     if(type === HOME)
         if(record.HomeId === "0")
-            return 'H' + localStorage.getItem('newHomeId')
+            return 'H' + localStorage.getItem('newHomeId');
         else
             return 'H' + record.HomeId;
     else if(type === OLD_HOME)
         return 'H' + record[OLD_HOME_PREFIX + 'HomeId'];
     else if(type === PERSON)
         return 'P' + record.PersonId;
+    else if(type === NEWS)
+        return 'N' + record.Id;
     else 
         return 0;
 }

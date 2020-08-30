@@ -1,4 +1,4 @@
-/* global J_TABLE_ID, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID */
+/* global DATE_FORMAT, J_TABLE_ID, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID */
 
 "use strict";
 
@@ -24,9 +24,10 @@ $(document).ready(function () {
                         dataType: 'json',
                         data: postData,
                         success: function (data) {
+                            console.log('data.Record.HomeId: ' + data.Record.HomeId);
                             if(data.Result !== 'ERROR'){
                                 $dfd.resolve(data);
-                                var newPersonData = {record : data.Record[0]};
+                                var newPersonData = {record : data.Record};
                                 $("#groupId").val("2");
                                 var pData = {searchString: "", groupId: 2, tableview: "people"};
 
@@ -61,7 +62,7 @@ $(document).ready(function () {
                                 var $selectedRow = $("[data-record-key=" + updatedHomeData.record.PersonId + "]"); 
                                 var moveToNewHome = (updatedHomeData.record.HomeId > 0 && updatedHomeData.record.OldHome_HomeId !== updatedHomeData.record.HomeId);
                                 if(!(updatedHomeData.record.HomeId > 0 && updatedHomeData.record.OldHome_HomeId === updatedHomeData.record.HomeId)){
-                                    isChildRowOpen = $(J_TABLE_ID).jtable('isChildRowOpen', $selectedRow)
+                                    isChildRowOpen = $(J_TABLE_ID).jtable('isChildRowOpen', $selectedRow),
                                     $(J_TABLE_ID).jtable('closeChildTable', $selectedRow, function(){
                                         _updateHomeFields(updatedHomeData);
                                         if(updatedHomeData.record.HomeId > 0 && (isChildRowOpen || moveToNewHome))
@@ -155,10 +156,11 @@ $(document).ready(function () {
             DateOfBirth: {
                 title: 'Född',
                 width: '5%',
+                //displayFormat: DATE_FORMAT,
                 type: 'date',
-                display: function (data){
-                    return _setClassAndValue(data.record, "DateOfBirth", PERSON);
-                }       
+//                display: function (data){
+//                    return _setClassAndValue(data.record, "DateOfBirth", PERSON);
+//                }       
             },
             Gender: {
                 title: 'Kön',
@@ -203,6 +205,7 @@ $(document).ready(function () {
                 edit: false,
                 list: false,
                 title: 'Medlemskap start',
+                //displayFormat: DATE_FORMAT,
                 type: 'date'
             }, 
             MembershipNo: {
@@ -251,6 +254,7 @@ $(document).ready(function () {
             DateOfDeath: {
                 title: 'Avliden',
                 list: false,
+                //displayFormat: DATE_FORMAT,
                 type: 'date',
                 create: false,
                 edit: true,
@@ -459,7 +463,7 @@ function homeChildTableDef(homeData, newHomeId){
             clearMembershipNoOptionCache=true;
             homeData.row[0].style.backgroundColor = '';
         }
-    }
+    };
 }
 
 
@@ -607,6 +611,7 @@ function childTableMembership(){
                         },
                         DateOfMembershipStart: {
                             width: '7%',     
+                            //displayFormat: DATE_FORMAT,
                             type: 'date',
                             title: 'Start',
                             display: function (memberData){
@@ -619,17 +624,18 @@ function childTableMembership(){
                             display: function (memberData){
                                 return _setClassAndValue(memberData.record, "MembershipNo", PERSON);
                             }, 
-                            options: function(meberData){
+                            options: function(memberData){
                                 if(clearMembershipNoOptionCache){
-                                    meberData.clearCache();
+                                    memberData.clearCache();
                                     clearMembershipNoOptionCache=false;
                                 }
-                                return '/' + SARON_URI + 'app/web-api/listPerson.php?PersonId=' + meberData.record.PersonId + '&selection=nextMembershipNo';
+                                return '/' + SARON_URI + 'app/web-api/listPerson.php?PersonId=' + memberData.record.PersonId + '&selection=nextMembershipNo';
                             }
                         },
                         DateOfMembershipEnd: {
                             width: '7%',
                             type: 'date',
+                            //displayFormat: DATE_FORMAT,
                             title: 'Avslut',
                             display: function (memberData){
                                 return _setClassAndValue(memberData.record, "DateOfMembershipEnd", PERSON);
@@ -726,7 +732,7 @@ function childTableBaptism(){
                                         if(data.Result !== 'ERROR'){
 
                                             $dfd.resolve(data);
-                                            _updateFields(data.Records[0], "DateOfBaptism", PERSON);                                                
+                                            _updateFields(data.Record, "DateOfBaptism", PERSON);                                                
                                         }
                                         else
                                             $dfd.resolve(data);
@@ -765,6 +771,7 @@ function childTableBaptism(){
                             title: 'Dopdatum',
                             width: '7%',
                             type: 'date',
+                            //displayFormat: DATE_FORMAT,
                             display: function (baptistData){
                                 return _setClassAndValue(baptistData.record, "DateOfBaptism", PERSON);
                             } 
@@ -790,6 +797,7 @@ function childTableBaptism(){
                         }
                     },        
                     formCreated: function (event, baptisData){
+                        $("#ui-datepicker-div").datepicker({ dateFormat: "yy-mm-dd" });
                         baptisData.row[0].style.backgroundColor = "yellow";
                         baptisData.form.css('width',inputFormWidth);
                         baptisData.form.find('input[name=Baptister]').css('width',inputFormFieldWidth);

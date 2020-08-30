@@ -1,3 +1,5 @@
+/* global DATE_FORMAT,
+*/ 
 "use strict";
 
 $(document).ready(function () {
@@ -34,6 +36,7 @@ $(document).ready(function () {
                 edit: false,
                 width: '5%',
                 type: 'date',
+                //displayFormat: DATE_FORMAT,
                 display: function (data){
                     return _setClassAndValue(data.record, "DateOfBirth", PERSON);
                 }       

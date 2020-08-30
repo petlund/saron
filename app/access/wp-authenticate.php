@@ -16,7 +16,6 @@ require_once SARON_ROOT . "/app/entities/SaronUser.php";
 	}
         $saronUser = new SaronUser($user);
         if(! $saronUser->isSaronUser()){
-//        if(! isSaronUser($user)){
             wp_logout();
             return false;
         }
@@ -32,30 +31,6 @@ require_once SARON_ROOT . "/app/entities/SaronUser.php";
         return true;
     }
     
-//    function isSaronUser($user){
-//        /*** Check if the user had a saron role ***/
-//        for($i = 0; $i < count($user->roles); $i++){
-//            if(substr($user->roles[$i], 0, strlen(SARON_ROLE_PREFIX)) === SARON_ROLE_PREFIX){ // CHECK IF THE USER IS A MEMBER OF THE GROUP  saron_edit
-//                $otp = $user->get("wp-otp");
-//                if($otp["enabled"] || TEST_ENV){ // In test environment OTP enabeled account is not necessary.
-//                    return true;
-//                }
-//            }
-//        }         
-//        return false;
-//    }
-//    
-//    
-//    function isEditor($user){
-//        /*** Check if the user had an editor role ***/
-//        for($i = 0; $i < count($user->roles); $i++){
-//            if(strpos($user->roles[$i],  SARON_ROLE_PREFIX . SARON_ROLE_EDITOR) !== FALSE){ // CHECK IF THE USER IS A MEMBER OF THE GROUP  (test)saron_edit
-//                return true;
-//            }
-//        } 
-//        return false;
-//    }
-//    
     function isPermitted($saronUser, $requireEditor){
         if(! session_id()){
             return false;

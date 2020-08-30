@@ -1,3 +1,4 @@
+/* global PERSON, SARON_URI, SARON_IMAGES_URI */
 "use strict";
 
 const TABLE_ID = '#STATISTICS';
@@ -103,7 +104,7 @@ $(document).ready(function () {
                 sorting: false,
                 width: '10%',
                 display: function(data){
-                    var $imgDetails = $('<img align="right" src="/' + SARON_URI + 'app/images/member.png" title="Detaljer" />');
+                    var $imgDetails = $('<img align="right" src="/' + SARON_URI + SARON_IMAGES_URI + 'member.png" title="Detaljer" />');
                     var YEAR =data.record.year.substring(0, 4);
                     $imgDetails.click(function () {
                         $(TABLE_ID).jtable('openChildTable', $imgDetails.closest('tr'),{

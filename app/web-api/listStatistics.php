@@ -25,6 +25,7 @@ require_once SARON_ROOT . 'app/entities/Statistics.php';
         $db->transaction_end();
         $db->dispose();
         echo $result;
+
     }
     catch(Exception $error){
         $db->transaction_roll_back();

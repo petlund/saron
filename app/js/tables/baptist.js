@@ -1,3 +1,4 @@
+/* global DATE_FORMAT, PERSON, SARON_URI, inputFormWidth, inputFormFieldWidth */
 "use strict";
 
 $(document).ready(function () {
@@ -51,6 +52,7 @@ $(document).ready(function () {
                 title: 'Född',
                 width: '7%',
                 type: 'date',
+                //displayFormat: DATE_FORMAT,
                 edit: false,
                 display: function (data){
                     return _setClassAndValue(data.record, "DateOfBirth", PERSON);
@@ -69,6 +71,7 @@ $(document).ready(function () {
             },
             DateOfBaptism: {
                 width: '7%',
+                //displayFormat: DATE_FORMAT,
                 type: 'date',
                 title: 'Dopdatum',
                 display: function (data){
