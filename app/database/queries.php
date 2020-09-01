@@ -19,6 +19,7 @@
         define("DATE_FORMAT", "'%Y-%m-%d'");
         define("DATE_OF_BIRTH", "DATE_FORMAT(DateOfBirth, " . DATE_FORMAT . ")");
         define("DATE_OF_BIRTH_ALIAS_DATE_OF_BIRTH", DATE_OF_BIRTH . " AS DateOfBirth");
+//        define("DATE_OF_BIRTH_ALIAS_DATE_OF_BIRTH", "'\/Date(1320259705710)\/' AS DateOfBirth");
       
         define("DECRYPTED_FIRSTNAME", "SUBSTR(AES_DECRYPT(FirstNameEncrypt, " . PKEY . "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
         define("DECRYPTED_ALIAS_FIRSTNAME", DECRYPTED_FIRSTNAME . " as FirstName");

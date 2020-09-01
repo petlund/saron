@@ -151,7 +151,7 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
                 create: false, 
                 title: 'Uppdaterad',
                 type: 'date',
-                //displayFormat: DATE_FORMAT,
+                displayFormat: DATE_FORMAT,
                 width: '5%'
             }
         },
@@ -323,7 +323,7 @@ function posTableDef(tableId, orgTreeNode_FK, unitName, orgUnitType_FK){
                 create: false, 
                 title: 'Uppdaterad',
                 type: 'date',
-                //displayFormat: DATE_FORMAT,
+                displayFormat: DATE_FORMAT,
                 width: '5%'
             }
         },

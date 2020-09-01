@@ -53,7 +53,7 @@ function statusTableDef(tableId){
                 create: false, 
                 title: 'Uppdaterad',
                 type: 'date',
-                //displayFormat: DATE_FORMAT,
+                displayFormat: DATE_FORMAT,
                 width: '15%'
             }
         },

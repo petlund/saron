@@ -27,13 +27,12 @@ $(document).ready(function () {
                             console.log('data.Record.HomeId: ' + data.Record.HomeId);
                             if(data.Result !== 'ERROR'){
                                 $dfd.resolve(data);
-                                var newPersonData = {record : data.Record};
                                 $("#groupId").val("2");
                                 var pData = {searchString: "", groupId: 2, tableview: "people"};
 
                                 $(J_TABLE_ID).jtable('load', pData, function (){
-                                    if(newPersonData.record.HomeId > 0)
-                                        openHomeChildTable(newPersonData);                                    
+                                    if(data.Record.HomeId > 0)
+                                        _openHomeChildTable(data);                                    
                                 });
                             }
                             else
@@ -53,24 +52,24 @@ $(document).ready(function () {
                         dataType: 'json',
                         data: postData,
                         success: function (data) {
-                            if(data.Result !== 'ERROR'){
-                                var updatedHomeData = {record : data.Record[0]};
-                                localStorage.setItem(NEW_HOME_ID, updatedHomeData.record.HomeId);
+                            if(data.Result === 'OK'){
+                                localStorage.setItem(NEW_HOME_ID, data.Record.HomeId);
+
                                 $dfd.resolve(data); //Mandatory
                                 var isChildRowOpen = false;
                                 
-                                var $selectedRow = $("[data-record-key=" + updatedHomeData.record.PersonId + "]"); 
-                                var moveToNewHome = (updatedHomeData.record.HomeId > 0 && updatedHomeData.record.OldHome_HomeId !== updatedHomeData.record.HomeId);
-                                if(!(updatedHomeData.record.HomeId > 0 && updatedHomeData.record.OldHome_HomeId === updatedHomeData.record.HomeId)){
+                                var $selectedRow = $("[data-record-key=" + data.Record.PersonId + "]"); 
+                                var moveToNewHome = (data.Record.HomeId > 0 && data.Record.OldHome_HomeId !== data.Record.HomeId);
+                                if(!(data.Record.HomeId > 0 && data.Record.OldHome_HomeId === data.Record.HomeId)){
                                     isChildRowOpen = $(J_TABLE_ID).jtable('isChildRowOpen', $selectedRow),
                                     $(J_TABLE_ID).jtable('closeChildTable', $selectedRow, function(){
-                                        _updateHomeFields(updatedHomeData);
-                                        if(updatedHomeData.record.HomeId > 0 && (isChildRowOpen || moveToNewHome))
-                                            openHomeChildTable(updatedHomeData);
+                                        _updateHomeFields(data);
+                                        if(data.Record.HomeId > 0 && (isChildRowOpen || moveToNewHome))
+                                            _openHomeChildTable(data);
                                     });
                                 }
                                 else{ // no move to another home
-                                    _updateHomeFields(updatedHomeData);                                
+                                    _updateHomeFields(data);                                
                                 }
                             }
                             else
@@ -156,11 +155,11 @@ $(document).ready(function () {
             DateOfBirth: {
                 title: 'Född',
                 width: '5%',
-                //displayFormat: DATE_FORMAT,
+                displayFormat: DATE_FORMAT,
                 type: 'date',
-//                display: function (data){
-//                    return _setClassAndValue(data.record, "DateOfBirth", PERSON);
-//                }       
+                display: function (data){
+                    return _setClassAndValue(data.record, "DateOfBirth", PERSON);
+                }       
             },
             Gender: {
                 title: 'Kön',
@@ -205,7 +204,7 @@ $(document).ready(function () {
                 edit: false,
                 list: false,
                 title: 'Medlemskap start',
-                //displayFormat: DATE_FORMAT,
+                displayFormat: DATE_FORMAT,
                 type: 'date'
             }, 
             MembershipNo: {
@@ -254,7 +253,7 @@ $(document).ready(function () {
             DateOfDeath: {
                 title: 'Avliden',
                 list: false,
-                //displayFormat: DATE_FORMAT,
+                displayFormat: DATE_FORMAT,
                 type: 'date',
                 create: false,
                 edit: true,
@@ -284,6 +283,7 @@ $(document).ready(function () {
         },        
         formCreated: function (event, data){
             var headLine;
+            //$.datepicker.formatDate("yyyy-MM-dd");
             if(data.formType === 'edit'){
                 if(data.record.HomeId === "0"){
                     data.record.HomeId = localStorage.getItem(NEW_HOME_ID);
@@ -396,16 +396,16 @@ function homeChildTableDef(homeData, newHomeId){
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
-                        success: function (responseHomeData) {
-                            if(responseHomeData.Result !== 'ERROR'){
+                        success: function (data) {
+                            if(data.Result !== 'ERROR'){
 
-                                $dfd.resolve(responseHomeData);
-                                for(var field in responseHomeData.Records[0]){
-                                    _updateFields(responseHomeData.Records[0], field, HOME);
+                                $dfd.resolve(data);
+                                for(var field in data.Record){
+                                    _updateFields(data.Record, field, HOME);
                                 }
                             }
                             else
-                                $dfd.resolve(responseHomeData);
+                                $dfd.resolve(data);
                         },
                         error: function () {
                             $dfd.reject();
@@ -420,16 +420,16 @@ function homeChildTableDef(homeData, newHomeId){
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
-                        success: function (responseHomeData) {
-                            if(responseHomeData.Result !== 'ERROR'){
+                        success: function (data) {
+                            if(data.Result !== 'ERROR'){
 
-                                $dfd.resolve(responseHomeData);
-                                for(var field in responseHomeData.Records[0]){
-                                    _updateFields(responseHomeData.Records[0], field, HOME);
+                                $dfd.resolve(data);
+                                for(var field in data.Records){
+                                    _updateFields(data.Records, field, HOME);
                                 }
                             }
                             else
-                                $dfd.resolve(responseHomeData);
+                                $dfd.resolve(data);
                         },
                         error: function () {
                             $dfd.reject();
@@ -574,17 +574,17 @@ function childTableMembership(){
                                     type: 'POST',
                                     dataType: 'json',
                                     data: postData,
-                                    success: function (memberData) {
-                                        if(memberData.Result !== 'ERROR'){                                                
-                                            $dfd.resolve(memberData);
-                                            _updateFields(memberData.Records[0], "MemberState", PERSON);                                                
-                                            _updateFields(memberData.Records[0], "VisibleInCalendar", PERSON);                                                
-                                            _updateFields(memberData.Records[0], "DateOfMembershipStart", PERSON);                                                
-                                            _updateFields(memberData.Records[0], "DateOfMembershipEnd", PERSON);                                                
-                                            _updateFields(memberData.Records[0], "Residents", HOME);                                                
+                                    success: function (data) {
+                                        if(data.Result !== 'ERROR'){                                                
+                                            $dfd.resolve(data);
+                                            _updateFields(data.Record, "MemberState", PERSON);                                                
+                                            _updateFields(data.Record, "VisibleInCalendar", PERSON);                                                
+                                            _updateFields(data.Record, "DateOfMembershipStart", PERSON);                                                
+                                            _updateFields(data.Record, "DateOfMembershipEnd", PERSON);                                                
+                                            _updateFields(data.Record, "Residents", HOME);                                                
                                         }
                                         else
-                                            $dfd.resolve(memberData);
+                                            $dfd.resolve(data);
                                     },
                                     error: function () {
                                         $dfd.reject();
@@ -611,7 +611,7 @@ function childTableMembership(){
                         },
                         DateOfMembershipStart: {
                             width: '7%',     
-                            //displayFormat: DATE_FORMAT,
+                            displayFormat: DATE_FORMAT,
                             type: 'date',
                             title: 'Start',
                             display: function (memberData){
@@ -635,7 +635,7 @@ function childTableMembership(){
                         DateOfMembershipEnd: {
                             width: '7%',
                             type: 'date',
-                            //displayFormat: DATE_FORMAT,
+                            displayFormat: DATE_FORMAT,
                             title: 'Avslut',
                             display: function (memberData){
                                 return _setClassAndValue(memberData.record, "DateOfMembershipEnd", PERSON);
@@ -771,7 +771,7 @@ function childTableBaptism(){
                             title: 'Dopdatum',
                             width: '7%',
                             type: 'date',
-                            //displayFormat: DATE_FORMAT,
+                            displayFormat: DATE_FORMAT,
                             display: function (baptistData){
                                 return _setClassAndValue(baptistData.record, "DateOfBaptism", PERSON);
                             } 
@@ -797,7 +797,6 @@ function childTableBaptism(){
                         }
                     },        
                     formCreated: function (event, baptisData){
-                        $("#ui-datepicker-div").datepicker({ dateFormat: "yy-mm-dd" });
                         baptisData.row[0].style.backgroundColor = "yellow";
                         baptisData.form.css('width',inputFormWidth);
                         baptisData.form.find('input[name=Baptister]').css('width',inputFormFieldWidth);
@@ -837,7 +836,9 @@ function fieldCloseChildTable(personId){
         display: function() {
             var $imgClose = $('<img src="/' + SARON_URI + SARON_IMAGES_URI + 'cross.png" title="Stäng" />');
             $imgClose.click(function () {
-                closeChildTable(personId);
+                //closeChildTable(personId);
+                var $selectedRow = $("[data-record-key=" + personId + "]"); 
+                $(J_TABLE_ID).jtable('closeChildTable', $selectedRow);  
             });                
             return $imgClose;
        }
@@ -845,39 +846,42 @@ function fieldCloseChildTable(personId){
 }
 
 
-function closeChildTable(personId){
-    var $selectedRow = $("[data-record-key=" + personId + "]"); 
-    $(J_TABLE_ID).jtable('closeChildTable', $selectedRow);
-}
+
+//function closeChildTable(personId){
+//    var $selectedRow = $("[data-record-key=" + personId + "]"); 
+//    $(J_TABLE_ID).jtable('closeChildTable', $selectedRow);
+//}
 
 
-function openHomeChildTable(updatedHomeData){
-    var rowRef = "[data-record-key=" + updatedHomeData.record.PersonId + "]";
+
+function _openHomeChildTable(data){
+    var newData = {record: data.Record}
+    var rowRef = "[data-record-key=" + data.Record.PersonId + "]";
     var $selectedRow = $(rowRef);
-    $(J_TABLE_ID).jtable('openChildTable', $selectedRow, homeChildTableDef(updatedHomeData, updatedHomeData.record.HomeId), function(data){
+    $(J_TABLE_ID).jtable('openChildTable', $selectedRow, homeChildTableDef(newData, data.Record.HomeId), function(data){
         data.childTable.jtable('load');
     });    
 }
 
-function _updateHomeFields(updatedHomeData){
-    _updateFields(updatedHomeData.record, "LongHomeName", HOME);                                                
-    _updateFields(updatedHomeData.record, "LongHomeName", PERSON);                                                
-    _updateFields(updatedHomeData.record, "Residents", HOME);                                                
-    _updateFields(updatedHomeData.record, "Letter", HOME);                                                
-    _updateFields(updatedHomeData.record, "Phone", HOME);                                                
-    _updateFields(updatedHomeData.record, "Name", PERSON);                                                
-    _updateFields(updatedHomeData.record, "DateOfBirth", PERSON);                                                
-    _updateFields(updatedHomeData.record, "DateOfMembershipEnd", PERSON);                                                
-    _updateFields(updatedHomeData.record, "MemberState", PERSON);                                                
-    _updateFields(updatedHomeData.record, "VisibleInCalendar", PERSON);                                                
-    _updateFields(updatedHomeData.record, "Comment", PERSON);                                                
-    _updateFields(updatedHomeData.record, "Mobile", PERSON);
+function _updateHomeFields(data){
+    _updateFields(data.Record, "LongHomeName", HOME);                                                
+    _updateFields(data.Record, "LongHomeName", PERSON);                                                
+    _updateFields(data.Record, "Residents", HOME);                                                
+    _updateFields(data.Record, "Letter", HOME);                                                
+    _updateFields(data.Record, "Phone", HOME);                                                
+    _updateFields(data.Record, "Name", PERSON);                                                
+    _updateFields(data.Record, "DateOfBirth", PERSON);                                                
+    _updateFields(data.Record, "DateOfMembershipEnd", PERSON);                                                
+    _updateFields(data.Record, "MemberState", PERSON);                                                
+    _updateFields(data.Record, "VisibleInCalendar", PERSON);                                                
+    _updateFields(data.Record, "Comment", PERSON);                                                
+    _updateFields(data.Record, "Mobile", PERSON);
 
-    if(updatedHomeData.record.HomeId !== updatedHomeData.record.OldHome_HomeId && updatedHomeData.record.OldHome_HomeId > 0){
-        _updateFields(updatedHomeData.record, "HomeId", OLD_HOME);                                                
-        _updateFields(updatedHomeData.record, "LongHomeName", OLD_HOME);                                                
-        _updateFields(updatedHomeData.record, "Residents", OLD_HOME);                                                
-        _updateFields(updatedHomeData.record, "Phone", OLD_HOME);            
+    if(data.Record.HomeId !== data.Record.OldHome_HomeId && data.Record.OldHome_HomeId > 0){
+        _updateFields(data.Record, "HomeId", OLD_HOME);                                                
+        _updateFields(data.Record, "LongHomeName", OLD_HOME);                                                
+        _updateFields(data.Record, "Residents", OLD_HOME);                                                
+        _updateFields(data.Record, "Phone", OLD_HOME);            
     }
 }
 

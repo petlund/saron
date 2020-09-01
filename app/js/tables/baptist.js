@@ -23,7 +23,7 @@ $(document).ready(function () {
                         success: function (data) {
                             $dfd.resolve(data);
                             if(data.Result !== 'ERROR'){
-                                _updateFields(data.Record[0], "DateOfBaptism", PERSON);                                                
+                                _updateFields(data.Record, "DateOfBaptism", PERSON);                                                
                             }
                         },
                         error: function () {
@@ -52,7 +52,7 @@ $(document).ready(function () {
                 title: 'Född',
                 width: '7%',
                 type: 'date',
-                //displayFormat: DATE_FORMAT,
+                displayFormat: DATE_FORMAT,
                 edit: false,
                 display: function (data){
                     return _setClassAndValue(data.record, "DateOfBirth", PERSON);
@@ -71,7 +71,7 @@ $(document).ready(function () {
             },
             DateOfBaptism: {
                 width: '7%',
-                //displayFormat: DATE_FORMAT,
+                displayFormat: DATE_FORMAT,
                 type: 'date',
                 title: 'Dopdatum',
                 display: function (data){

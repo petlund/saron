@@ -87,7 +87,7 @@ function roleTableDef(tableId, unitTypeId, orgName){
                 create: false, 
                 title: 'Uppdaterad',
                 type: 'date',
-                //displayFormat: DATE_FORMAT,
+                displayFormat: DATE_FORMAT,
                 width: '15%'
             }
         },
@@ -168,7 +168,7 @@ function subUnitTableDef(tableId, orgRole_FK, roleName){
                 create: false, 
                 title: 'Uppdaterad',
                 type: 'date',
-                //displayFormat: DATE_FORMAT,
+                displayFormat: DATE_FORMAT,
                 width: '15%'
             }
         },

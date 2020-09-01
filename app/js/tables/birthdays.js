@@ -33,7 +33,7 @@ $(document).ready(function () {
                 title: 'Född',
                 width: '7%',
                 type: 'date',
-                //displayFormat: DATE_FORMAT,                
+                displayFormat: DATE_FORMAT,                
                 display: function (data){
                     return _setClassAndValue(data.record, "DateOfBirth", PERSON);
                 }       
@@ -49,7 +49,7 @@ $(document).ready(function () {
                 title: 'När',
                 width: '7%',
                 type: 'date',
-                //displayFormat: DATE_FORMAT,
+                displayFormat: DATE_FORMAT,
                 display: function (data){
                     return _setClassAndValue(data.record, "NextBirthday", PERSON);
                 }       

@@ -14,7 +14,7 @@ const inputFormWidth = '500px';
 const inputFormFieldWidth = '480px';
 const NOT_VISIBLE = 'Ej synlig';
 const VISIBLE = 'Synlig';
-const DATE_FORMAT = '';//yyyy-MM-dd';
+const DATE_FORMAT = 'yy-mm-dd';
 
 
 var clearMembershipNoOptionCache = true;

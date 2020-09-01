@@ -24,10 +24,10 @@ $(document).ready(function () {
                         success: function (data) {
                             $dfd.resolve(data);
                             if(data.Result !== 'ERROR'){
-                                _updateFields(data.Record[0], "MemberState", PERSON);                                                
-                                _updateFields(data.Record[0], "VisibleInCalendar", PERSON);                                                
-                                _updateFields(data.Record[0], "DateOfMembershipStart", PERSON);                                                
-                                _updateFields(data.Record[0], "DateOfMembershipEnd", PERSON);                                                
+                                _updateFields(data.Record, "MemberState", PERSON);                                                
+                                _updateFields(data.Record, "VisibleInCalendar", PERSON);                                                
+                                _updateFields(data.Record, "DateOfMembershipStart", PERSON);                                                
+                                _updateFields(data.Record, "DateOfMembershipEnd", PERSON);                                                
                             }
                         },
                         error: function () {
@@ -57,7 +57,7 @@ $(document).ready(function () {
                 width: '7%',
                 edit: false,
                 type: 'date',
-                //displayFormat: DATE_FORMAT,
+                displayFormat: DATE_FORMAT,
                 display: function (data){
                     return _setClassAndValue(data.record, "DateOfBirth", PERSON);
                 }       
@@ -69,7 +69,7 @@ $(document).ready(function () {
             DateOfMembershipStart: {
                 width: '7%',
                 type: 'date',
-                //displayFormat: DATE_FORMAT,
+                displayFormat: DATE_FORMAT,
                 title: 'Start',
                 display: function (data){
                     return _setClassAndValue(data.record, "DateOfMembershipStart", PERSON);
@@ -92,7 +92,7 @@ $(document).ready(function () {
             DateOfMembershipEnd: {
                 width: '7%',
                 type: 'date',
-                //displayFormat: DATE_FORMAT,
+                displayFormat: DATE_FORMAT,
                 title: 'Avslut',
                 display: function (data){
                     return _setClassAndValue(data.record, "DateOfMembershipEnd", PERSON);

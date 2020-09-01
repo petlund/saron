@@ -56,7 +56,7 @@ class Home extends Homes{
         $sqlSelect.= $this->saronUser->getRoleSql(true);
         $sqlSelect.= $this->getHomeSelectSql(ALIAS_CUR_HOMES, $this->HomeId, false);
         
-        $result = $this->db->select($this->saronUser, $sqlSelect, "FROM Homes ", "WHERE Id = " . $this->HomeId, "", $rec);
+        $result = $this->db->select($this->saronUser, $sqlSelect, "FROM Homes ", "WHERE Id = " . $this->HomeId, "", "", $rec);
         return $result;        
     }
     

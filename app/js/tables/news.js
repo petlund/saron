@@ -54,7 +54,7 @@ function newsTableDef(){
                 title: 'Datum',
                 width: '15%',
                 type: 'date',
-                //displayFormat: DATE_FORMAT
+                displayFormat: DATE_FORMAT
                 //,
 //                display: function (data){
 //                    return _setClassAndValue(data.record, "news_date", NEWS);

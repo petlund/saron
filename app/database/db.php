@@ -222,46 +222,28 @@ class db {
     
     
     
-    private function resultSetToArray($listResult){
-        while($listRow = mysqli_fetch_array($listResult, MYSQLI_ASSOC)){
-            $listRows[] = $listRow;
-        } 
-        mysqli_free_result($listResult);
-        return $listRows;
-    }    
-    
-    
-    
-    private function resultSetToJSONString($listResult){
-        $listRow = mysqli_fetch_array($listResult, MYSQLI_ASSOC);
-        $jsonListRow = "{";
-        $first = true;
-        foreach($listRow as $key => $value){
-            if($first){
-                $first = false;
-            }
-            else{
-                $jsonListRow .= ", ";
-            }
-            $jsonListRow .= "'" . $key . "':'" . $value . "'";
-        }
-        $jsonListRow .= "}";
-        
-        mysqli_free_result($listResult);
-        return $jsonListRow;
-    }    
-    
-    
-    
-    private function processRowSet($saronUser, $listResult, $countResult, $responstype){
-        $jTableResult['Result'] = "OK";
-        if($responstype === RECORDS or $responstype === OPTIONS){
-            $jTableResult[$responstype] = $this->resultSetToArray($listResult);
+    private function resultSetToArray($listResult, $responstype){
+        if($responstype === RECORD){
+            $listRow = mysqli_fetch_array($listResult, MYSQLI_ASSOC);
+            mysqli_free_result($listResult);
+            return $listRow;
         }
         else{
-            $jTableResult[$responstype] = $this->resultSetToJSONString($listResult);            
+            while($listRow = mysqli_fetch_array($listResult, MYSQLI_ASSOC)){
+                $listRows[] = $listRow;
+            } 
+            mysqli_free_result($listResult);
+            return $listRows;
         }
+    }    
+    
+    
+ 
+    private function processRowSet($saronUser, $listResult, $countResult, $responstype){
+        $jTableResult['Result'] = "OK";
         
+        $jTableResult[$responstype] = $this->resultSetToArray($listResult, $responstype);
+
         $countRows = "0";
         while($countRow = mysqli_fetch_array($countResult)){
             $countRows = $countRow["c"];
