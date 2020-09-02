@@ -396,7 +396,7 @@ function homeChildTableDef(homeData, newHomeId){
                         dataType: 'json',
                         data: postData,
                         success: function (data) {
-                            if(data.Result !== 'ERROR'){
+                            if(data.Result === 'OK'){
 
                                 $dfd.resolve(data);
                                 for(var field in data.Record){
@@ -420,7 +420,7 @@ function homeChildTableDef(homeData, newHomeId){
                         dataType: 'json',
                         data: postData,
                         success: function (data) {
-                            if(data.Result !== 'ERROR'){
+                            if(data.Result === 'OK'){
 
                                 $dfd.resolve(data);
                                 for(var field in data.Record){
