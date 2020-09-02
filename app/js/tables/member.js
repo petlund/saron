@@ -23,7 +23,7 @@ $(document).ready(function () {
                         data: data,
                         success: function (data) {
                             $dfd.resolve(data);
-                            if(data.Result !== 'ERROR'){
+                            if(data.Result === 'OK'){
                                 _updateFields(data.Record, "MemberState", PERSON);                                                
                                 _updateFields(data.Record, "VisibleInCalendar", PERSON);                                                
                                 _updateFields(data.Record, "DateOfMembershipStart", PERSON);                                                
