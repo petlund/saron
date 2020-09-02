@@ -88,7 +88,7 @@
                                 <li><a href="/<?php echo SARON_URI;?>app/views/efk.php">EFK-statistik</a></li>
                             </ul>
                         </li>
-                        <li><!--
+                        <li>
                             <a href="">Organisation</a>
                             <ul>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=PEOPLE_ENG">Person & Ansvar</a></li>
@@ -98,7 +98,7 @@
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_UNIT">Organisationsenheter</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_GRAPH">Grafisk presentation</a></li>
                             </ul>
-                        </li>-->
+                        </li>
                         <li>
                             <a href="">Om <?php echo NameOfRegistry;?></a>
                             <ul>
