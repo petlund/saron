@@ -86,7 +86,8 @@ class PeopleFilter {
             $sqlWhereSearch.= "NextCongregation " . $sqlWhereSearchSubString . " or "; 
             $sqlWhereSearch.= "City " . $sqlWhereSearchSubString . " or "; 
             $sqlWhereSearch.= "Country " . $sqlWhereSearchSubString . " or "; 
-            $sqlWhereSearch.= "MembershipNo " . $sqlWhereSearchSubString . ") "; 
+            $sqlWhereSearch.= "MembershipNo " . $sqlWhereSearchSubString . " or "; 
+            $sqlWhereSearch.= "DateOfBirth " . $sqlWhereSearchSubString . ") "; 
             return $sqlWhereSearch;    
         }        
         return "";
