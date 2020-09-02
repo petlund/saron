@@ -193,7 +193,7 @@ class db {
             $this->php_dev_error_log("sqlQuery", $sql);
             return false;
         }
-        $result = $this->resultSetToArray($listResult);
+        $result = $this->resultSetToArray($listResult, RECORDS);
     
         return $result;
     }
