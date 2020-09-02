@@ -30,7 +30,7 @@ function newsTableDef(){
                         data: postData,
                         success: function (data) {
                             $dfd.resolve(data);
-                            if(data.Result !== 'ERROR'){
+                            if(data.Result === 'OK'){
                                 var records = data['Records'];
                                 _updateNewsRecord(records);
                             }
