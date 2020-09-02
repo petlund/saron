@@ -24,8 +24,7 @@ $(document).ready(function () {
                         dataType: 'json',
                         data: postData,
                         success: function (data) {
-                            console.log('data.Record.HomeId: ' + data.Record.HomeId);
-                            if(data.Result !== 'ERROR'){
+                            if(data.Result === 'OK'){
                                 $dfd.resolve(data);
                                 $("#groupId").val("2");
                                 var pData = {searchString: "", groupId: 2, tableview: "people"};
@@ -424,8 +423,8 @@ function homeChildTableDef(homeData, newHomeId){
                             if(data.Result !== 'ERROR'){
 
                                 $dfd.resolve(data);
-                                for(var field in data.Records){
-                                    _updateFields(data.Records, field, HOME);
+                                for(var field in data.Record){
+                                    _updateFields(data.Record, field, HOME);
                                 }
                             }
                             else
