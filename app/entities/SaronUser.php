@@ -64,7 +64,7 @@ class SaronUser {
                 return SARON_ROLE_VIEWER;                
             }
         }   
-        return NO_ROLE;
+        return $this->NO_ROLE;
     }
     
 
@@ -94,7 +94,7 @@ class SaronUser {
                 return SARON_DISPLAY_NAME_VIEWER;                
             }
         }   
-        return NO_ROLE;
+        return $this->NO_ROLE;
     }
     
     
