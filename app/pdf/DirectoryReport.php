@@ -190,22 +190,29 @@ function getAllignement(TCPDF $pdf, $innerOuter){
 }
 
 function getPosition(TCPDF $pdf, $innerOuter){
-    if($pdf->getPage() % 2 == 0)
-        if($innerOuter==INNER)
+    if($pdf->getPage() % 2 == 0){
+        if($innerOuter==INNER){
             return $pdf->getPageWidth()-HEADER_FOOTER_CELL_WIDTH - BOOKLET_INNER_MARGIN;
-        else
+        }
+        else{
             return BOOKLET_OUTER_MARGIN;
-    else
-        if($innerOuter==INNER)
+        }
+    }
+    else{
+        if($innerOuter==INNER){
             return BOOKLET_INNER_MARGIN;
-        else
+        }
+        else{
             return $pdf->getPageWidth()-HEADER_FOOTER_CELL_WIDTH - BOOKLET_OUTER_MARGIN;
+        }
+    }
 }
 
 
 function trimPhoneNumber($number){
-    if(strlen($number)==0)
+    if(strlen($number)==0){
         return '';
+    }
 
     $trimmedNumber=$number;
     while(strpos($trimmedNumber, ' ')>0){
