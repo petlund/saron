@@ -36,7 +36,7 @@ class Homes extends SuperEntity{
         switch ($this->selection){
         case "options":
             $this->deleteEmptyHomes(); // clean up
-            return $this->selectHomeOptions();       
+            return $this->selectHomesAsOptions();       
         default:
             return $this->selectDefault();
         }
@@ -53,7 +53,7 @@ class Homes extends SuperEntity{
         return $result;        
     }
 
-    function selectHomeOptions(){
+    function selectHomesAsOptions(){
 
         $where ="";
         if($this->HomeId===0){
