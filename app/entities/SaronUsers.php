@@ -79,6 +79,11 @@ class SaronUsers {
                 return -$comp; 
             }
         });
+    
+    }
+    
+    function creatResultRecords($sort_dimension, $sort_order){
+        $this->sort($sort_dimension, $sort_order);
 
         $endIndex=0;
         if(count($this->users) > $this->jtStartIndex + $this->jtPageSize){
@@ -107,11 +112,40 @@ class SaronUsers {
         $result.=',"user_role":"' . $this->saronUser->getRole() . '"';
         $result.='}';
 
-        echo $result;
-    
+        return $result;
     }
-    
-    
+
+
+
+    function creatResultOptions($sort_dimension, $sort_order){
+        $this->sort($sort_dimension, $sort_order);
+        $cnt = count($this->users);
+        $result = '{"Result":"OK","Options":[{"Value":"0","DisplayText":"Användarnamn saknas"},';
+        for($i = 0; $i < $cnt; $i++){
+            $result.= '{"Value":"' . $this->users[$i]->ID . '",';
+            $result.= '"DisplayText":"' . $this->users[$i]->display_name . '"}'; 
+            if($i<$cnt-1){
+                $result.=',';
+            }
+        }
+        $result.=']}';
+        return $result;
+    }
+
+
+    function getUsers($resultFormat = RECORDS){
+        if($resultFormat === RECORDS){
+            echo $this->creatResultRecords("display_name", "asc");
+        }
+        else if($resultFormat === OPTIONS){
+            echo $this->creatResultOptions("display_name", "asc");
+        }
+        else{
+            echo '{"Result":"ERROR, "Message":"Inget giltigt format angivet."';
+        }
+    }
+
+
     function hasPrivilege($user_roles, $privelege){
         for($i=0; $i<count($user_roles); $i++){
             if($user_roles[$i] === $privelege){
@@ -119,5 +153,5 @@ class SaronUsers {
             }
         }
         return 0;
-    }
+    }    
 }
