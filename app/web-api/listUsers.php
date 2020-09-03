@@ -22,6 +22,6 @@ require_once WP_ROOT . 'wp-includes/user.php';
     }
     
     $saronUsers = new SaronUsers($saronUser);
-    $result = $saronUsers->sort();
+    $result = $saronUsers->getUsers();
     echo $result;
     
