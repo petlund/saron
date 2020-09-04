@@ -1,20 +1,14 @@
 <?php
 
 require_once "config.php";
+require_once SARON_ROOT . 'app/entities/SuperEntity.php';
+require_once SARON_ROOT . 'app/database/db.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
-class SaronUsers {
-    private $jtSorting;
-    private $jtPageSize;
-    private $jtStartIndex;
+class SaronUsers extends SuperEntity{
     private $users = Array();
-    private $saronUser;
-    function __construct($saronUser){
-        
-        $this->saronUser = $saronUser;
-        $this->jtSorting = (String)filter_input(INPUT_GET, "jtSorting", FILTER_SANITIZE_STRING);
-        $this->jtPageSize = (int)filter_input(INPUT_GET, "jtPageSize", FILTER_SANITIZE_NUMBER_INT);
-        $this->jtStartIndex = (int)filter_input(INPUT_GET, "jtStartIndex", FILTER_SANITIZE_NUMBER_INT);
+    function __construct($db, $saronUser){
+        parent::__construct($db, $saronUser);
         $this->users = get_users(array('role__in' => array(SARON_ROLE_PREFIX . SARON_ROLE_EDITOR, SARON_ROLE_PREFIX . SARON_ROLE_VIEWER, "wp_otp")));
     }
         
@@ -114,34 +108,84 @@ class SaronUsers {
 
         return $result;
     }
+    
 
 
 
     function creatResultOptions($sort_dimension, $sort_order){
+        $usrs = Array(); 
         $this->sort($sort_dimension, $sort_order);
-        $cnt = count($this->users);
-        $result = '{"Result":"OK","Options":[{"Value":"0","DisplayText":"Användarnamn saknas"},';
-        for($i = 0; $i < $cnt; $i++){
-            $result.= '{"Value":"' . $this->users[$i]->ID . '",';
-            $result.= '"DisplayText":"' . $this->users[$i]->display_name . '"}'; 
-            if($i<$cnt-1){
-                $result.=',';
-            }
+
+        $cntActiveUsers = count($this->users);
+        for($i = 0; $i < $cntActiveUsers; $i++){
+            $usr = Array();
+            $usr["ID"] = $this->users[$i]->ID;
+            $usr["display_name"] = $this->users[$i]->display_name;
+            $usrs[] = $usr;
         }
-        $result.=']}';
+        
+        switch ($this->selection){
+        case "people":
+            $table = "people";
+            break;
+        case "role":
+            $table = "Org_Role";
+            break;
+        default:
+            $table = "people";
+        }
+
+        
+        try{
+            $db = new db();            
+            $sql = "select Updater as ID, 'Användarnamn saknas!' as display_name from " . $table . $this->getUpdaterSet() . " GROUP BY Updater";
+            $listResult = $db->sqlQuery($sql);
+            foreach($listResult as $aRow){
+                $usrs[] = $aRow;
+            }    
+        } 
+        catch (Exception $e) {
+
+        }
+        finally {
+            $cntOldUsers = count($usrs);
+            $result = '{"Result":"OK","Options":[';
+            for($i = 0; $i < $cntOldUsers; $i++){
+                $result.= '{"Value":"' . $usrs[$i]["ID"] . '",';
+                $result.= '"DisplayText":"' . $usrs[$i]["display_name"] . '"}'; 
+                if($i<$cntOldUsers-1){
+                    $result.=',';
+                }
+
+            }
+            $result.=']}';
+            return $result;            
+        }
+    }
+
+    
+    private function getUpdaterSet(){
+        $cntActiveUsers = count($this->users);
+        $result = " where Updater NOT in (";
+        for($i = 0; $i < $cntActiveUsers; $i++){
+            $result.= $this->users[$i]->ID;
+            if($i<$cntActiveUsers-1){
+                $result.= ",";
+            }
+        }        
+        $result.= ") "; 
         return $result;
     }
 
-
     function getUsers($resultFormat = RECORDS){
         if($resultFormat === RECORDS){
-            echo $this->creatResultRecords("display_name", "asc");
+            return $this->creatResultRecords("display_name", "asc");
         }
         else if($resultFormat === OPTIONS){
-            echo $this->creatResultOptions("display_name", "asc");
+            return $this->creatResultOptions("display_name", "asc");
         }
         else{
-            echo '{"Result":"ERROR, "Message":"Inget giltigt format angivet."';
+            return '{"Result":"ERROR, "Message":"Inget giltigt format angivet."';
         }
     }
 
@@ -153,5 +197,5 @@ class SaronUsers {
             }
         }
         return 0;
-    }    
+    }
 }
