@@ -20,12 +20,12 @@ class OrganizationStatus extends SuperEntity{
     }
 
 
-    function select($Id = -1){
+    function select($Id = -1, $rec = RECORDS){
         switch ($this->selection){
         case "options":
             return $this->selectOptions();       
         default:
-            return $this->selectDefault($Id);
+            return $this->selectDefault($Id, $rec);
         }   
     }
 
@@ -71,7 +71,7 @@ class OrganizationStatus extends SuperEntity{
         $set.= "Updater='" . $this->saronUser->ID . "' ";
         $where = "WHERE id=" . $this->id;
         $this->db->update($update, $set, $where);
-        return $this->select($this->id);
+        return $this->select($this->id, RECORD);
     }
 
     function delete(){

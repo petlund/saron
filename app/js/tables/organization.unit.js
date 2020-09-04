@@ -20,7 +20,23 @@ function orgUnitTableDef(tableId){
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php',
             createAction:   '/' + SARON_URI + 'app/web-api/createOrganizationUnit.php',
-            updateAction:   '/' + SARON_URI + 'app/web-api/updateOrganizationUnit.php',
+            updateAction: function(postData) {
+                return $.Deferred(function ($dfd) {
+                    $.ajax({
+                        url:  '/' + SARON_URI + 'app/web-api/updateOrganizationUnit.php',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: postData,
+                        success: function (data) {
+                            if(data.Result === 'OK')
+                                $dfd.resolve(data);
+                        },
+                        error: function () {
+                            $dfd.reject();
+                        }
+                    });
+                });
+            },            
             deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationUnit.php'
         },
         fields: {
@@ -82,7 +98,7 @@ function orgUnitTableDef(tableId){
                 title: 'Uppdaterare',
                 width: '15%',
                 options: function (){
-                    return '/' + SARON_URI + 'app/web-api/listUsersAsOptions.php';           
+                    return '/' + SARON_URI + 'app/web-api/listUsersAsOptions.php?selection=unit';           
                 }
             },
             Updated: {

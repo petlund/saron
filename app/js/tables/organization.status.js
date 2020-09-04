@@ -20,7 +20,23 @@ function statusTableDef(tableId){
         defaultSorting: 'SortOrder', //Set default sorting        
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationStatus.php',
-            updateAction:   '/' + SARON_URI + 'app/web-api/updateOrganizationStatus.php'
+            updateAction: function(postData) {
+                return $.Deferred(function ($dfd) {
+                    $.ajax({
+                        url:  '/' + SARON_URI + 'app/web-api/updateOrganizationStatus.php',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: postData,
+                        success: function (data) {
+                            if(data.Result === 'OK')
+                                $dfd.resolve(data);
+                        },
+                        error: function () {
+                            $dfd.reject();
+                        }
+                    });
+                });
+            }, 
         },
         fields: {
             Id: {
@@ -45,7 +61,7 @@ function statusTableDef(tableId){
                 title: 'Uppdaterare',
                 width: '15%',
                 options: function (){
-                    return '/' + SARON_URI + 'app/web-api/listUsersAsOptions.php';           
+                    return '/' + SARON_URI + 'app/web-api/listUsersAsOptions.php?selection=status';           
                 }
             },
             Updated: {

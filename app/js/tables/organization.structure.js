@@ -26,7 +26,23 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationStructure.php?ParentTreeNode_FK=' + parentTreeNode_FK,
             createAction: '/' + SARON_URI + 'app/web-api/createOrganizationStructure.php?ParentTreeNode_FK=' + parentTreeNode_FK,
-            updateAction: '/' + SARON_URI + 'app/web-api/updateOrganizationStructure.php?ParentTreeNode_FK=' + parentTreeNode_FK,
+            updateAction: function(postData) {
+                return $.Deferred(function ($dfd) {
+                    $.ajax({
+                        url:  '/' + SARON_URI + 'app/web-api/updateOrganizationStructure.php?ParentTreeNode_FK=' + parentTreeNode_FK,
+                        type: 'POST',
+                        dataType: 'json',
+                        data: postData,
+                        success: function (data) {
+                            if(data.Result === 'OK')
+                                $dfd.resolve(data);
+                        },
+                        error: function () {
+                            $dfd.reject();
+                        }
+                    });
+                });
+            },            
             deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationStructure.php'
         }, 
         fields: {
@@ -143,7 +159,7 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
 //                    if(data.source !== 'list')
 //                        data.clearCache();
 
-                    return '/' + SARON_URI + 'app/web-api/listUsersAsOptions.php';        
+                    return '/' + SARON_URI + 'app/web-api/listUsersAsOptions.php?selection=tree';        
                 }
             },
             Updated: {
