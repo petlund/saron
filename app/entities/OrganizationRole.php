@@ -103,7 +103,7 @@ class OrganizationRole extends SuperEntity{
         $set.= "Updater='" . $this->saronUser->ID . "' ";
         $where = "WHERE id=" . $this->id;
         $this->db->update($update, $set, $where);
-        return $this->select($this->id);
+        return $this->select($this->id, RECORD);
     }
 
     function delete(){
