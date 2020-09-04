@@ -21,7 +21,14 @@ require_once WP_ROOT . 'wp-includes/user.php';
         exit();
     }
     
-    $saronUsers = new SaronUsers($saronUser);
-    $result = $saronUsers->getUsers();
-    echo $result;
-    
+    try{
+        $db = new db();
+        $saronUsers = new SaronUsers($db, $saronUser);
+        $result = $saronUsers->getUsers();
+        $db->dispose();
+        echo $result;
+    }
+    catch(Exception $error){
+        echo $error->getMessage();        
+        $db->dispose();            
+    }    
