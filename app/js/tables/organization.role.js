@@ -26,7 +26,24 @@ function roleTableDef(tableId, unitTypeId, orgName){
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationRole.php',
             createAction:   '/' + SARON_URI + 'app/web-api/createOrganizationRole.php',
-            updateAction:   '/' + SARON_URI + 'app/web-api/updateOrganizationRole.php',
+//            updateAction:   '/' + SARON_URI + 'app/web-api/updateOrganizationRole.php',
+            updateAction: function(postData) {
+                return $.Deferred(function ($dfd) {
+                    $.ajax({
+                        url:  '/' + SARON_URI + 'app/web-api/updateOrganizationRole.php',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: postData,
+                        success: function (data) {
+                            if(data.Result === 'OK')
+                                $dfd.resolve(data);
+                        },
+                        error: function () {
+                            $dfd.reject();
+                        }
+                    });
+                });
+            },
             deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationRole.php'
         },
         fields: {
@@ -79,7 +96,7 @@ function roleTableDef(tableId, unitTypeId, orgName){
                 title: 'Uppdaterare',
                 width: '15%',
                 options: function (){
-                    return '/' + SARON_URI + 'app/web-api/listUsersAsOptions.php';           
+                    return '/' + SARON_URI + 'app/web-api/listUsersAsOptions.php?selection=role';           
                 }
             },
             Updated: {
