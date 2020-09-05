@@ -101,12 +101,7 @@ class OrganizationStructure extends SuperEntity{
         $set.= "Name='" . $this->name . "', ";        
         $set.= "Description='" . $this->description . "', ";        
         $set.= "OrgUnitType_FK='" . $this->orgUnitType_FK . "', ";   
-        if($this->parentTreeNode_FK >= 0){
-            $set.= "ParentTreeNode_FK='" . $this->parentTreeNode_FK . "', ";        
-        }
-        else{
-            $set.= "ParentTreeNode_FK=null, ";                    
-        }
+        $set.= "ParentTreeNode_FK='" . $this->parentTreeNode_FK . "', ";        
         $set.= "Updater='" . $this->saronUser->ID . "' ";
         $where = "WHERE id=" . $this->treeId;
         $this->db->update($update, $set, $where);
