@@ -140,8 +140,14 @@ class OrganizationPos extends SuperEntity{
         if($this->orgRole_FK > 0){
             $set.= "OrgRole_FK='" . $this->orgRole_FK . "', ";      
         }
-        $set.= "OrgPosStatus_FK='" . $this->orgPosStatus_FK . "', ";        
-        $set.= "People_FK='" . $this->people_FK . "', ";        
+        $set.= "OrgPosStatus_FK='" . $this->orgPosStatus_FK . "', ";
+        
+        if($this->people_FK > 0){        
+            $set.= "People_FK='" . $this->people_FK . "', ";        
+        }
+        else{
+            $set.= "People_FK=null, ";        
+        }
         $set.= "Updater='" . $this->saronUser->ID . "' ";
         $where = "WHERE id=" . $this->posId;
         $this->db->update($update, $set, $where);

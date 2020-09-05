@@ -219,16 +219,3 @@ function subUnitTableDef(tableId, orgRole_FK, roleName){
         }
     };    
 }
-
-
-function _updateOrganizationUnitTypeRecord(records){
-    var key = document.getElementsByClassName("jtable-data-row");
-    if(key===null)
-        return;
-    
-    for(var i = 0; i<key.length;i++){
-        if(key[i].dataset.recordKey === records[0].Id){ 
-            key[i].cells[3].innerHTML = (records[0].Updated).substring(0,10);                                              
-        }
-    }
-}

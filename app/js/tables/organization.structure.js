@@ -217,7 +217,6 @@ function posTableDef(tableId, orgTreeNode_FK, unitName, orgUnitType_FK){
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationPos.php?Org_Tree_FK=' + orgTreeNode_FK,
             createAction:   '/' + SARON_URI + 'app/web-api/createOrganizationPos.php?Org_Tree_FK=' + orgTreeNode_FK,
-            //updateAction:   '/' + SARON_URI + 'app/web-api/updateNews.php'
             updateAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
@@ -226,10 +225,8 @@ function posTableDef(tableId, orgTreeNode_FK, unitName, orgUnitType_FK){
                         dataType: 'json',
                         data: postData,
                         success: function (data) {
-                            $dfd.resolve(data);
-                            if(data.Result !== 'ERROR'){
-                                var records = data['Records'];
-                                _updateOrganizationUnitTypeRecord(records);
+                            if(data.Result === 'OK'){
+                                $dfd.resolve(data);
                             }
                         },
                         error: function () {

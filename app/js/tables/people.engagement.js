@@ -126,10 +126,9 @@ function engagementTableDef(tableId, personId, personName){
                         dataType: 'json',
                         data: postData,
                         success: function (data) {
-                            $dfd.resolve(data);
-                            if(data.Result !== 'ERROR'){
-                                var records = data['Records'];
-                                _updateOrganizationUnitTypeRecord(records);
+                            if(data.Result === 'OK'){
+                                $dfd.resolve(data);
+                                //_updateOrganizationUnitTypeRecord(data);
                             }
                         },
                         error: function () {
@@ -205,20 +204,5 @@ function engagementTableDef(tableId, personId, personName){
         deleteFormClosed: function (event, data){
             data.row[0].style.backgroundColor = '';
         }
-    }    
-}
-
-
-
-
-function _updateOrganizationUnitTypeRecord(records){
-    var key = document.getElementsByClassName("jtable-data-row");
-    if(key===null)
-        return;
-    
-    for(var i = 0; i<key.length;i++){
-        if(key[i].dataset.recordKey === records[0].Id){ 
-//            key[i].cells[3].innerHTML = (records[0].Updated).substring(0,10);                                              
-        }
-    }
+    };    
 }

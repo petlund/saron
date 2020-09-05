@@ -43,7 +43,7 @@ class People extends SuperEntity{
     
     function selectPeopleOptions(){
 
-        $select = "SELECT 0 as Value, ' ' as DisplayText "; 
+        $select = "SELECT null as Value, '-' as DisplayText "; 
         $select.= "Union "; 
         $select.= "select Id as Value, " . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . "as DisplayText ";
         $where = "WHERE " . SQL_WHERE_MEMBER;
