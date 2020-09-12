@@ -9,13 +9,13 @@ class OrganizationRole extends SuperEntity{
     private $description;
     private $unitTypeId;
     private $orgTreeNode_FK;
-    private $multiPos;
+    private $superPos;
     
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
         
         $this->id = (int)filter_input(INPUT_POST, "Id", FILTER_SANITIZE_NUMBER_INT);
-        $this->multiPos = (int)filter_input(INPUT_POST, "MultiPos", FILTER_SANITIZE_NUMBER_INT);
+        $this->superPos = (int)filter_input(INPUT_POST, "OrgMu", FILTER_SANITIZE_NUMBER_INT);
 
         $this->orgTreeNode_FK = (int)filter_input(INPUT_POST, "Org_Tree_FK", FILTER_SANITIZE_NUMBER_INT);
         if($this->orgTreeNode_FK  === 0){
@@ -85,7 +85,7 @@ class OrganizationRole extends SuperEntity{
         $sqlInsert = "INSERT INTO Org_Role (Name, MultiPos, Description, Updater) ";
         $sqlInsert.= "VALUES (";
         $sqlInsert.= "'" . $this->name . "', ";
-        $sqlInsert.= "'" . $this->multiPos . "', ";
+        $sqlInsert.= "'" . $this->superPos . "', ";
         $sqlInsert.= "'" . $this->description . "', ";
         $sqlInsert.= "'" . $this->saronUser->ID . "')";
         
@@ -98,7 +98,7 @@ class OrganizationRole extends SuperEntity{
         $update = "UPDATE Org_Role ";
         $set = "SET ";        
         $set.= "Name='" . $this->name . "', ";        
-        $set.= "MultiPos='" . $this->multiPos . "', ";        
+        $set.= "MultiPos='" . $this->superPos . "', ";        
         $set.= "Description='" . $this->description . "', ";        
         $set.= "Updater='" . $this->saronUser->ID . "' ";
         $where = "WHERE id=" . $this->id;
