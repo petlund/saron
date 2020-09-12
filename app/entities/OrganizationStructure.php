@@ -53,7 +53,7 @@ class OrganizationStructure extends SuperEntity{
     function selectDefault($treeId = -1, $rec=RECORDS){
         $select = "Select Tree.SortOrder, OrgUnitType_FK, Typ.PosEnabled, Tree.Name, Tree.Description, Typ.Id as TypeId, Tree.Id as TreeId, Typ.SubUnitEnabled, Tree.Updater, Tree.Updated, ";
         $select.= "(Select count(*) from Org_Tree as Tree1 where Tree1.ParentTreeNode_FK = Tree.Id) as HasSubUnit, ";
-        $select.= "(Select count(*) from Org_Pos as Pos1 inner join Org_Pos_Tree as PosTree on PosTree.Org_Pos_FK = Pos1.Id where Tree.Id = PosTree.Org_Tree_FK) as HasPos, ";
+        $select.= "(Select count(*) from Org_Pos as Pos1 where Tree.Id = Pos1.OrgTree_FK) as HasPos, ";
         $select.= $this->saronUser->getRoleSql(false) . " ";
         $from = "from Org_Tree as Tree inner join Org_UnitType as Typ on Tree.OrgUnitType_FK = Typ.Id ";
         
@@ -101,7 +101,12 @@ class OrganizationStructure extends SuperEntity{
         $set.= "Name='" . $this->name . "', ";        
         $set.= "Description='" . $this->description . "', ";        
         $set.= "OrgUnitType_FK='" . $this->orgUnitType_FK . "', ";   
-        $set.= "ParentTreeNode_FK='" . $this->parentTreeNode_FK . "', ";        
+        if($this->parentTreeNode_FK >= 0){
+            $set.= "ParentTreeNode_FK='" . $this->parentTreeNode_FK . "', ";        
+        }
+        else{
+            $set.= "ParentTreeNode_FK=null, ";        
+        }
         $set.= "Updater='" . $this->saronUser->ID . "' ";
         $where = "WHERE id=" . $this->treeId;
         $this->db->update($update, $set, $where);

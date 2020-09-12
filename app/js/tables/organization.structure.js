@@ -63,9 +63,17 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
                         var src;
                         if(data.record.HasSubUnit === '0')
                             src = '"/' + SARON_URI + SARON_IMAGES_URI + 'child.png" title="Under organisation"';
-                        else
-                            src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haschild.png" title="Under organisation"';
-                           
+                        else{
+                            var r = Math.random();
+                            if(r<0.25)
+                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haschild.png" title="Under organisation"';
+                            else if(r<0.5)
+                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haschild_R.png" title="Under organisation med vakanser"';
+                            else if(r<0.75)
+                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haschild_Y.png" title="Under organisation med förslag"';
+                            else
+                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haschild_YR.png" title="Under organisation med förslag och vakanser"';
+                        }
                         var imgTag = _setImageClass(data.record, "Org", src, -1);
                         var $imgChild = $(imgTag);
 
@@ -94,8 +102,17 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
                         var src;
                         if(data.record.HasPos === '0')
                             src = '"/' + SARON_URI + SARON_IMAGES_URI + 'pos.png" title="Positioner"';
-                        else
+                        else{
+                            var r = Math.random();
+                            if(r<0.25)
                             src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haspos.png" title="Positioner"';
+                            else if(r<0.5)
+                            src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haspos_Y.png" title="Förslag till positioner"';
+                            else if(r<0.75)
+                            src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haspos_YR.png" title="Förslag och vakanser på positioner"';
+                            else
+                            src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haspos_R.png" title="Vakanser på positioner"';
+                        }
                         
                         var imgTag = _setImageClass(data.record, "Role", src, -1);
                         var $imgRole = $(imgTag);
@@ -203,7 +220,7 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
     };
 }    
 
-function posTableDef(tableId, orgTreeNode_FK, unitName, orgUnitType_FK){
+function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
     return {
         title: function(){
             return 'Roller inom ' + unitName;
@@ -215,12 +232,12 @@ function posTableDef(tableId, orgTreeNode_FK, unitName, orgUnitType_FK){
         multiSorting: true,
         defaultSorting: 'OrgRole_FK', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationPos.php?Org_Tree_FK=' + orgTreeNode_FK,
-            createAction:   '/' + SARON_URI + 'app/web-api/createOrganizationPos.php?Org_Tree_FK=' + orgTreeNode_FK,
+            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationPos.php?OrgTree_FK=' + orgTree_FK,
+            createAction:   '/' + SARON_URI + 'app/web-api/createOrganizationPos.php?OrgTree_FK=' + orgTree_FK,
             updateAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + SARON_URI + 'app/web-api/updateOrganizationPos.php?Org_Tree_FK=' + orgTreeNode_FK,
+                        url: '/' + SARON_URI + 'app/web-api/updateOrganizationPos.php?OrgTree_FK=' + orgTree_FK,
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
@@ -235,22 +252,19 @@ function posTableDef(tableId, orgTreeNode_FK, unitName, orgUnitType_FK){
                     });
                 });
             },
-            deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationPos.php?Org_Tree_FK=' + orgTreeNode_FK
+            deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationPos.php?OrgTree_FK=' + orgTree_FK
         }, 
         fields: {
             PosId: {
                 key: true,
-                list: false
-            },
-            PosTreeId:{                
                 list: false,
-                edit: false,
-                create: false,
-                type: 'hidden'
+                create: false
             },
             MultiPos:{
                 sorting: false,
                 width: "1%",
+                edit: false,
+                create: false,
                 display: function (data) {
                     if(data.record.MultiPos === '1'){
                         var src;
@@ -275,7 +289,7 @@ function posTableDef(tableId, orgTreeNode_FK, unitName, orgUnitType_FK){
             OrgRole_FK: {
                 width: '10%',
                 title: 'Roll',
-                edit: false,
+                edit: true,
                 options: function(data){
                     if(data.source === 'list')
                         return '/' + SARON_URI + 'app/web-api/listOrganizationRole.php?selection=options';
@@ -287,15 +301,20 @@ function posTableDef(tableId, orgTreeNode_FK, unitName, orgUnitType_FK){
                 width: '5%',
                 title: 'Status',
                 defaultValue: '4',
-                options: function(){
+                options: function(data){
                     return '/' + SARON_URI + 'app/web-api/listOrganizationStatus.php?selection=options';
                 }
             },
             People_FK: {
                 width: '15%',
                 title: 'Innehavare',
-                options: function(){
-                    return '/' + SARON_URI + 'app/web-api/listPeople.php?selection=options';
+                options: function(data){
+                    var filterDef = "&filterType=member";
+                    var filter = "";
+                    if(data.source === 'edit')
+                        filter = filterDef;
+                    
+                    return '/' + SARON_URI + 'app/web-api/listPeople.php?selection=options' + filter;
                 }
             },
             MemberState: {
@@ -387,7 +406,7 @@ function treeListTableDef(tableId, Org_Pos_FK, parentName){
                 deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationUnitMember.php'
             }, 
             fields: {
-                Org_Tree_FK: {
+                OrgTree_FK: {
                     title: 'Organisatorsik enhet',
                     key: true,
                     options: function(){

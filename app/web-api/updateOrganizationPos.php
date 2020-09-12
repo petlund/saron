@@ -28,6 +28,6 @@ require_once SARON_ROOT . 'app/entities/OrganizationPos.php';
     catch(Exception $error){
         $db->transaction_roll_back();
         $db->transaction_end();
-        echo $error->getMessage();        
         $db->dispose();            
+        echo $error->getMessage();        
     } 

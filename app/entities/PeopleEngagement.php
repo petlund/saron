@@ -27,10 +27,9 @@ class PeopleEngagement extends SuperEntity{
     function select($id = -1, $rec=RECORDS){
         $subSelect = "(Select GROUP_CONCAT(Tree.Name, ': ', Role.Name , IF(Stat.Id > 1,Concat(' <b style=\"background:yellow;\">[', Stat.Name, ']</b>'),'') SEPARATOR '<br>') as SubEngagement ";
         $subFrom = "from Org_Pos as Pos inner join Org_Role as Role on Pos.OrgRole_FK = Role.Id ";
-        $subFrom.= "inner join Org_Pos_Tree as PosTree on PosTree.Org_Pos_FK = Pos.Id ";
-        $subFrom.= "inner join Org_Tree as Tree on PosTree.Org_Tree_FK = Tree.Id ";
+        $subFrom.= "inner join Org_Tree as Tree on Pos.OrgTree_FK = Tree.Id ";
         $subFrom.= "inner join Org_PosStatus as Stat on Stat.Id = Pos.OrgPosStatus_FK ";
-        $subWhere = "where Pos.People_FK = p.Id and Stat.Id < 3 ";
+        $subWhere = "where Pos.People_FK = p.Id and Stat.Id < 3 "; // Only proposal and committed
         $subGroupBy = "Group by People_FK ";
         $subOrderBy = "Order by SubEngagement) as Engagement, ";
         $subQuery = $subSelect . $subFrom . $subWhere . $subGroupBy . $subOrderBy;
