@@ -5,7 +5,6 @@ require_once SARON_ROOT . 'app/entities/SaronUser.php';
 class OrganizationPos extends SuperEntity{
     
     private $posId;
-    private $multiPos;
     private $posTreeId;
     private $people_FK;
     private $prevPeople_FK;
@@ -18,7 +17,7 @@ class OrganizationPos extends SuperEntity{
         parent::__construct($db, $saronUser);
         
         $this->posId = (int)filter_input(INPUT_POST, "PosId", FILTER_SANITIZE_NUMBER_INT);
-        $this->multiPos = (int)filter_input(INPUT_POST, "MultiPos", FILTER_SANITIZE_NUMBER_INT);
+        $this->orgSuperPos_FK = (int)filter_input(INPUT_POST, "OrgSuperPos_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->posTreeId = (int)filter_input(INPUT_POST, "PosTreeId", FILTER_SANITIZE_NUMBER_INT);
         $this->prevPeople_FK = (int)filter_input(INPUT_POST, "PrevPeople_FK", FILTER_SANITIZE_NUMBER_INT);
         
@@ -34,8 +33,6 @@ class OrganizationPos extends SuperEntity{
         if($this->orgTree_FK === 0){        
             $this->orgTree_FK = (int)filter_input(INPUT_GET, "OrgTree_FK", FILTER_SANITIZE_NUMBER_INT);
         }
-        $this->$orgSuperPos_FK = (int)filter_input(INPUT_POST, "OrgSuperPos_FK", FILTER_SANITIZE_NUMBER_INT);
-        
     }
 
 
@@ -114,7 +111,7 @@ class OrganizationPos extends SuperEntity{
         $sqlInsert1.= "VALUES (";
         $sqlInsert1.= "'" . $this->people_FK . "', ";
         $sqlInsert1.= "'" . $this->orgPosStatus_FK . "', ";
-        $sqlInsert1.= "'" . $this->$orgSuperPos_FK . "', ";
+        $sqlInsert1.= "'" . $this->orgSuperPos_FK . "', ";
         $sqlInsert1.= "'" . $this->orgRole_FK . "', ";
         $sqlInsert1.= "'" . $this->orgTree_FK . "', ";
         $sqlInsert1.= "'" . $this->saronUser->ID . "')";
