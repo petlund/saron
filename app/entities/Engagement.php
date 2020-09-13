@@ -15,7 +15,7 @@ class Engagement extends SuperEntity{
     protected $tableview;
     protected $uppercaseSearchString;
     protected $filterType;
-    
+ 
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
         
@@ -33,16 +33,17 @@ class Engagement extends SuperEntity{
 
     
     function select($id = -1, $rec=RECORDS){
-        $subSelect = "(Select GROUP_CONCAT(Tree.Name, ': ', Role.Name , IF(Stat.Id > 1,Concat(' <b style=\"background:yellow;\">[', Stat.Name, ']</b>'),'') SEPARATOR '<br>') as SubEngagement ";
+        $subSelect = "(Select GROUP_CONCAT(Tree.Name, ': ', Role.Name , ". EMBEDDED_SELECT_SUPERPOS . ", IF(Stat.Id > 1,Concat(' <b style=\"background:yellow;\">[', Stat.Name, ']</b>'),'') SEPARATOR '<br>') as SubEngagement ";
         $subFrom = "from Org_Pos as Pos inner join Org_Role as Role on Pos.OrgRole_FK = Role.Id ";
         $subFrom.= "inner join Org_Tree as Tree on Pos.OrgTree_FK = Tree.Id ";
         $subFrom.= "inner join Org_PosStatus as Stat on Stat.Id = Pos.OrgPosStatus_FK ";
-        $subWhere = "where Pos.People_FK = p.Id and Stat.Id < 3 "; // Only proposal and committed
-        $subGroupBy = "Group by People_FK ";
+        $subFrom.= "inner join " . ORG_POS_XREF . " on xref.Id = Pos.Id ";
+        $subWhere = "where xref.People_FK2 = p.Id and Stat.Id < 3 "; // Only proposal and committed
+        $subGroupBy = "Group by People_FK2 ";
         $subOrderBy = "Order by SubEngagement) as Engagement, ";
         $subQuery = $subSelect . $subFrom . $subWhere . $subGroupBy . $subOrderBy;
         
-        $select = "SELECT p.Id as People_FK, " . getPersonSql(null, "Name", true);
+        $select = "SELECT p.Id, " . getPersonSql(null, "Name", true);
         $select.= getMemberStateSql(null, "MemberState", true);
         $select.= DECRYPTED_ALIAS_EMAIL . ", ";
         $select.= getFieldSql(null, "Mobile", "MobileEncrypt", "", true, true);
@@ -51,9 +52,9 @@ class Engagement extends SuperEntity{
         $select.= $this->saronUser->getRoleSql(false) . " ";
         
         $from = "from People as p left outer join Homes as h on h.id = p.HomeId ";
-        $where = "WHERE (" . SQL_WHERE_MEMBER . " OR p.Id in (Select max(People_FK) from Org_Pos GROUP BY People_FK)) ";
+
         $gf = new PeopleFilter();
-//        $where.= $gf->getPeopleFilterSql($this->groupId);
+        $where = "WHERE (" . SQL_WHERE_MEMBER . " OR p.Id in (Select max(People_FK) from Org_Pos GROUP BY People_FK)) ";
         $where.= $gf->getSearchFilterSql($this->uppercaseSearchString);
         
 

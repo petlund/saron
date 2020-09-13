@@ -51,7 +51,7 @@ function peopleEngagementTableDef(tableId, roleId, roleName){
 
                     $imgChild.click(data, function (event){
                         var $tr = $imgChild.closest('tr');
-                        $(tableId).jtable('openChildTable', $tr, engagementTableDef(tableId, data.record.People_FK, data.record.Name), function(data){
+                        $(tableId).jtable('openChildTable', $tr, engagementTableDef(tableId, data.record.Id, data.record.Name), function(data){
                             data.childTable.jtable('load');
                         });
                     });
@@ -125,13 +125,13 @@ function engagementTableDef(tableId, personId, personName){
         multiSorting: true,
         defaultSorting: 'Name', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationPos.php?selection=pos&People_FK=' + personId,
-            createAction:   '/' + SARON_URI + 'app/web-api/updateOrganizationPos.php?People_FK=' + personId,
+            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationPos.php?selection=engagement&PersonId=' + personId,
+            createAction:   '/' + SARON_URI + 'app/web-api/updateOrganizationPos.php?PersonId=' + personId,
             //updateAction:   '/' + SARON_URI + 'app/web-api/updateOrganizationPos.php',
             updateAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + SARON_URI + 'app/web-api/updateOrganizationPos.php?People_FK=' + personId,
+                        url: '/' + SARON_URI + 'app/web-api/updateOrganizationPos.php?PersonId=' + personId,
                         type: 'POST',
                         dataType: 'json',
                         data: postData,

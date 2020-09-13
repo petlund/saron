@@ -6,13 +6,13 @@ class OrganizationPos extends SuperEntity{
     
     private $posId;
     private $posTreeId;
-    private $people_FK;
+    private $personId;
     private $prevPeople_FK;
     private $orgPosStatus_FK;
     private $orgRole_FK;
     private $orgTree_FK;
     private $orgSuperPos_FK;
-    
+
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
         
@@ -21,9 +21,9 @@ class OrganizationPos extends SuperEntity{
         $this->posTreeId = (int)filter_input(INPUT_POST, "PosTreeId", FILTER_SANITIZE_NUMBER_INT);
         $this->prevPeople_FK = (int)filter_input(INPUT_POST, "PrevPeople_FK", FILTER_SANITIZE_NUMBER_INT);
         
-        $this->people_FK = (int)filter_input(INPUT_POST, "People_FK", FILTER_SANITIZE_NUMBER_INT);
-        if($this->people_FK === 0){
-            $this->people_FK = (int)filter_input(INPUT_GET, "People_FK", FILTER_SANITIZE_NUMBER_INT);
+        $this->personId = (int)filter_input(INPUT_POST, "PersonId", FILTER_SANITIZE_NUMBER_INT);
+        if($this->personId === 0){
+            $this->personId = (int)filter_input(INPUT_GET, "PersonId", FILTER_SANITIZE_NUMBER_INT);
         }
 
         $this->orgPosStatus_FK = (int)filter_input(INPUT_POST, "OrgPosStatus_FK", FILTER_SANITIZE_NUMBER_INT);
@@ -40,8 +40,8 @@ class OrganizationPos extends SuperEntity{
         switch ($this->selection){
         case "options":
             return $this->selectOptions();       
-        case "pos":
-            return $this->selectPersonPos($id, $rec);
+        case "engagement":
+            return $this->selectPersonEngagement($id, $rec);
         default:
             return $this->selectDefault($id, $rec);
         }
@@ -75,23 +75,26 @@ class OrganizationPos extends SuperEntity{
     }
 
 
-    function selectPersonPos($Id = -1, $rec=RECORDS){
+    
+    function selectPersonEngagement($Id = -1, $rec=RECORDS){
         $select = "SELECT *, Pos.Id as PosId, ";
         $select.= $this->saronUser->getRoleSql(false) . " ";
         $from = "FROM Org_Pos as Pos ";
-        $from.= "inner join (Select p1.Id, if(p1.People_FK < 0,(select p2.People_FK from Org_Pos as p2 where -p1.People_FK = p2.OrgRole_FK ), p1.People_FK) as People_FK2 from Org_Pos as p1) as xref on xref.Id =Pos.Id ";
-        $where = "WHERE xref.People_FK2 = " . $this->people_FK . " and OrgPosStatus_FK < 3 ";
+        $from.= "inner join " . ORG_POS_XREF . " on xref.Id =Pos.Id ";
+        $where = "WHERE xref.People_FK2 = " . $this->personId . " and OrgPosStatus_FK < 3 ";
+        
         $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $rec);        
         return $result;        
     }
 
+    
+    
     function selectOptions(){
-        $if = "if(People_FK < 0, concat(' (som ', (Select Name from Org_Role as r2 where -People_FK = r2.Id),')'),'')";
-        $select = "SELECT Pos.Id as Value, Concat(Role.Name, ' ', UnitType.Name, ' ', Tree.Name, ". $if . ") as DisplayText ";
+        $select = "SELECT Pos.Id as Value, Concat(Role.Name, ' ', UnitType.Name, ' ', Tree.Name, ". EMBEDDED_SELECT_SUPERPOS . ") as DisplayText ";
         $from = "FROM Org_Pos as Pos inner join Org_Tree as Tree on Pos.OrgTree_FK=Tree.Id ";
         $from.= "inner join Org_UnitType as UnitType on UnitType.Id = Tree.OrgUnitType_FK ";
         $from.= "inner join Org_Role as Role on Role.Id = Pos.OrgRole_FK ";
-        $where = "WHERE People_FK = " . $this->people_FK . " ";
+        $where = "WHERE People_FK = " . $this->personId . " ";
         
         $result = $this->db->select($this->saronUser, $select , $from, "", "Order by DisplayText ", "", "Options");    
         return $result; 
@@ -101,7 +104,7 @@ class OrganizationPos extends SuperEntity{
     function insert(){
         $sqlInsert1 = "INSERT INTO Org_Pos (People_FK, OrgPosStatus_FK, OrgSuperPos_FK, OrgRole_FK, OrgTree_FK, Updater) ";
         $sqlInsert1.= "VALUES (";
-        $sqlInsert1.= "'" . $this->people_FK . "', ";
+        $sqlInsert1.= "'" . $this->personId . "', ";
         $sqlInsert1.= "'" . $this->orgPosStatus_FK . "', ";
         $sqlInsert1.= "null,"; //"'" . $this->orgSuperPos_FK . "', ";
         $sqlInsert1.= "'" . $this->orgRole_FK . "', ";
@@ -123,7 +126,7 @@ class OrganizationPos extends SuperEntity{
         }
         $set.= "OrgPosStatus_FK='" . $this->orgPosStatus_FK . "', ";
             
-        $set.= "People_FK='" . $this->people_FK . "', ";        
+        $set.= "People_FK='" . $this->personId . "', ";        
         $set.= "Updater='" . $this->saronUser->ID . "' ";
         $where = "WHERE id=" . $this->posId;
         $response = $this->db->update($update, $set, $where);
