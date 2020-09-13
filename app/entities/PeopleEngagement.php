@@ -1,5 +1,7 @@
 <?php
 require_once SARON_ROOT . 'app/entities/SuperEntity.php';
+require_once SARON_ROOT . 'app/entities/PeopleViews.php';
+require_once SARON_ROOT . 'app/entities/PeopleFilter.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
 class PeopleEngagement extends SuperEntity{
@@ -10,10 +12,16 @@ class PeopleEngagement extends SuperEntity{
     private $orgPosStatus_FK;
     private $orgTreeNode_FK;
     private $people_FK;
+    protected $tableview;
+    protected $uppercaseSearchString;
+    protected $filterType;
     
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
         
+        $this->tableview = (String)filter_input(INPUT_POST, "tableview", FILTER_SANITIZE_STRING);
+        $this->filterType = (String)filter_input(INPUT_GET, "filterType", FILTER_SANITIZE_STRING);
+
         $this->nodeId = (int)filter_input(INPUT_GET, "NodeId", FILTER_SANITIZE_NUMBER_INT);
         $this->posId = (int)filter_input(INPUT_POST, "PosId", FILTER_SANITIZE_NUMBER_INT);
         $this->orgRole_FK = (int)filter_input(INPUT_POST, "OrgRole_FK", FILTER_SANITIZE_NUMBER_INT);
@@ -43,8 +51,11 @@ class PeopleEngagement extends SuperEntity{
         $select.= $this->saronUser->getRoleSql(false) . " ";
         
         $from = "from People as p left outer join Homes as h on h.id = p.HomeId ";
+        $where = "WHERE (" . SQL_WHERE_MEMBER . " OR p.Id in (Select max(People_FK) from Org_Pos GROUP BY People_FK)) ";
+        $gf = new PeopleFilter();
+//        $where.= $gf->getPeopleFilterSql($this->groupId);
+        $where.= $gf->getSearchFilterSql($this->uppercaseSearchString);
         
-        $where = "WHERE " . SQL_WHERE_MEMBER . " OR p.Id in (Select max(People_FK) from Org_Pos GROUP BY People_FK) ";
 
         if($id > 0){
             $where.= "WHERE People.Id = " . $id . " ";

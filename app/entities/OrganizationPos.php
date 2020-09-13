@@ -103,7 +103,7 @@ class OrganizationPos extends SuperEntity{
         $sqlInsert1.= "VALUES (";
         $sqlInsert1.= "'" . $this->people_FK . "', ";
         $sqlInsert1.= "'" . $this->orgPosStatus_FK . "', ";
-        $sqlInsert1.= "'" . $this->orgSuperPos_FK . "', ";
+        $sqlInsert1.= "null,"; //"'" . $this->orgSuperPos_FK . "', ";
         $sqlInsert1.= "'" . $this->orgRole_FK . "', ";
         $sqlInsert1.= "'" . $this->orgTree_FK . "', ";
         $sqlInsert1.= "'" . $this->saronUser->ID . "')";

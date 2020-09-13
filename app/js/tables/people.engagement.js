@@ -9,6 +9,16 @@ $(document).ready(function () {
     $(TABLE_ID).find('.jtable-toolbar-item-add-record').hide();
 });
 
+
+function filterPeople(viewId){
+    $('#' + viewId).jtable('load', {
+        searchString: $('#searchString').val(),
+        groupId: $('#groupId').val(),
+        tableview: viewId
+    });
+}
+
+
 function peopleEngagementTableDef(tableId, roleId, roleName){
     return {
         title: 'Personer',
@@ -116,7 +126,7 @@ function engagementTableDef(tableId, personId, personName){
         defaultSorting: 'Name', //Set default sorting        
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationPos.php?selection=pos&People_FK=' + personId,
-            createAction:   '/' + SARON_URI + 'app/web-api/updateOrganizationPos.php?selection=pos&People_FK=' + personId,
+            createAction:   '/' + SARON_URI + 'app/web-api/updateOrganizationPos.php?People_FK=' + personId,
             //updateAction:   '/' + SARON_URI + 'app/web-api/updateOrganizationPos.php',
             updateAction: function(postData) {
                 return $.Deferred(function ($dfd) {
