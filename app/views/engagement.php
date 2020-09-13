@@ -25,7 +25,6 @@ header("Cache-Control: no-cache, must-revalidate");
         <form id="mainfilter">
                 Söksträng:
                 <input type="text" name="searchString" id="searchString" oninput="filterPeople('<?php include('../includes/viewId.php');?>');"/>
-                <button name="submitButton" type="submit" <?php include('../includes/searchId.php');?>>Sök</button>
                 </div> 
             </form>
             <div id="<?php include('../includes/viewId.php');?>"></div>
