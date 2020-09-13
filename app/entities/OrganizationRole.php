@@ -9,13 +9,13 @@ class OrganizationRole extends SuperEntity{
     private $description;
     private $unitTypeId;
     private $orgTreeNode_FK;
-    private $superPos;
+    private $roleType;
     
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
         
         $this->id = (int)filter_input(INPUT_POST, "Id", FILTER_SANITIZE_NUMBER_INT);
-        $this->superPos = (int)filter_input(INPUT_POST, "OrgMu", FILTER_SANITIZE_NUMBER_INT);
+        $this->roleType = (int)filter_input(INPUT_POST, "RoleType", FILTER_SANITIZE_NUMBER_INT);
 
         $this->orgTreeNode_FK = (int)filter_input(INPUT_POST, "Org_Tree_FK", FILTER_SANITIZE_NUMBER_INT);
         if($this->orgTreeNode_FK  === 0){
@@ -67,7 +67,7 @@ class OrganizationRole extends SuperEntity{
     }
 
     function selectOptions($id){
-        $select = "SELECT Role.Id  as Value, Concat(Role.Name, if(MultiPos = 1, ' (M)','')) as DisplayText ";
+        $select = "SELECT Role.Id  as Value, Concat(Role.Name, if(RoleType = 1, ' (Org)','')) as DisplayText ";
         $from = "FROM Org_Role as Role "; 
         $where = "";
 
@@ -82,10 +82,10 @@ class OrganizationRole extends SuperEntity{
     
     
     function insert(){
-        $sqlInsert = "INSERT INTO Org_Role (Name, MultiPos, Description, Updater) ";
+        $sqlInsert = "INSERT INTO Org_Role (Name, RoleType, Description, Updater) ";
         $sqlInsert.= "VALUES (";
         $sqlInsert.= "'" . $this->name . "', ";
-        $sqlInsert.= "'" . $this->superPos . "', ";
+        $sqlInsert.= "'" . $this->roleType . "', ";
         $sqlInsert.= "'" . $this->description . "', ";
         $sqlInsert.= "'" . $this->saronUser->ID . "')";
         
@@ -98,7 +98,7 @@ class OrganizationRole extends SuperEntity{
         $update = "UPDATE Org_Role ";
         $set = "SET ";        
         $set.= "Name='" . $this->name . "', ";        
-        $set.= "MultiPos='" . $this->superPos . "', ";        
+        $set.= "RoleType='" . $this->roleType . "', ";        
         $set.= "Description='" . $this->description . "', ";        
         $set.= "Updater='" . $this->saronUser->ID . "' ";
         $where = "WHERE id=" . $this->id;

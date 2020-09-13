@@ -260,15 +260,15 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
                 list: false,
                 create: false
             },
-            MultiPos:{
+            RoleType:{
                 sorting: false,
                 width: "1%",
                 edit: false,
                 create: false,
                 display: function (data) {
-                    if(data.record.MultiPos === '1'){
+                    if(data.record.RoleType === '1'){
                         var src;
-                            src = '"/' + SARON_URI + SARON_IMAGES_URI + 'multipos.png" title="Rollen finns på fler ställen"';
+                            src = '"/' + SARON_URI + SARON_IMAGES_URI + 'orgpos.png" title="Rollen finns på fler ställen"';
                         
                         var imgTag = _setImageClass(data.record, "Role", src, -1);
                         var $imgRole = $(imgTag);

@@ -147,10 +147,9 @@ function engagementTableDef(tableId, personId, personName){
                 key: true,
                 options: function (data){
                     if(data.source !== 'list'){
-                        data.clearCache();
-                        return '/' + SARON_URI + 'app/web-api/listOrganizationPos.php?selection=options&pos&People_FK=-1';
+                        return '/' + SARON_URI + 'app/web-api/listOrganizationPos.php?selection=options';
                     }
-                    return '/' + SARON_URI + 'app/web-api/listOrganizationPos.php?selection=options&pos&People_FK=' + personId;
+                    return '/' + SARON_URI + 'app/web-api/listOrganizationPos.php?selection=options&People_FK=' + personId;
                 }
             },
             OrgRole_FK:{

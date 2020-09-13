@@ -50,7 +50,7 @@ class People extends SuperEntity{
         $SELECT_CONCAT_NULL = "concat(' ', Name , ' (-)')";
         $select = "SELECT 0 as Value, '-' as DisplayText "; 
         $select.= "Union "; 
-        $select.= "select -Id as Value, IF(" . $SELECT_CONCAT . " is null, " . $SELECT_CONCAT_NULL . ", " . $SELECT_CONCAT . ") as DisplayText FROM Org_Role as Role WHERE MultiPos=1 ";
+        $select.= "select -Id as Value, IF(" . $SELECT_CONCAT . " is null, " . $SELECT_CONCAT_NULL . ", " . $SELECT_CONCAT . ") as DisplayText FROM Org_Role as Role WHERE RoleType=1 ";
         $select.= "Union "; 
         $select.= "select Id as Value, " . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . "as DisplayText ";
         if($this->filterType === "member"){

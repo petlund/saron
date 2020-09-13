@@ -83,12 +83,10 @@ function roleTableDef(tableId, unitTypeId, orgName){
                 title: 'Beskrivning',
                 width: '50%'
             },
-            MultiPos:{
-                title: 'MultiPos',
+            RoleType:{
+                title: 'Typ',
                 width: '2%',
-                type: 'checkbox',
-                formText: 'Aktivera om rollens bemanning ska finnas på flera ställe i organisationen.',
-                values:  { '0' : 'Nej', '1' : 'Ja' }
+                options:  { '0' : 'Verksamhetsroll', '1' : 'Organisationsroll [Org]' }
             },
             Updater: {
                 edit: false,

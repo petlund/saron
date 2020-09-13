@@ -5,7 +5,6 @@ require_once SARON_ROOT . 'app/entities/SaronUser.php';
 class OrganizationStructure extends SuperEntity{
     
     private $treeId;
-    private $multiPos;
     private $sortOrder;
     private $name;
     private $description;
