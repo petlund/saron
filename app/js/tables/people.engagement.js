@@ -29,7 +29,7 @@ function peopleEngagementTableDef(tableId, roleId, roleName){
         multiSorting: true,
         defaultSorting: 'Name', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listPeopleEngagement.php'
+            listAction:   '/' + SARON_URI + 'app/web-api/listEngagement.php'
         },
         fields: {
             Id: {

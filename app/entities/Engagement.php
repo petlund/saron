@@ -4,7 +4,7 @@ require_once SARON_ROOT . 'app/entities/PeopleViews.php';
 require_once SARON_ROOT . 'app/entities/PeopleFilter.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
-class PeopleEngagement extends SuperEntity{
+class Engagement extends SuperEntity{
     
     private $nodeId;
     private $posId;

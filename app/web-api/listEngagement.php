@@ -7,7 +7,7 @@ require_once SARON_ROOT . "app/access/wp-authenticate.php";
 require_once SARON_ROOT . 'app/database/queries.php'; 
 require_once SARON_ROOT . 'app/database/db.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
-require_once SARON_ROOT . 'app/entities/PeopleEngagement.php';
+require_once SARON_ROOT . 'app/entities/Engagement.php';
 
 
 
@@ -22,7 +22,7 @@ require_once SARON_ROOT . 'app/entities/PeopleEngagement.php';
 
     try{
         $db = new db(); 
-        $engagement = new PeopleEngagement($db, $saronUser);
+        $engagement = new Engagement($db, $saronUser);
         $result = $engagement->select();    
         $db->dispose();
         echo $result;        

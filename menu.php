@@ -91,7 +91,7 @@
                         <li>
                             <a href="">Organisation</a>
                             <ul>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=PEOPLE_ENG">Person & Ansvar</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/engagement.php?tableview=PEOPLE_ENG">Person & Ansvar</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_STRUCT">Organisation & Bemanning</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_ROLE_STATUS">Bemanningsstatus</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_ROLE">Organisationsroller</a></li>
