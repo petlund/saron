@@ -154,7 +154,7 @@ class db {
     public function select($saronUser, $select, $from, $where, $orderby, $limit, $responstype=RECORDS){
         $sqlSelect = $select . $from . $where . $orderby . $limit;
         $sqlCount = "select count(*) as c " . $from . $where;
-        $this->perf("SELECT .... " . $from);
+        //$this->perf("SELECT .... " . $from);
         try{
             return $this->selectSeparate($saronUser, $sqlSelect, $sqlCount, $responstype);
         }

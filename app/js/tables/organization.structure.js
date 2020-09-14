@@ -64,15 +64,14 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
                         if(data.record.HasSubUnit === '0')
                             src = '"/' + SARON_URI + SARON_IMAGES_URI + 'child.png" title="Under organisation"';
                         else{
-                            var r = Math.random();
-                            if(r<0.25)
-                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haschild.png" title="Under organisation"';
-                            else if(r<0.5)
-                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haschild_R.png" title="Under organisation med vakanser"';
-                            else if(r<0.75)
-                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haschild_Y.png" title="Under organisation med förslag"';
+                            if(data.record.statusSubProposal !== "0" && data.record.statusSubVacant !== "0")
+                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haschild_YR.png" title="Underorganisation med ' + data.record.statusSubProposal + ' förslag och ' + data.record.statusSubVacant + ' vakans(er)"';
+                            else if(data.record.statusSubProposal === "0" && data.record.statusSubVacant !== "0")
+                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haschild_R.png" title="Underorganisation med ' + data.record.statusSubVacant + ' vakans(er)"';
+                            else if(data.record.statusSubProposal !== "0" && data.record.statusSubVacant === "0")
+                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haschild_Y.png" title="Underorganisation med ' + data.record.statusSubProposal + ' förslag"';
                             else
-                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haschild_YR.png" title="Under organisation med förslag och vakanser"';
+                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haschild.png" title="Under organisation"';
                         }
                         var imgTag = _setImageClass(data.record, "Org", src, -1);
                         var $imgChild = $(imgTag);
@@ -103,15 +102,14 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
                         if(data.record.HasPos === '0')
                             src = '"/' + SARON_URI + SARON_IMAGES_URI + 'pos.png" title="Positioner"';
                         else{
-                            var r = Math.random();
-                            if(r<0.25)
-                            src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haspos.png" title="Positioner"';
-                            else if(r<0.5)
-                            src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haspos_Y.png" title="Förslag till positioner"';
-                            else if(r<0.75)
-                            src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haspos_YR.png" title="Förslag och vakanser på positioner"';
+                            if(data.record.statusProposal !== "0" && data.record.statusVacant !== "0")
+                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haspos_YR.png" title="' + data.record.statusProposal + ' Förslag och ' + data.record.statusVacant + ' vakans(er) på position(er)"';
+                            else if(data.record.statusProposal === "0" && data.record.statusVacant !== "0")
+                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haspos_R.png" title="' + data.record.statusVacant + ' Vakans(er) på position(er)"';
+                            else if(data.record.statusProposal !== "0" && data.record.statusVacant === "0")
+                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haspos_Y.png" title="' + data.record.statusProposal + ' Förslag på position(er)"';
                             else
-                            src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haspos_R.png" title="Vakanser på positioner"';
+                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haspos.png" title="Positioner"';
                         }
                         
                         var imgTag = _setImageClass(data.record, "Role", src, -1);

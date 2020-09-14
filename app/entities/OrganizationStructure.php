@@ -50,12 +50,14 @@ class OrganizationStructure extends SuperEntity{
     
     
     function selectDefault($treeId = -1, $rec=RECORDS){
-        $select = "Select Tree.SortOrder, OrgUnitType_FK, Typ.PosEnabled, Tree.Name, Tree.Description, Typ.Id as TypeId, Tree.Id as TreeId, Typ.SubUnitEnabled, Tree.Updater, Tree.Updated, ";
+        $select = "Select stat.*, Tree.SortOrder, OrgUnitType_FK, Typ.PosEnabled, Tree.Name, Tree.Description, Typ.Id as TypeId, Tree.Id as TreeId, Typ.SubUnitEnabled, Tree.Updater, Tree.Updated, ";
         $select.= "(Select count(*) from Org_Tree as Tree1 where Tree1.ParentTreeNode_FK = Tree.Id) as HasSubUnit, ";
         $select.= "(Select count(*) from Org_Pos as Pos1 where Tree.Id = Pos1.OrgTree_FK) as HasPos, ";
         $select.= $this->saronUser->getRoleSql(false) . " ";
-        $from = "from Org_Tree as Tree inner join Org_UnitType as Typ on Tree.OrgUnitType_FK = Typ.Id ";
-        
+        $from = "from Org_Tree as Tree ";
+        $from.= "inner join Org_UnitType as Typ on Tree.OrgUnitType_FK = Typ.Id ";
+        $from.= "inner join (" . $this->getStatusSQL() .  ") as stat on Tree.Id = stat.sumId ";
+            
         if($treeId < 0){
             if($this->parentTreeNode_FK === -1){
                 $where = "WHERE ParentTreeNode_FK is null ";
@@ -72,6 +74,31 @@ class OrganizationStructure extends SuperEntity{
         }
     }
 
+    
+    function getStatusSQL(){
+        $sql = "WITH RECURSIVE Sub_Tree AS (";
+        $sql.= "SELECT Id as NodeId, name, ParentTreeNode_FK, 1 AS relative_depth, name as sumNode, Id as sumId, 'top' as sourceTable ";
+        $sql.= "FROM Org_Tree "; 
+        $sql.= "UNION ALL ";
+        $sql.= "SELECT Tree.id as NodeId, Tree.name, Tree.ParentTreeNode_FK, st.relative_depth + 1, st.sumNode, st.NodeId as sumId, 'sub' as sourceTable ";
+        $sql.= "FROM Org_Tree Tree , Sub_Tree st ";
+        $sql.= "WHERE Tree.ParentTreeNode_FK = st.NodeId) ";
+        $sql.= "select "; 
+        $sql.= "sumId, ";
+        $sql.= "sum(case when Org_PosStatus.Name = 'Förslag' and sourceTable = 'top' then 1  else 0 end) as statusProposal, ";
+        $sql.= "sum(case when Org_PosStatus.Name = 'Vakant' and sourceTable = 'top' then 1  else 0 end) as statusVacant, ";
+        $sql.= "sum(case when Org_PosStatus.Name = 'Avstämd' and sourceTable = 'top' then 1  else 0 end) as statusCommitted, ";
+        $sql.= "sum(case when Org_PosStatus.Name = 'Tillsätts ej' and sourceTable = 'top' then 1  else 0 end) as statusNotAdded, ";
+        $sql.= "sum(case when Org_PosStatus.Name = 'Förslag' and sourceTable = 'sub' then 1  else 0 end) as statusSubProposal, ";
+        $sql.= "sum(case when Org_PosStatus.Name = 'Vakant' and sourceTable = 'sub'  then 1  else 0 end) as statusSubVacant, ";
+        $sql.= "sum(case when Org_PosStatus.Name = 'Avstämd' and sourceTable = 'sub'  then 1  else 0 end) as statusSubCommitted, ";
+        $sql.= "sum(case when Org_PosStatus.Name = 'Tillsätts ej' and sourceTable = 'sub'  then 1  else 0 end) as statusSubNotAdded ";
+        $sql.= "FROM Sub_Tree left outer join Org_Pos on Sub_Tree.NodeId = Org_Pos.OrgTree_FK inner join Org_PosStatus on Org_Pos.OrgPosStatus_FK = Org_PosStatus.Id ";
+        $sql.= "Group by sumId, sumNode  ";
+        
+        return $sql;
+    }
+    
     function insert(){
         $sqlInsert = "INSERT INTO Org_Tree (SortOrder, Name, Description, OrgUnitType_FK, ParentTreeNode_FK, Updater) ";
         $sqlInsert.= "VALUES (";
