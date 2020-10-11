@@ -28,8 +28,10 @@ function orgUnitTableDef(tableId){
                         dataType: 'json',
                         data: postData,
                         success: function (data) {
-                            if(data.Result === 'OK')
-                                $dfd.resolve(data);
+                            $dfd.resolve(data);
+                            if(data.Result === 'OK'){
+                                
+                            }
                         },
                         error: function () {
                             $dfd.reject();

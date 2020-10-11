@@ -17,7 +17,7 @@ class OrganizationUnitMember extends SuperEntity{
 
     function select($id = -1, $rec=RECORDS){
         $select = "SELECT * "; 
-        $from = "FROM Org_Pos_Tree ";
+        $from = "FROM Org_Pos ";
 
         if($this->id > 0){
             $where = "";

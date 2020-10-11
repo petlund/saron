@@ -31,8 +31,6 @@ function newsTableDef(){
                         success: function (data) {
                             $dfd.resolve(data);
                             if(data.Result === 'OK'){
-                                var records = data['Records'];
-                                _updateNewsRecord(records);
                             }
                         },
                         error: function () {
@@ -103,16 +101,3 @@ function newsTableDef(){
     };
 
 };
-    
-function _updateNewsRecord(records){
-    var key = document.getElementsByClassName("jtable-data-row");
-    if(key===null)
-        return;
-    
-    for(var i = 0; i<key.length;i++){
-        if(key[i].dataset.recordKey === records[0].id){ 
-            key[i].cells[0].innerHTML = (records[0].news_date).substring(0,10);                                              
-            key[i].cells[2].innerHTML = records[0].writer;          
-        }
-    }
-}

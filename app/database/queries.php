@@ -51,7 +51,9 @@
         define("DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME", "concat(" . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ") as Name");
         define("DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE", "concat(" . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ", ' ', " . DATE_OF_BIRTH . ") ");
         define("DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE_AS_APPIDENTITYNAME", DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . "as AppIdentityName ");
-        define("DATES_AS_MEMBERSTATES", " IF(UPPER(CONVERT(BINARY " . DECRYPTED_LASTNAME . " USING utf8)) like '%" . ANONYMOUS . "%', 'Anonymiserad', IF(DateOfDeath is not null, 'Avliden', IF(DateOfMemberShipStart is null, IF(DateOfBaptism is null and CongregationOfBaptism is null, 'Ej medlem', 'Dopregister'), IF(DateOfMemberShipEnd is null, 'Medlem', 'Dopregister')))) ");
+        //Name of Memeber State see in table MamberState
+//        define("DATES_AS_MEMBERSTATES", " IF(UPPER(CONVERT(BINARY " . DECRYPTED_LASTNAME . " USING utf8)) like '%" . ANONYMOUS . "%', 'Anonymiserad', IF(DateOfDeath is not null, 'Avliden', IF(DateOfMemberShipStart is null, IF(DateOfBaptism is null and CongregationOfBaptism is null, 'Ej medlem', 'Dopregister'), IF(DateOfMemberShipEnd is null, 'Medlem', 'Dopregister')))) ");
+        define("DATES_AS_MEMBERSTATES", " IF(UPPER(CONVERT(BINARY " . DECRYPTED_LASTNAME . " USING utf8)) like '%" . ANONYMOUS . "%', 4, IF(DateOfDeath is not null, 5, IF(DateOfMemberShipStart is null, IF(DateOfBaptism is null and CongregationOfBaptism is null, 2, 3), IF(DateOfMemberShipEnd is null, 2, 3)))) ");
         define("DATES_AS_ALISAS_MEMBERSTATES", DATES_AS_MEMBERSTATES . "as MemberState ");
 
         define("ALIAS_CUR_HOMES", "Homes");
@@ -90,7 +92,7 @@
     
         define("EMBEDDED_SELECT_SUPERPOS", "if(People_FK < 0, concat(' (som ', (Select Name from Org_Role as r2 where -People_FK = r2.Id),')'),'') ");
         define("ORG_POS_XREF", "(Select p1.Id, if(p1.People_FK < 0,(select p2.People_FK from Org_Pos as p2 where -p1.People_FK = p2.OrgRole_FK ), p1.People_FK) as People_FK2 from Org_Pos as p1) as xref ");
-        
+        define("ENGAGEMENT_LIST", "(Select GROUP_CONCAT(Role.Name, ' (', Tree.Name , ". EMBEDDED_SELECT_SUPERPOS . ", ') ',IF(Stat.Id > 1,Concat(' <b style=\"background:yellow;\">[', Stat.Name, ']</b>'),'') SEPARATOR '<br>')");
         
         
     } 
@@ -176,7 +178,7 @@
     }
     
     function getLongHomeNameSql($tableAlias, $fieldAlias, $continue){
-        $sql.= "IF(" . $tableAlias . ".Id is null, 'Inget hem', ";
+        $sql = "IF(" . $tableAlias . ".Id is null, 'Inget hem', ";
         $sql.= "concat(";
         $sql.= getFieldSql($tableAlias, "", "FamilyNameEncrypt", "", true, false);
         $sql.= ",' (',";

@@ -13,12 +13,9 @@ require_once SARON_ROOT . 'app/entities/News.php';
         $db = new db();
 
     /*** REQUIRE USER AUTHENTICATION ***/
-        $db->perf("requireEditorRole");
     $requireEditorRole = false;
-        $db->perf("SaronUser");
     $saronUser = new SaronUser(wp_get_current_user());    
 
-        $db->perf("isPermitted");
 
     if(!isPermitted($saronUser, $requireEditorRole)){
         echo notPermittedMessage();
@@ -26,14 +23,10 @@ require_once SARON_ROOT . 'app/entities/News.php';
     }
 
     try{
-        $db->perf("Start list news");
         $news = new News($db, $saronUser);
         $result = $news->select();    
-        $db->perf("Stop list news");
         $db->dispose();
         echo $result;        
-            $db->perf("echo News");
-
     }
     catch(Exception $error){
         echo $error->getMessage();        

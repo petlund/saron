@@ -20,6 +20,22 @@ class OrganizationUnit extends SuperEntity{
         $this->posEnabled = (int)filter_input(INPUT_POST, "PosEnabled", FILTER_SANITIZE_NUMBER_INT);
     }
 
+    function checkUnittData(){
+        $error = array();
+
+        if(strlen(trim($this->name)) === 0){
+            $error["Result"] = "ERROR";
+            $error["Message"] = "Det saknas ett namn på den organisatoriska enheten";
+            throw new Exception(json_encode($error));
+        }
+        if($this->db->fieldValueExist($this->name, "Name", "Org_UnitType")){
+            $error["Result"] = "ERROR";
+            $error["Message"] = "Det finns redan en organisatorisk enhet med namnet: '" . $this->name . "'";
+            throw new Exception(json_encode($error));
+        }
+    }
+
+ 
 
     function select($id = -1, $rec=RECORDS){
         switch ($this->selection){
@@ -63,6 +79,7 @@ class OrganizationUnit extends SuperEntity{
     
     
     function insert(){
+        $this->checkUnittData();
         $sqlInsert = "INSERT INTO Org_UnitType (Name, Description, PosEnabled, SubUnitEnabled, Updater) ";
         $sqlInsert.= "VALUES (";
         $sqlInsert.= "'" . $this->name . "', ";
@@ -77,6 +94,7 @@ class OrganizationUnit extends SuperEntity{
     
     
     function update(){
+        $this->checkUnittData();
         $update = "UPDATE Org_UnitType ";
         $set = "SET ";        
         $set.= "Name='" . $this->name . "', ";        

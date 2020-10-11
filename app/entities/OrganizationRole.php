@@ -44,6 +44,22 @@ class OrganizationRole extends SuperEntity{
     }
 
     
+    function checkRoletData(){
+        $error = array();
+
+        if(strlen(trim($this->name)) === 0){
+            $error["Result"] = "ERROR";
+            $error["Message"] = "Det saknas ett namn på rollen";
+            throw new Exception(json_encode($error));
+        }
+        if($this->db->fieldValueExist($this->name, "Name", "Org_Role")){
+            $error["Result"] = "ERROR";
+            $error["Message"] = "Det finns redan en organisationsroll med namnet: '" . $this->name . "'";
+            throw new Exception(json_encode($error));
+        }
+    }
+
+ 
     function selectDefault($id = -1, $rec=RECORDS){
         $select = "SELECT *, Role.Updater as Updater, Role.Updated as Updated, ";
         $select.= "(Select count(*) from `Org_Role-UnitType` as UnitRole WHERE UnitRole.OrgRole_FK = Role.Id) as HasChild, ";
@@ -82,6 +98,7 @@ class OrganizationRole extends SuperEntity{
     
     
     function insert(){
+        $this->checkRoletData();
         $sqlInsert = "INSERT INTO Org_Role (Name, RoleType, Description, Updater) ";
         $sqlInsert.= "VALUES (";
         $sqlInsert.= "'" . $this->name . "', ";
@@ -95,6 +112,7 @@ class OrganizationRole extends SuperEntity{
     
     
     function update(){
+        $this->checkRoletData();
         $update = "UPDATE Org_Role ";
         $set = "SET ";        
         $set.= "Name='" . $this->name . "', ";        

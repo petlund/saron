@@ -18,14 +18,13 @@ class SuperEntity {
     protected $jtPageSize;
     protected $jtStartIndex;
     protected $jtSorting;
+    protected $source;
 
     
     protected function __construct($db, $saronUser) {
         $this->db = $db;
         $this->saronUser = $saronUser;
 
-        $this->db->perf("ClientCall1 client time " . (int)filter_input(INPUT_GET, "ts", FILTER_SANITIZE_NUMBER_INT), (int)filter_input(INPUT_GET, "ts", FILTER_SANITIZE_NUMBER_INT)); // Client timestamp dev    
-        $this->db->perf("ClientCall1 server time"); // Client timestamp dev    
         $this->groupId = (int)filter_input(INPUT_POST, "groupId", FILTER_SANITIZE_NUMBER_INT);    
         $this->tableview = (String)filter_input(INPUT_POST, "tableview", FILTER_SANITIZE_STRING);    
         $this->selection = (String)filter_input(INPUT_GET, "selection", FILTER_SANITIZE_STRING);    
@@ -35,6 +34,9 @@ class SuperEntity {
         $this->jtPageSize = (int)filter_input(INPUT_GET, "jtPageSize", FILTER_SANITIZE_NUMBER_INT);
         $this->jtStartIndex = (int)filter_input(INPUT_GET, "jtStartIndex", FILTER_SANITIZE_NUMBER_INT);
         $this->jtSorting = (String)filter_input(INPUT_GET, "jtSorting", FILTER_SANITIZE_STRING);
+    
+        $this->source = (String)filter_input(INPUT_GET, "Source", FILTER_SANITIZE_STRING);
+
     }
 
     
@@ -108,7 +110,6 @@ class SuperEntity {
     
     
     function salt(){        
-        //$abc = "!#$%&()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~";
         $abc = "!#$%&()*+,-./0123456789:;=?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmnopqrstuvwxyz{|}~";
         $str = "";
         while(strlen($str)<SALT_LENGTH-1){

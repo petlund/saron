@@ -17,11 +17,7 @@ require_once SARON_ROOT . 'app/entities/OrganizationStructure.php';
         echo notPermittedMessage();
         exit();
     }
-//    $writerName = 'Saknas';
-//    if(isset( $saronUser->ID )){
-//        $writerName = $saronUser->user_firstname . " " . $saronUser->user_lastname ;
-//    }
-//
+
     try{
         $db = new db();
         $db->transaction_begin();

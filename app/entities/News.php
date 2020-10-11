@@ -4,8 +4,6 @@ require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
 class News extends SuperEntity{
     
-    private $sqlOrderBy;
-    private $sqlLimit;
     private $id;
     private $information;
             
@@ -48,7 +46,7 @@ class News extends SuperEntity{
         $set.= "writer='" . $this->saronUser->getDisplayName() . "' ";
         $where = "WHERE id=" . $this->id;
         $this->db->update($update, $set, $where);
-        return $this->select($this->id);
+        return $this->select($this->id, RECORD);
     }
 
     function delete(){

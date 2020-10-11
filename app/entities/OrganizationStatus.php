@@ -46,14 +46,13 @@ class OrganizationStatus extends SuperEntity{
 
     function selectOptions(){
         $select = "SELECT Id as Value, Name as DisplayText ";
-        
         $where = "";
-        switch ($this->statusfilter) {
-        case "engagement":
-            $where = "WHERE Id < 3 "; // only "Avstämd" and "Förslag"
-            break;
-        default:
-            $where = "";
+
+        if($this->statusfilter === 'engagement_edit'){
+            $where.= "WHERE Id <> 5 "; // Tillsätts ej
+        }
+        else if($this->statusfilter === 'engagement_create'){
+            $where.= "WHERE Id < 4 "; // Tillsätts ej
         }
         
         $result = $this->db->select($this->saronUser, $select , "FROM Org_PosStatus ", $where, "Order by DisplayText ", "", "Options");    

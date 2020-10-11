@@ -1,7 +1,7 @@
 /* global SARON_URI, green */
 
 "use strict";
-const t0 = 300; //timer time in seconds
+const t0 = 3000; //timer time in seconds
 const LAST_ACTIVITY_TIMESTAMP = 'lastActivityTimeStamp';
 var timeout;
 localStorage.setItem(LAST_ACTIVITY_TIMESTAMP, new Date().getTime());

@@ -35,8 +35,10 @@ function roleTableDef(tableId, unitTypeId, orgName){
                         dataType: 'json',
                         data: postData,
                         success: function (data) {
-                            if(data.Result === 'OK')
-                                $dfd.resolve(data);
+                            $dfd.resolve(data);
+                            if(data.Result === 'OK'){
+                                
+                            }
                         },
                         error: function () {
                             $dfd.reject();
@@ -81,18 +83,18 @@ function roleTableDef(tableId, unitTypeId, orgName){
             },
             Description: {
                 title: 'Beskrivning',
-                width: '50%'
+                width: '40%'
             },
             RoleType:{
                 title: 'Typ',
-                width: '2%',
+                width: '10%',
                 options:  { '0' : 'Verksamhetsroll', '1' : 'Organisationsroll [Org]' }
             },
             Updater: {
                 edit: false,
                 create: false, 
                 title: 'Uppdaterare',
-                width: '15%',
+                width: '5%',
                 options: function (){
                     return '/' + SARON_URI + 'app/web-api/listUsersAsOptions.php?selection=role';           
                 }
@@ -103,7 +105,7 @@ function roleTableDef(tableId, unitTypeId, orgName){
                 title: 'Uppdaterad',
                 type: 'date',
                 displayFormat: DATE_FORMAT,
-                width: '15%'
+                width: '5%'
             }
         },
         rowInserted: function(event, data){
@@ -143,7 +145,7 @@ function roleTableDef(tableId, unitTypeId, orgName){
 
 function subUnitTableDef(tableId, orgRole_FK, roleName){
     return {
-        title: '"' + roleName + '" finns i nedanstående organisatoriska enheter',
+        title: '"' + roleName + '" finns i nedanstående typer av organisatoriska enheter',
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',

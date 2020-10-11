@@ -56,7 +56,7 @@ class OrganizationStructure extends SuperEntity{
         $select.= $this->saronUser->getRoleSql(false) . " ";
         $from = "from Org_Tree as Tree ";
         $from.= "inner join Org_UnitType as Typ on Tree.OrgUnitType_FK = Typ.Id ";
-        $from.= "inner join (" . $this->getStatusSQL() .  ") as stat on Tree.Id = stat.sumId ";
+        $from.= "left outer join (" . $this->getStatusSQL() .  ") as stat on Tree.Id = stat.NodeId ";
             
         if($treeId < 0){
             if($this->parentTreeNode_FK === -1){
@@ -77,24 +77,24 @@ class OrganizationStructure extends SuperEntity{
     
     function getStatusSQL(){
         $sql = "WITH RECURSIVE Sub_Tree AS (";
-        $sql.= "SELECT Id as NodeId, name, ParentTreeNode_FK, 1 AS relative_depth, name as sumNode, Id as sumId, 'top' as sourceTable ";
+        $sql.= "SELECT Id as NodeId, name as nodeName, ParentTreeNode_FK as parent, 1 AS relative_depth, name as sumNode, Id as sumId, 'top' as sourceTable ";
         $sql.= "FROM Org_Tree "; 
         $sql.= "UNION ALL ";
-        $sql.= "SELECT Tree.id as NodeId, Tree.name, Tree.ParentTreeNode_FK, st.relative_depth + 1, st.sumNode, st.NodeId as sumId, 'sub' as sourceTable ";
+        $sql.= "SELECT Tree.id as NodeId, Tree.name as nodeName, Tree.ParentTreeNode_FK as parent, st.relative_depth + 1 as relative_depth, sumNode, sumId, 'sub' as sourceTable ";
         $sql.= "FROM Org_Tree Tree , Sub_Tree st ";
         $sql.= "WHERE Tree.ParentTreeNode_FK = st.NodeId) ";
         $sql.= "select "; 
-        $sql.= "sumId, ";
-        $sql.= "sum(case when Org_PosStatus.Name = 'Förslag' and sourceTable = 'top' then 1  else 0 end) as statusProposal, ";
-        $sql.= "sum(case when Org_PosStatus.Name = 'Vakant' and sourceTable = 'top' then 1  else 0 end) as statusVacant, ";
-        $sql.= "sum(case when Org_PosStatus.Name = 'Avstämd' and sourceTable = 'top' then 1  else 0 end) as statusCommitted, ";
-        $sql.= "sum(case when Org_PosStatus.Name = 'Tillsätts ej' and sourceTable = 'top' then 1  else 0 end) as statusNotAdded, ";
-        $sql.= "sum(case when Org_PosStatus.Name = 'Förslag' and sourceTable = 'sub' then 1  else 0 end) as statusSubProposal, ";
-        $sql.= "sum(case when Org_PosStatus.Name = 'Vakant' and sourceTable = 'sub'  then 1  else 0 end) as statusSubVacant, ";
-        $sql.= "sum(case when Org_PosStatus.Name = 'Avstämd' and sourceTable = 'sub'  then 1  else 0 end) as statusSubCommitted, ";
-        $sql.= "sum(case when Org_PosStatus.Name = 'Tillsätts ej' and sourceTable = 'sub'  then 1  else 0 end) as statusSubNotAdded ";
+        $sql.= "NodeId, ";
+        $sql.= "sum(case when Org_PosStatus.Id = 2 and sourceTable = 'top' then 1  else 0 end) as statusProposal, ";
+        $sql.= "sum(case when Org_PosStatus.Id = 4 and sourceTable = 'top' then 1  else 0 end) as statusVacant, ";
+        $sql.= "sum(case when Org_PosStatus.Id = 1 and sourceTable = 'top' then 1  else 0 end) as statusCommitted, ";
+        $sql.= "sum(case when Org_PosStatus.Id = 5 and sourceTable = 'top' then 1  else 0 end) as statusNotAdded, ";
+        $sql.= "sum(case when Org_PosStatus.Id = 2 and sourceTable = 'sub' then 1  else 0 end) as statusSubProposal, ";
+        $sql.= "sum(case when Org_PosStatus.Id = 4 and sourceTable = 'sub'  then 1  else 0 end) as statusSubVacant, ";
+        $sql.= "sum(case when Org_PosStatus.Id = 1 and sourceTable = 'sub'  then 1  else 0 end) as statusSubCommitted, ";
+        $sql.= "sum(case when Org_PosStatus.Id = 5 and sourceTable = 'sub'  then 1  else 0 end) as statusSubNotAdded ";
         $sql.= "FROM Sub_Tree left outer join Org_Pos on Sub_Tree.NodeId = Org_Pos.OrgTree_FK inner join Org_PosStatus on Org_Pos.OrgPosStatus_FK = Org_PosStatus.Id ";
-        $sql.= "Group by sumId, sumNode  ";
+        $sql.= "Group by NodeId ";
         
         return $sql;
     }

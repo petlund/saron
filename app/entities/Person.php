@@ -304,7 +304,7 @@ class Person extends People{
             $error = array();
             $error["Result"] = "ERROR";
             $error["Message"] = "Uppdateringen misslyckades.";
-            return json_encode($error);
+            return json_encode($error);            
         }        
     }
     

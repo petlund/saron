@@ -16,7 +16,6 @@ class db {
             $appErrorMsg = "Error when try to set UTF-8";
             $this->connection->set_charset("utf8");    
             $appErrorMsg="";
-            $this->perf("DB Construct");
         }
         catch(Exception $error){  
             echo $this->jsonErrorMessage($appErrorMsg, $error, $sql="");
@@ -26,19 +25,20 @@ class db {
     
     
     function __destruct(){
-        if($connection !== null){
-            if ($connection->connect_error) { 
-                die("Connection failed: " . $connection->connect_error); 
+        if($this->connection !== null){
+            if ($this->connection->connect_error !== null) { 
+                die("Connection failed: " . $this->connection->connect_error); 
             } 
-            $connection->close(); 
+            $this->connection->close(); 
         }
     }
     
     function dispose(){
-        $this->__destruct();
+        //$this->__destruct();
     }
     
     function transaction_begin(){
+        $this->php_dev_error_log("transaction_begin", "");
         if(!$this->connection->autocommit(false)){
             throw new Exception($this->jsonErrorMessage("Transaktionsfel (Begin). Kan inte uppdatera."));                               
         }
@@ -46,6 +46,7 @@ class db {
     
     
     function transaction_end(){
+        $this->php_dev_error_log("transaction_end  ", "");
         return $this->connection->autocommit(true);       
     }
     
@@ -60,7 +61,7 @@ class db {
         if(!$listResult = $this->connection->query($sqlDelete)){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
             $this->php_dev_error_log("delete", $sqlDelete);
-            throw new Exception($this->jsonErrorMessage("SQL-Error in delete statement!", null, $technicalErrMsg));
+            throw new Exception($this->jsonErrorMessage("Exception in delete function", null, $technicalErrMsg));
         }
         else{
             $deleteResult['Result'] = "OK";
@@ -73,10 +74,34 @@ class db {
         if(!$listResult = $this->connection->query($sql)){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
             $this->php_dev_error_log("update", $sql);
-            throw new Exception($this->jsonErrorMessage("SQL-Error in update statement!", null, $technicalErrMsg));
+            throw new Exception($this->jsonErrorMessage("Exception in update function", null, $technicalErrMsg));
         }
         return true;
     } 
+    
+    
+    
+    public function fieldValueExist($value, $field, $table){
+        $sql = "select count(*) as c from " . $table . " where "; 
+        $sql.= "UPPER(" . $field . ") like UPPER('" . $value . "') ";
+        
+        if(!$listResult = $this->connection->query($sql)){
+            $this->php_dev_error_log("Exception in exist function", $sql);
+            throw new Exception($this->jsonErrorMessage("SQL-Error in select /exist/ statement!", null, $sql));
+        }
+        $countRows = "0";
+        while($countRow = mysqli_fetch_array($listResult)){
+            $countRows = $countRow["c"];
+        } 
+        mysqli_free_result($listResult);
+        
+        if($countRows !== "0"){
+            return true;
+        }
+        return false;
+    }
+    
+           
     
     
     public function exist($FirstName, $LastName, $DateOfBirth, $Id=-1){
@@ -89,7 +114,7 @@ class db {
         }
         
         if(!$listResult = $this->connection->query($sql)){
-            $this->php_dev_error_log("exist ", $sql);
+            $this->php_dev_error_log("Exception in exist function", $sql);
             throw new Exception($this->jsonErrorMessage("SQL-Error in select /exist/ statement!", null, $sql));
         }
         $countRows = "0";
@@ -125,41 +150,23 @@ class db {
             return $LastId;
         }
         catch(Exception $error){
-            $this->php_dev_error_log("insert", $insert);
+            $this->php_dev_error_log("Exception in insert function", $insert);
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
-            throw new Exception($this->jsonErrorMessage("Error in insert statement!", null, $technicalErrMsg));
+            throw new Exception($this->jsonErrorMessage("Error in insert function", null, $technicalErrMsg));
         }
         
     }     
     
     
-    public function perf($label, $ts=0){
-        $fiteredHost = (String)filter_input(INPUT_SERVER, "HTTP_HOST", FILTER_SANITIZE_STRING);
-        if((strpos($fiteredHost, LOCAL_DEV_APP_HOST) !== FALSE)){
-            $keyTable = "perf";
-        
-            $keyColumn = "Id";
-            $mt = explode(' ', microtime());
-            if($ts === 0){
-                $ts = ((int)$mt[1]) * 1000000 + ((int)round($mt[0] * 1000000));
-            }
-            $insert = "Insert into " . $keyTable . " (Label, TS) Values ('";
-            $insert.= $label . "', ";
-            $insert.=  $ts . ")";
-
-            $this->insert($insert, $keyTable, $keyColumn);
-        }
-    }
-    
     public function select($saronUser, $select, $from, $where, $orderby, $limit, $responstype=RECORDS){
         $sqlSelect = $select . $from . $where . $orderby . $limit;
         $sqlCount = "select count(*) as c " . $from . $where;
-        //$this->perf("SELECT .... " . $from);
+
         try{
             return $this->selectSeparate($saronUser, $sqlSelect, $sqlCount, $responstype);
         }
         catch(Exception $error){
-            $this->php_dev_error_log("Query select", $sqlSelect);
+            $this->php_dev_error_log("Exception in select function", $sqlSelect);
             throw new Exception($error->getMessage());
         }
     } 
@@ -168,14 +175,14 @@ class db {
         $listResult = $this->connection->query($sqlSelect);
         if(!$listResult){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
-            $this->php_dev_error_log("selectSeparate 1 ", $sqlSelect);
+            $this->php_dev_error_log("Exception in select function part 1", $sqlSelect);
             throw new Exception($this->jsonErrorMessage("SQL-Error in select /list/ statement!", null, $technicalErrMsg));
         }
         
         $countResult = $this->connection->query($sqlCount);
         if(!$countResult){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
-            $this->php_dev_error_log("selectSeparate 2 ", $sqlSelect);
+            $this->php_dev_error_log("Exception in select function part 2", $sqlSelect);
             throw new Exception($this->jsonErrorMessage("SQL-Error in select count statement!", null, $technicalErrMsg));
         }
 
@@ -190,7 +197,7 @@ class db {
         if(!$listResult){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
             echo "SQL-Error in statement: <br>" .  $sql . "<br>" .  $technicalErrMsg; 
-            $this->php_dev_error_log("sqlQuery", $sql);
+            $this->php_dev_error_log("Exception in sqlQuery function", $sql);
             return false;
         }
         $result = $this->resultSetToArray($listResult, RECORDS);
@@ -216,13 +223,14 @@ class db {
         $errMsg.= mb_convert_encoding("<br><br>Om problemet kvarstår kontakta systemadministratören<BR>", "UTF-8", "auto");
         $errMsg.= "<a href='mailto:" . EmailSysAdmin . "'>" . EmailSysAdmin . "</a>";
         $error["Message"] = $errMsg;
-        $this->php_dev_error_log("jsonErrorMessage", $errMsg);
         return json_encode($error);        
     }
     
     
     
     private function resultSetToArray($listResult, $responstype){
+        $listRows = Array();    
+        
         if($responstype === RECORD){
             $listRow = mysqli_fetch_array($listResult, MYSQLI_ASSOC);
             mysqli_free_result($listResult);
@@ -274,7 +282,10 @@ class db {
     
     function php_dev_error_log($method, $msg){
         if(TEST_ENV === true){
-            error_log("\n\nDB method " . $method . ": " . $msg);
+            error_log("**** DB: " . $method . " *****");
+            if(strlen($msg)>0){
+                error_log($msg . "\n\n");
+            }
         }
     }
 

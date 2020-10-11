@@ -9,8 +9,7 @@ require_once SARON_ROOT . 'app/database/db.php';
 require_once SARON_ROOT . 'app/entities/OrganizationPos.php';
 
 /*** REQUIRE USER AUTHENTICATION ***/
-    $requireEditorRole = true;
-    
+    $requireEditorRole = true;    
     $saronUser = new SaronUser(wp_get_current_user());    
 
     if(!isPermitted($saronUser, $requireEditorRole)){
@@ -20,8 +19,8 @@ require_once SARON_ROOT . 'app/entities/OrganizationPos.php';
 
     try{
         $db = new db();
-        $db->transaction_begin();
         $org = new OrganizationPos($db, $saronUser);
+        $db->transaction_begin();
         $result = $org->insert();
         $db->transaction_end();            
         echo $result;
@@ -30,6 +29,7 @@ require_once SARON_ROOT . 'app/entities/OrganizationPos.php';
     catch(Exception $error){
         $db->transaction_roll_back();
         $db->transaction_end();
-        echo $error->getMessage();        
+        $result = $error->getMessage();
+        echo $result;        
         $db->dispose();
     }

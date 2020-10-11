@@ -1,47 +1,60 @@
-/* global DATE_FORMAT, SARON_URI, J_TABLE_ID, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID */
+/* global SARON_URI, DATE_FORMAT, NEWS */
 "use strict";
+
+var TABLE_MEMBER_STATE = '#MEMBER_STATE';
     
 $(document).ready(function () {
-    const TABLE_ID = "#ORG_ROLE_STATUS";
+    $(TABLE_MEMBER_STATE).jtable(memberstateTableDef());
+    $(TABLE_MEMBER_STATE).jtable('load');
+    $(TABLE_MEMBER_STATE).find('.jtable-toolbar-item-add-record').hide();
+});
 
-    $(TABLE_ID).jtable(statusTableDef(TABLE_ID));
-    $(TABLE_ID).jtable('load');
-    }
-);
 
-function statusTableDef(tableId){
+function clog(lbl, str){
+    console.log(lbl + ': ' + str);
+}
+
+function memberstateTableDef(){
     return {
-        title: 'Status',
+        title: 'Personstatus',
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
         sorting: true, //Enable sorting
         multiSorting: true,
-        defaultSorting: 'SortOrder', //Set default sorting        
+        defaultSorting: 'news_date desc', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationStatus.php',
+            listAction:   '/' + SARON_URI + 'app/web-api/listMemberState.php?ts=',
+            //createAction:   '/' + SARON_URI + 'app/web-api/createNews.php',
+            //updateAction:   '/' + SARON_URI + 'app/web-api/updateNews.php'
             updateAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url:  '/' + SARON_URI + 'app/web-api/updateOrganizationStatus.php',
+                        url: '/' + SARON_URI + 'app/web-api/updateMemberState.php',
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
                         success: function (data) {
-                            if(data.Result === 'OK'){
-                                
-                                $dfd.resolve(data);
-                                
-                            }
-                            else
-                                $dfd.resolve(data);
+                            $dfd.resolve(data);
+//                            var rec = {
+//                                    record: {
+//                                        'Id': 1, 
+//                                        'FilterUpdate': 1, 
+//                                        'FilterCreate': 1
+//                                    },
+//                                    'clientOnly': true,
+//                                    'animationsEnabled': false
+//                                    };
+//                            $(TABLE_MEMBER_STATE).jtable('updateRecord', rec);        
+                            
                         },
                         error: function () {
                             $dfd.reject();
                         }
                     });
                 });
-            }, 
+            },
+            //deleteAction: '/' + SARON_URI + 'app/web-api/deleteNews.php'
         },
         fields: {
             Id: {
@@ -49,24 +62,34 @@ function statusTableDef(tableId){
                 list: false
             },
             Name: {
-                title: 'Benämning',
-                width: '15%'
+                edit: false,
+                title: 'Namn',
+                width: '15%',
             },
             Description: {
+                edit: true,
                 title: 'Beskrivning',
-                width: '50%'
+                width: '40%'
             },
-            SortOrder: {
-                title: 'Sorteringsordning',
-                width: '10%'
+            FilterUpdate: {
+                edit: true,
+                title: 'Filter för uppdatering',
+                width: '15%',
+                options: {"0":"Nej", "1":"Ja"}
+            },
+            FilterCreate: {
+                edit: true,
+                title: 'Filter för lägga till',
+                width: '15%',
+                options: {"0":"Nej", "1":"Ja"}
             },
             Updater: {
                 edit: false,
                 create: false, 
                 title: 'Uppdaterare',
-                width: '15%',
+                width: '5%',
                 options: function (){
-                    return '/' + SARON_URI + 'app/web-api/listUsersAsOptions.php?selection=status';           
+                    return '/' + SARON_URI + 'app/web-api/listUsersAsOptions.php?selection=MemberState';           
                 }
             },
             Updated: {
@@ -75,7 +98,7 @@ function statusTableDef(tableId){
                 title: 'Uppdaterad',
                 type: 'date',
                 displayFormat: DATE_FORMAT,
-                width: '15%'
+                width: '5%'
             }
         },
         rowInserted: function(event, data){
@@ -83,12 +106,10 @@ function statusTableDef(tableId){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
-            if(data.record.OrgRole_FK !== null)
-                data.row.find('.jtable-delete-command-button').hide();
         },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === 'edit'){ 
-                $(tableId).find('.jtable-toolbar-item-add-record').show();
+                $('#NEWS').find('.jtable-toolbar-item-add-record').show();
             }
         },        
         formCreated: function (event, data){
@@ -109,4 +130,4 @@ function statusTableDef(tableId){
             data.row[0].style.backgroundColor = '';
         }
     };
-}
+};

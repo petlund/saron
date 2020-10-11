@@ -140,6 +140,9 @@ class SaronUsers extends SuperEntity{
         case "status":
             $table = "Org_PosStatus";
             break;
+        case "memberstate":
+            $table = "MemberState";
+            break;
         default:
             $table = "people";
         }

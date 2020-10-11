@@ -24,6 +24,8 @@ function _setClassAndValue(record, field, type){
         return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), _getVisibilityOption(record[field]), '');  
     else if(field === "KeyToChurch" || field === "KeyToExp")
         return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), _getKeyOption(record[field]), '');  
+    else if(field === "MemberState")
+        return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), _getMemberStateOptions(record[field]), '');  
     else if(field === "Letter")
         return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), _getLetterOption(record[field]), '');  
     else
@@ -117,6 +119,8 @@ function _updateFields(record, field, type){
     
     if(field === "VisibleInCalendar")
         elementValue = _getVisibilityOption(record[field]);  
+    else if(field === "MemberState")
+        elementValue = _getMemberStateOptions(record[field]);  
     else if(field === "Letter")
         elementValue = _getLetterOption(record[field]);  
     else if(field === "KeyToChurch" || field === "KeyToExp")
@@ -133,6 +137,19 @@ function _updateFields(record, field, type){
         element[i].innerHTML = elementValue;
 }
 
+
+function _getMemberStateOptions(stateId){
+    var data;
+    $.getJSON('/' + SARON_URI + 'app/web-api/listMemberState.php?selection=options', data, function( json ) {
+        data = json;
+    });
+    return ''; //data.Options[stateId].DisplayText;
+}
+
+
+function _memberStateOptions(){
+    return '/' + SARON_URI + 'app/web-api/listMemberState.php?selection=options';
+}
 
 
 function _membershipOptions(personId){
@@ -152,7 +169,7 @@ function _getVisibilityOption(i){
 
 
 function _visibilityOptions(){
-        return { 0: '', 1: 'Ej synlig', 2: 'Synlig'};
+    return { 0: '', 1: 'Ej synlig', 2: 'Synlig'};
 }
 
 
@@ -160,6 +177,7 @@ function _getLetterOption(i){
     var lo = _letterOptions();
     return lo[i];
 }
+
 
 function _letterOptions(){
     return { 0 : '', 1 : 'Ja'};

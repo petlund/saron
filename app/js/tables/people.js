@@ -226,9 +226,10 @@ $(document).ready(function () {
                 edit: false,
                 create: false,
                 width: '4%',
-                display: function (data){
-                    return _setClassAndValue(data.record, "MemberState", PERSON);
-                }       
+//                display: function (data){
+//                    return _setClassAndValue(data.record, "MemberState", PERSON);
+//                },       
+                options: _memberStateOptions(),
             },
             VisibleInCalendar: {
                 edit: false,
@@ -656,8 +657,8 @@ function childTableMembership(){
                             inputClass: function(memberData){
                                 return _setClassAndValue(memberData.record, "VisibleInCalendar", PERSON);
                             },
-                            options:_visibilityOptions()
-                        },
+                            options: _visibilityOptions()
+                        }, 
                         Comment: {
                             type: 'textarea',
                             width: '40%',
@@ -843,13 +844,6 @@ function fieldCloseChildTable(personId){
        }
     };
 }
-
-
-
-//function closeChildTable(personId){
-//    var $selectedRow = $("[data-record-key=" + personId + "]"); 
-//    $(J_TABLE_ID).jtable('closeChildTable', $selectedRow);
-//}
 
 
 
