@@ -15,6 +15,10 @@ class OrganizationRole extends SuperEntity{
         parent::__construct($db, $saronUser);
         
         $this->id = (int)filter_input(INPUT_POST, "Id", FILTER_SANITIZE_NUMBER_INT);
+        if($this->id  === 0){
+            $this->id = (int)filter_input(INPUT_GET, "Id", FILTER_SANITIZE_NUMBER_INT);
+        }
+        
         $this->roleType = (int)filter_input(INPUT_POST, "RoleType", FILTER_SANITIZE_NUMBER_INT);
 
         $this->orgTreeNode_FK = (int)filter_input(INPUT_POST, "Org_Tree_FK", FILTER_SANITIZE_NUMBER_INT);
@@ -52,7 +56,7 @@ class OrganizationRole extends SuperEntity{
             $error["Message"] = "Det saknas ett namn på rollen";
             throw new Exception(json_encode($error));
         }
-        if($this->db->fieldValueExist($this->name, "Name", "Org_Role")){
+        if($this->db->fieldValueExist($this->name, $this->id, "Name", "Org_Role")){
             $error["Result"] = "ERROR";
             $error["Message"] = "Det finns redan en organisationsroll med namnet: '" . $this->name . "'";
             throw new Exception(json_encode($error));

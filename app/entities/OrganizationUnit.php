@@ -28,7 +28,7 @@ class OrganizationUnit extends SuperEntity{
             $error["Message"] = "Det saknas ett namn på den organisatoriska enheten";
             throw new Exception(json_encode($error));
         }
-        if($this->db->fieldValueExist($this->name, "Name", "Org_UnitType")){
+        if($this->db->fieldValueExist($this->name, $this->id, "Name", "Org_UnitType")){
             $error["Result"] = "ERROR";
             $error["Message"] = "Det finns redan en organisatorisk enhet med namnet: '" . $this->name . "'";
             throw new Exception(json_encode($error));

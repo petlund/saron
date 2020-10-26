@@ -45,12 +45,13 @@ class People extends SuperEntity{
     
     function selectPeopleOptions(){
 
-        $SELECT_PERSSON = "(SELECT " . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . " FROM People as P inner join Org_Pos as Pos on p.Id = Pos.People_FK WHERE Pos.OrgRole_FK = Role.Id)";
+        $SELECT_PERSSON = "(SELECT " . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . " FROM People as P inner join Org_Pos as Pos on p.Id = Pos.People_FK WHERE Pos.OrgRole_FK = Role.Id) ";
         $SELECT_CONCAT = "concat(' ', Name , ' (', " . $SELECT_PERSSON . ", ')')";
         $SELECT_CONCAT_NULL = "concat(' ', Name , ' (-)')";
-        $select = "SELECT 0 as Value, '-' as DisplayText "; 
+        
+        $select = "select -Id as Value, IF(" . $SELECT_CONCAT . " is null, " . $SELECT_CONCAT_NULL . ", " . $SELECT_CONCAT . ") as DisplayText FROM Org_Role as Role WHERE RoleType=1 ";//and Role.Id not in (select OrgRole_FK from Org_Pos group by OrgRole_FK) "; //RoleTYpe 1 -> "OrgRole"
         $select.= "Union "; 
-        $select.= "select -Id as Value, IF(" . $SELECT_CONCAT . " is null, " . $SELECT_CONCAT_NULL . ", " . $SELECT_CONCAT . ") as DisplayText FROM Org_Role as Role WHERE RoleType=1 and Role.Id not in (select OrgRole_FK from Org_Pos group by OrgRole_FK)"; //RoleTYpe 1 = > "OrgRole"
+        $select.= "SELECT 0 as Value, '-' as DisplayText "; 
         $select.= "Union "; 
         $select.= "select Id as Value, " . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . "as DisplayText ";
         
@@ -58,7 +59,10 @@ class People extends SuperEntity{
         if($this->filterType === "member"){
             $where.= "WHERE " . SQL_WHERE_MEMBER;
         }
-        $result = $this->db->select($this->saronUser, $select, "FROM People ", $where, "ORDER BY DisplayText ", "", "Options");    
+        
+        $from = "FROM People ";
+        
+        $result = $this->db->select($this->saronUser, $select, $from, $where, "ORDER BY DisplayText ", "", "Options");    
         return $result;
     }     
 }

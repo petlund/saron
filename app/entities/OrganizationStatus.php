@@ -7,7 +7,6 @@ class OrganizationStatus extends SuperEntity{
     private $id;
     private $name;
     private $description;
-    private $sortOrder;
     
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
@@ -16,7 +15,6 @@ class OrganizationStatus extends SuperEntity{
         $this->id = (int)filter_input(INPUT_POST, "Id", FILTER_SANITIZE_NUMBER_INT);
         $this->name = (String)filter_input(INPUT_POST, "Name", FILTER_SANITIZE_STRING);
         $this->description = (String)filter_input(INPUT_POST, "Description", FILTER_SANITIZE_STRING);
-        $this->sortOrder = (String)filter_input(INPUT_POST, "SortOrder", FILTER_SANITIZE_STRING);
     }
 
 
@@ -49,7 +47,7 @@ class OrganizationStatus extends SuperEntity{
         $where = "";
 
         if($this->statusfilter === 'engagement_edit'){
-            $where.= "WHERE Id <> 5 "; // Tillsätts ej
+            $where.= "WHERE Id not in (5, 6) "; // Tillsätts ej, funktionsorganisation
         }
         else if($this->statusfilter === 'engagement_create'){
             $where.= "WHERE Id < 4 "; // Tillsätts ej
@@ -66,7 +64,6 @@ class OrganizationStatus extends SuperEntity{
         $set = "SET ";        
         $set.= "Name='" . $this->name . "', ";        
         $set.= "Description='" . $this->description . "', ";        
-        $set.= "SortOrder='" . $this->sortOrder . "', ";        
         $set.= "Updater='" . $this->saronUser->ID . "' ";
         $where = "WHERE id=" . $this->id;
         $this->db->update($update, $set, $where);

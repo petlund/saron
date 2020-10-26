@@ -81,9 +81,9 @@ class db {
     
     
     
-    public function fieldValueExist($value, $field, $table){
+    public function fieldValueExist($value, $Id, $field, $table){
         $sql = "select count(*) as c from " . $table . " where "; 
-        $sql.= "UPPER(" . $field . ") like UPPER('" . $value . "') ";
+        $sql.= "UPPER(" . $field . ") like UPPER('" . $value . "') AND Id <> " . $Id . " ";
         
         if(!$listResult = $this->connection->query($sql)){
             $this->php_dev_error_log("Exception in exist function", $sql);

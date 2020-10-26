@@ -34,7 +34,8 @@ class Engagement extends SuperEntity{
 
     
     function select($id = -1, $rec=RECORDS){
-        $subSelect = ENGAGEMENT_LIST . " as EngagementList ";
+        $subSelect1 = ENGAGEMENT_LIST . " as EngagementList ";
+        $subSelect2 = "(select count(*) ";
         $subFrom = "from Org_Pos as Pos inner join Org_Role as Role on Pos.OrgRole_FK = Role.Id ";
         $subFrom.= "inner join Org_Tree as Tree on Pos.OrgTree_FK = Tree.Id ";
         $subFrom.= "inner join Org_PosStatus as Stat on Stat.Id = Pos.OrgPosStatus_FK ";
@@ -42,13 +43,14 @@ class Engagement extends SuperEntity{
         $subWhere = "where xref.People_FK2 = p.Id and Stat.Id < 3 "; // Only proposal and committed
         $subGroupBy = "Group by People_FK2 ";
         $subOrderBy = "Order by EngagementList) as Engagement, ";
-        $subQuery = $subSelect . $subFrom . $subWhere . $subGroupBy . $subOrderBy;
+        $subQuery1 = $subSelect1 . $subFrom . $subWhere . $subGroupBy . $subOrderBy;
+        $subQuery2 = $subSelect2 . $subFrom . $subWhere . $subGroupBy . ") as Cnt, ";
         
         $select = "SELECT p.Id, " . getPersonSql(null, "Name", true);
         $select.= getMemberStateSql(null, "MemberState", true);
         $select.= DECRYPTED_ALIAS_EMAIL . ", ";
         $select.= getFieldSql(null, "Mobile", "MobileEncrypt", "", true, true);
-        $select.= $subQuery;        
+        $select.= $subQuery1 . $subQuery2;        
         $select.= "CONCAT(Zip, ' ', City) AS Hosted, ";
         $select.= $this->saronUser->getRoleSql(false) . " ";
         

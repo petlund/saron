@@ -1,14 +1,14 @@
 /* global J_TABLE_ID, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID */
 "use strict";
 
-const TABLE_ID = "#PEOPLE_ENG";
+const PEOPLE_ENG = "#PEOPLE_ENG";
 const CHILD_TABLE_PREFIX = 'child-to-parent-';
     
 $(document).ready(function () {
 
-    $(TABLE_ID).jtable(peopleEngagementTableDef(TABLE_ID, -1, null));
-    $(TABLE_ID).jtable('load');
-    $(TABLE_ID).find('.jtable-toolbar-item-add-record').hide();
+    $(PEOPLE_ENG).jtable(peopleEngagementTableDef(PEOPLE_ENG, -1, null));
+    $(PEOPLE_ENG).jtable('load');
+    $(PEOPLE_ENG).find('.jtable-toolbar-item-add-record').hide();
 });
 
 
@@ -82,6 +82,10 @@ function peopleEngagementTableDef(tableId, roleId, roleName){
             Hosted:{
                 title: 'Bostadsort'
             },
+            Cnt: {
+                title: 'Antal',
+                width: '5%'
+            },
             Engagement: {
                 title: 'Uppdragsöversikt',
                 width: '50%'
@@ -141,7 +145,7 @@ function engagementTableDef(tableId, childTableRef, people_FK, personName){
                         success: function (data) {
                             $dfd.resolve(data);
                             if(data.Result === 'OK'){
-                                updateParentRecord(people_FK);
+                                updatePersonEngagementRecord(people_FK);
                             }
                         },
                         error: function () {
@@ -164,7 +168,7 @@ function engagementTableDef(tableId, childTableRef, people_FK, personName){
                                     var $selectedRow = $("[data-record-key=" + data.Record.PosId + "]");
                                     $('.' + childTableRef).jtable('deleteRows', $selectedRow);
                                 }
-                                updateParentRecord(people_FK);
+                                updatePersonEngagementRecord(people_FK);
                             }
                         },
                         error: function () {
@@ -236,14 +240,14 @@ function engagementTableDef(tableId, childTableRef, people_FK, personName){
         }
     };    
 }
-function updateParentRecord(people_FK){
+function updatePersonEngagementRecord(people_FK){
     var url = '/' + SARON_URI + 'app/web-api/listEngagement.php?Id=' + people_FK;
     var options = {record:{"Id": people_FK}, "clientOnly": false, "url":url};
-    $(TABLE_ID).jtable('updateRecord', options);
+    $(PEOPLE_ENG).jtable('updateRecord', options);
 }
 
 function updateRecord(people_FK){
     var url = '/' + SARON_URI + 'app/web-api/listEngagement.php?Id=' + people_FK;
     var options = {record:{"Id": people_FK}, "clientOnly": false, "url":url};
-    $(TABLE_ID).jtable('deleteRecord', options);
+    $(PEOPLE_ENG).jtable('deleteRecord', options);
 }

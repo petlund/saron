@@ -1,11 +1,12 @@
 /* global SARON_URI, J_TABLE_ID, DATE_FORMAT, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID */
 "use strict";
+
+const ORG_ROLE = "#ORG_ROLE";
     
 $(document).ready(function () {
-    const TABLE_ID = "#ORG_ROLE";
 
-    $(TABLE_ID).jtable(roleTableDef(TABLE_ID, -1, null));
-    $(TABLE_ID).jtable('load');
+        $(ORG_ROLE).jtable(roleTableDef(ORG_ROLE, -1, null));
+        $(ORG_ROLE).jtable('load');
     }
 );
 
@@ -26,7 +27,6 @@ function roleTableDef(tableId, unitTypeId, orgName){
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationRole.php',
             createAction:   '/' + SARON_URI + 'app/web-api/createOrganizationRole.php',
-//            updateAction:   '/' + SARON_URI + 'app/web-api/updateOrganizationRole.php',
             updateAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
@@ -60,10 +60,12 @@ function roleTableDef(tableId, unitTypeId, orgName){
                 sorting: false,
                 display: function(data){
                     var src;
-                    if(data.record.HasChild === '0')
+                    if(data.record.HasChild === '0'){
                         src = '"/' + SARON_URI + SARON_IMAGES_URI + 'child.png" title="Organisation"';
-                    else
+                    }
+                    else{
                         src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haschild.png" title="Organisation"';
+                    }
                     
                     var imgTag = _setImageClass(data.record, "Role", src, -1);
                     var $imgChild = $(imgTag);
@@ -107,6 +109,13 @@ function roleTableDef(tableId, unitTypeId, orgName){
                 displayFormat: DATE_FORMAT,
                 width: '5%'
             }
+        },
+        recordUpdated(event, data){
+            if (data.record.HasChild === '0')
+                data.row.find('.jtable-delete-command-button').show();
+            else
+                data.row.find('.jtable-delete-command-button').hide();
+            
         },
         rowInserted: function(event, data){
             if (data.record.user_role !== 'edit'){
@@ -154,9 +163,46 @@ function subUnitTableDef(tableId, orgRole_FK, roleName){
         defaultSorting: 'Name', //Set default sorting        
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationRole-UnitType.php?selection=unitTypes&OrgRole_FK=' + orgRole_FK,
-            createAction:   '/' + SARON_URI + 'app/web-api/createOrganizationRole-UnitType.php?OrgRole_FK=' + orgRole_FK,
-            deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationRole-UnitType.php'
-        },
+            //createAction:   '/' + SARON_URI + 'app/web-api/createOrganizationRole-UnitType.php?OrgRole_FK=' + orgRole_FK,
+            createAction: function(postData) {
+                return $.Deferred(function ($dfd) {
+                    $.ajax({
+                        url:  '/' + SARON_URI + 'app/web-api/createOrganizationRole-UnitType.php?OrgRole_FK=' + orgRole_FK,
+                        type: 'POST',
+                        dataType: 'json',
+                        data: postData,
+                        success: function (data) {
+                            $dfd.resolve(data);
+                            if(data.Result === 'OK'){
+                                updateRoleRecord(data, 'create', orgRole_FK);                               
+                            }
+                        },
+                        error: function () {
+                            $dfd.reject();
+                        }
+                    });
+                });
+            },
+            //deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationRole-UnitType.php'
+            deleteAction: function(postData) {
+                return $.Deferred(function ($dfd) {
+                    $.ajax({
+                        url:  '/' + SARON_URI + 'app/web-api/deleteOrganizationRole-UnitType.php?OrgRole_FK=' + orgRole_FK,
+                        type: 'POST',
+                        dataType: 'json',
+                        data: postData,
+                        success: function (data) {
+                            $dfd.resolve(data);
+                            if(data.Result === 'OK'){
+                                updateRoleRecord(data, 'delete', orgRole_FK);                               
+                            }
+                        },
+                        error: function () {
+                            $dfd.reject();
+                        }
+                    });
+                });
+            },        },
         fields: {
             Id: {
                 key: true,
@@ -218,4 +264,11 @@ function subUnitTableDef(tableId, orgRole_FK, roleName){
             data.row[0].style.backgroundColor = '';
         }
     };    
+}
+
+
+function updateRoleRecord(data, method, orgRole_FK){
+    var url = '/' + SARON_URI + 'app/web-api/listOrganizationRole.php?Id=' + orgRole_FK;
+    var options = {record:{"Id": orgRole_FK}, "clientOnly": false, "url":url};
+    $(ORG_ROLE).jtable('updateRecord', options);
 }

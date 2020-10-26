@@ -6,6 +6,7 @@ class OrganizationPos extends SuperEntity{
     
     private $posId;
     private $posTreeId;
+    private $comment;
     private $people_FK;
     private $prevPeople_FK;
     private $orgPosStatus_FK;
@@ -20,6 +21,8 @@ class OrganizationPos extends SuperEntity{
         $this->orgSuperPos_FK = (int)filter_input(INPUT_POST, "OrgSuperPos_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->posTreeId = (int)filter_input(INPUT_POST, "PosTreeId", FILTER_SANITIZE_NUMBER_INT);
         $this->prevPeople_FK = (int)filter_input(INPUT_POST, "PrevPeople_FK", FILTER_SANITIZE_NUMBER_INT);
+
+        $this->comment = (String)filter_input(INPUT_POST, "Comment", FILTER_SANITIZE_STRING);
         
         $this->people_FK = (int)filter_input(INPUT_POST, "People_FK", FILTER_SANITIZE_NUMBER_INT);
         if($this->people_FK === 0){
@@ -52,6 +55,10 @@ class OrganizationPos extends SuperEntity{
                 throw new Exception(json_encode($error));
             }
         }
+        if($this->orgPosStatus_FK === 6 and strlen($this->comment) === 0 ){
+            $error["Message"] = "Ange med en kommentar vilken funktion som har ansvaret.";
+            throw new Exception(json_encode($error));
+        }
     }
 
     
@@ -70,7 +77,7 @@ class OrganizationPos extends SuperEntity{
 
     
     function selectDefault($id = -1, $rec=RECORDS){
-        $select = "SELECT Pos.*, Role.*, Pos.Id as PosId,  IF(Pos.Updated>Role.updated, Pos.Updated, Role.Updated) as LatestUpdated, ";
+        $select = "SELECT Pos.*, Tree.ParentTreeNode_FK, Role.*, Pos.Id as PosId,  IF(Pos.Updated>Role.updated, Pos.Updated, Role.Updated) as LatestUpdated, ";
         $select.= getPersonSql("pPrev", "PrevPerson", true);
         $select.= "Role.Name as RoleName, ";
         $select.= getMemberStateSql("pCur", "MemberState", true);
@@ -79,8 +86,9 @@ class OrganizationPos extends SuperEntity{
         $select.= $this->saronUser->getRoleSql(false) . " ";
         
         $from = "FROM Org_Pos as Pos inner join Org_Role Role on Pos.OrgRole_FK = Role.Id ";
-        $from.= "left outer join People as pCur on pCur.Id=Pos.People_FK ";
-        $from.= "left outer join People as pPrev on pPrev.Id=Pos.PrevPeople_FK ";
+        $from.= "inner join Org_Tree as Tree on Tree.Id = Pos.OrgTree_FK ";
+        $from.= "left outer join People as pCur on pCur.Id = Pos.People_FK ";
+        $from.= "left outer join People as pPrev on pPrev.Id = Pos.PrevPeople_FK ";
         
         $where = "";
 
@@ -137,9 +145,10 @@ class OrganizationPos extends SuperEntity{
     
     function insert(){
         $this->checkEngagementData();
-        $sqlInsert1 = "INSERT INTO Org_Pos (People_FK, OrgPosStatus_FK, OrgSuperPos_FK, OrgRole_FK, OrgTree_FK, Updater) ";
+        $sqlInsert1 = "INSERT INTO Org_Pos (People_FK, Comment, OrgPosStatus_FK, OrgSuperPos_FK, OrgRole_FK, OrgTree_FK, Updater) ";
         $sqlInsert1.= "VALUES (";
         $sqlInsert1.= "'" . $this->people_FK . "', ";
+        $sqlInsert1.= "'" . $this->comment . "', ";
         $sqlInsert1.= "'" . $this->orgPosStatus_FK . "', ";
         $sqlInsert1.= "null,"; //"'" . $this->orgSuperPos_FK . "', ";
         $sqlInsert1.= "'" . $this->orgRole_FK . "', ";
@@ -160,6 +169,7 @@ class OrganizationPos extends SuperEntity{
         if($this->orgRole_FK > 0){
             $set.= "OrgRole_FK=" . $this->orgRole_FK . ", ";      
         }
+        $set.= "Comment='" . $this->comment . "', ";
         $set.= "OrgPosStatus_FK='" . $this->orgPosStatus_FK . "', ";
         $set.= "People_FK=" . $this->people_FK . ", ";
         $set.= "Updater=" . $this->saronUser->ID . " ";

@@ -2,10 +2,10 @@
 "use strict";
     
 $(document).ready(function () {
-    const TABLE_ID = "#ORG_STRUCT";
+    const ORG_STRUCT = "#ORG_STRUCT";
 
-    $(TABLE_ID).jtable(treeTableDef(TABLE_ID, -1, '')); //-1 => null parent === topnode
-    $(TABLE_ID).jtable('load');
+    $(ORG_STRUCT).jtable(treeTableDef(ORG_STRUCT, -1, '')); //-1 => null parent === topnode
+    $(ORG_STRUCT).jtable('load');
     //$(TABLE_ID).find('.jtable-toolbar-item-add-record').hide();
 });
 
@@ -130,22 +130,6 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
                     }
                 }
             },
-            SortOrder:{
-                list: false,
-                title: 'Nr',
-                inputTitle: 'Nr (Värde för sorteringsordning)', 
-                width: '1%',
-                listClass: 'saron-number',
-                defaultValue: 10,
-                input: function (data) {
-                    if (data.record) {
-                        return '<input type="number" name="SortOrder" style="width:200px" value="' + data.record.SortOrder + '" />';
-                    } 
-                    else {
-                        return '<input type="number" name="SortOrder" style="width:200px" value="" />';
-                    }
-                }
-            },
             Name: {
                 width: '10%',
                 title: 'Namn'
@@ -184,6 +168,19 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
                 displayFormat: DATE_FORMAT,
                 width: '5%'
             }
+        },
+        recordUpdated: function (event, data){
+            var table;
+            var parentTreeId = data.record.ParentTreeNode_FK;
+
+            table = $("[data-record-key=" + parentTreeId + "]").closest('div.jtable-child-table-container');
+
+            if(table.length === 0) 
+                table = $(tableId);
+
+            var url =  '/' + SARON_URI + 'app/web-api/listOrganizationStructure.php?selection=single_node';
+            var options = {record:{"TreeId": parentTreeId}, "clientOnly": false, "url":url};
+            table.jtable('updateRecord', options);                                
         },
         rowInserted: function(event, data){
             if (data.record.user_role !== 'edit'){
@@ -229,37 +226,9 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
         multiSorting: true,
         defaultSorting: 'OrgRole_FK', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationPos.php?OrgTree_FK=' + orgTree_FK,
-            createAction:   '/' + SARON_URI + 'app/web-api/createOrganizationPos.php?OrgTree_FK=' + orgTree_FK,
-            updateAction: function(postData) {
-                return $.Deferred(function ($dfd) {
-                    $.ajax({
-                        url: '/' + SARON_URI + 'app/web-api/updateOrganizationPos.php?OrgTree_FK=' + orgTree_FK,
-                        type: 'POST',
-                        dataType: 'json',
-                        data: postData,
-                        success: function (data) {
-                            $dfd.resolve(data);
-                            if(data.Result === 'OK'){
-                                var stopAggregateValues = false;
-                                while(!stopAggregateValues){
-                                    console.log("table ID: " + tableId);
-                                    stopAggregateValues = true;
-                                }
-                                
-                                
-                                
-//                                var url =  '/' + SARON_URI + 'app/web-api/listOrganizationStructure.php?Id=' + Id;
-//                                var options = {record:{"Id": Id}, "clientOnly": false, "url":url};
-//                                $(tableId).jtable('updateRecord', options);                                
-                            }
-                        },
-                        error: function () {
-                            $dfd.reject();
-                        }
-                    });
-                });
-            },
+            listAction: '/' + SARON_URI + 'app/web-api/listOrganizationPos.php?OrgTree_FK=' + orgTree_FK,
+            createAction: '/' + SARON_URI + 'app/web-api/createOrganizationPos.php?OrgTree_FK=' + orgTree_FK,
+            updateAction: '/' + SARON_URI + 'app/web-api/updateOrganizationPos.php?OrgTree_FK=' + orgTree_FK,
             deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationPos.php?OrgTree_FK=' + orgTree_FK
         }, 
         fields: {
@@ -289,6 +258,9 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
                             case '4':
                                 src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haspos_R.png" title="Vakant"';
                                 break;
+                            case '6':
+                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'function.png" title="Funktionsansvar"';
+                                break;
                             default:                            
                                 src = '"/' + SARON_URI + SARON_IMAGES_URI + 'pos.png" title="Tillsätts ej"';
                         }
@@ -316,6 +288,10 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
                 options: function(data){
                     return '/' + SARON_URI + 'app/web-api/listOrganizationStatus.php?selection=options';
                 }
+            },
+            Comment:{
+                width: '10%',
+                title: 'Kommentar',                
             },
             People_FK: {
                 width: '15%',
@@ -371,6 +347,15 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
                 width: '5%'
             }
         },
+        recordAdded: function(event, data){
+            parentsUpdate(tableId, data);            
+        },
+        recordUpdated: function(event, data){
+            parentsUpdate(tableId, data);            
+        },
+        recordDeleted: function(event, data){
+            parentsUpdate(tableId, data);            
+        },
         rowInserted: function(event, data){
             if (data.record.user_role !== 'edit'){
                 data.row.find('.jtable-edit-command-button').hide();
@@ -401,3 +386,20 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
         }
     };
 }
+
+function parentsUpdate(tableId, data){
+    var table;
+    var treeId = data.record.OrgTree_FK;
+    var parentTreeId = data.record.ParentTreeNode_FK;
+
+    if(parentTreeId > 0){
+        table = $("[data-record-key=" + treeId + "]").closest('div.jtable-child-table-container');                                    
+    }
+    else
+        table = $(tableId);
+
+    var url =  '/' + SARON_URI + 'app/web-api/listOrganizationStructure.php?selection=single_node';
+    var options = {record:{"TreeId": treeId}, "clientOnly": false, "url":url};
+    table.jtable('updateRecord', options);                                    
+}
+

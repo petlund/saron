@@ -2,10 +2,10 @@
 "use strict";
     
 $(document).ready(function () {
-    const TABLE_ID = "#ORG_UNIT";
+    const ORG_UNIT = "#ORG_UNIT";
 
-    $(TABLE_ID).jtable(orgUnitTableDef(TABLE_ID));
-    $(TABLE_ID).jtable('load');
+    $(ORG_UNIT).jtable(orgUnitTableDef(ORG_UNIT));
+    $(ORG_UNIT).jtable('load');
 });
 
 function orgUnitTableDef(tableId){

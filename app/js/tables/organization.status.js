@@ -2,10 +2,10 @@
 "use strict";
     
 $(document).ready(function () {
-    const TABLE_ID = "#ORG_ROLE_STATUS";
+    const ORG_ROLE_STATUS = "#ORG_ROLE_STATUS";
 
-    $(TABLE_ID).jtable(statusTableDef(TABLE_ID));
-    $(TABLE_ID).jtable('load');
+    $(ORG_ROLE_STATUS).jtable(statusTableDef(ORG_ROLE_STATUS));
+    $(ORG_ROLE_STATUS).jtable('load');
     }
 );
 
@@ -17,7 +17,7 @@ function statusTableDef(tableId){
         pageList: 'minimal',
         sorting: true, //Enable sorting
         multiSorting: true,
-        defaultSorting: 'SortOrder', //Set default sorting        
+        defaultSorting: 'Name', //Set default sorting        
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationStatus.php',
             updateAction: function(postData) {
@@ -55,10 +55,6 @@ function statusTableDef(tableId){
             Description: {
                 title: 'Beskrivning',
                 width: '50%'
-            },
-            SortOrder: {
-                title: 'Sorteringsordning',
-                width: '10%'
             },
             Updater: {
                 edit: false,
