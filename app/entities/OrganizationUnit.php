@@ -38,6 +38,10 @@ class OrganizationUnit extends SuperEntity{
  
 
     function select($id = -1, $rec=RECORDS){
+        if($id < 0 && $this->id > 0){
+            $id = $this->id;
+        }
+
         switch ($this->selection){
         case "options":
             return $this->selectOptions();       
@@ -64,7 +68,7 @@ class OrganizationUnit extends SuperEntity{
             return $result;
         }
         else{
-            $result = $this->db->select($this->saronUser, $select , "FROM Org_UnitType as Typ ", "WHERE typ.id = " . $id . " ", $this->getSortSql(), $this->getPageSizeSql(), $rec);        
+            $result = $this->db->select($this->saronUser, $select , "FROM Org_UnitType as Typ ", "WHERE Typ.Id = " . $id . " ", $this->getSortSql(), $this->getPageSizeSql(), RECORD);        
             return $result;
         }
     }

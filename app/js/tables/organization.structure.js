@@ -1,4 +1,4 @@
-/* global DATE_FORMAT, SARON_URI, J_TABLE_ID, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID */
+/* global DATE_FORMAT, J_TABLE_ID, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID */
 "use strict";
     
 $(document).ready(function () {
@@ -171,18 +171,22 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
         },
         recordUpdated: function (event, data){
             var table;
+            var treeId = data.record.TreeId;
             var parentTreeId = data.record.ParentTreeNode_FK;
-
-            table = $("[data-record-key=" + parentTreeId + "]").closest('div.jtable-child-table-container');
-
-            if(table.length === 0) 
-                table = $(tableId);
-
-            var url =  '/' + SARON_URI + 'app/web-api/listOrganizationStructure.php?selection=single_node';
-            var options = {record:{"TreeId": parentTreeId}, "clientOnly": false, "url":url};
-            table.jtable('updateRecord', options);                                
-        },
+            
+            if(parentTreeId > 0){
+                table = $(".TreeId_" + parentTreeId).closest('div.jtable-child-table-container');
+    
+                if(table.length === 0) 
+                    table = $(tableId);
+    
+                var url =  '/' + SARON_URI + 'app/web-api/listOrganizationStructure.php?selection=single_node';
+                var options = {record:{"TreeId": parentTreeId}, "clientOnly": false, "url":url};
+                table.jtable('updateRecord', options);                                
+            }        
+        },  
         rowInserted: function(event, data){
+            data.row.addClass("TreeId_" + data.record.TreeId); 
             if (data.record.user_role !== 'edit'){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
@@ -357,6 +361,7 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
             parentsUpdate(tableId, data);            
         },
         rowInserted: function(event, data){
+            data.row.addClass("PosId_" + data.record.PosId); 
             if (data.record.user_role !== 'edit'){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
@@ -390,12 +395,10 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
 function parentsUpdate(tableId, data){
     var table;
     var treeId = data.record.OrgTree_FK;
-    var parentTreeId = data.record.ParentTreeNode_FK;
 
-    if(parentTreeId > 0){
-        table = $("[data-record-key=" + treeId + "]").closest('div.jtable-child-table-container');                                    
-    }
-    else
+    table = $(".TreeId_" + treeId).closest('div.jtable-child-table-container');       
+    
+    if(table.length === 0) 
         table = $(tableId);
 
     var url =  '/' + SARON_URI + 'app/web-api/listOrganizationStructure.php?selection=single_node';

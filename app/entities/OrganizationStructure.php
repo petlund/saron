@@ -104,8 +104,8 @@ class OrganizationStructure extends SuperEntity{
         $sqlInsert.= "VALUES (";
         $sqlInsert.= "'" . $this->name  . "', ";
         $sqlInsert.= "'" . $this->description . "', ";
-//        $sqlInsert.= "'" . $this->orgUnitType_FK . "', ";
-        $sqlInsert.= "6, ";
+        $sqlInsert.= "'" . $this->orgUnitType_FK . "', ";
+
         if($this->parentTreeNode_FK > 0){
             $sqlInsert.= "'" . $this->parentTreeNode_FK . "', ";
         }

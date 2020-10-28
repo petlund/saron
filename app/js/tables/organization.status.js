@@ -28,9 +28,9 @@ function statusTableDef(tableId){
                         dataType: 'json',
                         data: postData,
                         success: function (data) {
+                            $dfd.resolve(data);
                             if(data.Result === 'OK'){
                                 
-                                $dfd.resolve(data);
                                 
                             }
                             else

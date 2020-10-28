@@ -125,8 +125,8 @@ class SaronUsers extends SuperEntity{
         }
         
         switch ($this->selection){
-        case "people":
-            $table = "people";
+        case "People":
+            $table = "People";
             break;
         case "role":
             $table = "Org_Role";
@@ -144,7 +144,7 @@ class SaronUsers extends SuperEntity{
             $table = "MemberState";
             break;
         default:
-            $table = "people";
+            $table = "People";
         }
 
         

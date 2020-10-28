@@ -1,8 +1,9 @@
 /* global DATE_FORMAT, SARON_URI, J_TABLE_ID, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID */
 "use strict";
     
-$(document).ready(function () {
-    const ORG_UNIT = "#ORG_UNIT";
+const ORG_UNIT = "#ORG_UNIT";
+
+$(document).ready(function () {0
 
     $(ORG_UNIT).jtable(orgUnitTableDef(ORG_UNIT));
     $(ORG_UNIT).jtable('load');
@@ -120,6 +121,17 @@ function orgUnitTableDef(tableId){
             if(data.record.HasPos !== '0')
                 data.row.find('.jtable-delete-command-button').hide();
         },        
+        rowUpdated: function(event, data){
+            if (data.record.user_role !== 'edit'){
+                data.row.find('.jtable-edit-command-button').hide();
+                data.row.find('.jtable-delete-command-button').hide();
+            }
+            else
+                if(data.record.HasPos !== '0')
+                    data.row.find('.jtable-delete-command-button').hide();
+                else
+                    data.row.find('.jtable-delete-command-button').show();
+        },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === 'edit'){ 
                 $(tableId).find('.jtable-toolbar-item-add-record').show();
@@ -163,8 +175,46 @@ function unitRoleTableDef(tableId, orgUnitType_FK, orgName){
         defaultSorting: 'Name', //Set default sorting        
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationRole-UnitType.php?selection=role&OrgUnitType_FK=' + orgUnitType_FK,
-            createAction:   '/' + SARON_URI + 'app/web-api/createOrganizationRole-UnitType.php?OrgUnitType_FK=' + orgUnitType_FK,
-            deleteAction:   '/' + SARON_URI + 'app/web-api/deleteOrganizationRole-UnitType.php'
+            //createAction:   '/' + SARON_URI + 'app/web-api/createOrganizationRole-UnitType.php?OrgUnitType_FK=' + orgUnitType_FK,
+            createAction: function(postData) {
+                return $.Deferred(function ($dfd) {
+                    $.ajax({
+                        url:  '/' + SARON_URI + 'app/web-api/createOrganizationRole-UnitType.php?OrgUnitType_FK=' + orgUnitType_FK,
+                        type: 'POST',
+                        dataType: 'json',
+                        data: postData,
+                        success: function (data) {
+                            $dfd.resolve(data);
+                            if(data.Result === 'OK'){
+                                updateUnitRecord(data, 'create', orgUnitType_FK);                               
+                            }
+                        },
+                        error: function () {
+                            $dfd.reject();
+                        }
+                    });
+                });
+            },
+            //           deleteAction:   '/' + SARON_URI + 'app/web-api/deleteOrganizationRole-UnitType.php'
+            deleteAction: function(postData) {
+                return $.Deferred(function ($dfd) {
+                    $.ajax({
+                        url:  '/' + SARON_URI + 'app/web-api/deleteOrganizationRole-UnitType.php?OrgUnitType_FK=' + orgUnitType_FK,
+                        type: 'POST',
+                        dataType: 'json',
+                        data: postData,
+                        success: function (data) {
+                            $dfd.resolve(data);
+                            if(data.Result === 'OK'){
+                                updateUnitRecord(data, 'delete', orgUnitType_FK);                               
+                            }
+                        },
+                        error: function () {
+                            $dfd.reject();
+                        }
+                    });
+                });
+            },        
         },
         fields: {
             Id: {
@@ -236,4 +286,9 @@ function unitRoleTableDef(tableId, orgUnitType_FK, orgName){
             data.row[0].style.backgroundColor = '';
         }
     };
+}
+function updateUnitRecord(data, method, orgUnitType_FK){
+    var url = '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php?Id=' + orgUnitType_FK;
+    var options = {record:{"Id": orgUnitType_FK}, "clientOnly": false, "url":url};
+    $(ORG_UNIT).jtable('updateRecord', options);
 }

@@ -111,10 +111,15 @@ function roleTableDef(tableId, unitTypeId, orgName){
             }
         },
         recordUpdated(event, data){
-            if (data.record.HasChild === '0')
-                data.row.find('.jtable-delete-command-button').show();
-            else
+            if (data.record.user_role !== 'edit'){
+                data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
+            }
+            else
+                if (data.record.HasChild === '0')
+                    data.row.find('.jtable-delete-command-button').show();
+                else
+                    data.row.find('.jtable-delete-command-button').hide();
             
         },
         rowInserted: function(event, data){
@@ -202,7 +207,8 @@ function subUnitTableDef(tableId, orgRole_FK, roleName){
                         }
                     });
                 });
-            },        },
+            },        
+        },
         fields: {
             Id: {
                 key: true,

@@ -57,6 +57,7 @@ require_once "../access/wp-authenticate.php";
 
         // set image scale factor
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+        $pdf->SetAutoPageBreak(TRUE, 40);
 
         // set some language-dependent strings (optional)
         if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
@@ -176,7 +177,7 @@ function getSQL(){
 
 
 function getSubSql(){
-    $sql = "(WITH RECURSIVE Sub_Tree AS (";
+    $sql = "WITH RECURSIVE Sub_Tree AS (";
     $sql.= "SELECT Id, name, 'top' as nodeType, CAST(name AS CHAR(5000)) AS path, 0 as rel_depth ";
     $sql.= "FROM Org_Tree ";
     $sql.= "where ParentTreeNode_FK is null ";
@@ -186,7 +187,7 @@ function getSubSql(){
     $sql.= "WHERE t.ParentTreeNode_FK = d.Id ";
     $sql.= ") ";
     $sql.= "SELECT * FROM Sub_Tree "; 
-    $sql.= "ORDER BY path) ";
+    $sql.= "ORDER BY path ";
 
 
     return $sql;

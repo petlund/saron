@@ -45,7 +45,7 @@ class People extends SuperEntity{
     
     function selectPeopleOptions(){
 
-        $SELECT_PERSSON = "(SELECT " . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . " FROM People as P inner join Org_Pos as Pos on p.Id = Pos.People_FK WHERE Pos.OrgRole_FK = Role.Id) ";
+        $SELECT_PERSSON = "(SELECT " . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . " FROM People as P inner join Org_Pos as Pos on P.Id = Pos.People_FK WHERE Pos.OrgRole_FK = Role.Id) ";
         $SELECT_CONCAT = "concat(' ', Name , ' (', " . $SELECT_PERSSON . ", ')')";
         $SELECT_CONCAT_NULL = "concat(' ', Name , ' (-)')";
         

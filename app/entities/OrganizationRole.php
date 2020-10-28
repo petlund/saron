@@ -39,6 +39,9 @@ class OrganizationRole extends SuperEntity{
 
 
     function select($id = -1, $req = RECORDS){
+        if($id < 0 && $this->id > 0){
+            $id = $this->id;
+        }
         switch ($this->selection){
         case "options":
             return $this->selectOptions($id);       
@@ -81,7 +84,7 @@ class OrganizationRole extends SuperEntity{
             return $result;
         }
         else{
-            $result = $this->db->select($this->saronUser, $select , "FROM Org_Role as Role ", "WHERE id = " . $id . " ", $this->getSortSql(), $this->getPageSizeSql(), $rec);        
+            $result = $this->db->select($this->saronUser, $select , "FROM Org_Role as Role ", "WHERE id = " . $id . " ", $this->getSortSql(), $this->getPageSizeSql(), RECORD);        
             return $result;
         }
     }

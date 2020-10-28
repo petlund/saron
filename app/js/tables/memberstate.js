@@ -25,36 +25,8 @@ function memberstateTableDef(){
         defaultSorting: 'news_date desc', //Set default sorting        
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listMemberState.php?ts=',
-            //createAction:   '/' + SARON_URI + 'app/web-api/createNews.php',
-            //updateAction:   '/' + SARON_URI + 'app/web-api/updateNews.php'
-            updateAction: function(postData) {
-                return $.Deferred(function ($dfd) {
-                    $.ajax({
-                        url: '/' + SARON_URI + 'app/web-api/updateMemberState.php',
-                        type: 'POST',
-                        dataType: 'json',
-                        data: postData,
-                        success: function (data) {
-                            $dfd.resolve(data);
-//                            var rec = {
-//                                    record: {
-//                                        'Id': 1, 
-//                                        'FilterUpdate': 1, 
-//                                        'FilterCreate': 1
-//                                    },
-//                                    'clientOnly': true,
-//                                    'animationsEnabled': false
-//                                    };
-//                            $(TABLE_MEMBER_STATE).jtable('updateRecord', rec);        
-                            
-                        },
-                        error: function () {
-                            $dfd.reject();
-                        }
-                    });
-                });
-            },
-            //deleteAction: '/' + SARON_URI + 'app/web-api/deleteNews.php'
+            //createAction:   '/' + SARON_URI + 'app/web-api/createMemberState.php',
+            updateAction:   '/' + SARON_URI + 'app/web-api/updateMemberState.php'
         },
         fields: {
             Id: {
@@ -89,7 +61,7 @@ function memberstateTableDef(){
                 title: 'Uppdaterare',
                 width: '5%',
                 options: function (){
-                    return '/' + SARON_URI + 'app/web-api/listUsersAsOptions.php?selection=MemberState';           
+                    return '/' + SARON_URI + 'app/web-api/listUsersAsOptions.php?selection=memberstate';           
                 }
             },
             Updated: {

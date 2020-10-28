@@ -27,6 +27,18 @@ class OrganizationVersion extends SuperEntity{
         }
     }
 
+    function checkVersionData(){
+        $error = array();
+
+        if(strlen($this->information) < 10){
+            $error["Result"] = "ERROR";
+            $error["Message"] = "Du behöver ge en lite längre förklaring till varför du skapar en ny version av organisationen. ";
+            throw new Exception(json_encode($error));
+        }
+         
+    }
+    
+    
     function update_Org(){
         $update = "update Org_Pos ";
         $set = "SET PrevPeople_FK = People_FK ";        
@@ -36,6 +48,7 @@ class OrganizationVersion extends SuperEntity{
     
     
     function insert(){
+        $this->checkVersionData();
         $this->update_Org();
 
         $sqlInsert = "INSERT INTO Org_Version (information, writer) ";
