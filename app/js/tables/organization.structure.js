@@ -184,6 +184,10 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
                 var options = {record:{"TreeId": parentTreeId}, "clientOnly": false, "url":url};
                 table.jtable('updateRecord', options);                                
             }        
+            if(data.record.HasSubUnit !== '0' || data.record.HasPos !== '0')
+                data.row.find('.jtable-delete-command-button').hide();
+            else
+                data.row.find('.jtable-delete-command-button').show();
         },  
         rowInserted: function(event, data){
             data.row.addClass("TreeId_" + data.record.TreeId); 
@@ -193,6 +197,8 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
             }
             if(data.record.HasSubUnit !== '0' || data.record.HasPos !== '0')
                 data.row.find('.jtable-delete-command-button').hide();
+            else
+                data.row.find('.jtable-delete-command-button').show();
 
         },        
         recordsLoaded: function(event, data) {
