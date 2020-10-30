@@ -18,7 +18,7 @@ function orgVersionTableDef(){
         pageList: 'minimal',
         sorting: true, //Enable sorting
         multiSorting: true,
-        defaultSorting: 'news_date desc', //Set default sorting        
+        defaultSorting: 'decision_date desc', //Set default sorting        
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationVersion.php',
             createAction: '/' + SARON_URI + 'app/web-api/createOrganizationVersion.php',

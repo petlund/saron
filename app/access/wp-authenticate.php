@@ -41,7 +41,22 @@ require_once SARON_ROOT . "/app/entities/SaronUser.php";
         $editor = $saronUser->isEditor();
         $orgEditor = $saronUser->isOrgEditor();
         
-        return $userLoggedIn && $sUser && ($editor || !$requireEditor)&& ($orgEditor || !$requireOrg);
+        if($userLoggedIn){
+            if($sUser){
+                if($requireEditor){
+                    return $editor;
+                }
+                else if($requireOrg){
+                    return $orgEditor || $editor;
+                }
+                else{
+                    return true;
+                }
+            }            
+        }
+        else{
+            return false;
+        }
     }
     
     function notPermittedMessage(){
