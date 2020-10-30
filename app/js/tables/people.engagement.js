@@ -92,7 +92,7 @@ function peopleEngagementTableDef(tableId, roleId, roleName){
             }
         },
         rowInserted: function(event, data){
-            if (data.record.user_role !== 'edit'){
+            if (data.record.user_role !== 'edit' && data.record.user_role !== 'org'){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
@@ -100,7 +100,7 @@ function peopleEngagementTableDef(tableId, roleId, roleName){
                 data.row.find('.jtable-delete-command-button').hide();
         },        
         recordsLoaded: function(event, data) {
-            if(data.serverResponse.user_role === 'edit'){ 
+            if(data.serverResponse.user_role === 'edit' || data.serverResponse.user_role === 'org'){ 
                 $(tableId).find('.jtable-toolbar-item-add-record').show();
             }
         },        
@@ -211,12 +211,12 @@ function engagementTableDef(tableId, childTableRef, people_FK, personName){
         },
         rowInserted: function(event, data){
             data.row.find('.jtable-delete-command-button').hide();
-            if (data.record.user_role !== 'edit'){
+            if (data.record.user_role !== 'edit' && data.record.user_role !== 'org'){
                 data.row.find('.jtable-edit-command-button').hide();
             }
         },        
         recordsLoaded: function(event, data) {
-            if(data.serverResponse.user_role === 'edit'){ 
+            if(data.serverResponse.user_role === 'edit' || data.serverResponse.user_role === 'org'){ 
                 $(tableId).find('.jtable-toolbar-item-add-record').show();
             }
         },        

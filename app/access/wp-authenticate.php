@@ -31,7 +31,7 @@ require_once SARON_ROOT . "/app/entities/SaronUser.php";
         return true;
     }
     
-    function isPermitted($saronUser, $requireEditor){
+    function isPermitted($saronUser, $requireEditor, $requireOrg){
         if(! session_id()){
             return false;
         }
@@ -39,8 +39,9 @@ require_once SARON_ROOT . "/app/entities/SaronUser.php";
         $userLoggedIn = is_user_logged_in();
         $sUser = $saronUser->isSaronUser();
         $editor = $saronUser->isEditor();
+        $orgEditor = $saronUser->isOrgEditor();
         
-        return $userLoggedIn && $sUser && ($editor || !$requireEditor);
+        return $userLoggedIn && $sUser && ($editor || !$requireEditor)&& ($orgEditor || !$requireOrg);
     }
     
     function notPermittedMessage(){
@@ -51,7 +52,9 @@ require_once SARON_ROOT . "/app/entities/SaronUser.php";
     }
     
   
-    function isLoggedIn($requireEditor=false) { //
+    function isLoggedIn() { //
+        $requireEditor = false;
+        $requireOrg = false;
         $success=false;
 	    $saronUser = new SaronUser(wp_get_current_user());
         $loginUri = SARON_URI . "app/access/login.php?logout=true";
@@ -61,7 +64,7 @@ require_once SARON_ROOT . "/app/entities/SaronUser.php";
         $https = filter_input(INPUT_SERVER, 'HTTPS', FILTER_SANITIZE_URL); //  !== "on"
         if($host !== LOCAL_DEV_APP_HOST){
             if(is_ssl()){
-                if(isPermitted($saronUser, $requireEditor)){
+                if(isPermitted($saronUser, $requireEditor, $requireOrg)){
                     $success = true;
                 }
                 else{
@@ -77,7 +80,7 @@ require_once SARON_ROOT . "/app/entities/SaronUser.php";
             }
         }
         else{ //is local host
-            if(isPermitted($saronUser, $requireEditor)){
+            if(isPermitted($saronUser, $requireEditor, $requireOrg)){
                 $success = true;
             }
             else{

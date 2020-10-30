@@ -62,6 +62,16 @@ $(document).ready(function () {
                     else
                         return "";
                 }
+            },
+            saron_org: {
+                title: 'Organisationsuppdaterare',
+                width: '12%',
+                display: function (data){
+                    if(data.record.saron_org === 1)
+                        return "Ja";
+                    else
+                        return "";
+                }
             }
         }
     });

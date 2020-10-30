@@ -18,11 +18,11 @@ require_once "../access/wp-authenticate.php";
     define ("HEADER_FOOTER_CELL_WIDTH", 90);
     define ("FONT_FAMILY", 'times');
 
-
+    $requireOrg = false;
     $requireEditorRole = false;
     $saronUser = new SaronUser(wp_get_current_user());    
 
-    if(!isPermitted($saronUser, $requireEditorRole)){
+    if(!isPermitted($saronUser, $requireEditorRole, $requireOrg)){
         echo notPermittedMessage();
     }
     else{

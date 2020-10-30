@@ -191,7 +191,7 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
         },  
         rowInserted: function(event, data){
             data.row.addClass("TreeId_" + data.record.TreeId); 
-            if (data.record.user_role !== 'edit'){
+            if (data.record.user_role !== 'edit' && data.record.user_role !== 'org'){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
@@ -202,7 +202,7 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
 
         },        
         recordsLoaded: function(event, data) {
-            if(data.serverResponse.user_role === 'edit'){ 
+            if(data.serverResponse.user_role === 'edit' || data.serverResponse.user_role === 'org'){ 
                 $(tableId).find('.jtable-toolbar-item-add-record').show();
             }
         },        
@@ -368,13 +368,13 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
         },
         rowInserted: function(event, data){
             data.row.addClass("PosId_" + data.record.PosId); 
-            if (data.record.user_role !== 'edit'){
+            if (data.record.user_role !== 'edit' && data.record.user_role !== 'org'){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
         },        
         recordsLoaded: function(event, data) {
-            if(data.serverResponse.user_role === 'edit'){ 
+            if(data.serverResponse.user_role === 'edit' || data.serverResponse.user_role === 'org'){ 
                 $(tableId).find('.jtable-toolbar-item-add-record').show();
             }
         },        

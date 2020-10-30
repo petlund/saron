@@ -74,13 +74,13 @@ function memberstateTableDef(){
             }
         },
         rowInserted: function(event, data){
-            if (data.record.user_role !== 'edit'){
+            if (data.record.user_role !== 'edit' && data.record.user_role !== 'org'){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
         },        
         recordsLoaded: function(event, data) {
-            if(data.serverResponse.user_role === 'edit'){ 
+            if(data.serverResponse.user_role === 'edit' || data.serverResponse.user_role === 'org'){ 
                 $('#NEWS').find('.jtable-toolbar-item-add-record').show();
             }
         },        

@@ -11,9 +11,11 @@ require_once SARON_ROOT . 'app/entities/Home.php';
 
     /*** REQUIRE USER AUTHENTICATION ***/
     $requireEditorRole = true;
-        $saronUser = new SaronUser(wp_get_current_user());  
+    $requireOrg = false; 
 
-    if(!isPermitted($saronUser, $requireEditorRole)){
+    $saronUser = new SaronUser(wp_get_current_user());  
+
+    if(!isPermitted($saronUser, $requireEditorRole, $requireOrg)){
         echo notPermittedMessage();
         exit();
     }

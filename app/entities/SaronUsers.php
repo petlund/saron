@@ -9,7 +9,7 @@ class SaronUsers extends SuperEntity{
     private $users = Array();
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
-        $this->users = get_users(array('role__in' => array(SARON_ROLE_PREFIX . SARON_ROLE_EDITOR, SARON_ROLE_PREFIX . SARON_ROLE_VIEWER, "wp_otp")));
+        $this->users = get_users(array('role__in' => array(SARON_ROLE_PREFIX . SARON_ROLE_EDITOR, SARON_ROLE_PREFIX . SARON_ROLE_VIEWER, SARON_ROLE_PREFIX . SARON_ROLE_ORG, "wp_otp")));
     }
         
     function sort($sort_dimension = "display_name", $sort_order = "asc"){
@@ -65,6 +65,14 @@ class SaronUsers extends SuperEntity{
                     }
                     $comp = ($edit_a < $edit_b) ? -1 : 1;
                 break;
+                case "saron_org":
+                    $org_a = hasPrivilege($a->roles, SARON_ROLE_PREFIX . SARON_ROLE_ORG);
+                    $org_b = hasPrivilege($b->roles, SARON_ROLE_PREFIX . SARON_ROLE_ORG);
+                    if ($org_a == $org_b) {
+                        return 0;
+                    }
+                    $comp = ($org_a < $org_b) ? -1 : 1;
+                break;
             }
             if($sort_order === "ASC"){
                 return $comp;
@@ -89,7 +97,9 @@ class SaronUsers extends SuperEntity{
         $result = '{"Result":"OK","Records":[';
         for($i = $this->jtStartIndex; $i < $endIndex; $i++){
             $viewer = $this->hasPrivilege($this->users[$i]->roles, SARON_ROLE_PREFIX . SARON_ROLE_VIEWER);
+            $org = $this->hasPrivilege($this->users[$i]->roles, SARON_ROLE_PREFIX . SARON_ROLE_ORG);
             $edit = $this->hasPrivilege($this->users[$i]->roles, SARON_ROLE_PREFIX . SARON_ROLE_EDITOR);
+            
             $result.= '{"id":' . $this->users[$i]->ID;
             $result.= ',"display_name":"' . $this->users[$i]->display_name; 
             $result.= '","user_login":"' . $this->users[$i]->user_login; 
@@ -97,6 +107,7 @@ class SaronUsers extends SuperEntity{
             $otp = $this->users[$i]->get("wp-otp");
             $result.= '","wp_otp":"' . $otp["enabled"]; 
             $result.= '","saron_reader":' . $viewer; 
+            $result.= ',"saron_org":' . $org; 
             $result.= ',"saron_editor":' . $edit . '}';
             if($i<$endIndex-1){
                 $result.=",";
@@ -211,3 +222,5 @@ class SaronUsers extends SuperEntity{
         return 0;
     }
 }
+
+//{"Result":"OK","Records":[{"id":1,"display_name":"saron","user_login":"saron","user_email":"peter.lundin.64@gmail.com","wp_otp":"","saron_reader":0"  ,"saron_org":0,"saron_editor":1},{"id":2,"display_name":"Peter Lundin","user_login":"otpsaron","user_email":"peter.lundin@korskyrkan.se","wp_otp":"1","saron_reader":0","saron_org":1,"saron_editor":0}],"TotalRecordCount":2,"user_role":"edit"}

@@ -14,9 +14,11 @@ require_once WP_ROOT . 'wp-includes/user.php';
 
     /*** REQUIRE USER AUTHENTICATION ***/
     $requireEditorRole = false;
+    $requireOrg = false; 
+    
     $saronUser = new SaronUser(wp_get_current_user());    
 
-    if(!isPermitted($saronUser, $requireEditorRole)){
+    if(!isPermitted($saronUser, $requireEditorRole, $requireOrg)){
         echo notPermittedMessage();
         exit();
     }

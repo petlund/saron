@@ -36,7 +36,7 @@ class SaronUser {
     
     
     function isEditor(){
-        /*** Check if the user had an editor role ***/
+        /*** Check if the user has an editor role ***/
         for($i = 0; $i < count($this->user->roles); $i++){
             if(strpos($this->user->roles[$i],  SARON_ROLE_PREFIX . SARON_ROLE_EDITOR) !== FALSE){ // CHECK IF THE USER IS A MEMBER OF THE GROUP  (test)saron_edit
                 return true;
@@ -45,7 +45,15 @@ class SaronUser {
         return false;
     }
 
-    
+    function isOrgEditor(){
+        /*** Check if the user has an org role ***/
+        for($i = 0; $i < count($this->user->roles); $i++){
+            if(strpos($this->user->roles[$i],  SARON_ROLE_PREFIX . SARON_ROLE_ORG) !== FALSE){ // CHECK IF THE USER IS A MEMBER OF THE GROUP  (test)saron_edit
+                return true;
+            }
+        } 
+        return false;        
+    }
     
     function getDisplayName(){
         return $this->user->user_firstname . " " . $this->user->user_lastname ;
@@ -57,6 +65,11 @@ class SaronUser {
         for($i = 0; $i < count($this->user->roles); $i++){
             if($this->user->roles[$i]===SARON_ROLE_PREFIX . SARON_ROLE_EDITOR){
                 return SARON_ROLE_EDITOR;
+            }
+        }
+        for($i = 0; $i < count($this->user->roles); $i++){
+            if($this->user->roles[$i]===SARON_ROLE_PREFIX . SARON_ROLE_ORG){
+                return SARON_ROLE_ORG;
             }
         }
         for($i = 0; $i < count($this->user->roles); $i++){
@@ -87,6 +100,11 @@ class SaronUser {
         for($i = 0; $i < count($this->user->roles); $i++){
             if($this->user->roles[$i]==SARON_ROLE_PREFIX . SARON_ROLE_EDITOR){
                 return SARON_DISPLAY_NAME_EDITOR;
+            }
+        }
+        for($i = 0; $i < count($this->user->roles); $i++){
+            if($this->user->roles[$i]==SARON_ROLE_PREFIX . SARON_ROLE_ORG){
+                return SARON_DISPLAY_NAME_ORG;
             }
         }
         for($i = 0; $i < count($this->user->roles); $i++){
