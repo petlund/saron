@@ -37,6 +37,7 @@ function orgVersionTableDef(){
                 displayFormat: DATE_FORMAT
             },
             information: {
+                inputTitle: "Kommandot kan inte ångras. Kommandot tar bort alla markeringar om förändringar.",
                 title: 'Beslutstillfälle',
                 width: '70%'
             },
@@ -64,6 +65,11 @@ function orgVersionTableDef(){
 
             data.form.css('width','600px');
             data.form.find('input[name=information]').css('width','580px');
+            
+            var dbox = document.getElementsByClassName('ui-dialog-title');            
+            for(var i=0; i<dbox.length; i++){
+                dbox[i].innerHTML="Ange beslutstillfälle för organisationsförändring";
+            }
         },
         formClosed: function (event, data){
             if(data.formType === 'edit')
