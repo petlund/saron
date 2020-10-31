@@ -166,9 +166,9 @@ function getSQL(){
     $sql.= "QueryPath.Path, QueryPath.rel_depth as Head_Level ";
     $sql.= "from Org_Tree as Tree ";
     $sql.= "inner join Org_UnitType as Unit on Unit.Id = Tree.OrgUnitType_FK ";
-    $sql.= "inner join Org_Pos as Pos on Tree.Id = Pos.OrgTree_FK ";
-    $sql.= "inner join Org_Role as Role on Pos.OrgRole_FK=Role.Id ";
-    $sql.= "inner join Org_PosStatus as PState on Pos.OrgPosStatus_FK=PState.Id ";
+    $sql.= "left outer join Org_Pos as Pos on Tree.Id = Pos.OrgTree_FK ";
+    $sql.= "left outer join Org_Role as Role on Pos.OrgRole_FK=Role.Id ";
+    $sql.= "left outer join Org_PosStatus as PState on Pos.OrgPosStatus_FK=PState.Id ";
     $sql.= "left outer join People on People.Id = Pos.People_FK ";    
     $sql.= "inner join (" . getSubSql() . ") as QueryPath on Tree.Id = QueryPath.Id ";
 
