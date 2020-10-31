@@ -57,7 +57,7 @@ require_once "../access/wp-authenticate.php";
 
         // set image scale factor
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-        $pdf->SetAutoPageBreak(TRUE, 40);
+        $pdf->SetAutoPageBreak(TRUE, 10);
 
         // set some language-dependent strings (optional)
         if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
@@ -155,6 +155,7 @@ function createOrganizationCalender(TCPDF $pdf){
 
 function getSQL(){
     $sql = "select Tree.Name as Tree_Name, Unit.Name as Unit_Name, Role.Name as Role_Name, Pos.Comment as Pos_Comment, "
+            . "(Select SortOrder from `Org_Role-UnitType` as RUT WHERE  RUT.OrgRole_FK = Pos.OrgRole_FK and RUT.OrgUnitType_FK = Tree.OrgUnitType_FK) as SortOrder,  "
             . "PState.Name as State_Name, PState.Id as State_Id, Pos.People_FK as PersonId, "
             . "Pos.PrevPeople_FK as PrevPersonId, Unit.Name as Unit_Name, "; 
     $sql.= "IF(People_FK>0, CONCAT(";
@@ -164,14 +165,14 @@ function getSQL(){
     $sql.= "),(Select Name from Org_Role Where Org_Role.Id = -People_FK)) as Person, ";
     $sql.= "QueryPath.Path, QueryPath.rel_depth as Head_Level ";
     $sql.= "from Org_Tree as Tree ";
-    $sql.= "left outer join Org_UnitType as Unit on Unit.Id = Tree.OrgUnitType_FK ";
-    $sql.= "left outer join Org_Pos as Pos on Tree.Id = Pos.OrgTree_FK ";
-    $sql.= "left outer join Org_Role as Role on Pos.OrgRole_FK=Role.Id ";
-    $sql.= "left outer join Org_PosStatus as PState on Pos.OrgPosStatus_FK=PState.Id ";
+    $sql.= "inner join Org_UnitType as Unit on Unit.Id = Tree.OrgUnitType_FK ";
+    $sql.= "inner join Org_Pos as Pos on Tree.Id = Pos.OrgTree_FK ";
+    $sql.= "inner join Org_Role as Role on Pos.OrgRole_FK=Role.Id ";
+    $sql.= "inner join Org_PosStatus as PState on Pos.OrgPosStatus_FK=PState.Id ";
     $sql.= "left outer join People on People.Id = Pos.People_FK ";    
-    $sql.= "left outer join (" . getSubSql() . ") as QueryPath on Tree.Id = QueryPath.Id ";
+    $sql.= "inner join (" . getSubSql() . ") as QueryPath on Tree.Id = QueryPath.Id ";
 
-    $sql.= "order by QueryPath.Path, Role_Name, Pos_Comment ";
+    $sql.= "order by QueryPath.Path, SortOrder, Person "; // Rut.SortOrder, 
     return $sql;
 }
 

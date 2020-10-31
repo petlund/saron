@@ -1,4 +1,4 @@
-<?php
+    <?php
 require_once SARON_ROOT . 'app/entities/SuperEntity.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
@@ -77,7 +77,7 @@ class OrganizationPos extends SuperEntity{
 
     
     function selectDefault($id = -1, $rec=RECORDS){
-        $select = "SELECT Pos.*, Tree.ParentTreeNode_FK, Role.*, Pos.Id as PosId,  IF(Pos.Updated>Role.updated, Pos.Updated, Role.Updated) as LatestUpdated, ";
+        $select = "SELECT Pos.*, Tree.ParentTreeNode_FK, Role.*, Pos.Id as PosId,  IF(Pos.Updated>Role.updated, Pos.Updated, Role.Updated) as LatestUpdated, RUT.SortOrder as SortOrder, ";
         $select.= getPersonSql("pPrev", "PrevPerson", true);
         $select.= "Role.Name as RoleName, ";
         $select.= getMemberStateSql("pCur", "MemberState", true);
@@ -87,6 +87,7 @@ class OrganizationPos extends SuperEntity{
         
         $from = "FROM Org_Pos as Pos inner join Org_Role Role on Pos.OrgRole_FK = Role.Id ";
         $from.= "inner join Org_Tree as Tree on Tree.Id = Pos.OrgTree_FK ";
+        $from.= "left outer join`Org_Role-UnitType` as RUT on Pos.Id = RUT.OrgRole_FK ";
         $from.= "left outer join People as pCur on pCur.Id = Pos.People_FK ";
         $from.= "left outer join People as pPrev on pPrev.Id = Pos.PrevPeople_FK ";
         

@@ -234,7 +234,7 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
         pageList: 'minimal',
         sorting: true, //Enable sorting
         multiSorting: true,
-        defaultSorting: 'OrgRole_FK', //Set default sorting        
+        defaultSorting: 'SortOrder', //Set default sorting        
         actions: {
             listAction: '/' + SARON_URI + 'app/web-api/listOrganizationPos.php?OrgTree_FK=' + orgTree_FK,
             createAction: '/' + SARON_URI + 'app/web-api/createOrganizationPos.php?OrgTree_FK=' + orgTree_FK,

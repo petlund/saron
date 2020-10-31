@@ -172,7 +172,7 @@ function unitRoleTableDef(tableId, orgUnitType_FK, orgName){
         pageList: 'minimal',
         sorting: true, //Enable sorting
         multiSorting: true,
-        defaultSorting: 'Name', //Set default sorting        
+        defaultSorting: 'SortOrder', //Set default sorting        
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationRole-UnitType.php?selection=role&OrgUnitType_FK=' + orgUnitType_FK,
             //createAction:   '/' + SARON_URI + 'app/web-api/createOrganizationRole-UnitType.php?OrgUnitType_FK=' + orgUnitType_FK,
@@ -195,7 +195,7 @@ function unitRoleTableDef(tableId, orgUnitType_FK, orgName){
                     });
                 });
             },
-            //           deleteAction:   '/' + SARON_URI + 'app/web-api/deleteOrganizationRole-UnitType.php'
+            updateAction:   '/' + SARON_URI + 'app/web-api/updateOrganizationRole-UnitType.php',
             deleteAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
@@ -229,15 +229,24 @@ function unitRoleTableDef(tableId, orgUnitType_FK, orgName){
                     return '/' + SARON_URI + 'app/web-api/listOrganizationRole.php?selection=options';
                 }
             },
-            Name: {
+            RoleName: {
                 create: false,
+                edit: false,
                 title: 'Benämning',
                 width: '15%'
             },
             Description: {
+                edit: false,
                 create: false,
                 title: 'Beskrivning',
                 width: '50%'
+            },
+            SortOrder: {
+                edit: true,
+                create: true,
+                title: 'Sortering',
+                options: {"0": "-", "1": "Nivå 1", "2": "Nivå 2", "3":"Nivå 3", "4": "Nivå 4", "5":"Nivå 5","6":"Nivå 6"},
+                width: '10%'
             },
             Updater: {
                 edit: false,

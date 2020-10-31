@@ -1,20 +1,23 @@
-<?php
+    <?php
 require_once SARON_ROOT . 'app/entities/SuperEntity.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
 class OrganizationRoleUnitType extends SuperEntity{
     
     private $id;
-    private $name;
+    private $roleName;
     private $description;
     private $orgRole_FK;
-    private $orgUnitType_FK;
+    private $sortOrder;
+    private $orgUnitType_FK;    
     
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
         
         $this->id = (int)filter_input(INPUT_POST, "Id", FILTER_SANITIZE_NUMBER_INT);
-        $this->name = (String)filter_input(INPUT_POST, "Name", FILTER_SANITIZE_STRING);
+        
+        $this->sortOrder = (int)filter_input(INPUT_POST, "SortOrder", FILTER_SANITIZE_NUMBER_INT);
+        $this->roleName = (String)filter_input(INPUT_POST, "RoleName", FILTER_SANITIZE_STRING);
         $this->description = (String)filter_input(INPUT_POST, "Description", FILTER_SANITIZE_STRING);
         
         $this->orgRole_FK = (int)filter_input(INPUT_POST, "OrgRole_FK", FILTER_SANITIZE_NUMBER_INT);
@@ -42,9 +45,10 @@ class OrganizationRoleUnitType extends SuperEntity{
 
     
     function selectDefault($id = -1, $rec=RECORDS){
-        $select = "SELECT *, ";
+        $select = "SELECT   *, Role.Name as RoleName, ";
         $select.= $this->saronUser->getRoleSql(false) . " ";
-        $from = "FROM Org_Role as Role inner join `Org_Role-UnitType` as Rut on Rut.OrgRole_FK = Role.Id inner join Org_UnitType as Typ on Rut.OrgUnitType_FK = Typ.Id ";
+        $from = "FROM Org_Role as Role inner join `Org_Role-UnitType` as Rut on Rut.OrgRole_FK = Role.Id ";
+        $from.= "inner join Org_UnitType as Typ on Rut.OrgUnitType_FK = Typ.Id ";
         if($id > 0){
             $where = "WHERE Rut.Id = " . $id . " ";
         }
@@ -57,7 +61,7 @@ class OrganizationRoleUnitType extends SuperEntity{
     }
 
     function selectRole($id = -1, $rec=RECORDS){
-        $select = "SELECT *, ";
+        $select = "SELECT *, Role.Name as RoleName, ";
         $select.= $this->saronUser->getRoleSql(false) . " ";
         $from = "FROM Org_Role as Role inner join `Org_Role-UnitType` as Rut on Rut.OrgRole_FK = Role.Id ";
         if($this->orgUnitType_FK > 0){
@@ -99,6 +103,15 @@ class OrganizationRoleUnitType extends SuperEntity{
         return $this->select($id, RECORD);
     }
     
+     function update(){
+        $update = "UPDATE `Org_Role-UnitType` ";
+        $set = "SET ";        
+        $set.= "SortOrder=" . $this->sortOrder . " ";        
+        $where = "WHERE id=" . $this->id;
+        $this->db->update($update, $set, $where);
+        return $this->select($this->id, RECORD);
+    }
+
     
 
     function delete(){
