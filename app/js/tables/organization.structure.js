@@ -299,6 +299,12 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
                     return '/' + SARON_URI + 'app/web-api/listOrganizationStatus.php?selection=options';
                 }
             },
+            SortOrder: {
+                list: false,
+                create: false,
+                update  : false,
+                
+            },
             Comment:{
                 width: '10%',
                 title: 'Kommentar',                
