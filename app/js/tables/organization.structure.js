@@ -302,7 +302,7 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
             SortOrder: {
                 list: false,
                 create: false,
-                update  : false,
+                edit: false,
                 
             },
             Comment:{
@@ -351,7 +351,7 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
                 title: 'Uppdaterare',
                 width: '5%',
                 options: function (){
-                    return '/' + SARON_URI + 'app/web-api/listUsersAsOptions.php';           
+                    return '/' + SARON_URI + 'app/web-api/listUsersAsOptions.php?selections=pos';           
                 }
             },
             LatestUpdated: {

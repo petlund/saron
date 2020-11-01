@@ -77,7 +77,7 @@ class OrganizationPos extends SuperEntity{
 
     
     function selectDefault($id = -1, $rec=RECORDS){
-        $select = "SELECT Pos.*, Tree.ParentTreeNode_FK, Role.*, Pos.Id as PosId,  IF(Pos.Updated>Role.updated, Pos.Updated, Role.Updated) as LatestUpdated, ";
+        $select = "SELECT Pos.*, Tree.ParentTreeNode_FK, Role.Name, Role.RoleType, Pos.Id as PosId,  IF(Pos.Updated>Role.updated, Pos.Updated, Role.Updated) as LatestUpdated, ";
         $select.= "(Select SortOrder from `Org_Role-UnitType` as RUT WHERE  RUT.OrgRole_FK = Pos.OrgRole_FK and RUT.OrgUnitType_FK = Tree.OrgUnitType_FK) as SortOrder, ";
         $select.= getPersonSql("pPrev", "PrevPerson", true);
         $select.= "Role.Name as RoleName, ";

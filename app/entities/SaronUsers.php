@@ -142,6 +142,9 @@ class SaronUsers extends SuperEntity{
         case "role":
             $table = "Org_Role";
             break;
+        case "pos":
+            $table = "Org_Pos";
+            break;
         case "unit":
             $table = "Org_UnitType";
             break;

@@ -96,6 +96,8 @@ function createOrganizationCalender(TCPDF $pdf){
         exit();
     }
 
+    $pdf->AddPage();
+
     
     $pdf->SetLineStyle(array('width' => 0.2, 'color' => array(100, 100, 100)));
     $pdf->SetFillColor(200, 200, 200);
@@ -105,7 +107,7 @@ function createOrganizationCalender(TCPDF $pdf){
             $cnt = 0;
             $treeName = $aRow['Tree_Name'];
             If($aRow['Head_Level'] === "0"){
-                $pdf->AddPage();
+                $pdf->Ln();
                 $pdf->SetFont(FONT_FAMILY, 'B', 16);
                 $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, $aRow['Tree_Name'], 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');
 //                $pdf->MultiCell(ORG_UNIT_TYPE_CELL_WIDTH, CELL_HIGHT, $aRow['Unit_Name'], 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');
@@ -132,8 +134,12 @@ function createOrganizationCalender(TCPDF $pdf){
             $line = '0';
         }
         $pdf->SetFont(FONT_FAMILY, '', 10);
-        $pdf->MultiCell(CELL_WIDTH * 2, CELL_HIGHT, $aRow['Role_Name'], $line, 'L', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');
-        $pdf->MultiCell(CELL_WIDTH * 1, CELL_HIGHT, $aRow['Pos_Comment'], $line, 'L', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');
+        $comment = "";
+        if(strlen($aRow['Pos_Comment']) > 0) {
+            $comment = ", " . $aRow['Pos_Comment'];            
+        }
+        $pdf->MultiCell(CELL_WIDTH * 3, CELL_HIGHT, $aRow['Role_Name'] . $comment, $line, 'L', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');
+        //$pdf->MultiCell(CELL_WIDTH * 1, CELL_HIGHT, $aRow['Pos_Comment'], $line, 'L', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');
         
         $pName = "";
         $state = "";

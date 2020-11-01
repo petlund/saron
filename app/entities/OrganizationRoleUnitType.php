@@ -93,9 +93,10 @@ class OrganizationRoleUnitType extends SuperEntity{
 
     
     function insert(){
-        $sqlInsert = "INSERT INTO `Org_Role-UnitType` (OrgRole_FK, OrgUnitType_FK, Updater) ";
+        $sqlInsert = "INSERT INTO `Org_Role-UnitType` (OrgRole_FK, SortOrder, OrgUnitType_FK, Updater) ";
         $sqlInsert.= "VALUES (";
         $sqlInsert.= "'" . $this->orgRole_FK . "', ";
+        $sqlInsert.= "'" . $this->sortOrder . "', ";
         $sqlInsert.= "'" . $this->orgUnitType_FK . "', ";
         $sqlInsert.= "'" . $this->saronUser->ID . "')";
         
