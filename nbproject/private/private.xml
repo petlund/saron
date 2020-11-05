@@ -4,16 +4,20 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/config/config.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationVersion.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/organization.unit.js</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/organization.structure.js</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationStructure.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/SaronUser.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/pdf/OrganizationReport.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/organization.role.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/MemberState.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/News.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/queries.php</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationPos.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/memberstate.js</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationUnit.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationRoleUnitType.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/SuperEntity.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/organization.unit.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/db.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/SaronUsers.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/Engagement.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationStructure.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/pdf/OrganizationReport.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/add_org.sql</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationRole.php</file>
         </group>
     </open-files>
