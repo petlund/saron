@@ -178,7 +178,7 @@ function getSQL(){
     $sql.= "left outer join People on People.Id = Pos.People_FK ";    
     $sql.= "inner join (" . getSubSql() . ") as QueryPath on Tree.Id = QueryPath.Id ";
 
-    $sql.= "order by QueryPath.Path, SortOrder, Person "; // Rut.SortOrder, 
+    $sql.= "order by QueryPath.Path, SortOrder, Pos_Comment, Person "; // Rut.SortOrder, 
     return $sql;
 }
 
