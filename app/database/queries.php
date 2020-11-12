@@ -16,6 +16,7 @@
         define ("RECORD", "Record");
         define ("RECORDS", "Records");
         define ("OPTIONS", "Options");
+        define ("NETWORK", "Network");
         
         define("DATE_FORMAT", "'%Y-%m-%d'");
         define("DATE_OF_BIRTH", "DATE_FORMAT(DateOfBirth, " . DATE_FORMAT . ")");

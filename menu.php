@@ -99,7 +99,7 @@
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_UNIT">Organisationsenheter</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=MEMBER_STATE">Medlemsstatus</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_VER">Beslut om organisation</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_GRAPH">Grafisk presentation</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization_graphic.php">Grafisk presentation</a></li>
                             </ul>
                         </li>
                         <li>

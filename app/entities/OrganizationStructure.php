@@ -140,4 +140,5 @@ class OrganizationStructure extends SuperEntity{
     function delete(){
         return $this->db->delete("delete from Org_Tree where Id=" . $this->treeId);
     }
+
 }

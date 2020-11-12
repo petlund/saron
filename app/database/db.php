@@ -192,7 +192,7 @@ class db {
         return $jsonResult;
     } 
     
-    public function sqlQuery($sql){
+    public function sqlQuery($sql, $responstype=RECORDS){
         $listResult = $this->connection->query($sql);
         if(!$listResult){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
@@ -200,7 +200,7 @@ class db {
             $this->php_dev_error_log("Exception in sqlQuery function", $sql);
             return false;
         }
-        $result = $this->resultSetToArray($listResult, RECORDS);
+        $result = $this->resultSetToArray($listResult, $responstype);
     
         return $result;
     }
@@ -235,6 +235,13 @@ class db {
             $listRow = mysqli_fetch_array($listResult, MYSQLI_ASSOC);
             mysqli_free_result($listResult);
             return $listRow;
+        }
+        if($responstype === NETWORK){
+            while($listRow = mysqli_fetch_array($listResult, MYSQLI_ASSOC)){
+                $listRows[] = $listRow;
+            } 
+            mysqli_free_result($listResult);
+            return json_encode($listRows);
         }
         else{
             while($listRow = mysqli_fetch_array($listResult, MYSQLI_ASSOC)){
