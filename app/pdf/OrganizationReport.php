@@ -49,16 +49,17 @@ require_once "../access/wp-authenticate.php";
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
         // set margins
-        $pdf->SetMargins(PDF_MARGIN_LEFT, 17, PDF_MARGIN_RIGHT);
-//        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+        $PdfMarginTopBottom = 17;
+        $pdf->SetMargins(PDF_MARGIN_LEFT, $PdfMarginTopBottom, PDF_MARGIN_RIGHT);
+
         $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
         // set auto page breaks
-        $pdf->SetAutoPageBreak(false, PDF_MARGIN_BOTTOM);
+        $pdf->SetAutoPageBreak(true, $PdfMarginTopBottom);
 
         // set image scale factor
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-        $pdf->SetAutoPageBreak(TRUE, 10);
 
         // set some language-dependent strings (optional)
         if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
