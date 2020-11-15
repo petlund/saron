@@ -280,6 +280,14 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
                     return $imgRole;
                 }                
             },
+            SortOrder: {
+                list: true,
+                create: false,
+                width: '4%',
+                title: 'Sort',
+                edit: false
+                
+            },
             OrgRole_FK: {
                 width: '10%',
                 title: 'Roll',
@@ -298,12 +306,6 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
                 options: function(data){
                     return '/' + SARON_URI + 'app/web-api/listOrganizationStatus.php?selection=options';
                 }
-            },
-            SortOrder: {
-                list: false,
-                create: false,
-                edit: false,
-                
             },
             Comment:{
                 width: '10%',
