@@ -168,11 +168,10 @@ function subUnitTableDef(tableId, orgRole_FK, roleName){
         defaultSorting: 'Name', //Set default sorting        
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationRole-UnitType.php?selection=unitTypes&OrgRole_FK=' + orgRole_FK,
-            //createAction:   '/' + SARON_URI + 'app/web-api/createOrganizationRole-UnitType.php?OrgRole_FK=' + orgRole_FK,
             createAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url:  '/' + SARON_URI + 'app/web-api/createOrganizationRole-UnitType.php?OrgRole_FK=' + orgRole_FK,
+                        url:  '/' + SARON_URI + 'app/web-api/createOrganizationRole-UnitType.php?selection=unitTypes&OrgRole_FK=' + orgRole_FK,
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
@@ -188,7 +187,6 @@ function subUnitTableDef(tableId, orgRole_FK, roleName){
                     });
                 });
             },
-            //deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationRole-UnitType.php'
             deleteAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
@@ -215,13 +213,20 @@ function subUnitTableDef(tableId, orgRole_FK, roleName){
                 list: false
             },
             OrgUnitType_FK:{
-                titel: 'Lägg till organisatorisk enhet',
+                title: 'Benämning',
                 list: true,
                 edit: false,
                 create: true,
+                width: '20%',
                 options: function(){
                     return '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php?selection=options';
                 }                
+            },
+            Description: {
+                edit: false,
+                create: false,
+                title: 'Beskrivning',
+                width: '50%'
             },
             Updater: {
                 edit: false,

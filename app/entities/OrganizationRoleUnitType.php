@@ -64,7 +64,10 @@ class OrganizationRoleUnitType extends SuperEntity{
         $select = "SELECT *, Role.Name as RoleName, ";
         $select.= $this->saronUser->getRoleSql(false) . " ";
         $from = "FROM Org_Role as Role inner join `Org_Role-UnitType` as Rut on Rut.OrgRole_FK = Role.Id ";
-        if($this->orgUnitType_FK > 0){
+        if($id > 0){
+            $where = "WHERE Role.Id= " . $id . " ";            
+        }
+        else if($this->orgUnitType_FK > 0){
             $where = "WHERE Rut.OrgUnitType_FK = " . $this->orgUnitType_FK . " ";
         }
         else{
@@ -80,7 +83,10 @@ class OrganizationRoleUnitType extends SuperEntity{
         $select = "SELECT *, ";
         $select.= $this->saronUser->getRoleSql(false) . " ";
         $from = "FROM Org_UnitType as Typ inner join `Org_Role-UnitType` as Rut on Rut.OrgUnitType_FK = Typ.Id ";
-        if($this->orgRole_FK > 0){
+        if($id > 0){
+            $where = "WHERE Typ.Id= " . $id . " ";            
+        }
+        else if($this->orgRole_FK > 0){
             $where = "WHERE Rut.OrgRole_FK = " . $this->orgRole_FK . " ";
         }
         else{

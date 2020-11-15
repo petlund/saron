@@ -66,7 +66,7 @@ function orgUnitTableDef(tableId){
 
                         $imgChild.click(data, function (event){
                             var $tr = $imgChild.closest('tr');
-                            $(tableId).jtable('openChildTable', $tr, unitRoleTableDef(tableId, data.record.Id, data.record.Name), function(data){
+                            $(tableId).jtable('openChildTable', $tr, subRoleTableDef(tableId, data.record.Id, data.record.Name), function(data){
                                 data.childTable.jtable('load');
                             });
                         });
@@ -159,7 +159,7 @@ function orgUnitTableDef(tableId){
 
 
 
-function unitRoleTableDef(tableId, orgUnitType_FK, orgName){
+function subRoleTableDef(tableId, orgUnitType_FK, orgName){
     return {
         title: function (){
             if(orgName !== null)
@@ -175,11 +175,10 @@ function unitRoleTableDef(tableId, orgUnitType_FK, orgName){
         defaultSorting: 'SortOrder', //Set default sorting        
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationRole-UnitType.php?selection=role&OrgUnitType_FK=' + orgUnitType_FK,
-            //createAction:   '/' + SARON_URI + 'app/web-api/createOrganizationRole-UnitType.php?OrgUnitType_FK=' + orgUnitType_FK,
             createAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url:  '/' + SARON_URI + 'app/web-api/createOrganizationRole-UnitType.php?OrgUnitType_FK=' + orgUnitType_FK,
+                        url:  '/' + SARON_URI + 'app/web-api/createOrganizationRole-UnitType.php?selection=role&OrgUnitType_FK=' + orgUnitType_FK,
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
@@ -195,7 +194,7 @@ function unitRoleTableDef(tableId, orgUnitType_FK, orgName){
                     });
                 });
             },
-            updateAction:   '/' + SARON_URI + 'app/web-api/updateOrganizationRole-UnitType.php',
+            updateAction:   '/' + SARON_URI + 'app/web-api/updateOrganizationRole-UnitType.php?selection=role',
             deleteAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
@@ -222,18 +221,13 @@ function unitRoleTableDef(tableId, orgUnitType_FK, orgName){
                 list: false
             },
             OrgRole_FK: {
-                list: false,
+                list: true,
                 edit: false,
-                title: 'Lägg till roll',
+                width: '20%',
+                title: 'Benämning',
                 options: function(){
                     return '/' + SARON_URI + 'app/web-api/listOrganizationRole.php?selection=options';
                 }
-            },
-            RoleName: {
-                create: false,
-                edit: false,
-                title: 'Benämning',
-                width: '15%'
             },
             Description: {
                 edit: false,
