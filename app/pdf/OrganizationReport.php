@@ -49,7 +49,8 @@ require_once "../access/wp-authenticate.php";
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
         // set margins
-        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+        $pdf->SetMargins(PDF_MARGIN_LEFT, 17, PDF_MARGIN_RIGHT);
+//        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
         $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
         // set auto page breaks
@@ -123,6 +124,11 @@ function createOrganizationCalender(TCPDF $pdf){
                 $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, $aRow['Tree_Name'], 'B', 'L', BACKGROUND_NOT_FILLED, NL, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');
                 
             }
+            $info = $aRow['Info'];
+            if(strlen($info) > 0){
+                $pdf->SetFont(FONT_FAMILY, 'I', 10);
+                $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, ' - ' . $info, '', 'L', BACKGROUND_NOT_FILLED, NL, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');                
+            }
         }
 
         $cnt++;
@@ -160,7 +166,7 @@ function createOrganizationCalender(TCPDF $pdf){
 }
 
 function getSQL(){
-    $sql = "select Tree.Name as Tree_Name, Unit.Name as Unit_Name, Role.Name as Role_Name, Pos.Comment as Pos_Comment, "
+    $sql = "select Tree.Name as Tree_Name, Tree.Description as Info, Unit.Name as Unit_Name, Role.Name as Role_Name, Pos.Comment as Pos_Comment, "
             . "(Select SortOrder from `Org_Role-UnitType` as RUT WHERE  RUT.OrgRole_FK = Pos.OrgRole_FK and RUT.OrgUnitType_FK = Tree.OrgUnitType_FK) as SortOrder,  "
             . "PState.Name as State_Name, PState.Id as State_Id, Pos.People_FK as PersonId, "
             . "Pos.PrevPeople_FK as PrevPersonId, Unit.Name as Unit_Name, "; 
@@ -178,7 +184,7 @@ function getSQL(){
     $sql.= "left outer join People on People.Id = Pos.People_FK ";    
     $sql.= "inner join (" . getSubSql() . ") as QueryPath on Tree.Id = QueryPath.Id ";
 
-    $sql.= "order by QueryPath.Path, SortOrder, Pos_Comment, Person "; // Rut.SortOrder, 
+    $sql.= "order by QueryPath.Path, SortOrder, Role_Name, Pos_Comment, Person "; // Rut.SortOrder, 
     return $sql;
 }
 
