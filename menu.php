@@ -5,11 +5,13 @@
     require_once "config.php";
     require_once SARON_ROOT . "app/access/wp-authenticate.php";
     require_once SARON_ROOT . "app/database/ping.php";
+    require_once WP_ROOT . "wp-load.php";
    
  
     /*** REQUIRE USER AUTHENTICATION ***/
+    init();
     isLoggedIn();
-        $saronUser = new SaronUser(wp_get_current_user());
+    $saronUser = new SaronUser(wp_get_current_user());
     
 ?>  
 <!doctype html>

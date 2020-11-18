@@ -5,9 +5,8 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 require_once "config.php";
 require_once SARON_ROOT . "/app/entities/SaronUser.php";
 
-
     init();
-    
+
     function authenticate() {
 	/*** AUTHENTICATE LOGIN ATTEMPT ***/
 	$user = wp_signon();
@@ -71,12 +70,13 @@ require_once SARON_ROOT . "/app/entities/SaronUser.php";
         $requireEditor = false;
         $requireOrg = false;
         $success=false;
-	    $saronUser = new SaronUser(wp_get_current_user());
+	$saronUser = new SaronUser(wp_get_current_user());
         $loginUri = SARON_URI . "app/access/login.php?logout=true";
         $host = filter_input(INPUT_SERVER, 'HTTP_HOST', FILTER_SANITIZE_URL);
         
         $loginPageUrl = $host . "/" . $loginUri;
         $https = filter_input(INPUT_SERVER, 'HTTPS', FILTER_SANITIZE_URL); //  !== "on"
+        
         if($host !== LOCAL_DEV_APP_HOST){
             if(is_ssl()){
                 if(isPermitted($saronUser, $requireEditor, $requireOrg)){
@@ -107,14 +107,14 @@ require_once SARON_ROOT . "/app/entities/SaronUser.php";
         return $success;
     }
 
-    function init() {        
+    function init() { 
 	/*** INITIATING PHP SESSION ***/
 	if ( ! session_id() ) {
 		session_start();
 	}
-	/*** LOADING WORDPRESS LIBRARIES ***/
-	define( 'WP_USE_THEMES', false );
-	require_once WP_ROOT . "wp-load.php";
-    }
+            /*** LOADING WORDPRESS LIBRARIES ***/
+            define( 'WP_USE_THEMES', false );
+            require_once WP_ROOT . "wp-load.php";
+        }
 
     

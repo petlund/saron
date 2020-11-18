@@ -4,7 +4,7 @@
     /*** REQUIRE USER AUTHENTICATION ***/
     $requireEditorRole = false;
     $requireOrg = false;
-        $saronUser = new SaronUser(wp_get_current_user()); 
+    $saronUser = new SaronUser(wp_get_current_user()); 
     
     if(isPermitted($saronUser, $requireEditorRole, $requireOrg)){
         $res = openssl_pkey_get_private (PKEY_FILE);
