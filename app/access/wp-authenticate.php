@@ -111,10 +111,11 @@ require_once SARON_ROOT . "/app/entities/SaronUser.php";
 	/*** INITIATING PHP SESSION ***/
 	if ( ! session_id() ) {
 		session_start();
-	}
+	
             /*** LOADING WORDPRESS LIBRARIES ***/
             define( 'WP_USE_THEMES', false );
             require_once WP_ROOT . "wp-load.php";
         }
+    }
 
     
