@@ -11,76 +11,75 @@
  *
  * @author peter
  */
+
 require_once "config.php";
+require_once SARON_ROOT . 'app/access/cookie.php'; 
+require_once SARON_ROOT . 'app/database/queries.php'; 
+require_once SARON_ROOT . 'app/database/db.php';
 
 class SaronUser {
-    private $NO_ROLE = "NO_ROLE";
-    private $user;
+    private $editor;
+    private $org_editor;
+    private $userDisplayName;
     public $ID;
-    function __construct($user) {
-        $this->user = $user;
-        $this->ID = $user->ID;
-    }
     
+    function __construct($db, $requireEditor=0, $requireOrg=0) {
+        $ticket = getTicket();
+        try{
+            $db->checkTicket($ticket, $requireEditor, $requireOrg);
+            $attributes = $db->loadSaronUser($ticket);        
+
+            $this->editor = $attributes[0]["Editor"];
+            $this->org_editor = $attributes[0]["Org_Editor"];
+            $this->userDisplayName = $attributes[0]["UserDisplayName"];
+        }
+        catch(Exception $ex){
+            $error=array();
+            $error["Result"] = "ERROR";
+            $error["Message"] = "Du är inte behörig till den här funktionen.";
+            throw new Exception(json_encode($error));
+        }
+    }
        
-    function isSaronUser(){
-        /*** Check if the user had a saron role ***/
-        if($this->getRole() !== $this->NO_ROLE){ 
-            $otp = $this->user->get("wp-otp");
-            if($otp["enabled"] || TEST_ENV){ // In test environment OTP enabeled account is not necessary.
-                return true;
-            }
-        }         
-        return false;
-    }
-    
-    
+
     function isEditor(){
-        /*** Check if the user has an editor role ***/
-        for($i = 0; $i < count($this->user->roles); $i++){
-            if(strpos($this->user->roles[$i],  SARON_ROLE_PREFIX . SARON_ROLE_EDITOR) !== FALSE){ // CHECK IF THE USER IS A MEMBER OF THE GROUP  (test)saron_edit
-                return true;
-            }
-        } 
+        if($this->editor === '1'){
+            return true;
+        }
         return false;
     }
 
+    
+    
     function isOrgEditor(){
-        /*** Check if the user has an org role ***/
-        for($i = 0; $i < count($this->user->roles); $i++){
-            if(strpos($this->user->roles[$i],  SARON_ROLE_PREFIX . SARON_ROLE_ORG) !== FALSE){ // CHECK IF THE USER IS A MEMBER OF THE GROUP  (test)saron_edit
-                return true;
-            }
-        } 
-        return false;        
+        if($this->org_editor === '1'){
+            return true;
+        }
+        return false;
     }
+    
+    
     
     function getDisplayName(){
-        return $this->user->user_firstname . " " . $this->user->user_lastname ;
+        return $this->userDisplayName ;
     }
     
 
-    
+
     function getRole(){
-        for($i = 0; $i < count($this->user->roles); $i++){
-            if($this->user->roles[$i]===SARON_ROLE_PREFIX . SARON_ROLE_EDITOR){
-                return SARON_ROLE_EDITOR;
-            }
+        if($this->isEditor()){
+            return SARON_ROLE_EDITOR;
         }
-        for($i = 0; $i < count($this->user->roles); $i++){
-            if($this->user->roles[$i]===SARON_ROLE_PREFIX . SARON_ROLE_ORG){
-                return SARON_ROLE_ORG;
-            }
+        else if($this->isOrgEditor()){
+            return SARON_ROLE_ORG;
         }
-        for($i = 0; $i < count($this->user->roles); $i++){
-            if($this->user->roles[$i]===SARON_ROLE_PREFIX . SARON_ROLE_VIEWER){
-                return SARON_ROLE_VIEWER;                
-            }
-        }   
-        return $this->NO_ROLE;
+        else{
+            return SARON_ROLE_VIEWER;                
+        }
     }
     
 
+    
     function getRoleSql($continue){
         $SQL_ALIAS = ' as user_role';
             
@@ -97,26 +96,18 @@ class SaronUser {
 
     
     function getRoleDisplayName(){
-        for($i = 0; $i < count($this->user->roles); $i++){
-            if($this->user->roles[$i]==SARON_ROLE_PREFIX . SARON_ROLE_EDITOR){
-                return SARON_DISPLAY_NAME_EDITOR;
-            }
+        if($this->isEditor()){
+            return SARON_DISPLAY_NAME_EDITOR;
         }
-        for($i = 0; $i < count($this->user->roles); $i++){
-            if($this->user->roles[$i]==SARON_ROLE_PREFIX . SARON_ROLE_ORG){
-                return SARON_DISPLAY_NAME_ORG;
-            }
+        else if($this->isOrgEditor()){
+            return SARON_DISPLAY_NAME_ORG;
         }
-        for($i = 0; $i < count($this->user->roles); $i++){
-            if($this->user->roles[$i]==SARON_ROLE_PREFIX . SARON_ROLE_VIEWER){
-                return SARON_DISPLAY_NAME_VIEWER;                
-            }
-        }   
-        return $this->NO_ROLE;
+        else{
+            return SARON_DISPLAY_NAME_VIEWER;                
+        }
     }
     
-    
-    
+        
     function getNameAndRole(){
         return $this->getDisplayName() . " - " . $this->getRoleDisplayName();
     }

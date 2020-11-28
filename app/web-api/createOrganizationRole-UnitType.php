@@ -11,7 +11,7 @@ require_once SARON_ROOT . 'app/entities/OrganizationRoleUnitType.php';
     /*** REQUIRE USER AUTHENTICATION ***/
     $requireEditorRole = false;
     $requireOrg = true;
-        $saronUser = new SaronUser(wp_get_current_user());    
+    $saronUser = new SaronUser(wp_get_current_user());    
 
     if(!isPermitted($saronUser, $requireEditorRole, $requireOrg)){
         echo notPermittedMessage();

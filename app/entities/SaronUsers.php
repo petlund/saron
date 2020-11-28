@@ -5,11 +5,19 @@ require_once SARON_ROOT . 'app/entities/SuperEntity.php';
 require_once SARON_ROOT . 'app/database/db.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
+
 class SaronUsers extends SuperEntity{
     private $users = Array();
+    
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
-        $this->users = get_users(array('role__in' => array(SARON_ROLE_PREFIX . SARON_ROLE_EDITOR, SARON_ROLE_PREFIX . SARON_ROLE_VIEWER, SARON_ROLE_PREFIX . SARON_ROLE_ORG, "wp_otp")));
+        try{
+            $this->users = get_users(array('role__in' => array(SARON_ROLE_PREFIX . SARON_ROLE_EDITOR, SARON_ROLE_PREFIX . SARON_ROLE_VIEWER, SARON_ROLE_PREFIX . SARON_ROLE_ORG, "wp_otp")));
+        }
+        catch(Exception $e){
+            throw new Exception($e);
+        }
+        
     }
         
     function sort($sort_dimension = "display_name", $sort_order = "asc"){

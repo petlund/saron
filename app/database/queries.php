@@ -1,103 +1,92 @@
 <?php
-    require_once "config.php";
-    require_once SARON_ROOT . "app/access/wp-authenticate.php";
-    /*** REQUIRE USER AUTHENTICATION ***/
-    $requireEditorRole = false;
-    $requireOrg = false;
-    $saronUser = new SaronUser(wp_get_current_user()); 
-    
-    if(isPermitted($saronUser, $requireEditorRole, $requireOrg)){
-        $res = openssl_pkey_get_private (PKEY_FILE);
-        openssl_pkey_export($res, $privkey);
-        define ("PKEY", "'" . $privkey . "'");
-        define("SALT_LENGTH", 13);
-        define("MAX_STR_LEN", 250);
-        
-        define ("RECORD", "Record");
-        define ("RECORDS", "Records");
-        define ("OPTIONS", "Options");
-        
-        define("DATE_FORMAT", "'%Y-%m-%d'");
-        define("DATE_OF_BIRTH", "DATE_FORMAT(DateOfBirth, " . DATE_FORMAT . ")");
-        define("DATE_OF_BIRTH_ALIAS_DATE_OF_BIRTH", DATE_OF_BIRTH . " AS DateOfBirth");
-//        define("DATE_OF_BIRTH_ALIAS_DATE_OF_BIRTH", "'\/Date(1320259705710)\/' AS DateOfBirth");
-      
-        define("DECRYPTED_FIRSTNAME", "SUBSTR(AES_DECRYPT(FirstNameEncrypt, " . PKEY . "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
-        define("DECRYPTED_ALIAS_FIRSTNAME", DECRYPTED_FIRSTNAME . " as FirstName");
 
-        define("DECRYPTED_LASTNAME", "SUBSTR(AES_DECRYPT(LastNameEncrypt, " . PKEY . "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
-        define("DECRYPTED_ALIAS_LASTNAME", DECRYPTED_LASTNAME . " as LastName");
+    $res = openssl_pkey_get_private (PKEY_FILE);
+    openssl_pkey_export($res, $privkey);
+    define ("PKEY", "'" . $privkey . "'");
+    define("SALT_LENGTH", 13);
+    define("MAX_STR_LEN", 250);
 
-        define("DECRYPTED_BAPTISTER", "SUBSTR(AES_DECRYPT(BaptisterEncrypt, " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
-        define("DECRYPTED_ALIAS_BAPTISTER", DECRYPTED_BAPTISTER . " as Baptister");
-        define("DECRYPTED_MOBILE", "SUBSTR(AES_DECRYPT(MobileEncrypt, " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
-        define("DECRYPTED_ALIAS_MOBILE", DECRYPTED_MOBILE . " as Mobile");
-        define("DECRYPTED_EMAIL", "SUBSTR(AES_DECRYPT(EmailEncrypt, " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
-        define("DECRYPTED_ALIAS_EMAIL", DECRYPTED_EMAIL . " as Email");
-        define("DECRYPTED_COMMENT", "SUBSTR(AES_DECRYPT(CommentEncrypt, " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
-        define("DECRYPTED_ALIAS_COMMENT", DECRYPTED_COMMENT . " as Comment");
-        define("DECRYPTED_COMMENT_KEY", "SUBSTR(AES_DECRYPT(CommentKeyEncrypt, " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
-        define("DECRYPTED_ALIAS_COMMENT_KEY", DECRYPTED_COMMENT_KEY . " as CommentKey");
+    define ("RECORD", "Record");
+    define ("RECORDS", "Records");
+    define ("OPTIONS", "Options");
 
-        define("DECRYPTED_FAMILYNAME", "SUBSTR(AES_DECRYPT(FamilyNameEncrypt, " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
-        define("DECRYPTED_ALIAS_FAMILYNAME", DECRYPTED_FAMILYNAME . " as FamilyName");
-        define("DECRYPTED_ADDRESS", "SUBSTR(AES_DECRYPT(AddressEncrypt, " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
-        define("DECRYPTED_ALIAS_ADDRESS", DECRYPTED_ADDRESS . " as Address");
-        define("DECRYPTED_CO", "SUBSTR(AES_DECRYPT(CoEncrypt, " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
-        define("DECRYPTED_ALIAS_CO", DECRYPTED_CO . " as Co");
-        define("DECRYPTED_PHONE", "SUBSTR(AES_DECRYPT(PhoneEncrypt, " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
-        define("DECRYPTED_ALIAS_PHONE", DECRYPTED_PHONE . " as Phone");
+    define("DATE_FORMAT", "'%Y-%m-%d'");
+    define("DATE_OF_BIRTH", "DATE_FORMAT(DateOfBirth, " . DATE_FORMAT . ")");
+    define("DATE_OF_BIRTH_ALIAS_DATE_OF_BIRTH", DATE_OF_BIRTH . " AS DateOfBirth");
+    //        define("DATE_OF_BIRTH_ALIAS_DATE_OF_BIRTH", "'\/Date(1320259705710)\/' AS DateOfBirth");
 
-        define("DECRYPTED_FIRSTNAME_LASTNAME_AS_NAME_FL", "concat(" . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . ") as Name_FL");
-        define("DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME", "concat(" . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ") as Name");
-        define("DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE", "concat(" . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ", ' ', " . DATE_OF_BIRTH . ") ");
-        define("DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE_AS_APPIDENTITYNAME", DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . "as AppIdentityName ");
-        //Name of Memeber State see in table MamberState
-//        define("DATES_AS_MEMBERSTATES", " IF(UPPER(CONVERT(BINARY " . DECRYPTED_LASTNAME . " USING utf8)) like '%" . ANONYMOUS . "%', 'Anonymiserad', IF(DateOfDeath is not null, 'Avliden', IF(DateOfMemberShipStart is null, IF(DateOfBaptism is null and CongregationOfBaptism is null, 'Ej medlem', 'Dopregister'), IF(DateOfMemberShipEnd is null, 'Medlem', 'Dopregister')))) ");
-        define("DATES_AS_MEMBERSTATES", " IF(UPPER(CONVERT(BINARY " . DECRYPTED_LASTNAME . " USING utf8)) like '%" . ANONYMOUS . "%', 4, IF(DateOfDeath is not null, 5, IF(DateOfMemberShipStart is null, IF(DateOfBaptism is null and CongregationOfBaptism is null, 2, 3), IF(DateOfMemberShipEnd is null, 2, 3)))) ");
-        define("DATES_AS_ALISAS_MEMBERSTATES", DATES_AS_MEMBERSTATES . "as MemberState ");
+    define("DECRYPTED_FIRSTNAME", "SUBSTR(AES_DECRYPT(FirstNameEncrypt, " . PKEY . "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
+    define("DECRYPTED_ALIAS_FIRSTNAME", DECRYPTED_FIRSTNAME . " as FirstName");
 
-        define("ALIAS_CUR_HOMES", "Homes");
-        define("ALIAS_OLD_HOMES", "OldHome");
+    define("DECRYPTED_LASTNAME", "SUBSTR(AES_DECRYPT(LastNameEncrypt, " . PKEY . "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
+    define("DECRYPTED_ALIAS_LASTNAME", DECRYPTED_LASTNAME . " as LastName");
 
-        $ALL_PEOPLE_FIELDS = "People.Id as PersonId, ";
-        $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_FIRSTNAME . ", ";
-        $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_LASTNAME . ", ";
-        $ALL_PEOPLE_FIELDS.= DATE_OF_BIRTH_ALIAS_DATE_OF_BIRTH . ", DateOfDeath, PreviousCongregation, MembershipNo, VisibleInCalendar, DateOfMembershipStart, DateOfMembershipEnd, NextCongregation, DateOfBaptism, ";
-        $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_BAPTISTER . ", ";
-        $ALL_PEOPLE_FIELDS.= "CongregationOfBaptism, CongregationOfBaptismThis, Gender, ";
-        $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_EMAIL . ", ";
-        $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_MOBILE . ", ";
-        $ALL_PEOPLE_FIELDS.= "KeyToChurch, KeyToExp, ";
-        $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_COMMENT . ", ";
-        $ALL_PEOPLE_FIELDS.= "People.HomeId, People.HomeId as OldHomeId, Updater, Updated, Inserter, Inserted, " . DECRYPTED_ALIAS_COMMENT_KEY . " ";
-        define("SQL_STAR_PEOPLE", "Select " . $ALL_PEOPLE_FIELDS);
+    define("DECRYPTED_BAPTISTER", "SUBSTR(AES_DECRYPT(BaptisterEncrypt, " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
+    define("DECRYPTED_ALIAS_BAPTISTER", DECRYPTED_BAPTISTER . " as Baptister");
+    define("DECRYPTED_MOBILE", "SUBSTR(AES_DECRYPT(MobileEncrypt, " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
+    define("DECRYPTED_ALIAS_MOBILE", DECRYPTED_MOBILE . " as Mobile");
+    define("DECRYPTED_EMAIL", "SUBSTR(AES_DECRYPT(EmailEncrypt, " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
+    define("DECRYPTED_ALIAS_EMAIL", DECRYPTED_EMAIL . " as Email");
+    define("DECRYPTED_COMMENT", "SUBSTR(AES_DECRYPT(CommentEncrypt, " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
+    define("DECRYPTED_ALIAS_COMMENT", DECRYPTED_COMMENT . " as Comment");
+    define("DECRYPTED_COMMENT_KEY", "SUBSTR(AES_DECRYPT(CommentKeyEncrypt, " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
+    define("DECRYPTED_ALIAS_COMMENT_KEY", DECRYPTED_COMMENT_KEY . " as CommentKey");
 
-        $ALL_HOME_FIELDS = "Homes.Id as HomeId, ";
-        $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_FAMILYNAME . ", ";
-        $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_ADDRESS . ", ";
-        $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_CO . ", ";
-        $ALL_HOME_FIELDS.= "City, Zip, Country,  ";
-        $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_PHONE . ", ";
-        $ALL_HOME_FIELDS.= "Letter  ";    
-        define("SQL_STAR_HOMES", "Select " . $ALL_HOME_FIELDS);
-        define("SQL_ALL_FIELDS", "select " . $ALL_PEOPLE_FIELDS . ", " . $ALL_HOME_FIELDS);
+    define("DECRYPTED_FAMILYNAME", "SUBSTR(AES_DECRYPT(FamilyNameEncrypt, " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
+    define("DECRYPTED_ALIAS_FAMILYNAME", DECRYPTED_FAMILYNAME . " as FamilyName");
+    define("DECRYPTED_ADDRESS", "SUBSTR(AES_DECRYPT(AddressEncrypt, " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
+    define("DECRYPTED_ALIAS_ADDRESS", DECRYPTED_ADDRESS . " as Address");
+    define("DECRYPTED_CO", "SUBSTR(AES_DECRYPT(CoEncrypt, " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
+    define("DECRYPTED_ALIAS_CO", DECRYPTED_CO . " as Co");
+    define("DECRYPTED_PHONE", "SUBSTR(AES_DECRYPT(PhoneEncrypt, " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
+    define("DECRYPTED_ALIAS_PHONE", DECRYPTED_PHONE . " as Phone");
 
-        define("SQL_FROM_PEOPLE_LEFT_JOIN_HOMES", "FROM People left outer join Homes on People.HomeId=Homes.Id "); 
-        define("SQL_WHERE", "Where ");  
-        define("SQL_WHERE_MEMBER", "DateOfMembershipStart is not null and DateOfMembershipEnd is null and DateOfDeath is null and " . DECRYPTED_LASTNAME . " not like '" . ANONYMOUS . "' ");  
+    define("DECRYPTED_FIRSTNAME_LASTNAME_AS_NAME_FL", "concat(" . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . ") as Name_FL");
+    define("DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME", "concat(" . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ") as Name");
+    define("DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE", "concat(" . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ", ' ', " . DATE_OF_BIRTH . ") ");
+    define("DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE_AS_APPIDENTITYNAME", DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . "as AppIdentityName ");
+    //Name of Memeber State see in table MamberState
+    //        define("DATES_AS_MEMBERSTATES", " IF(UPPER(CONVERT(BINARY " . DECRYPTED_LASTNAME . " USING utf8)) like '%" . ANONYMOUS . "%', 'Anonymiserad', IF(DateOfDeath is not null, 'Avliden', IF(DateOfMemberShipStart is null, IF(DateOfBaptism is null and CongregationOfBaptism is null, 'Ej medlem', 'Dopregister'), IF(DateOfMemberShipEnd is null, 'Medlem', 'Dopregister')))) ");
+    define("DATES_AS_MEMBERSTATES", " IF(UPPER(CONVERT(BINARY " . DECRYPTED_LASTNAME . " USING utf8)) like '%" . ANONYMOUS . "%', 4, IF(DateOfDeath is not null, 5, IF(DateOfMemberShipStart is null, IF(DateOfBaptism is null and CongregationOfBaptism is null, 2, 3), IF(DateOfMemberShipEnd is null, 2, 3)))) ");
+    define("DATES_AS_ALISAS_MEMBERSTATES", DATES_AS_MEMBERSTATES . "as MemberState ");
 
-        define("FORMATTED_EMAILADDRESS", "if(" . DECRYPTED_EMAIL . " not like \"\", concat(\"<p class='Email'><a href='mailto:\"," . DECRYPTED_EMAIL . ",\"'>\", " . DECRYPTED_EMAIL . ", \"</a></p>\"),'') ");
-        define("CONTACTS_ALIAS_RESIDENTS", "(SELECT GROUP_CONCAT('<b>', " . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . ", ':</b> ', " . DATES_AS_MEMBERSTATES . ", IF(" . DECRYPTED_EMAIL . " is NULL, '', CONCAT(', ', " . DECRYPTED_EMAIL . ")), IF(" . DECRYPTED_MOBILE . " is NULL, '', CONCAT(', ', " . DECRYPTED_MOBILE . ")) SEPARATOR '<BR>') FROM People as r where Homes.Id = r.HomeId  AND DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' order by DateOfBirth) as Residents ");
-        define("NAMES_ALIAS_RESIDENTS", "(SELECT GROUP_CONCAT(" . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . ", ' - ', " . DATES_AS_MEMBERSTATES . " SEPARATOR '<BR>') FROM People as r where Homes.Id = r.HomeId  AND DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' order by DateOfBirth) as Residents ");
-    
-        define("EMBEDDED_SELECT_SUPERPOS", "if(People_FK < 0, concat(' (som ', (Select Name from Org_Role as r2 where -People_FK = r2.Id),')'),'') ");
-        define("ORG_POS_XREF", "(Select p1.Id, if(p1.People_FK < 0,(select p2.People_FK from Org_Pos as p2 where -p1.People_FK = p2.OrgRole_FK ), p1.People_FK) as People_FK2 from Org_Pos as p1) as xref ");
+    define("ALIAS_CUR_HOMES", "Homes");
+    define("ALIAS_OLD_HOMES", "OldHome");
+
+    $ALL_PEOPLE_FIELDS = "People.Id as PersonId, ";
+    $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_FIRSTNAME . ", ";
+    $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_LASTNAME . ", ";
+    $ALL_PEOPLE_FIELDS.= DATE_OF_BIRTH_ALIAS_DATE_OF_BIRTH . ", DateOfDeath, PreviousCongregation, MembershipNo, VisibleInCalendar, DateOfMembershipStart, DateOfMembershipEnd, NextCongregation, DateOfBaptism, ";
+    $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_BAPTISTER . ", ";
+    $ALL_PEOPLE_FIELDS.= "CongregationOfBaptism, CongregationOfBaptismThis, Gender, ";
+    $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_EMAIL . ", ";
+    $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_MOBILE . ", ";
+    $ALL_PEOPLE_FIELDS.= "KeyToChurch, KeyToExp, ";
+    $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_COMMENT . ", ";
+    $ALL_PEOPLE_FIELDS.= "People.HomeId, People.HomeId as OldHomeId, Updater, Updated, Inserter, Inserted, " . DECRYPTED_ALIAS_COMMENT_KEY . " ";
+    define("SQL_STAR_PEOPLE", "Select " . $ALL_PEOPLE_FIELDS);
+
+    $ALL_HOME_FIELDS = "Homes.Id as HomeId, ";
+    $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_FAMILYNAME . ", ";
+    $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_ADDRESS . ", ";
+    $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_CO . ", ";
+    $ALL_HOME_FIELDS.= "City, Zip, Country,  ";
+    $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_PHONE . ", ";
+    $ALL_HOME_FIELDS.= "Letter  ";    
+    define("SQL_STAR_HOMES", "Select " . $ALL_HOME_FIELDS);
+    define("SQL_ALL_FIELDS", "select " . $ALL_PEOPLE_FIELDS . ", " . $ALL_HOME_FIELDS);
+
+    define("SQL_FROM_PEOPLE_LEFT_JOIN_HOMES", "FROM People left outer join Homes on People.HomeId=Homes.Id "); 
+    define("SQL_WHERE", "Where ");  
+    define("SQL_WHERE_MEMBER", "DateOfMembershipStart is not null and DateOfMembershipEnd is null and DateOfDeath is null and " . DECRYPTED_LASTNAME . " not like '" . ANONYMOUS . "' ");  
+
+    define("FORMATTED_EMAILADDRESS", "if(" . DECRYPTED_EMAIL . " not like \"\", concat(\"<p class='Email'><a href='mailto:\"," . DECRYPTED_EMAIL . ",\"'>\", " . DECRYPTED_EMAIL . ", \"</a></p>\"),'') ");
+    define("CONTACTS_ALIAS_RESIDENTS", "(SELECT GROUP_CONCAT('<b>', " . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . ", ':</b> ', " . DATES_AS_MEMBERSTATES . ", IF(" . DECRYPTED_EMAIL . " is NULL, '', CONCAT(', ', " . DECRYPTED_EMAIL . ")), IF(" . DECRYPTED_MOBILE . " is NULL, '', CONCAT(', ', " . DECRYPTED_MOBILE . ")) SEPARATOR '<BR>') FROM People as r where Homes.Id = r.HomeId  AND DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' order by DateOfBirth) as Residents ");
+    define("NAMES_ALIAS_RESIDENTS", "(SELECT GROUP_CONCAT(" . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . ", ' - ', " . DATES_AS_MEMBERSTATES . " SEPARATOR '<BR>') FROM People as r where Homes.Id = r.HomeId  AND DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' order by DateOfBirth) as Residents ");
+
+    define("EMBEDDED_SELECT_SUPERPOS", "if(People_FK < 0, concat(' (som ', (Select Name from Org_Role as r2 where -People_FK = r2.Id),')'),'') ");
+    define("ORG_POS_XREF", "(Select p1.Id, if(p1.People_FK < 0,(select p2.People_FK from Org_Pos as p2 where -p1.People_FK = p2.OrgRole_FK ), p1.People_FK) as People_FK2 from Org_Pos as p1) as xref ");
        
-        
-    } 
-
-
 
    
     function getFieldSql($tableAlias, $fieldAlias, $fieldName, $nullValue, $encrypt, $continue){

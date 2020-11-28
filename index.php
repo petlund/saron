@@ -5,8 +5,6 @@ header("Cache-Control: no-cache, must-revalidate");
     require_once "config.php";
     require_once SARON_ROOT . "app/access/wp-authenticate.php";
     require_once SARON_ROOT . "menu.php";
-    /*** REQUIRE USER AUTHENTICATION ***/
-    isLoggedIn();
 ?>
 <html>   
     <Head>

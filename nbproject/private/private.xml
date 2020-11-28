@@ -4,16 +4,20 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/config/config.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/organization.structure.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/access/ticket.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/News.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/SaronUser.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/web-api/updateOrganizationUnit.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/SuperEntity.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/web-api/listNews.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/access/cookie.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/db.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/SaronUsers.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/web-api/createNews.php</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/access/wp-authenticate.php</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/menu.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/pdf/OrganizationReport.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/organization.role.js</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/queries.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/web-api/test.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationRoleUnitType.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationUnit.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/teest.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/index.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/access/login.php</file>
         </group>
     </open-files>
 </project-private>

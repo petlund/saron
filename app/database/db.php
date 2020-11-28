@@ -1,8 +1,8 @@
 <?php
 require_once "config.php";
 require_once SARON_ROOT . "app/database/queries.php";
-require_once SARON_ROOT . "app/access/wp-authenticate.php";
-require_once SARON_ROOT . "app/entities/SaronUser.php";
+//require_once SARON_ROOT . "app/access/wp-authenticate.php";
+//require_once SARON_ROOT . "app/entities/SaronUser.php";
  
 class db {
     
@@ -101,7 +101,81 @@ class db {
         return false;
     }
     
-           
+    
+    
+    public function checkTicket($ticket, $editor, $org_editor){
+        if(strlen($ticket) === 0){
+            throw new Exception($this->jsonErrorMessage("Missing ticket", null, ""));
+        }
+        
+        $sql = "Select count(*) as c FROM SaronUser WHERE AccessTicket = '" . $ticket . "' and Editor >= " . $editor . " AND Org_Editor >= " . $org_editor;
+    
+        if(!$listResult = $this->connection->query($sql)){
+            $this->php_dev_error_log("Exception in exist function", $sql);
+            throw new Exception($this->jsonErrorMessage("SQL-Error in select /exist/ statement!", null, $sql));
+        }
+        
+        $countRows = 0;
+        
+        while($countRow = mysqli_fetch_array($listResult)){
+            $countRows = $countRow["c"];
+        } 
+        mysqli_free_result($listResult);
+        
+        if($countRows === '1'){
+            return true;
+        }
+        throw new Exception($this->jsonErrorMessage("Missing valid ticket", null, ""));
+    }
+    
+    
+    
+    function storeSaronSessionUser($wp_id, $editor, $org_editor, $userDisplayName ){
+        $this->cleanSaronUser($wp_id);        
+        $sql = "INSERT INTO SaronUser (AccessTicket, Editor, Org_Editor, WP_ID, UserDisplayName) values (";
+        $sql.= "hex(UUID_TO_BIN(UUID())), ";
+        $sql.= $editor . ", ";
+        $sql.= $org_editor . ", ";
+        $sql.= $wp_id . ", '";
+        $sql.= $userDisplayName . "') ";
+        $ticket;
+        try{
+            $lastId = $this->insert($sql, "SaronUser", "Id");
+            $result = $this->sqlQuery("Select AccessTicket from SaronUser where Id = " . $lastId);
+            foreach($result as $aRow){
+                $ticket = $aRow["AccessTicket"];
+            }
+            return $ticket;
+        }
+        catch(Exception $ex){
+            throw new Exception($ex);
+        }
+    }
+    
+    
+    function loadSaronUser($ticket){
+        $sql = "select * from  SaronUser where AccessTicket='" . $ticket . "'"; 
+        
+        $attributes = $this->sqlQuery($sql);
+        return $attributes;       
+    }
+    
+    
+    function updateSaronUserSession($ticket){
+        $sql = "update SaronUser where Ticket = '" . $ticket . "'";
+        $set = "SET ";        
+        $set.= "Id= UUID_TO_BINARY(UUID()) ";
+        $where = "WHERE id=" . $ticket;
+        $this->update($update, $set, $where);
+        return $this->select($this->id, RECORD);        
+    }
+    
+    
+    
+    function cleanSaronUser($wp_id){
+        $sql = "DELETE from SaronUser where Time_Stamp < Now() - INTERVAL 30 SECOND OR WP_ID=" . $wp_id;
+        $this->delete($sql);
+    }
     
     
     public function exist($FirstName, $LastName, $DateOfBirth, $Id=-1){
@@ -150,11 +224,10 @@ class db {
             return $LastId;
         }
         catch(Exception $error){
-            $this->php_dev_error_log("Exception in insert function", $insert);
+            $this->php_dev_error_log("Exception in insert function: " . $error->getMessage(), $insert);
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
             throw new Exception($this->jsonErrorMessage("Error in insert function", null, $technicalErrMsg));
         }
-        
     }     
     
     
@@ -170,6 +243,8 @@ class db {
             throw new Exception($error->getMessage());
         }
     } 
+    
+    
     
     public function selectSeparate($saronUser, $sqlSelect, $sqlCount, $responstype=RECORDS){
         $listResult = $this->connection->query($sqlSelect);
@@ -192,6 +267,8 @@ class db {
         return $jsonResult;
     } 
     
+    
+    
     public function sqlQuery($sql){
         $listResult = $this->connection->query($sql);
         if(!$listResult){
@@ -205,6 +282,8 @@ class db {
         return $result;
     }
 
+    
+    
     private function jsonErrorMessage($appErrorMsg, $connectionError=null, $sqlError=""){
         $error = array();
         $error["Result"] = "ERROR";

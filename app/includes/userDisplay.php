@@ -1,4 +1,11 @@
 <?php
 require_once "config.php";
-    $saronUser = new SaronUser(wp_get_current_user());
-    echo "Inloggad som " . $saronUser->getNameAndRole(); 
+require_once SARON_ROOT . 'app/database/db.php';
+    try{
+        $db = new db();
+        $saronUser = new SaronUser($db);
+        echo "Inloggad som " . $saronUser->getNameAndRole(); 
+    }
+    catch(Exception $ex){
+        echo 'EJ INLOGGAD';
+    }

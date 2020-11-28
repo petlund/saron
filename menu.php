@@ -1,17 +1,16 @@
 <?php
-    header("Cache-Control: no-cache, must-revalidate");
+    header("Cache-Control: no-cache, no-store, must-revalidate");
     header("Pragma: no-cache"); //HTTP 1.0
-    header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
+    header("Expires: 0");
+
+
     require_once "config.php";
-    require_once SARON_ROOT . "app/access/wp-authenticate.php";
+    require_once SARON_ROOT . "app/access/cookie.php";
     require_once SARON_ROOT . "app/database/ping.php";
-    require_once WP_ROOT . "wp-load.php";
    
- 
-    /*** REQUIRE USER AUTHENTICATION ***/
-    init();
-    isLoggedIn();
-    $saronUser = new SaronUser(wp_get_current_user());
+   if(!hasValidSaronSession()){
+       exit();
+   }
     
 ?>  
 <!doctype html>
