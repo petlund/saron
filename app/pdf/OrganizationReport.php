@@ -1,10 +1,15 @@
 <?php
+    require_once 'config.php';
+    require_once SARON_ROOT . "app/access/cookie.php";
+    require_once SARON_ROOT . 'app/database/queries.php';
+    require_once SARON_ROOT . 'app/database/db.php';
 
-require '../../config/config.php';
-require '../database/queries.php';
-require_once (TCPDF_PATH . '/tcpdf.php');
-require_once '../database/db.php';
-require_once "../access/wp-authenticate.php";
+    require_once TCPDF_PATH . '/tcpdf.php';
+
+    if(!hasValidSaronSession()){
+        exit();
+    }
+  
 
     define ("INNER", 1);
     define ("OUTER", 2);
@@ -18,59 +23,51 @@ require_once "../access/wp-authenticate.php";
     define ("HEADER_FOOTER_CELL_WIDTH", 90);
     define ("FONT_FAMILY", 'times');
 
-    $requireOrg = false;
-    $requireEditorRole = false;
-    $saronUser = new SaronUser(wp_get_current_user());    
+  
+    header_remove(); 
 
-    if(!isPermitted($saronUser, $requireEditorRole, $requireOrg)){
-        echo notPermittedMessage();
+    $PersonId = (int)filter_input(INPUT_GET, "PersonId", FILTER_SANITIZE_NUMBER_INT);
+
+    $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+    $pdf->SetCreator(PDF_CREATOR);
+    $pdf->SetAuthor(FullNameOfCongregation);
+    $pdf->SetTitle('Organisatonsöversikt');
+    $pdf->SetSubject('Organisaton');
+    $pdf->SetKeywords('Organisaton');
+
+    // set default header data
+    $pdf->SetHeaderData('', 0, FullNameOfCongregation, 'Rapport från: ' . UrlOfRegistry . ' ' . date('Y-m-d', time()));
+
+
+    // set header and footer fonts
+    $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+    $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+    // set default monospaced font
+    $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+    // set margins
+    $PdfMarginTopBottom = 17;
+    $pdf->SetMargins(PDF_MARGIN_LEFT, $PdfMarginTopBottom, PDF_MARGIN_RIGHT);
+
+    $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+    $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+    // set auto page breaks
+    $pdf->SetAutoPageBreak(true, $PdfMarginTopBottom);
+
+    // set image scale factor
+    $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+    // set some language-dependent strings (optional)
+    if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+        require_once(dirname(__FILE__).'/lang/eng.php');
+        $pdf->setLanguageArray($l);
     }
-    else{
-        header_remove(); 
 
-        $PersonId = (int)filter_input(INPUT_GET, "PersonId", FILTER_SANITIZE_NUMBER_INT);
-
-        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-        $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetAuthor(FullNameOfCongregation);
-        $pdf->SetTitle('Organisatonsöversikt');
-        $pdf->SetSubject('Organisaton');
-        $pdf->SetKeywords('Organisaton');
-
-        // set default header data
-        $pdf->SetHeaderData('', 0, FullNameOfCongregation, 'Rapport från: ' . UrlOfRegistry . ' ' . date('Y-m-d', time()));
-
-
-        // set header and footer fonts
-        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-
-        // set default monospaced font
-        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-        // set margins
-        $PdfMarginTopBottom = 17;
-        $pdf->SetMargins(PDF_MARGIN_LEFT, $PdfMarginTopBottom, PDF_MARGIN_RIGHT);
-
-        $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-        // set auto page breaks
-        $pdf->SetAutoPageBreak(true, $PdfMarginTopBottom);
-
-        // set image scale factor
-        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-        // set some language-dependent strings (optional)
-        if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
-            require_once(dirname(__FILE__).'/lang/eng.php');
-            $pdf->setLanguageArray($l);
-        }
-
-        $name = createOrganizationCalender($pdf);
-        $pdf->Output('Organisationskalender - ' . date('Y-m-d', time()).'.pdf');
-        $pdf->close();
-    }
+    $name = createOrganizationCalender($pdf);
+    $pdf->Output('Organisationskalender - ' . date('Y-m-d', time()).'.pdf');
+    $pdf->close();
 // ******************** Functions ************************************
 
 

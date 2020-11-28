@@ -20,10 +20,10 @@ require_once SARON_ROOT . 'app/entities/OrganizationVersion.php';
         $saronUser = new SaronUser($db, $requireEditorRole, $requireOrg);
         $orgVersion = new OrganizationVersion($db, $saronUser);
         $result = $orgVersion->select();    
-        $db->dispose();
+        
         echo $result;        
     }
     catch(Exception $error){
         echo $error->getMessage();        
-        $db->dispose();
+        
     }

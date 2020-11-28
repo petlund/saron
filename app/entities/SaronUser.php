@@ -32,6 +32,7 @@ class SaronUser {
             $this->editor = $attributes[0]["Editor"];
             $this->org_editor = $attributes[0]["Org_Editor"];
             $this->userDisplayName = $attributes[0]["UserDisplayName"];
+            $this->ID = $attributes[0]["WP_ID"];
         }
         catch(Exception $ex){
             $error=array();

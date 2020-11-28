@@ -19,10 +19,8 @@ require_once SARON_ROOT . 'app/entities/OrganizationPos.php';
         $saronUser = new SaronUser($db, $requireEditorRole, $requireOrg);
         $org = new OrganizationPos($db, $saronUser);
         $result = $org->select();    
-        $db->dispose();
         echo $result;        
     }
     catch(Exception $error){
         echo $error->getMessage();        
-        $db->dispose();
     }

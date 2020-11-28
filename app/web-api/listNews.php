@@ -16,7 +16,6 @@ require_once SARON_ROOT . 'app/entities/News.php';
         $saronUser = new SaronUser($db, $requireEditorRole, $requireOrg);
         $news = new News($db, $saronUser);
         $result = $news->select();    
-        $db->dispose();
         echo $result;        
     }
     catch(Exception $error){

@@ -3,7 +3,7 @@ header("Cache-Control: no-cache, must-revalidate");
 header("Pragma: no-cache"); //HTTP 1.0
 header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 require_once 'config.php'; 
-require_once SARON_ROOT . "app/access/wp-authenticate.php";
+require_once SARON_ROOT . "app/access/cookie.php";
 require_once SARON_ROOT . 'app/database/queries.php'; 
 require_once SARON_ROOT . 'app/database/db.php';
 require_once SARON_ROOT . 'app/entities/Person.php';
@@ -22,12 +22,12 @@ require_once SARON_ROOT . 'app/entities/Person.php';
         $db->transaction_begin();
         $result = $person->anonymization();
         $db->transaction_end();
-        $db->dispose();
+        
         echo $result;
     }
     catch(Exeption $error){
         $db->transaction_roll_back();
         $db->transaction_end();
         echo $error->getMessage();        
-        $db->dispose();            
+                    
     }    

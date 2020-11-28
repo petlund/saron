@@ -8,7 +8,8 @@ require_once SARON_ROOT . 'app/database/queries.php';
 require_once SARON_ROOT . 'app/database/db.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
 require_once SARON_ROOT . 'app/entities/SaronUsers.php';
-require_once WP_ROOT . 'wp-includes/user.php';
+require_once WP_ROOT . "wp-load.php";
+
 
     /*** REQUIRE USER AUTHENTICATION ***/
     $requireEditorRole = 0;
@@ -20,10 +21,10 @@ require_once WP_ROOT . 'wp-includes/user.php';
         $saronUser = new SaronUser($db, $requireEditorRole, $requireOrg);
         $saronUsers = new SaronUsers($db, $saronUser);
         $result = $saronUsers->getUsers(OPTIONS);
-        $db->dispose();
+        
         echo $result;
     }
     catch(Exception $error){
         echo $error->getMessage();        
-        $db->dispose();            
+                    
     }

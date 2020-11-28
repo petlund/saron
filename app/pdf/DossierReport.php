@@ -1,61 +1,62 @@
 <?php
 
-require '../../config/config.php';
-require '../database/queries.php';
-require_once (TCPDF_PATH . '/tcpdf.php');
-require_once '../database/db.php';
-require_once "../access/wp-authenticate.php";
+    require_once 'config.php';
+    require_once SARON_ROOT . "app/access/cookie.php";
+    require_once SARON_ROOT . 'app/database/queries.php';
+    require_once SARON_ROOT . 'app/database/db.php';
 
-    $requireOrg = false;
-    $requireEditorRole = false;
-        $saronUser = new SaronUser(wp_get_current_user());    
+    require_once TCPDF_PATH . '/tcpdf.php';
 
-    if(!isPermitted($saronUser, $requireEditorRole, $requireOrg)){
-        echo notPermittedMessage();
+    if(!hasValidSaronSession()){
+        exit();
     }
-    else{
-        header_remove(); 
-
-        $PersonId = (int)filter_input(INPUT_GET, "PersonId", FILTER_SANITIZE_NUMBER_INT);
-
-        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-        $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetAuthor(FullNameOfCongregation);
-        $pdf->SetTitle('Dossier');
-        $pdf->SetSubject('Dossier');
-        $pdf->SetKeywords('Medlemmar');
-
-        // set default header data
-        $pdf->SetHeaderData('', 0, FullNameOfCongregation, 'Rapport från: ' . UrlOfRegistry . ' ' . date('Y-m-d', time()));
+   
 
 
-        // set header and footer fonts
-        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+    header_remove(); 
 
-        // set default monospaced font
-        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+    $PersonId = (int)filter_input(INPUT_GET, "PersonId", FILTER_SANITIZE_NUMBER_INT);
 
-        // set margins
-        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-        $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-        // set auto page breaks
-        $pdf->SetAutoPageBreak(false, PDF_MARGIN_BOTTOM);
+    $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+    $pdf->SetCreator(PDF_CREATOR);
+    $pdf->SetAuthor(FullNameOfCongregation);
+    $pdf->SetTitle('Dossier');
+    $pdf->SetSubject('Dossier');
+    $pdf->SetKeywords('Medlemmar');
 
-        // set image scale factor
-        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+    // set default header data
+    $pdf->SetHeaderData('', 0, FullNameOfCongregation, 'Rapport från: ' . UrlOfRegistry . ' ' . date('Y-m-d', time()));
 
-        // set some language-dependent strings (optional)
-        if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
-            require_once(dirname(__FILE__).'/lang/eng.php');
-            $pdf->setLanguageArray($l);
-        }
 
-        $name = createDossier($pdf, $PersonId);
-        $pdf->Output('Registerutdrag - '. $name . ' ' . date('Y-m-d', time()).'.pdf');
-        $pdf->close();
+    // set header and footer fonts
+    $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+    $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+    // set default monospaced font
+    $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+    // set margins
+    $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+    $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+    $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+    // set auto page breaks
+    $pdf->SetAutoPageBreak(false, PDF_MARGIN_BOTTOM);
+
+    // set image scale factor
+    $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+    // set some language-dependent strings (optional)
+    if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+        require_once(dirname(__FILE__).'/lang/eng.php');
+        $pdf->setLanguageArray($l);
     }
+
+    $name = createDossier($pdf, $PersonId);
+    $pdf->Output('Registerutdrag - '. $name . ' ' . date('Y-m-d', time()).'.pdf');
+    $pdf->close();
+
+
+
 // ******************** Functions ************************************
 
 

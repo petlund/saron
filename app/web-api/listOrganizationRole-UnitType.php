@@ -21,10 +21,10 @@ require_once SARON_ROOT . 'app/entities/OrganizationRoleUnitType.php';
         $saronUser = new SaronUser($db, $requireEditorRole, $requireOrg);
         $roleUnitType = new OrganizationRoleUnitType($db, $saronUser);
         $result = $roleUnitType->select();    
-        $db->dispose();
+        
         echo $result;        
     }
     catch(Exception $error){
         echo $error->getMessage();        
-        $db->dispose();
+        
     }

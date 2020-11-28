@@ -108,7 +108,10 @@ class db {
             throw new Exception($this->jsonErrorMessage("Missing ticket", null, ""));
         }
         
-        $sql = "Select count(*) as c FROM SaronUser WHERE AccessTicket = '" . $ticket . "' and Editor >= " . $editor . " AND Org_Editor >= " . $org_editor;
+        $sql = "Select count(*) as c FROM SaronUser ";
+        $sql.= "WHERE AccessTicket = '" . $ticket . "' and ";
+        $sql.= "Editor >= " . $editor . " AND (";
+        $sql.= "Org_Editor >= " . $org_editor . " OR Editor >= " . $editor . ")";
     
         if(!$listResult = $this->connection->query($sql)){
             $this->php_dev_error_log("Exception in exist function", $sql);
