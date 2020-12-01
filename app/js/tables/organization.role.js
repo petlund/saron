@@ -92,14 +92,11 @@ function roleTableDef(tableId, unitTypeId, orgName){
                 width: '10%',
                 options:  { '0' : 'Verksamhetsroll', '1' : 'Organisationsroll [Org]' }
             },
-            Updater: {
+            UpdaterName: {
                 edit: false,
                 create: false, 
                 title: 'Uppdaterare',
-                width: '5%',
-                options: function (){
-                    return '/' + SARON_URI + 'app/web-api/listUsersAsOptions.php?selection=role';           
-                }
+                width: '5%'
             },
             Updated: {
                 edit: false,
@@ -228,14 +225,11 @@ function subUnitTableDef(tableId, orgRole_FK, roleName){
                 title: 'Beskrivning',
                 width: '50%'
             },
-            Updater: {
+            UpdaterName: {
                 edit: false,
                 create: false, 
                 title: 'Uppdaterare',
-                width: '15%',
-                options: function (){
-                    return '/' + SARON_URI + 'app/web-api/listUsersAsOptions.php';           
-                }
+                width: '15%'
             },
             Updated: {
                 edit: false,

@@ -47,9 +47,8 @@
     define("DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE_AS_APPIDENTITYNAME", DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . "as AppIdentityName ");
     //Name of Memeber State see in table MamberState
     //        define("DATES_AS_MEMBERSTATES", " IF(UPPER(CONVERT(BINARY " . DECRYPTED_LASTNAME . " USING utf8)) like '%" . ANONYMOUS . "%', 'Anonymiserad', IF(DateOfDeath is not null, 'Avliden', IF(DateOfMemberShipStart is null, IF(DateOfBaptism is null and CongregationOfBaptism is null, 'Ej medlem', 'Dopregister'), IF(DateOfMemberShipEnd is null, 'Medlem', 'Dopregister')))) ");
-    define("DATES_AS_MEMBERSTATES", " IF(UPPER(CONVERT(BINARY " . DECRYPTED_LASTNAME . " USING utf8)) like '%" . ANONYMOUS . "%', 4, IF(DateOfDeath is not null, 5, IF(DateOfMemberShipStart is null, IF(DateOfBaptism is null and CongregationOfBaptism is null, 2, 3), IF(DateOfMemberShipEnd is null, 2, 3)))) ");
+    define("DATES_AS_MEMBERSTATES", " IF(UPPER(CONVERT(BINARY " . DECRYPTED_LASTNAME . " USING utf8)) like '%" . ANONYMOUS . "%', (SELECT Name FROM MemberState WHERE Id = 4), IF(DateOfDeath is not null, (SELECT Name FROM MemberState WHERE Id = 5), IF(DateOfMemberShipStart is null, IF(DateOfBaptism is null and CongregationOfBaptism is null, (SELECT Name FROM MemberState WHERE Id = 2), (SELECT Name FROM MemberState WHERE Id = 3)), IF(DateOfMemberShipEnd is null, (SELECT Name FROM MemberState WHERE Id = 2), (SELECT Name FROM MemberState WHERE Id = 3))))) ");
     define("DATES_AS_ALISAS_MEMBERSTATES", DATES_AS_MEMBERSTATES . "as MemberState ");
-
     define("ALIAS_CUR_HOMES", "Homes");
     define("ALIAS_OLD_HOMES", "OldHome");
 
@@ -63,7 +62,7 @@
     $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_MOBILE . ", ";
     $ALL_PEOPLE_FIELDS.= "KeyToChurch, KeyToExp, ";
     $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_COMMENT . ", ";
-    $ALL_PEOPLE_FIELDS.= "People.HomeId, People.HomeId as OldHomeId, Updater, Updated, Inserter, Inserted, " . DECRYPTED_ALIAS_COMMENT_KEY . " ";
+    $ALL_PEOPLE_FIELDS.= "People.HomeId, People.HomeId as OldHomeId, Updated, Inserter, Inserted, " . DECRYPTED_ALIAS_COMMENT_KEY . " ";
     define("SQL_STAR_PEOPLE", "Select " . $ALL_PEOPLE_FIELDS);
 
     $ALL_HOME_FIELDS = "Homes.Id as HomeId, ";

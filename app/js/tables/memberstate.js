@@ -55,14 +55,11 @@ function memberstateTableDef(){
                 width: '15%',
                 options: {"0":"Nej", "1":"Ja"}
             },
-            Updater: {
+            UpdaterName: {
                 edit: false,
                 create: false, 
                 title: 'Uppdaterare',
-                width: '5%',
-                options: function (){
-                    return '/' + SARON_URI + 'app/web-api/listUsersAsOptions.php?selection=memberstate';           
-                }
+                width: '5%'
             },
             Updated: {
                 edit: false,

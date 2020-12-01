@@ -56,14 +56,11 @@ function statusTableDef(tableId){
                 title: 'Beskrivning',
                 width: '50%'
             },
-            Updater: {
+            UpdaterName:{
                 edit: false,
                 create: false, 
                 title: 'Uppdaterare',
-                width: '15%',
-                options: function (){
-                    return '/' + SARON_URI + 'app/web-api/listUsersAsOptions.php?selection=status';           
-                }
+                width: '15%'
             },
             Updated: {
                 edit: false,

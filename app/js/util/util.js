@@ -24,8 +24,6 @@ function _setClassAndValue(record, field, type){
         return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), _getVisibilityOption(record[field]), '');  
     else if(field === "KeyToChurch" || field === "KeyToExp")
         return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), _getKeyOption(record[field]), '');  
-    else if(field === "MemberState")
-        return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), _getMemberStateOptions(record[field]), '');  
     else if(field === "Letter")
         return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), _getLetterOption(record[field]), '');  
     else
@@ -119,8 +117,6 @@ function _updateFields(record, field, type){
     
     if(field === "VisibleInCalendar")
         elementValue = _getVisibilityOption(record[field]);  
-    else if(field === "MemberState")
-        elementValue = _getMemberStateOptions(record[field]);  
     else if(field === "Letter")
         elementValue = _getLetterOption(record[field]);  
     else if(field === "KeyToChurch" || field === "KeyToExp")
@@ -135,20 +131,6 @@ function _updateFields(record, field, type){
     var element = document.getElementsByClassName(className_Id);
     for(var i = 0; i<element.length;i++)
         element[i].innerHTML = elementValue;
-}
-
-
-function _getMemberStateOptions(stateId){
-    var data;
-    $.getJSON('/' + SARON_URI + 'app/web-api/listMemberState.php?selection=options', data, function( json ) {
-        data = json;
-    });
-    return ''; //data.Options[stateId].DisplayText;
-}
-
-
-function _memberStateOptions(){
-    return '/' + SARON_URI + 'app/web-api/listMemberState.php?selection=options';
 }
 
 

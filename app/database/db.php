@@ -101,7 +101,26 @@ class db {
         return false;
     }
     
-    
+    public function isItTimeToReNewTicket($ticket){
+
+        try{
+            $sql = "select if(Now() - Time_Stamp > " . TICKET_RENEWIAL_PERIOD_IN_SEC . ",1,0) as Answer from SaronUser Where AccessTicket = '" . $ticket ."'";
+            $result = $this->sqlQuery($sql);
+
+            $answer=0;
+            foreach($result as $aRow){
+                $answer = $aRow["Answer"];
+            }
+
+            if($answer === '1'){
+                return true;
+            }
+            return false;            
+        }
+        catch(Exception $ex){
+            return true;            
+        }
+    } 
     
     public function checkTicket($ticket, $editor, $org_editor){
         if(strlen($ticket) === 0){
@@ -141,10 +160,11 @@ class db {
         $sql.= $org_editor . ", ";
         $sql.= $wp_id . ", '";
         $sql.= $userDisplayName . "') ";
-        $ticket;
         try{
             $lastId = $this->insert($sql, "SaronUser", "Id");
             $result = $this->sqlQuery("Select AccessTicket from SaronUser where Id = " . $lastId);
+    
+            $ticket;
             foreach($result as $aRow){
                 $ticket = $aRow["AccessTicket"];
             }
@@ -164,16 +184,46 @@ class db {
     }
     
     
-    function updateSaronUserSession($ticket){
-        $sql = "update SaronUser where Ticket = '" . $ticket . "'";
-        $set = "SET ";        
-        $set.= "Id= UUID_TO_BINARY(UUID()) ";
-        $where = "WHERE id=" . $ticket;
-        $this->update($update, $set, $where);
-        return $this->select($this->id, RECORD);        
+    
+    function renewTicket($oldTicket){
+        try{
+            $this->transaction_begin();
+
+            $result1 = $this->sqlQuery("Select Id from SaronUser where AccessTicket = '" . $oldTicket . "'");
+            $id;
+            if($result1){
+                foreach($result1 as $aRow){
+                    $id = $aRow["Id"];
+                }
+            }
+            else{
+                throw new Exception("Valid ticket is missing.");
+            }
+
+            $update = "update SaronUser ";
+            $set = "SET ";        
+            $set.= "AccessTicket = hex(UUID_TO_BIN(UUID())) ";
+            $where = "WHERE AccessTicket = '" . $oldTicket . "'";
+
+            $this->update($update, $set, $where);
+            
+            $result2 = $this->sqlQuery("Select AccessTicket from SaronUser where Id = " . $id);
+    
+            $ticket;
+            foreach($result2 as $aRow){
+                $ticket = $aRow["AccessTicket"];
+            }
+            $this->transaction_end();
+            return $ticket;
+        }
+        catch(Exception $ex){
+            $this->transaction_roll_back();
+            $this->transaction_end();
+            throw new Exception($ex);
+        }
     }
     
-    
+  
     
     function cleanSaronUser($wp_id){
         $sql = "DELETE from SaronUser where Time_Stamp < Now() - INTERVAL 30 SECOND OR WP_ID=" . $wp_id;

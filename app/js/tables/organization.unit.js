@@ -95,14 +95,11 @@ function orgUnitTableDef(tableId){
                 title: 'Beskrivning',
                 width: '50%'
             },
-            Updater: {
+            UpdaterName: {
                 edit: false,
                 create: false, 
                 title: 'Uppdaterare',
-                width: '15%',
-                options: function (){
-                    return '/' + SARON_URI + 'app/web-api/listUsersAsOptions.php?selection=unit';           
-                }
+                width: '15%'
             },
             Updated: {
                 edit: false,
@@ -242,14 +239,11 @@ function subRoleTableDef(tableId, orgUnitType_FK, orgName){
                 options: {"0": "-", "1": "Nivå 1", "2": "Nivå 2", "3":"Nivå 3", "4": "Nivå 4", "5":"Nivå 5","6":"Nivå 6"},
                 width: '10%'
             },
-            Updater: {
+            UpdaterName: {
                 edit: false,
                 create: false, 
                 title: 'Uppdaterare',
-                width: '15%',
-                options: function (){
-                    return '/' + SARON_URI + 'app/web-api/listUsersAsOptions.php';           
-                }
+                width: '15%'
             },
             Updated: {
                 edit: false,

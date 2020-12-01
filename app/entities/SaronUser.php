@@ -21,10 +21,11 @@ class SaronUser {
     private $editor;
     private $org_editor;
     private $userDisplayName;
-    public $ID;
+    public $WP_ID;
+    
     
     function __construct($db, $requireEditor=0, $requireOrg=0) {
-        $ticket = getTicket();
+        $ticket = getTicketFromCookie();
         try{
             $db->checkTicket($ticket, $requireEditor, $requireOrg);
             $attributes = $db->loadSaronUser($ticket);        
@@ -32,7 +33,7 @@ class SaronUser {
             $this->editor = $attributes[0]["Editor"];
             $this->org_editor = $attributes[0]["Org_Editor"];
             $this->userDisplayName = $attributes[0]["UserDisplayName"];
-            $this->ID = $attributes[0]["WP_ID"];
+            $this->WP_ID = $attributes[0]["WP_ID"];
         }
         catch(Exception $ex){
             $error=array();

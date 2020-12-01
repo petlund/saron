@@ -46,7 +46,7 @@ require_once SARON_ROOT . "app/database/db.php";
     
     function logout(){
         require_once WP_ROOT . "wp-load.php";
-        $ticket = getTicket();
+        //$ticket = getTicketFromCookie();
         removeSaronCookie();
         try{
             $db = new db();
@@ -162,6 +162,7 @@ require_once SARON_ROOT . "app/database/db.php";
     }
     
 
+    
     function getRoleDisplayName($wpUser){
         if(isEditor($wpUser) ){
             return SARON_DISPLAY_NAME_EDITOR;
@@ -176,111 +177,3 @@ require_once SARON_ROOT . "app/database/db.php";
     }
     
     
-//############# OLD #############################
-//        function notPermittedMessage(){
-//        $error = array();
-//        $error["Result"] = "ERROR";
-//        $error["Message"] = "Du har inte rättigheter att göra denna åtgärd, eller så har du blivit utloggad.";
-//        echo json_encode($error);                
-//    }
-//    
-//  
-//    
-//    function checkWPSeesion(){
-//        $requireEditor = false;
-//        $requireOrg = false;
-//        $success=false;
-//	$saronUser = new SaronUser(wp_get_current_user());
-//        $loginUri = SARON_URI . LOGOUT_URU;
-//        $host = filter_input(INPUT_SERVER, 'HTTP_HOST', FILTER_SANITIZE_URL);
-//        
-//  
-//        $https = filter_input(INPUT_SERVER, 'HTTPS', FILTER_SANITIZE_URL); //  !== "on"
-//        
-//        if($host !== LOCAL_DEV_APP_HOST){
-//            if(is_ssl()){
-//                if(isPermitted($saronUser, $requireEditor, $requireOrg)){
-//                    $success = true;
-//                }
-//                else{
-//                    header("Location: https://" . SARON_URI . LOGOUT_URI);
-//                    wp_logout();
-//                    $success = false;
-//                }
-//            }
-//            else{ 
-//                header("Location: http://" . SARON_URI . LOGOUT_URI);                    
-//                wp_logout();
-//                $success = false;
-//            }
-//        }
-//        else{ //is local host
-//            if(isPermitted($saronUser, $requireEditor, $requireOrg)){
-//                $success = true;
-//            }
-//            else{
-//                header("Location: http://" . SARON_URI . LOGOUT_URI);   
-//                wp_logout();
-//                $success = false;
-//            }
-//        }
-//        return $success;        
-//    }
-//    
-//       
-//    
-//    function isLoggedIn($viewer=0, $editor=0, $org_editor=0) {
-//        if(hasValidSaronSession()){
-//            return true;
-//        }
-//        return false;
-//        
-//        
-////        if(strlen($ticket)>0){
-//            if(checkTicket($ticket, $viewer, $editor, $org_editor)){
-//                $ticket = updateSaronUserSession($ticket);
-//                return $ticket;
-//            }
-//            else{
-//                return null;
-//            }
-//        }
-//        else{
-//            $ticket = createSaronSessionUser();
-//            return $ticket;
-//        }
-//    }
-//
-//    
-//    
-//     function isPermitted($saronUser, $requireEditor, $requireOrg){
-//        require_once WP_ROOT . "wp-load.php";
-//        
-//        if(! session_id()){
-//            return false;
-//        }
-//        
-//        $userLoggedIn = is_user_logged_in();
-//        $sUser = $saronUser->isSaronUser();
-//        $editor = $saronUser->isEditor();
-//        $orgEditor = $saronUser->isOrgEditor();
-//        
-//        if($userLoggedIn){
-//            if($sUser){
-//                if($requireEditor){
-//                    return $editor;
-//                }
-//                else if($requireOrg){
-//                    return $orgEditor || $editor;
-//                }
-//                else{
-//                    return true;
-//                }
-//            }            
-//        }
-//        else{
-//            return false;
-//        }
-//    }
-//    
-//   

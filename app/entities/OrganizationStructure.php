@@ -50,7 +50,7 @@ class OrganizationStructure extends SuperEntity{
     
     
     function selectDefault($id = -1, $rec=RECORDS){
-        $select = "Select stat.*, OrgUnitType_FK, Typ.PosEnabled, Tree.Name, Tree.ParentTreeNode_FK, Tree.Description, Typ.Id as TypeId, Tree.Id as TreeId, Typ.SubUnitEnabled, Tree.Updater, Tree.Updated, ";
+        $select = "Select stat.*, OrgUnitType_FK, Typ.PosEnabled, Tree.Name, Tree.ParentTreeNode_FK, Tree.Description, Typ.Id as TypeId, Tree.Id as TreeId, Typ.SubUnitEnabled, Tree.UpdaterName, Tree.Updated, ";
         $select.= "(Select count(*) from Org_Tree as Tree1 where Tree1.ParentTreeNode_FK = Tree.Id) as HasSubUnit, ";
         $select.= "(Select count(*) from Org_Pos as Pos1 where Tree.Id = Pos1.OrgTree_FK) as HasPos, ";
         $select.= $this->saronUser->getRoleSql(false) . " ";
@@ -131,6 +131,7 @@ class OrganizationStructure extends SuperEntity{
         else{
             $set.= "ParentTreeNode_FK=null, ";        
         }
+        $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater='" . $this->saronUser->ID . "' ";
         $where = "WHERE id=" . $this->treeId;
         $this->db->update($update, $set, $where);

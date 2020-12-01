@@ -226,10 +226,9 @@ $(document).ready(function () {
                 edit: false,
                 create: false,
                 width: '4%',
-//                display: function (data){
-//                    return _setClassAndValue(data.record, "MemberState", PERSON);
-//                },       
-                options: _memberStateOptions(),
+                display: function (data){
+                    return _setClassAndValue(data.record, "MemberState", PERSON);
+                },       
             },
             VisibleInCalendar: {
                 edit: false,

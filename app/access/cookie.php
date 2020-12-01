@@ -1,10 +1,6 @@
 <?php
 require_once "config.php";
 
-    function expire(){
-        return false;
-    }
-
     function setSaronCookie($ticket){
 
         $arr_cookie_options = array (
@@ -33,12 +29,18 @@ require_once "config.php";
 
     function hasValidSaronSession(){
         try{
-            $ticket = getTicket();
+            $ticket = getTicketFromCookie();
+            
             if(strlen($ticket) === 0){  
                 header("Location: /" . SARON_URI . LOGOUT_URI);
+                exit();
             }
             $db = new db();
             $db->checkTicket($ticket, 0, 0);
+            if($db->isItTimeToReNewTicket($ticket)){
+                $ticket = $db->renewTicket($ticket);
+                setSaronCookie($ticket);
+            }
             return true;
         }
         catch(Exception $ex){
@@ -48,7 +50,7 @@ require_once "config.php";
     }
 
     
-
+    
     function removeSaronCookie(){
         if(isset($_COOKIE[COOKIE_NAME])) {
             setcookie(COOKIE_NAME, "NOT_VALID", time() - 3600);            
@@ -57,7 +59,7 @@ require_once "config.php";
 
 
 
-    function getTicket(){
+    function getTicketFromCookie(){
         if(isset($_COOKIE[COOKIE_NAME])) {
             return (String)filter_input(INPUT_COOKIE, COOKIE_NAME, FILTER_SANITIZE_STRING);                
         }    

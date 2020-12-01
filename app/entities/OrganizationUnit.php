@@ -52,7 +52,7 @@ class OrganizationUnit extends SuperEntity{
 
     
     function selectDefault($id = -1, $rec=RECORDS){
-        $select = "SELECT Typ.Id, Typ.PosEnabled, Typ.SubUnitEnabled, Typ.Name, Typ.Description, Typ.Updater, Typ.Updated, "; 
+        $select = "SELECT Typ.Id, Typ.PosEnabled, Typ.SubUnitEnabled, Typ.Name, Typ.Description, Typ.UpdaterName, Typ.Updated, "; 
         $select.= "(Select count(*) from `Org_Role-UnitType` as UnitRole WHERE UnitRole.OrgUnitType_FK = Typ.Id) as HasPos, ";
         $select.= $this->saronUser->getRoleSql(false) . " ";
         $from = "FROM Org_UnitType as Typ ";
@@ -105,6 +105,7 @@ class OrganizationUnit extends SuperEntity{
         $set.= "PosEnabled='" . $this->posEnabled . "', ";        
         $set.= "SubUnitEnabled='" . $this->subUnitEnabled . "', ";        
         $set.= "Description='" . $this->description . "', ";        
+        $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater='" . $this->saronUser->ID . "' ";
         $where = "WHERE id=" . $this->id;
         $this->db->update($update, $set, $where);

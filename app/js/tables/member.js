@@ -105,10 +105,7 @@ $(document).ready(function () {
             MemberState:{
                 width: '7',
                 edit: false,
-                title: 'Status',
-                display: function (data){
-                    return _setClassAndValue(data.record, "MemberState", PERSON);
-                }       
+                title: 'Status'    
             },
             VisibleInCalendar: {
                 edit: 'true',

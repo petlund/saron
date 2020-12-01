@@ -173,6 +173,7 @@ class OrganizationPos extends SuperEntity{
         $set.= "Comment='" . $this->comment . "', ";
         $set.= "OrgPosStatus_FK='" . $this->orgPosStatus_FK . "', ";
         $set.= "People_FK=" . $this->people_FK . ", ";
+        $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater=" . $this->saronUser->ID . " ";
         $where = "WHERE id=" . $this->posId;
         $response = $this->db->update($update, $set, $where);
@@ -186,6 +187,7 @@ class OrganizationPos extends SuperEntity{
         $set = "SET ";   
         $set.= "OrgPosStatus_FK='" . $this->orgPosStatus_FK . "', ";
         $set.= "People_FK=" . $this->people_FK . ", ";
+        $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater=" . $this->saronUser->ID . " ";
         $where = "WHERE id=" . $this->posId;
         $response = $this->db->update($update, $set, $where);

@@ -151,14 +151,11 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
                     return '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php?selection=options';
                 }
             },
-            Updater: {
+            UpdaterName: {
                 edit: false,
                 create: false, 
                 title: 'Uppdaterare',
-                width: '5%',
-                options: function (data){
-                    return '/' + SARON_URI + 'app/web-api/listUsersAsOptions.php?selection=tree';        
-                }
+                width: '5%'
             },
             Updated: {
                 edit: false,
@@ -347,14 +344,11 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
                 create: false,
                 title: 'Senast beslutad'
             },
-            Updater: {
+            UpdaterName:{
                 edit: false,
                 create: false, 
                 title: 'Uppdaterare',
-                width: '5%',
-                options: function (){
-                    return '/' + SARON_URI + 'app/web-api/listUsersAsOptions.php?selections=pos';           
-                }
+                width: '5%'
             },
             LatestUpdated: {
                 edit: false,

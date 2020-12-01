@@ -172,7 +172,7 @@ class SaronUsers extends SuperEntity{
         
         try{
             $db = new db();            
-            $sql = "select Updater as ID, 'Användarnamn saknas!' as display_name from " . $table . $this->getUpdaterSet() . " GROUP BY Updater";
+            $sql = "select UpdaterName as ID, 'Användarnamn saknas!' as display_name from " . $table . $this->getUpdaterNameSet() . " GROUP BY UpdaterName";
             $listResult = $db->sqlQuery($sql);
             foreach($listResult as $aRow){
                 $usrs[] = $aRow;
@@ -198,9 +198,9 @@ class SaronUsers extends SuperEntity{
     }
 
     
-    private function getUpdaterSet(){
+    private function getUpdaterNameSet(){
         $cntActiveUsers = count($this->users);
-        $result = " where Updater NOT in (";
+        $result = " where UpdaterName NOT in (";
         for($i = 0; $i < $cntActiveUsers; $i++){
             $result.= $this->users[$i]->ID;
             if($i<$cntActiveUsers-1){

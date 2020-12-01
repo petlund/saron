@@ -68,7 +68,7 @@ class OrganizationRole extends SuperEntity{
 
  
     function selectDefault($id = -1, $rec=RECORDS){
-        $select = "SELECT *, Role.Updater as Updater, Role.Updated as Updated, ";
+        $select = "SELECT *, Role.UpdaterName as UpdaterName, Role.Updated as Updated, ";
         $select.= "(Select count(*) from `Org_Role-UnitType` as UnitRole WHERE UnitRole.OrgRole_FK = Role.Id) as HasChild, ";
         $select.= $this->saronUser->getRoleSql(false) . " ";
         $from = "FROM Org_Role as Role ";
@@ -125,6 +125,7 @@ class OrganizationRole extends SuperEntity{
         $set.= "Name='" . $this->name . "', ";        
         $set.= "RoleType='" . $this->roleType . "', ";        
         $set.= "Description='" . $this->description . "', ";        
+        $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater='" . $this->saronUser->ID . "' ";
         $where = "WHERE id=" . $this->id;
         $this->db->update($update, $set, $where);

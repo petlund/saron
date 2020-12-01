@@ -64,6 +64,7 @@ class OrganizationStatus extends SuperEntity{
         $set = "SET ";        
         $set.= "Name='" . $this->name . "', ";        
         $set.= "Description='" . $this->description . "', ";        
+        $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater='" . $this->saronUser->ID . "' ";
         $where = "WHERE id=" . $this->id;
         $this->db->update($update, $set, $where);
