@@ -10,12 +10,12 @@ class People extends SuperEntity{
     protected $home;
     protected $tableview;
     protected $uppercaseSearchString;
-    protected $filterType;
+    protected $filter;
 
     function __construct($db, $saronUser) {
         parent::__construct($db, $saronUser);
         $this->tableview = (String)filter_input(INPUT_POST, "tableview", FILTER_SANITIZE_STRING);
-        $this->filterType = (String)filter_input(INPUT_GET, "filterType", FILTER_SANITIZE_STRING);
+        $this->filter = (String)filter_input(INPUT_GET, "filter", FILTER_SANITIZE_STRING);
     }
     
     
@@ -24,13 +24,13 @@ class People extends SuperEntity{
         case "options":
             return $this->selectPeopleOptions();       
         default:
-            return $this->selectDefault();
+            return $this->selectDefault(RECORDS);
         }
     }
 
 
     
-    function selectDefault($rec = RECORDS){
+    function selectDefault($rec){
         $tw = new PeopleViews();
         $sqlSelect = $tw->getPeopleViewSql($this->tableview, $this->saronUser);
 
@@ -53,11 +53,15 @@ class People extends SuperEntity{
         $select.= "Union "; 
         $select.= "SELECT 0 as Value, '-' as DisplayText "; 
         $select.= "Union "; 
-        $select.= "select Id as Value, " . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . "as DisplayText ";
+        $select.= "select Id as Value, " . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . " as DisplayText ";
+        
         
         $where = "";
-        if($this->filterType === "member"){
-            $where.= "WHERE " . SQL_WHERE_MEMBER;
+        if($this->filter !== "true"){
+            $where = "WHERE " . getFilteredMemberStateSql("People", null, false, true, true);
+        }
+        else{
+            $where = "WHERE " . getFilteredMemberStateSql("People", null, false, false, false);            
         }
         
         $from = "FROM People ";

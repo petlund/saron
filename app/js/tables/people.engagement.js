@@ -1,4 +1,4 @@
-/* global J_TABLE_ID, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID */
+/* global J_TABLE_ID, PERSON, DATE_FORMAT, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID */
 "use strict";
 
 const PEOPLE_ENG = "#PEOPLE_ENG";
@@ -207,7 +207,21 @@ function engagementTableDef(tableId, childTableRef, people_FK, personName){
                         return '/' + SARON_URI + 'app/web-api/listOrganizationStatus.php?selection=options&statusfilter=no';
             
                 }
-            }
+            },
+            UpdaterName: {
+                edit: false,
+                create: false, 
+                title: 'Uppdaterare',
+                width: '5%'
+            },
+            Updated: {
+                edit: false,
+                create: false, 
+                title: 'Uppdaterad',
+                type: 'date',
+                displayFormat: DATE_FORMAT,
+                width: '5%'
+            }            
         },
         rowInserted: function(event, data){
             data.row.find('.jtable-delete-command-button').hide();

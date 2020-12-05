@@ -57,6 +57,8 @@ class PeopleFilter {
                 $sqlWhere.= "OR ";
                 $sqlWhere.= "if(DateOfBaptism is null, false, EXTRACT(YEAR FROM DateOfBaptism) = EXTRACT(YEAR FROM Now())) ";
                 $sqlWhere.= "OR ";
+                $sqlWhere.= "(Select count(*) from Org_Pos Where People_FK = People.Id) > 0 ";
+                $sqlWhere.= "OR ";
                 $sqlWhere.= "(DateOfMembershipStart is NOT null and DateOfMembershipEnd is null) ";
                 $sqlWhere.= ") ";
                 return $sqlWhere; 

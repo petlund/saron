@@ -13,6 +13,7 @@ class Home extends Homes{
     function checkHomeData(){
         $error = array();
         $error["Result"] = "OK";
+        $error["Message"] = "";
         
         if(strlen($familyName) === 0){
             $error["Message"] = "Det måste finnas ett Familjenamn.";
@@ -61,7 +62,7 @@ class Home extends Homes{
     }
     
     function getHomeSelectSql($tableAlias, $homeId, $continue){
-        $sql.= getLongHomeNameSql($tableAlias, "LongHomeName", true);
+        $sql = getLongHomeNameSql($tableAlias, "LongHomeName", true);
         $sql.= getFieldSql($tableAlias, "FamilyName", "FamilyNameEncrypt", "", true, true);
         $sql.= getFieldSql($tableAlias, "Address", "AddressEncrypt", "", true, true);
         $sql.= getFieldSql($tableAlias, "Zip", "Zip", "", false, true);

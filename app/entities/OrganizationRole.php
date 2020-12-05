@@ -111,7 +111,7 @@ class OrganizationRole extends SuperEntity{
         $sqlInsert.= "'" . $this->name . "', ";
         $sqlInsert.= "'" . $this->roleType . "', ";
         $sqlInsert.= "'" . $this->description . "', ";
-        $sqlInsert.= "'" . $this->saronUser->ID . "')";
+        $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
         
         $id = $this->db->insert($sqlInsert, "Org_Role", "Id");
         return $this->select($id, RECORD);
@@ -126,7 +126,7 @@ class OrganizationRole extends SuperEntity{
         $set.= "RoleType='" . $this->roleType . "', ";        
         $set.= "Description='" . $this->description . "', ";        
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
-        $set.= "Updater='" . $this->saronUser->ID . "' ";
+        $set.= "Updater='" . $this->saronUser->WP_ID . "' ";
         $where = "WHERE id=" . $this->id;
         $this->db->update($update, $set, $where);
         return $this->select($this->id, RECORD);

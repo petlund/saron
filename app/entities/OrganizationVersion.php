@@ -51,7 +51,7 @@ class OrganizationVersion extends SuperEntity{
         $this->checkVersionData();
         $this->update_Org();
 
-        $sqlInsert = "INSERT INTO Org_Version (information, writer) ";
+        $sqlInsert = "INSERT INTO Org_Version (information, UpdaterName) ";
         $sqlInsert.= "VALUES (";
         $sqlInsert.= "'" . $this->information . "', ";
         $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "')";

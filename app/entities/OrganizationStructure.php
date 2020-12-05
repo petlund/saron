@@ -8,6 +8,7 @@ class OrganizationStructure extends SuperEntity{
     private $name;
     private $description;
     private $parentTreeNode_FK;
+    private $newParentTreeNode_FK;
     private $orgUnitType_FK;
     
     function __construct($db, $saronUser){
@@ -17,10 +18,8 @@ class OrganizationStructure extends SuperEntity{
         $this->name = (String)filter_input(INPUT_POST, "Name", FILTER_SANITIZE_STRING);
         $this->description = (String)filter_input(INPUT_POST, "Description", FILTER_SANITIZE_STRING);
         $this->orgUnitType_FK = (int)filter_input(INPUT_POST, "OrgUnitType_FK", FILTER_SANITIZE_NUMBER_INT);
-        $this->parentTreeNode_FK = (int)filter_input(INPUT_POST, "ParentTreeNode_FK", FILTER_SANITIZE_NUMBER_INT);
-        if($this->parentTreeNode_FK === 0){
-            $this->parentTreeNode_FK = (int)filter_input(INPUT_GET, "ParentTreeNode_FK", FILTER_SANITIZE_NUMBER_INT);
-        }
+        $this->newParentTreeNode_FK = (int)filter_input(INPUT_POST, "ParentTreeNode_FK", FILTER_SANITIZE_NUMBER_INT);
+        $this->parentTreeNode_FK = (int)filter_input(INPUT_GET, "ParentTreeNode_FK", FILTER_SANITIZE_NUMBER_INT);
     }
     
     function select($id = -1, $rec = RECORDS){
@@ -42,7 +41,9 @@ class OrganizationStructure extends SuperEntity{
     
     
     function selectOptions(){
-        $select = "SELECT Tree.Id as Value, Concat(Tree.Name, ' (', Typ.Name, ')')  as DisplayText ";
+        $select = "SELECT -1 as Value, '  Top'  as DisplayText ";
+        $select.= "Union ";
+        $select.= "SELECT Tree.Id as Value, Concat(Tree.Name, ' (', Typ.Name, ')')  as DisplayText ";
         $from = "FROM Org_Tree as Tree inner join Org_UnitType as Typ on Typ.Id= Tree.OrgUnitType_FK ";
         $result = $this->db->select($this->saronUser, $select , $from, "", "Order by DisplayText ", "", "Options");    
         return $result; 
@@ -50,9 +51,17 @@ class OrganizationStructure extends SuperEntity{
     
     
     function selectDefault($id = -1, $rec=RECORDS){
+        //filter all nodes witch not have childs and all child below curret node
+        
         $select = "Select stat.*, OrgUnitType_FK, Typ.PosEnabled, Tree.Name, Tree.ParentTreeNode_FK, Tree.Description, Typ.Id as TypeId, Tree.Id as TreeId, Typ.SubUnitEnabled, Tree.UpdaterName, Tree.Updated, ";
         $select.= "(Select count(*) from Org_Tree as Tree1 where Tree1.ParentTreeNode_FK = Tree.Id) as HasSubUnit, ";
         $select.= "(Select count(*) from Org_Pos as Pos1 where Tree.Id = Pos1.OrgTree_FK) as HasPos, ";
+        IF($this->newParentTreeNode_FK !== $this->parentTreeNode_FK AND $rec===RECORD){
+            $select.= "'1' as parentNodeChange, ";            
+        }
+        else{
+            $select.= "'0' as parentNodeChange, ";                        
+        }
         $select.= $this->saronUser->getRoleSql(false) . " ";
         $from = "from Org_Tree as Tree ";
         $from.= "inner join Org_UnitType as Typ on Tree.OrgUnitType_FK = Typ.Id ";
@@ -112,7 +121,7 @@ class OrganizationStructure extends SuperEntity{
         else{
             $sqlInsert.= "null, ";                                
         }
-        $sqlInsert.= "'" . $this->saronUser->ID . "')";
+        $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
         
         $id = $this->db->insert($sqlInsert, "Org_Tree", "Id");
             return $this->select($id, RECORD);
@@ -125,14 +134,14 @@ class OrganizationStructure extends SuperEntity{
         $set.= "Name='" . $this->name . "', ";        
         $set.= "Description='" . $this->description . "', ";        
         $set.= "OrgUnitType_FK='" . $this->orgUnitType_FK . "', ";   
-        if($this->parentTreeNode_FK >= 0){
-            $set.= "ParentTreeNode_FK='" . $this->parentTreeNode_FK . "', ";        
+        if($this->newParentTreeNode_FK >= 0){
+            $set.= "ParentTreeNode_FK='" . $this->newParentTreeNode_FK . "', ";        
         }
         else{
             $set.= "ParentTreeNode_FK=null, ";        
         }
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
-        $set.= "Updater='" . $this->saronUser->ID . "' ";
+        $set.= "Updater='" . $this->saronUser->WP_ID . "' ";
         $where = "WHERE id=" . $this->treeId;
         $this->db->update($update, $set, $where);
         return $this->select($this->treeId, RECORD);

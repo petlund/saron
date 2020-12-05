@@ -23,7 +23,6 @@ require_once SARON_ROOT . "app/database/db.php";
                 session_start();
         }
         
-        
         try{
             if(isSaronUser($wpUser)){
                 createSaronSessionUser($wpUser);
@@ -89,6 +88,7 @@ require_once SARON_ROOT . "app/database/db.php";
         $wp_id = $wpUser->ID;
 
         $db = new db();
+        
         $ticket = $db->storeSaronSessionUser($wp_id, $editor, $org_editor, $userDisplayName);
         setSaronCookie($ticket);
     }

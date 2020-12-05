@@ -8,16 +8,12 @@ require_once SARON_ROOT . 'app/database/queries.php';
 require_once SARON_ROOT . 'app/database/db.php';
 require_once SARON_ROOT . 'app/entities/Person.php';
 
-    $requireEditorRole = true;
-    $requireOrg = false;    
-    $saronUser = new SaronUser(wp_get_current_user());    
-
-    if(!isPermitted($saronUser, $requireEditorRole, $requireOrg)){
-        echo notPermittedMessage();
-    }
+    $requireEditorRole = 1;
+    $requireOrg = 0;    
 
     try{
         $db = new db();
+        $saronUser = new SaronUser($db, $requireEditorRole, $requireOrg);
         $person = new Person($db, $saronUser);
         $db->transaction_begin();
         $result = $person->anonymization();

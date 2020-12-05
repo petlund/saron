@@ -104,7 +104,7 @@ class OrganizationRoleUnitType extends SuperEntity{
         $sqlInsert.= "'" . $this->orgRole_FK . "', ";
         $sqlInsert.= "'" . $this->sortOrder . "', ";
         $sqlInsert.= "'" . $this->orgUnitType_FK . "', ";
-        $sqlInsert.= "'" . $this->saronUser->ID . "')";
+        $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
         
         $id = $this->db->insert($sqlInsert, "`Org_Role-UnitType`", "Id");
         return $this->select($id, RECORD);

@@ -41,6 +41,7 @@ class OrganizationPos extends SuperEntity{
     function checkEngagementData(){
         $error = array();
         $error["Result"] = "ERROR";
+        $error["Message"] = "";
 
         if($this->orgPosStatus_FK < 3 and $this->people_FK === 0){
             $error["Message"] = "Det saknas ett förslag eller en överenskommelse med någon person.";
@@ -154,7 +155,7 @@ class OrganizationPos extends SuperEntity{
         $sqlInsert1.= "null,"; //"'" . $this->orgSuperPos_FK . "', ";
         $sqlInsert1.= "'" . $this->orgRole_FK . "', ";
         $sqlInsert1.= "'" . $this->orgTree_FK . "', ";
-        $sqlInsert1.= "'" . $this->saronUser->ID . "')";
+        $sqlInsert1.= "'" . $this->saronUser->WP_ID . "')";
         
         $id = $this->db->insert($sqlInsert1, "Org_Pos", "Id");
         
@@ -174,7 +175,7 @@ class OrganizationPos extends SuperEntity{
         $set.= "OrgPosStatus_FK='" . $this->orgPosStatus_FK . "', ";
         $set.= "People_FK=" . $this->people_FK . ", ";
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
-        $set.= "Updater=" . $this->saronUser->ID . " ";
+        $set.= "Updater=" . $this->saronUser->WP_ID . " ";
         $where = "WHERE id=" . $this->posId;
         $response = $this->db->update($update, $set, $where);
         
@@ -188,7 +189,7 @@ class OrganizationPos extends SuperEntity{
         $set.= "OrgPosStatus_FK='" . $this->orgPosStatus_FK . "', ";
         $set.= "People_FK=" . $this->people_FK . ", ";
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
-        $set.= "Updater=" . $this->saronUser->ID . " ";
+        $set.= "Updater=" . $this->saronUser->WP_ID . " ";
         $where = "WHERE id=" . $this->posId;
         $response = $this->db->update($update, $set, $where);
         

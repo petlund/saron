@@ -68,7 +68,7 @@ class MemberState extends SuperEntity{
         $set.= "Description='" . $this->description . "', ";        
         $set.= "FilterCreate=" . $this->filterCreate . ", ";        
         $set.= "FilterUpdate=" . $this->filterUpdate . ", ";        
-        $set.= "Updater='" . $this->saronUser->ID . "', ";        
+        $set.= "Updater='" . $this->saronUser->WP_ID . "', ";        
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "' ";        
         $where = "WHERE id=" . $this->id;
         $this->db->update($update, $set, $where);

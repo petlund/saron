@@ -32,14 +32,14 @@ require_once "config.php";
             $ticket = getTicketFromCookie();
             
             if(strlen($ticket) === 0){  
-                header("Location: /" . SARON_URI . LOGOUT_URI);
-                exit();
+                throw new Exception();
             }
+            
             $db = new db();
             $db->checkTicket($ticket, 0, 0);
             if($db->isItTimeToReNewTicket($ticket)){
-                $ticket = $db->renewTicket($ticket);
-                setSaronCookie($ticket);
+                $newTicket = $db->renewTicket($ticket);
+                setSaronCookie($newTicket);
             }
             return true;
         }

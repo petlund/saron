@@ -90,7 +90,7 @@ class OrganizationUnit extends SuperEntity{
         $sqlInsert.= "'" . $this->description . "', ";
         $sqlInsert.= "'" . $this->posEnabled . "', ";
         $sqlInsert.= "'" . $this->subUnitEnabled . "', ";
-        $sqlInsert.= "'" . $this->saronUser->ID . "')";
+        $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
         
         $id = $this->db->insert($sqlInsert, "Org_UnitType", "Id");
         return $this->select($id, RECORD);
@@ -106,7 +106,7 @@ class OrganizationUnit extends SuperEntity{
         $set.= "SubUnitEnabled='" . $this->subUnitEnabled . "', ";        
         $set.= "Description='" . $this->description . "', ";        
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
-        $set.= "Updater='" . $this->saronUser->ID . "' ";
+        $set.= "Updater='" . $this->saronUser->WP_ID . "' ";
         $where = "WHERE id=" . $this->id;
         $this->db->update($update, $set, $where);
         return $this->select($this->id, RECORD);

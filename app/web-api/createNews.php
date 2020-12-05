@@ -9,18 +9,14 @@ require_once SARON_ROOT . 'app/database/db.php';
 require_once SARON_ROOT . 'app/entities/News.php';
 
 /*** REQUIRE USER AUTHENTICATION ***/
-    $requireEditorRole = true;
-    $requireOrg = false;
-    $saronUser = new SaronUser(wp_get_current_user());    
+    $requireEditorRole = 1;
+    $requireOrg = 0;
 
-    if(!isPermitted($saronUser, $requireEditorRole, $requireOrg)){
-        echo notPermittedMessage();
-        exit();
-    }
 
     try{
         $db = new db();
         $db->transaction_begin();
+        $saronUser = new SaronUser($db, $requireEditorRole, $requireOrg);
         $news = new News($db, $saronUser);
         $result = $news->insert();
         $db->transaction_end();            

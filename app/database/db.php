@@ -153,13 +153,14 @@ class db {
     
     
     function storeSaronSessionUser($wp_id, $editor, $org_editor, $userDisplayName ){
-        $this->cleanSaronUser($wp_id);        
+        $this->cleanSaronUser($wp_id);   
         $sql = "INSERT INTO SaronUser (AccessTicket, Editor, Org_Editor, WP_ID, UserDisplayName) values (";
-        $sql.= "hex(UUID_TO_BIN(UUID())), ";
+        $sql.= $this->getNewKey() . ", "; 
         $sql.= $editor . ", ";
         $sql.= $org_editor . ", ";
         $sql.= $wp_id . ", '";
         $sql.= $userDisplayName . "') ";
+        echo $sql;
         try{
             $lastId = $this->insert($sql, "SaronUser", "Id");
             $result = $this->sqlQuery("Select AccessTicket from SaronUser where Id = " . $lastId);
@@ -175,6 +176,10 @@ class db {
         }
     }
     
+    
+    private function getNewKey(){
+        return "'" . random_int(pow(10,floor(log(PHP_INT_MAX)/log(10))), PHP_INT_MAX) . random_int(pow(10,floor(log(PHP_INT_MAX)/log(10))), PHP_INT_MAX) . "'";
+    }
     
     function loadSaronUser($ticket){
         $sql = "select * from  SaronUser where AccessTicket='" . $ticket . "'"; 
@@ -202,7 +207,7 @@ class db {
 
             $update = "update SaronUser ";
             $set = "SET ";        
-            $set.= "AccessTicket = hex(UUID_TO_BIN(UUID())) ";
+            $set.= "AccessTicket = " . $this->getNewKey() . " ";
             $where = "WHERE AccessTicket = '" . $oldTicket . "'";
 
             $this->update($update, $set, $where);
@@ -340,6 +345,8 @@ class db {
     private function jsonErrorMessage($appErrorMsg, $connectionError=null, $sqlError=""){
         $error = array();
         $error["Result"] = "ERROR";
+        $error["Message"] = "";
+        
         $errMsg = $appErrorMsg;
         if(TEST_ENV){
             if($connectionError !== null){

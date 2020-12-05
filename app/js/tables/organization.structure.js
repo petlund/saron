@@ -54,6 +54,15 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
                 key: true,
                 list: false
             },
+            ParentTreeNode_FK:{
+                list: false,
+                edit: true, 
+                title: 'Överordna verksamhet',
+                options: function(data) {
+                    data.clearCache();
+                    return '/' + SARON_URI + 'app/web-api/listOrganizationStructure.php?selection=options'
+                }                
+            },
             SubUnitEnabled: {
                 title: '',
                 width: '1%',
@@ -145,9 +154,9 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
                 width: '5%'
                 ,
                 options: function (data){
-                    if(data.source !== 'list')
+                    if(data.source !== 'list'){
                         data.clearCache();
-
+                    } 
                     return '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php?selection=options';
                 }
             },
@@ -185,6 +194,10 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
                 data.row.find('.jtable-delete-command-button').hide();
             else
                 data.row.find('.jtable-delete-command-button').show();
+            
+            if(data.record.parentNodeChange !== '0')
+                $(tableId).jtable('load');
+
         },  
         rowInserted: function(event, data){
             data.row.addClass("TreeId_" + data.record.TreeId); 
@@ -208,6 +221,7 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
                 data.row[0].style.backgroundColor = "yellow";
 
             data.form.css('width','600px');
+            data.form.find('input[name=Name]').css('width','580px');
             data.form.find('input[name=Description]').css('width','580px');
         },
         formClosed: function (event, data){
@@ -312,11 +326,12 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
                 width: '15%',
                 title: 'Innehavare',
                 options: function(data){
-                    var filterDef = "&filterType=member";
+                    var filterDef = "&filter=true";
                     var filter = "";
-                    if(data.source !== 'list')
+                    if(data.source !== 'list'){
+                        data.clearCache();
                         filter = filterDef;
-                    
+                    }
                     return '/' + SARON_URI + 'app/web-api/listPeople.php?selection=options' + filter;
                 }
             },

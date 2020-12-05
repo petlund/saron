@@ -6,6 +6,6 @@ require_once SARON_ROOT . 'app/database/db.php';
         $saronUser = new SaronUser($db);
         echo "Inloggad som " . $saronUser->getNameAndRole(); 
     }
-    catch(Exception $ex){
-        echo 'EJ INLOGGAD';
+    catch(Exception $error){
+        throw new Exception($error);
     }

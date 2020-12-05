@@ -47,7 +47,7 @@ class Engagement extends SuperEntity{
         $subQuery2 = $subSelect2 . $subFrom . $subWhere . $subGroupBy . ") as Cnt, ";
         
         $select = "SELECT p.Id, " . getPersonSql(null, "Name", true);
-        $select.= getMemberStateSql(null, "MemberState", true);
+        $select.= getMemberStateSql("P", "MemberState", true);
         $select.= DECRYPTED_ALIAS_EMAIL . ", ";
         $select.= getFieldSql(null, "Mobile", "MobileEncrypt", "", true, true);
         $select.= $subQuery1 . $subQuery2;        
@@ -63,7 +63,7 @@ class Engagement extends SuperEntity{
         }
         else{
             $gf = new PeopleFilter();
-            $where = "WHERE (" . SQL_WHERE_MEMBER . " OR p.Id in (Select max(People_FK) from Org_Pos GROUP BY People_FK)) ";
+            $where = "WHERE (" . SQL_WHERE_MOT_MEMBER . " OR " . SQL_WHERE_MEMBER . " OR p.Id in (Select max(People_FK) from Org_Pos GROUP BY People_FK)) ";
             $where.= $gf->getSearchFilterSql($this->uppercaseSearchString);            
         }
         

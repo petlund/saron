@@ -14,7 +14,6 @@ function ping(){
         echo $ping;
     }
     catch(Exception $error){
-        $ping.=  " - Fel ";
-        return $ping;
+        throw new Exception($error);
     }
 }

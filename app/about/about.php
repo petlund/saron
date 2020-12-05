@@ -6,10 +6,9 @@ require_once 'config.php';
 require_once SARON_ROOT . "app/access/cookie.php";
 require_once SARON_ROOT . "menu.php";
 
- 
-    /*** REQUIRE USER AUTHENTICATION ***/
-
-    isLoggedIn();
+   if(!hasValidSaronSession()){
+       exit();
+   }
     
 ?>
 <!DOCTYPE html>
