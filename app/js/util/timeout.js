@@ -34,7 +34,7 @@ localStorage.setItem(LAST_ACTIVITY_TIMESTAMP, new Date().getTime());
         var diff = (new Date().getTime() - localStorage.getItem(LAST_ACTIVITY_TIMESTAMP))/1000;
         if(diff > t0 && !timeout){
             timeout=true;
-            window.location.replace('/' + SARON_URI + 'app/access/login.php?logout=true'); 
+            window.location.replace('/' + SARON_URI + 'app/access/SaronLogin.php?logout=true'); 
             updateProgressbar(t0);
         }
         else

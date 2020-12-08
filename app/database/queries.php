@@ -45,9 +45,7 @@
     define("DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME", "concat(" . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ") as Name");
     define("DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE", "concat(" . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ", ' ', " . DATE_OF_BIRTH . ") ");
     define("DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE_AS_APPIDENTITYNAME", DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . "as AppIdentityName ");
-    //Name of Memeber State see in table MamberState
-    //        define("DATES_AS_MEMBERSTATES", " IF(UPPER(CONVERT(BINARY " . DECRYPTED_LASTNAME . " USING utf8)) like '%" . ANONYMOUS . "%', 'Anonymiserad', IF(DateOfDeath is not null, 'Avliden', IF(DateOfMemberShipStart is null, IF(DateOfBaptism is null and CongregationOfBaptism is null, 'Ej medlem', 'Dopregister'), IF(DateOfMemberShipEnd is null, 'Medlem', 'Dopregister')))) ");
-    //define("DATES_AS_MEMBERSTATES", " IF(UPPER(CONVERT(BINARY " . DECRYPTED_LASTNAME . " USING utf8)) like '%" . ANONYMOUS . "%', (SELECT Name FROM MemberState WHERE Id = 4), IF(DateOfDeath is not null, (SELECT Name FROM MemberState WHERE Id = 5), IF(DateOfMemberShipStart is null, IF(DateOfBaptism is null and CongregationOfBaptism is null, (SELECT Name FROM MemberState WHERE Id = 2), (SELECT Name FROM MemberState WHERE Id = 3)), IF(DateOfMemberShipEnd is null, (SELECT Name FROM MemberState WHERE Id = 2), (SELECT Name FROM MemberState WHERE Id = 3))))) ");
+
     define("DATES_AS_MEMBERSTATES",  getMemberStateSql("People", null, false));
     define("DATES_AS_ALISAS_MEMBERSTATES", getMemberStateSql("People", "MemberState", false));
     define("ALIAS_CUR_HOMES", "Homes");
@@ -80,11 +78,10 @@
     define("SQL_FROM_PEOPLE_LEFT_JOIN_HOMES", "FROM People left outer join Homes on People.HomeId=Homes.Id "); 
     define("SQL_WHERE", "Where ");  
     define("SQL_WHERE_MEMBER", "DateOfMembershipStart is not null and DateOfMembershipEnd is null and DateOfDeath is null and " . DECRYPTED_LASTNAME . " not like '" . ANONYMOUS . "' ");  
-    define("SQL_WHERE_MOT_MEMBER", "DateOfMembershipStart is null and DateOfMembershipEnd is null and DateOfDeath is null and " . DECRYPTED_LASTNAME . " not like '" . ANONYMOUS . "' ");  
+    define("SQL_WHERE_NOT_MEMBER", "DateOfMembershipStart is null and DateOfMembershipEnd is null and DateOfDeath is null and " . DECRYPTED_LASTNAME . " not like '" . ANONYMOUS . "' ");  
 
     define("FORMATTED_EMAILADDRESS", "if(" . DECRYPTED_EMAIL . " not like \"\", concat(\"<p class='Email'><a href='mailto:\"," . DECRYPTED_EMAIL . ",\"'>\", " . DECRYPTED_EMAIL . ", \"</a></p>\"),'') ");
-    define("CONTACTS_ALIAS_RESIDENTS", "(SELECT GROUP_CONCAT('<b>', " . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . ", ':</b> ', " . DATES_AS_MEMBERSTATES . ", IF(" . DECRYPTED_EMAIL . " is NULL, '', CONCAT(', ', " . DECRYPTED_EMAIL . ")), IF(" . DECRYPTED_MOBILE . " is NULL, '', CONCAT(', ', " . DECRYPTED_MOBILE . ")) SEPARATOR '<BR>') FROM People as r where Homes.Id = r.HomeId  AND DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' order by DateOfBirth) as Residents ");
-    define("NAMES_ALIAS_RESIDENTS", "(SELECT GROUP_CONCAT(" . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . ", ' - ', " . DATES_AS_MEMBERSTATES . " SEPARATOR '<BR>') FROM People as r where Homes.Id = r.HomeId  AND DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' order by DateOfBirth) as Residents ");
+    define("CONTACTS_ALIAS_RESIDENTS", "(SELECT GROUP_CONCAT('<b>', " . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . ", ':</b> ', " . getMemberStateSql("r", null, true) . "IF(" . DECRYPTED_EMAIL . " is NULL, '', CONCAT(', ', " . DECRYPTED_EMAIL . ")), IF(" . DECRYPTED_MOBILE . " is NULL, '', CONCAT(', ', " . DECRYPTED_MOBILE . ")) SEPARATOR '<BR>') FROM People as r where Homes.Id = r.HomeId  AND DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' order by DateOfBirth) as Residents ");
 
     define("EMBEDDED_SELECT_SUPERPOS", "if(People_FK < 0, concat(' (som ', (Select Name from Org_Role as r2 where -People_FK = r2.Id),')'),'') ");
     define("ORG_POS_XREF", "(Select p1.Id, if(p1.People_FK < 0,(select p2.People_FK from Org_Pos as p2 where -p1.People_FK = p2.OrgRole_FK ), p1.People_FK) as People_FK2 from Org_Pos as p1) as xref ");
@@ -129,27 +126,7 @@
     }
 
 
-//    function getMemberStateSql_old($tableAlias, $fieldAlias, $continue){
-//        $sql = "IF(UPPER(CONVERT(BINARY " . getFieldSql($tableAlias, null, "LastNameEncrypt", null, true, false) . " USING utf8)) like '%" . ANONYMOUS . "%', 'Anonymiserad', ";
-//        $sql.= "IF(" . getFieldSql($tableAlias, null, "DateOfBirth", null, false, false) . " is null, '', ";
-//        $sql.= "IF(" . getFieldSql($tableAlias, null, "DateOfDeath", null, false, false) . " is not null, 'Avliden', ";
-//        $sql.= "IF(" . getFieldSql($tableAlias, null, "DateOfMemberShipStart", null, false, false) . " is null, ";
-//        $sql.= "IF(" . getFieldSql($tableAlias, null, "DateOfBaptism", null, false, false) . " is null and " . getFieldSql($tableAlias, null, "CongregationOfBaptism", null, false, false) . " is null, 'Ej medlem', 'Dopregister'), ";
-//        $sql.= "IF(" . getFieldSql($tableAlias, null, "DateOfMemberShipEnd", null, false, false) . " is null, 'Medlem', 'Dopregister'))))) ";
-//        if(strlen($fieldAlias) > 0){
-//            $sql.= " AS " . $fieldAlias;
-//        }
-//        if($continue){
-//            $sql.= ", ";
-//        }
-//        else{
-//            $sql.= " ";            
-//        }
-//        return $sql;
-//    }
-//    
-//    
-//    
+    
     function getMemberStateSql($tableAlias = "People", $fieldAlias, $continue){
         $sql ="(SELECT MemberState.Name FROM MemberState Where MemberState.Id = ";
         $sql.=getMemberStateIndexSql($tableAlias, null, false);

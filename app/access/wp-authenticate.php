@@ -1,7 +1,6 @@
 <?php
 require_once "config.php";
-require_once SARON_ROOT . "app/access/cookie.php";
-require_once SARON_ROOT . "app/entities/SaronUser.php";
+require_once SARON_ROOT . "app/access/SaronCookie.php";
 require_once SARON_ROOT . "app/database/db.php";
 
     define( 'WP_USE_THEMES', false );

@@ -65,6 +65,9 @@ class PeopleFilter {
             case 16:
                 //anonymiserade
                 return "(" . DECRYPTED_LASTNAME . " like '" . ANONYMOUS . "') ";
+            case 17:
+                //Medhjälpare
+                return "(" . getMemberStateIndexSql("People", null, null) . " = 6) ";
             default :
                 return SQL_WHERE_MEMBER; 
         }        

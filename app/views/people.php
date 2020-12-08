@@ -42,6 +42,7 @@ require_once SARON_ROOT . "menu.php";
                         <option value="14">Ej medlem</option>
                         <option value="15">Underlag för anonymisering under <?php include('../util/CurrentYear.php');?></option>
                         <option value="16">Anonymiserade</option>
+                        <option value="17">Medhjälpare</option>
                     </select>     
                     Söksträng:
                 <input type="text" name="searchString" id="searchString" oninput="filterPeople('<?php include('../includes/viewId.php');?>');"/>

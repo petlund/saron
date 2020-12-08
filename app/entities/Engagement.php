@@ -63,7 +63,7 @@ class Engagement extends SuperEntity{
         }
         else{
             $gf = new PeopleFilter();
-            $where = "WHERE (" . SQL_WHERE_MOT_MEMBER . " OR " . SQL_WHERE_MEMBER . " OR p.Id in (Select max(People_FK) from Org_Pos GROUP BY People_FK)) ";
+            $where = "WHERE (" . SQL_WHERE_NOT_MEMBER . " OR " . SQL_WHERE_MEMBER . " OR p.Id in (Select max(People_FK) from Org_Pos GROUP BY People_FK)) ";
             $where.= $gf->getSearchFilterSql($this->uppercaseSearchString);            
         }
         

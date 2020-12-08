@@ -59,7 +59,7 @@
                 <td>
                 </td>
                 <td style="text-align: right">
-                    <form class='saronSmallText' action="login.php" method="post">            
+                    <form class='saronSmallText' action="SaronLogin.php" method="post">            
                         <input style='width: 100%' type="text" autocomplete="off" placeholder="Användarnamn" name="log"/><BR>
                         <input style='width: 100%' type="password" autocomplete="off" placeholder="Lösenord" name="pwd"/><BR>
                         <input style='width: 100%' type="text" autocomplete="off" placeholder="OTP code" name="wp_otp_code"/>

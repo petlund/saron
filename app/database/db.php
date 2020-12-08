@@ -1,8 +1,6 @@
 <?php
 require_once "config.php";
 require_once SARON_ROOT . "app/database/queries.php";
-//require_once SARON_ROOT . "app/access/wp-authenticate.php";
-//require_once SARON_ROOT . "app/entities/SaronUser.php";
  
 class db {
     
@@ -181,6 +179,7 @@ class db {
         return "'" . random_int(pow(10,floor(log(PHP_INT_MAX)/log(10))), PHP_INT_MAX) . random_int(pow(10,floor(log(PHP_INT_MAX)/log(10))), PHP_INT_MAX) . "'";
     }
     
+    
     function loadSaronUser($ticket){
         $sql = "select * from  SaronUser where AccessTicket='" . $ticket . "'"; 
         
@@ -219,6 +218,7 @@ class db {
                 $ticket = $aRow["AccessTicket"];
             }
             $this->transaction_end();
+
             return $ticket;
         }
         catch(Exception $ex){

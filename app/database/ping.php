@@ -1,6 +1,7 @@
 <?php
 require_once 'config.php'; 
 require_once SARON_ROOT . "app/database/db.php";
+require_once SARON_ROOT . "app/entities/SaronUser.php";
 require_once SARON_ROOT . "app/access/wp-authenticate.php";
 
 function ping(){
@@ -14,6 +15,7 @@ function ping(){
         echo $ping;
     }
     catch(Exception $error){
-        throw new Exception($error);
+        $ping.= "FEL!";
+//        throw new Exception($error);
     }
 }

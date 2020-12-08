@@ -5,7 +5,7 @@
 
 
     require_once "config.php";
-    require_once SARON_ROOT . "app/access/cookie.php";
+    require_once SARON_ROOT . "app/access/SaronCookie.php";
     require_once SARON_ROOT . "app/database/ping.php";
    
    if(!hasValidSaronSession()){
@@ -100,7 +100,8 @@
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_UNIT">Organisationsenheter</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=MEMBER_STATE">Medlemsstatus</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_VER">Beslut om organisation</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_GRAPH">Grafisk presentation</a></li>
+                            <!--    <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_GRAPH">Grafisk presentation</a></li>
+                            -->
                             </ul>
                         </li>
                         <li>
@@ -112,7 +113,7 @@
                             </ul>
                         </li>
                         <li>
-                            <a href="/<?php echo SARON_URI;?>app/access/login.php?logout=true">Logga ut</a>
+                            <a href="/<?php echo SARON_URI;?>app/access/SaronLogin.php?logout=true">Logga ut</a>
                         </li>
             <!--            <li>
                             <a href="/<?php echo SARON_URI;?>dataexchange/extractDB.php">Extract</a>

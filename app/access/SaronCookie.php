@@ -12,12 +12,13 @@ require_once "config.php";
             'samesite' =>  COOCKIE_SAMESITE, // 'None' // None || Lax  || Strict
             );
 
-
+        
         if(strlen($ticket) === 0){
             $ticket = 'COOKIE_NOT_VALID';
         }
+        
 
-        setcookie(COOKIE_NAME, $ticket, $arr_cookie_options);   
+        setcookie(COOKIE_NAME, $ticket, $arr_cookie_options);  
 
         header("Cache-Control: no-cache, no-store, must-revalidate");
         header("Pragma: no-cache"); //HTTP 1.0
@@ -25,11 +26,9 @@ require_once "config.php";
     }
 
 
-
-
-    function hasValidSaronSession(){
+    function hasValidSaronSession($requireEditor=0, $requireOrg=0){
         try{
-            $ticket = getTicketFromCookie();
+                $ticket = getTicketFromCookie();
             
             if(strlen($ticket) === 0){  
                 throw new Exception();
@@ -39,7 +38,7 @@ require_once "config.php";
             $db->checkTicket($ticket, 0, 0);
             if($db->isItTimeToReNewTicket($ticket)){
                 $newTicket = $db->renewTicket($ticket);
-                setSaronCookie($newTicket);
+                    setSaronCookie($newTicket);
             }
             return true;
         }
@@ -64,23 +63,3 @@ require_once "config.php";
             return (String)filter_input(INPUT_COOKIE, COOKIE_NAME, FILTER_SANITIZE_STRING);                
         }    
     }
-    
-
-
-    function checkTicket($db, $ticket, $requireEditor, $requireOrg){
-        try{
-            if(strlen($ticket) !== 0){        
-                if($db->checkTicket($ticket, $requireEditor, $requireOrg)){
-                    return true;
-                }
-            }
-        }
-        catch(Exception $ex){
-            $error = array();
-            $error["Result"] = "ERROR";
-            $error["Message"] = "Du har inte rättigheter att göra denna åtgärd, eller så har du blivit utloggad.";
-
-            throw new Exception(json_encode($error));    
-        }        
-    }
-    

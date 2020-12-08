@@ -13,7 +13,7 @@
  */
 
 require_once "config.php";
-require_once SARON_ROOT . 'app/access/cookie.php'; 
+require_once SARON_ROOT . 'app/access/SaronCookie.php'; 
 require_once SARON_ROOT . 'app/database/queries.php'; 
 require_once SARON_ROOT . 'app/database/db.php';
 
@@ -26,9 +26,8 @@ class SaronUser {
     
     function __construct($db, $requireEditor=0, $requireOrg=0) {
         try{
-            if(hasValidSaronSession()){
+            if(hasValidSaronSession($requireEditor,$requireOrg)){
                 $ticket = getTicketFromCookie();
-                $db->checkTicket($ticket, $requireEditor, $requireOrg);
                 $attributes = $db->loadSaronUser($ticket);        
 
                 $this->editor = $attributes[0]["Editor"];
