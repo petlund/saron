@@ -7,6 +7,7 @@ class OrganizationStructure extends SuperEntity{
     private $treeId;
     private $name;
     private $description;
+    private $filter;
     private $parentTreeNode_FK;
     private $newParentTreeNode_FK;
     private $orgUnitType_FK;
@@ -15,8 +16,12 @@ class OrganizationStructure extends SuperEntity{
         parent::__construct($db, $saronUser);
         
         $this->treeId = (int)filter_input(INPUT_POST, "TreeId", FILTER_SANITIZE_NUMBER_INT);
+        if($this->treeId === 0){
+            $this->treeId = (int)filter_input(INPUT_GET, "TreeId", FILTER_SANITIZE_NUMBER_INT);            
+        }
         $this->name = (String)filter_input(INPUT_POST, "Name", FILTER_SANITIZE_STRING);
         $this->description = (String)filter_input(INPUT_POST, "Description", FILTER_SANITIZE_STRING);
+        $this->filter = (String)filter_input(INPUT_GET, "filter", FILTER_SANITIZE_STRING);
         $this->orgUnitType_FK = (int)filter_input(INPUT_POST, "OrgUnitType_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->newParentTreeNode_FK = (int)filter_input(INPUT_POST, "ParentTreeNode_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->parentTreeNode_FK = (int)filter_input(INPUT_GET, "ParentTreeNode_FK", FILTER_SANITIZE_NUMBER_INT);
@@ -41,11 +46,17 @@ class OrganizationStructure extends SuperEntity{
     
     
     function selectOptions(){
+            
         $select = "SELECT -1 as Value, '  Top'  as DisplayText ";
         $select.= "Union ";
         $select.= "SELECT Tree.Id as Value, Concat(Tree.Name, ' (', Typ.Name, ')')  as DisplayText ";
         $from = "FROM Org_Tree as Tree inner join Org_UnitType as Typ on Typ.Id= Tree.OrgUnitType_FK ";
-        $result = $this->db->select($this->saronUser, $select , $from, "", "Order by DisplayText ", "", "Options");    
+        $where = "";    
+        
+            If($this->filter === 'yes'){
+            $where = "WHERE NOT (Typ.SubUnitEnabled = 0 OR Tree.Id IN (" . $this->selectSubNodesSql($this->treeId) . ")) ";
+        }        
+        $result = $this->db->select($this->saronUser, $select , $from, $where, "Order by DisplayText ", "", "Options");    
         return $result; 
     }
     
@@ -83,6 +94,19 @@ class OrganizationStructure extends SuperEntity{
         }
     }
 
+    
+    function selectSubNodesSql($nodeId){
+        $sql = "(With RECURSIVE SubTree as ( ";
+        $sql.= "Select Id, Name, 1 as orglevel, ParentTreeNode_FK as parent from Org_Tree ";
+        $sql.= "Union All ";
+        $sql.= "Select ot.Id as Id, ot.name, st.orglevel + 1 as orglevel, st.parent as parent ";
+        $sql.= "From Org_Tree as ot inner join SubTree as st ";
+        $sql.= "where st.Id = ot.ParentTreeNode_FK) ";
+
+        $sql.= "Select Id from SubTree  where parent = " . $nodeId . " or Id = " . $nodeId . ")";        
+                
+        return $sql;
+    }
     
     function getStatusSQL(){
         $sql = "WITH RECURSIVE Sub_Tree AS (";

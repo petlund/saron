@@ -60,7 +60,7 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
                 title: 'Överordna verksamhet',
                 options: function(data) {
                     data.clearCache();
-                    return '/' + SARON_URI + 'app/web-api/listOrganizationStructure.php?selection=options'
+                    return '/' + SARON_URI + 'app/web-api/listOrganizationStructure.php?selection=options&filter=yes&TreeId=' + data.record.TreeId;
                 }                
             },
             SubUnitEnabled: {

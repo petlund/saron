@@ -28,6 +28,17 @@ function orgVersionTableDef(){
                 key: true,
                 list: false
             },
+            information: {
+                inputTitle: "Kommandot kan inte ångras. Kommandot tar bort alla markeringar om förändringar.",
+                title: 'Beslutstillfälle',
+                width: '70%'
+            },
+            UpdaterName: {
+                edit: false,
+                create: false, 
+                title: 'Uppdaterad',
+                width: '15%'
+            },
             decision_date: {
                 edit: false,
                 create: false, 
@@ -35,17 +46,6 @@ function orgVersionTableDef(){
                 width: '15%',
                 type: 'date',
                 displayFormat: DATE_FORMAT
-            },
-            information: {
-                inputTitle: "Kommandot kan inte ångras. Kommandot tar bort alla markeringar om förändringar.",
-                title: 'Beslutstillfälle',
-                width: '70%'
-            },
-            writer: {
-                edit: false,
-                create: false, 
-                title: 'Skribent',
-                width: '15%'
             }
         },
         rowInserted: function(event, data){
