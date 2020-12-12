@@ -8,10 +8,6 @@
     require_once SARON_ROOT . "app/access/SaronCookie.php";
     require_once SARON_ROOT . "app/database/ping.php";
    
-   if(!hasValidSaronSession()){
-       exit();
-   }
-    
 ?>  
 <!doctype html>
 <html>
@@ -50,6 +46,7 @@
                     </div>
                 </td>
             </tr>
+                <?php if(!hasValidSaronSession()){exit();}?>
             <tr>
                 <td colspan="4"><div>
                     <ul id="menu-bar">
