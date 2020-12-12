@@ -46,7 +46,7 @@
                 </td>
                 <td style='text-align: right'>
                     <div id="timerProgress">
-                    <div id="timerBar"></div>
+                        <div id="timerBar"></div>
                     </div>
                 </td>
             </tr>
@@ -115,15 +115,8 @@
                         <li>
                             <a href="/<?php echo SARON_URI;?>app/access/SaronLogin.php?logout=true">Logga ut</a>
                         </li>
-            <!--            <li>
-                            <a href="/<?php echo SARON_URI;?>dataexchange/extractDB.php">Extract</a>
-                        </li>
-                        <li> 
-                            <a href="/<?php echo SARON_URI;?>dataexchange/insertDB.php">Insert</a>
-                        </li>
-            -->
                     </ul>
-                        </div></td>
+                </div></td>
             </tr>
         </Table>
     </body>
