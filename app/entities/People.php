@@ -23,6 +23,10 @@ class People extends SuperEntity{
         switch ($this->selection){
         case "options":
             return $this->selectPeopleOptions();       
+        case "email":
+            return $this->selectEmail(RECORDS);       
+        case "mobileInsteadOfMail":
+            return $this->selectMobile(RECORDS);       
         default:
             return $this->selectDefault(RECORDS);
         }
@@ -69,4 +73,28 @@ class People extends SuperEntity{
         $result = $this->db->select($this->saronUser, $select, $from, $where, "ORDER BY DisplayText ", "", "Options");    
         return $result;
     }     
+    
+    function selectEmail(){
+        $select = "select ";
+        $select.= DECRYPTED_ALIAS_EMAIL;
+        $from = " from People ";
+        $where = "where " . DECRYPTED_EMAIL . " like '%@%' ";
+        $where.= "and " . SQL_WHERE_MEMBER . " ";
+        $orderby = "group by Email ";
+        $orderby.= "order by Email"; 
+
+        $result = $this->db->select($this->saronUser, $select, $from, $where, $orderby, "", RECORDS);    
+        return $result;
+    }
+
+
+    function selectMobile(){
+        $select = "Select " . DECRYPTED_FIRSTNAME_LASTNAME_AS_NAME_FL . ", " . DECRYPTED_ALIAS_MOBILE . " ";
+        $from = "FROM People ";
+        $where = "WHERE " . SQL_WHERE_MEMBER . " and " . DECRYPTED_MOBILE . " is not null and "; 
+        $where.= "(Select count(*) from People as p where People.HomeId=p.HomeId and " . DECRYPTED_EMAIL . " like '%@%')  = 0 ";        
+
+        $result = $this->db->select($this->saronUser, $select, $from, $where, "", "", RECORDS);    
+        return $result;
+    }
 }

@@ -71,8 +71,8 @@
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/OrganizationReport.php" target="_blank">Organisationskalender (pdf-fil)</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/BaptistDirectoryReport.php" target="_blank">Dopregister (pdf-fil)</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/people.php?tableview=birthdays">Födelsedagslista</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/Mailaddresses.php">Mailadresser</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/MobileNumber.php">Mobilnummer (Hem utan mail)</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/lists.php?tableview=EMAIL_LIST">Mailadresser</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/lists.php?tableview=MOBILE_INSTEAD_OF_EMAIL">Mobilnummer (Hem utan mail)</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/DossierReport.php" target="_blank">Godkännande personuppgifter (pdf-fil för alla i registret)</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/users.php">Användare</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/AddressLabels.php?type=9x3" target="_empty">Adressetiketter 9x3 (pdf-fil)</a></li>
