@@ -208,6 +208,10 @@ function engagementTableDef(tableId, childTableRef, people_FK, personName){
             
                 }
             },
+            
+            Comment:{
+                title: 'Kommentar'
+            },
             UpdaterName: {
                 edit: false,
                 create: false, 
@@ -240,7 +244,7 @@ function engagementTableDef(tableId, childTableRef, people_FK, personName){
                 $('#jtable-edit-form').append('<input type="hidden" name="OrgTree_FK" value="' + data.record.OrgTree_FK + '" />');
             }
             data.form.css('width','600px');
-            data.form.find('input[name=Description]').css('width','580px');
+            data.form.find('input[name=Comment]').css('width','580px');
         },
         formClosed: function (event, data){
             if(data.formType === 'edit')
