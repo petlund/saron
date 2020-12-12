@@ -51,8 +51,6 @@
             $type='Default';
     }
 
-    header_remove(); 
-
     define ("LIST_FONT_SIZE", 12);
     define ("FONT", 'times');
 

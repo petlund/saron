@@ -1,7 +1,7 @@
 /* global SARON_URI, green */
 
 "use strict";
-const t0 = 900; //timer time in seconds
+const t0 = 600; //timer time in seconds
 const LAST_ACTIVITY_TIMESTAMP = 'lastActivityTimeStamp';
 var timeout;
 localStorage.setItem(LAST_ACTIVITY_TIMESTAMP, new Date().getTime());
@@ -55,6 +55,6 @@ localStorage.setItem(LAST_ACTIVITY_TIMESTAMP, new Date().getTime());
         else
             elem.style.background = 'red';
         
-        elem.style.width = tr + "%";
+        //elem.style.width = tr + "%";
     }
  

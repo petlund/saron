@@ -24,8 +24,6 @@
     define ("FONT_FAMILY", 'times');
 
   
-    header_remove(); 
-
     $PersonId = (int)filter_input(INPUT_GET, "PersonId", FILTER_SANITIZE_NUMBER_INT);
 
     $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);

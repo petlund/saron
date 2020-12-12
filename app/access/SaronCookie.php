@@ -4,12 +4,12 @@ require_once "config.php";
     function setSaronCookie($ticket){
 
         $arr_cookie_options = array (
-            'expires' => time() + COOCKIE_EXPIRES, //60*60*24*30,
-            'path' => COOCKIE_PATH, // '/',
-            'domain' =>  COOCKIE_DOMAIN, // '.example.com', // leading dot for compatibility or use subdomain
-            'secure' =>  COOCKIE_SECURE, // tru,     // or false
-            'httponly' =>  COOCKIE_HTTP_ONLY, // true,    // or false
-            'samesite' =>  COOCKIE_SAMESITE, // 'None' // None || Lax  || Strict
+            'expires' => time() + COOCKIE_EXPIRES, 
+            'path' => COOCKIE_PATH, 
+            'domain' =>  COOCKIE_DOMAIN, 
+            'secure' =>  COOCKIE_SECURE,
+            'httponly' =>  COOCKIE_HTTP_ONLY, 
+            'samesite' =>  COOCKIE_SAMESITE, 
             );
 
         
@@ -17,7 +17,6 @@ require_once "config.php";
             $ticket = 'COOKIE_NOT_VALID';
         }
         
-
         setcookie(COOKIE_NAME, $ticket, $arr_cookie_options);  
 
         header("Cache-Control: no-cache, no-store, must-revalidate");
@@ -61,5 +60,6 @@ require_once "config.php";
     function getTicketFromCookie(){
         if(isset($_COOKIE[COOKIE_NAME])) {
             return (String)filter_input(INPUT_COOKIE, COOKIE_NAME, FILTER_SANITIZE_STRING);                
-        }    
+        }
+        return "NOT_VALID";
     }

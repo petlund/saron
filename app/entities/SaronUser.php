@@ -26,18 +26,13 @@ class SaronUser {
     
     function __construct($db, $requireEditor=0, $requireOrg=0) {
         try{
-            if(hasValidSaronSession($requireEditor,$requireOrg)){
-                $ticket = getTicketFromCookie();
-                $attributes = $db->loadSaronUser($ticket);        
+            $ticket = getTicketFromCookie();
+            $attributes = $db->loadSaronUser($ticket);        
 
-                $this->editor = $attributes[0]["Editor"];
-                $this->org_editor = $attributes[0]["Org_Editor"];
-                $this->userDisplayName = $attributes[0]["UserDisplayName"];
-                $this->WP_ID = $attributes[0]["WP_ID"];
-            }
-            else{
-                throw new Exception();
-            }
+            $this->editor = $attributes[0]["Editor"];
+            $this->org_editor = $attributes[0]["Org_Editor"];
+            $this->userDisplayName = $attributes[0]["UserDisplayName"];
+            $this->WP_ID = $attributes[0]["WP_ID"];
         }
         catch(Exception $ex){
             $error=array();

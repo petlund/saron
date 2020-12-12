@@ -10,10 +10,6 @@
         exit();
     }
    
-
-
-    header_remove(); 
-
     define ("INNER", 1);
     define ("OUTER", 2);
     define ("BOOKLET_OUTER_MARGIN", 10);

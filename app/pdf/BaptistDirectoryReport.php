@@ -9,9 +9,6 @@
     if(!hasValidSaronSession()){
         exit();
     }
-   
-
-    header_remove(); 
 
     define ("INNER", 1);
     define ("OUTER", 2);

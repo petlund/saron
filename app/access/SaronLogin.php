@@ -37,7 +37,7 @@
             $(document).ready(function () {
                 document.getElementById("loginButton").disabled = false;
                 document.getElementById("js-on").innerHTML = "";
-            });
+            });            
         </script>
     </head>
     <body>
@@ -52,7 +52,7 @@
                 <td>
                     <p class='saronSmallText'>Logga in till: <?php echo NameOfRegistry;?></p>
                 </td>
-                <td>
+                <td>    
                 </td>
             </tr>
             <tr>

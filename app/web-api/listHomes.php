@@ -9,8 +9,6 @@ require_once SARON_ROOT . 'app/database/db.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
 require_once SARON_ROOT . 'app/entities/Home.php';
 
-    //header_remove(); 
-
     $requireEditorRole = 0;
     $requireOrg = 0;
 
