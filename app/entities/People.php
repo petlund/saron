@@ -61,7 +61,7 @@ class People extends SuperEntity{
         
         
         $where = "";
-        if($this->filter !== "true"){
+        if($this->filter === "true"){
             $where = "WHERE " . getFilteredMemberStateSql("People", null, false, true, true);
         }
         else{

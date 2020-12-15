@@ -17,22 +17,27 @@ require_once SARON_ROOT . 'app/access/SaronCookie.php';
 require_once SARON_ROOT . 'app/database/queries.php'; 
 require_once SARON_ROOT . 'app/database/db.php';
 
-class SaronUser {
+class SaronUser{
+    private $db;
     private $editor;
     private $org_editor;
     private $userDisplayName;
+    private $timeStamp;
+    private $ticket;
     public $WP_ID;
     
     
     function __construct($db, $requireEditor=0, $requireOrg=0) {
         try{
-            $ticket = getTicketFromCookie();
-            $attributes = $db->loadSaronUser($ticket);        
+            $this->db = $db;
+            $this->ticket = getTicketFromCookie();
+            $attributes = $db->loadSaronUser($this->ticket);        
 
             $this->editor = $attributes[0]["Editor"];
             $this->org_editor = $attributes[0]["Org_Editor"];
             $this->userDisplayName = $attributes[0]["UserDisplayName"];
             $this->WP_ID = $attributes[0]["WP_ID"];
+            $this->timeStamp = $attributes[0]["WP_ID"];
         }
         catch(Exception $ex){
             $error=array();
@@ -111,5 +116,14 @@ class SaronUser {
         
     function getNameAndRole(){
         return $this->getDisplayName() . " - " . $this->getRoleDisplayName();
+    }
+    
+    
+    function select(){
+        $select = "SELECT Time_Stamp ";
+        $from = "FROM SaronUser ";
+        $where = "WHERE AccessTicket = '" . $this->ticket. "' ";
+        $result = $this->db->select($this, $select, $from, $where, "", "", RECORD);
+        return $result;
     }
 }

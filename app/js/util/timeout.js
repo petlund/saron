@@ -4,29 +4,37 @@
 const t0 = 600; //timer time in seconds
 const LAST_ACTIVITY_TIMESTAMP = 'lastActivityTimeStamp';
 var timeout;
-localStorage.setItem(LAST_ACTIVITY_TIMESTAMP, new Date().getTime());
     
     $(document).ready(function () {
         timeout = false;
+        newTimeStamp(true);
+
         updateProgressbar(0);
         setInterval(function(){ checkTimerDiff(); }, 1000);
-        newTimeStamp();
+        newTimeStamp(false);
         //Comment
         document.addEventListener('mousemove',function (){
-            newTimeStamp();
+            newTimeStamp(false);
         }); 
         document.addEventListener('click',function (){
-            newTimeStamp();
+            newTimeStamp(false);
         }); 
         document.addEventListener('keypress',function (){
-            newTimeStamp();
+            newTimeStamp(false);
         });
     });
 
 
 
-    function newTimeStamp(){
-        localStorage.setItem('lastActivityTimeStamp', new Date().getTime());
+    function newTimeStamp(fromUser){
+        if(fromUser){
+            getUserSessionTime();
+            checkTimerDiff();
+        }
+        else{
+            checkTimerDiff();
+            localStorage.setItem(LAST_ACTIVITY_TIMESTAMP, new Date().getTime());
+        }
     }
 
 
@@ -42,6 +50,28 @@ localStorage.setItem(LAST_ACTIVITY_TIMESTAMP, new Date().getTime());
     }
 
 
+
+    function getUserSessionTime(){
+        var time = 0;
+        var httpCall = $.get( '/' + SARON_URI + 'app/web-api/listSaronUser.php?selection=time', function(jsonTime) {
+            var data = JSON.parse(jsonTime);
+
+            if(data.Record.Time_Stamp.length > 0){
+                var strTime = data.Record.Time_Stamp;
+                time = new Date(strTime).getTime();
+                localStorage.setItem(LAST_ACTIVITY_TIMESTAMP, time);
+            }
+        })
+        .done(function(){
+        })
+        .fail(function() {
+        })
+        .always(function() {
+        });
+    }
+        
+        
+        
     function updateProgressbar(t) {
         var elem = document.getElementById("timerBar");
         if(elem === null)
