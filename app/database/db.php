@@ -99,10 +99,12 @@ class db {
         return false;
     }
     
+    
+    
     public function isItTimeToReNewTicket($ticket){
 
         try{
-            $sql = "select if(Now() - Time_Stamp > " . TICKET_RENEWIAL_PERIOD_IN_SEC . ",1,0) as Answer from SaronUser Where AccessTicket = '" . $ticket ."'";
+            $sql = "select if(Now() - Time_Stamp > " . TICKET_RENEWIAL_PERIOD_IN_SEC . ",if(Now() - Time_Stamp > 2 * " . SESSION_EXPIRES . ", -1, 1),0) as Answer from SaronUser Where AccessTicket = '" . $ticket ."'";
             $result = $this->sqlQuery($sql);
 
             $answer=0;
@@ -113,17 +115,23 @@ class db {
             if($answer === '1'){
                 return true;
             }
+            else if($answer === '-1'){
+                throw new Exception("Session timed out!");
+            }
             return false;            
         }
         catch(Exception $ex){
-            return true;            
+            throw new Exception($ex);
         }
     } 
+    
+    
     
     public function checkTicket($ticket, $editor, $org_editor){
         if(strlen($ticket) === 0){
             throw new Exception($this->jsonErrorMessage("Missing ticket", null, ""));
         }
+        $this->cleanSaronUser(-1);
         
         $sql = "Select count(*) as c FROM SaronUser ";
         $sql.= "WHERE AccessTicket = '" . $ticket . "' and ";
@@ -153,7 +161,7 @@ class db {
     function storeSaronSessionUser($wp_id, $editor, $org_editor, $userDisplayName ){
         $this->cleanSaronUser($wp_id);   
         $sql = "INSERT INTO SaronUser (AccessTicket, Editor, Org_Editor, WP_ID, UserDisplayName) values (";
-        $sql.= $this->getNewKey() . ", "; 
+        $sql.= $this->getAccessTicket() . ", "; 
         $sql.= $editor . ", ";
         $sql.= $org_editor . ", ";
         $sql.= $wp_id . ", '";
@@ -163,7 +171,7 @@ class db {
             $lastId = $this->insert($sql, "SaronUser", "Id");
             $result = $this->sqlQuery("Select AccessTicket from SaronUser where Id = " . $lastId);
     
-            $ticket;
+            $ticket = "";
             foreach($result as $aRow){
                 $ticket = $aRow["AccessTicket"];
             }
@@ -175,7 +183,7 @@ class db {
     }
     
     
-    private function getNewKey(){
+    private function getAccessTicket(){
         return "'" . random_int(pow(10,floor(log(PHP_INT_MAX)/log(10))), PHP_INT_MAX) . random_int(pow(10,floor(log(PHP_INT_MAX)/log(10))), PHP_INT_MAX) . "'";
     }
     
@@ -206,7 +214,7 @@ class db {
 
             $update = "update SaronUser ";
             $set = "SET ";        
-            $set.= "AccessTicket = " . $this->getNewKey() . " ";
+            $set.= "AccessTicket = " . $this->getAccessTicket() . " ";
             $where = "WHERE AccessTicket = '" . $oldTicket . "'";
 
             $this->update($update, $set, $where);
@@ -231,7 +239,7 @@ class db {
   
     
     function cleanSaronUser($wp_id){
-        $sql = "DELETE from SaronUser where Time_Stamp < Now() - INTERVAL 30 SECOND OR WP_ID=" . $wp_id;
+        $sql = "DELETE from SaronUser where  (Now() - Time_Stamp) > 2 * " . SESSION_EXPIRES . " OR WP_ID=" . $wp_id;
         $this->delete($sql);
     }
     

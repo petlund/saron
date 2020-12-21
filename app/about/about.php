@@ -6,9 +6,6 @@ require_once 'config.php';
 require_once SARON_ROOT . "app/access/SaronCookie.php";
 require_once SARON_ROOT . "menu.php";
 
-   if(!hasValidSaronSession()){
-       exit();
-   }
     
 ?>
 <!DOCTYPE html>

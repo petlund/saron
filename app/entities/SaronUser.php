@@ -37,7 +37,7 @@ class SaronUser{
             $this->org_editor = $attributes[0]["Org_Editor"];
             $this->userDisplayName = $attributes[0]["UserDisplayName"];
             $this->WP_ID = $attributes[0]["WP_ID"];
-            $this->timeStamp = $attributes[0]["WP_ID"];
+            $this->timeStamp = $attributes[0]["Time_Stamp"];
         }
         catch(Exception $ex){
             $error=array();
@@ -114,9 +114,11 @@ class SaronUser{
     }
     
         
+    
     function getNameAndRole(){
         return $this->getDisplayName() . " - " . $this->getRoleDisplayName();
     }
+    
     
     
     function select(){
@@ -125,5 +127,12 @@ class SaronUser{
         $where = "WHERE AccessTicket = '" . $this->ticket. "' ";
         $result = $this->db->select($this, $select, $from, $where, "", "", RECORD);
         return $result;
+    }
+    
+    
+    
+    function delete(){
+        return $this->db->delete("delete from SaronUser where WP_ID=" . $this->WP_ID);
+        
     }
 }

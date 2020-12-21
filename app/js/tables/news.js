@@ -18,7 +18,7 @@ function newsTableDef(){
         multiSorting: true,
         defaultSorting: 'news_date desc', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listNews.php?ts=' + Date.now() * 1000,
+            listAction:   '/' + SARON_URI + 'app/web-api/listNews.php',
             createAction:   '/' + SARON_URI + 'app/web-api/createNews.php',
             //updateAction:   '/' + SARON_URI + 'app/web-api/updateNews.php'
             updateAction: function(postData) {

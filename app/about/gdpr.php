@@ -7,10 +7,7 @@ require_once SARON_ROOT . "app/access/SaronCookie.php";
 require_once SARON_ROOT . "menu.php";
 
 
-   if(!hasValidSaronSession()){
-       exit();
-   }
-    
+  
 echo "Write your own text about GDPR!"
     ?>
     

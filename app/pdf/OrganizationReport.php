@@ -9,6 +9,17 @@
     if(!hasValidSaronSession()){
         exit();
     }
+    $type = (String)filter_input(INPUT_GET, "type", FILTER_SANITIZE_STRING);
+
+    switch ($type){
+        case "proposal":
+            break;
+        case "decided":
+            break;
+        default:
+            $type='Default';
+    }
+
   
 
     define ("INNER", 1);
