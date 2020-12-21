@@ -68,7 +68,7 @@
                             <a href="#">Rapporter</a>
                             <ul>
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/DirectoryReport.php" target="_blank">Adresskalender (pdf-fil)</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/pdf/OrganizationReport.php" target="_blank">Organisationskalender (pdf-fil)</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/pdf/OrganizationReport.php?type=decided" target="_blank">Organisationskalender beslutad (pdf-fil)</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/BaptistDirectoryReport.php" target="_blank">Dopregister (pdf-fil)</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/people.php?tableview=birthdays">Födelsedagslista</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/lists.php?tableview=EMAIL_LIST">Mailadresser</a></li>
@@ -90,6 +90,7 @@
                         <li>
                             <a href="">Organisation</a>
                             <ul>
+                                <li><a href="/<?php echo SARON_URI;?>app/pdf/OrganizationReport.php?type=proposal" target="_blank">Organisationskalender förslag(pdf-fil)</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/engagement.php?tableview=PEOPLE_ENG">Ansvar per person</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_STRUCT">Organisation & Bemanning</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_ROLE_STATUS">Bemanningsstatus</a></li>
