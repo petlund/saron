@@ -24,7 +24,7 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
         pageList: 'minimal',
         sorting: true, //Enable sorting
         multiSorting: true,
-        defaultSorting: 'Name', //Set default sorting        
+        defaultSorting: 'Prefix, Name', //Set default sorting        
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationStructure.php?ParentTreeNode_FK=' + parentTreeNode_FK,
             createAction: '/' + SARON_URI + 'app/web-api/createOrganizationStructure.php?ParentTreeNode_FK=' + parentTreeNode_FK,
@@ -139,9 +139,15 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
                     }
                 }
             },
+            Prefix: {
+                width: '1%',
+                title: 'Prefix',
+                listClass: 'saron-number'
+                
+            },
             Name: {
                 width: '10%',
-                title: 'Namn'
+                title: 'Namn',
             },
             Description: {
                 width: '15%',
@@ -323,8 +329,10 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
                 title: 'Kommentar',                
             },
             People_FK: {
-                width: '15%',
-                title: 'Innehavare',
+                title: 'Ansvarig person',
+                create: true,
+                edit: true,
+                list: false,
                 options: function(data){
                     var filterDef = "&filter=true";
                     var filter = "";
@@ -334,6 +342,22 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
                     }
                     return '/' + SARON_URI + 'app/web-api/listPeople.php?selection=options' + filter;
                 }
+            },
+            Function_FK: {
+                title: 'Alternativt funktionsansvar',
+                create: true,
+                edit: true,
+                list: false,
+                options: function(data){
+                    return '/' + SARON_URI + 'app/web-api/listOrganizationStructure.php?selection=options';
+                }
+            },
+            Responsible: {
+                create: false,
+                edit: false,
+                width: '15%',
+                title: 'Ansvar',
+                list: true,
             },
             MemberState: {
                 title: 'Medlemsstatus',
@@ -353,7 +377,7 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
                 create: false,
                 width: '10%'                
             },
-            PrevPerson: {
+            PrevResponsible: {
                 width: '10%',
                 edit: false,
                 create: false,

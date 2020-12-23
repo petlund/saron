@@ -6,6 +6,7 @@ class OrganizationStructure extends SuperEntity{
     
     private $treeId;
     private $name;
+    private $prefix;
     private $description;
     private $filter;
     private $parentTreeNode_FK;
@@ -19,6 +20,7 @@ class OrganizationStructure extends SuperEntity{
         if($this->treeId === 0){
             $this->treeId = (int)filter_input(INPUT_GET, "TreeId", FILTER_SANITIZE_NUMBER_INT);            
         }
+        $this->prefix = (String)filter_input(INPUT_POST, "Prefix", FILTER_SANITIZE_STRING);
         $this->name = (String)filter_input(INPUT_POST, "Name", FILTER_SANITIZE_STRING);
         $this->description = (String)filter_input(INPUT_POST, "Description", FILTER_SANITIZE_STRING);
         $this->filter = (String)filter_input(INPUT_GET, "filter", FILTER_SANITIZE_STRING);
@@ -47,7 +49,7 @@ class OrganizationStructure extends SuperEntity{
     
     function selectOptions(){
             
-        $select = "SELECT -1 as Value, '  Top'  as DisplayText ";
+        $select = "SELECT -1 as Value, '  -'  as DisplayText ";
         $select.= "Union ";
         $select.= "SELECT Tree.Id as Value, Concat(Tree.Name, ' (', Typ.Name, ')')  as DisplayText ";
         $from = "FROM Org_Tree as Tree inner join Org_UnitType as Typ on Typ.Id= Tree.OrgUnitType_FK ";
@@ -64,7 +66,7 @@ class OrganizationStructure extends SuperEntity{
     function selectDefault($id = -1, $rec=RECORDS){
         //filter all nodes witch not have childs and all child below curret node
         
-        $select = "Select stat.*, OrgUnitType_FK, Typ.PosEnabled, Tree.Name, Tree.ParentTreeNode_FK, Tree.Description, Typ.Id as TypeId, Tree.Id as TreeId, Typ.SubUnitEnabled, Tree.UpdaterName, Tree.Updated, ";
+        $select = "Select stat.*, OrgUnitType_FK, Typ.PosEnabled, Tree.Name, Tree.ParentTreeNode_FK, Tree.Prefix, Tree.Description, Typ.Id as TypeId, Tree.Id as TreeId, Typ.SubUnitEnabled, Tree.UpdaterName, Tree.Updated, ";
         $select.= "(Select count(*) from Org_Tree as Tree1 where Tree1.ParentTreeNode_FK = Tree.Id) as HasSubUnit, ";
         $select.= "(Select count(*) from Org_Pos as Pos1 where Tree.Id = Pos1.OrgTree_FK) as HasPos, ";
         IF($this->newParentTreeNode_FK !== $this->parentTreeNode_FK AND $rec===RECORD){
@@ -133,8 +135,9 @@ class OrganizationStructure extends SuperEntity{
     }
     
     function insert(){
-        $sqlInsert = "INSERT INTO Org_Tree (Name, Description, OrgUnitType_FK, ParentTreeNode_FK, Updater) ";
+        $sqlInsert = "INSERT INTO Org_Tree (Prefix, Name, Description, OrgUnitType_FK, ParentTreeNode_FK, Updater) ";
         $sqlInsert.= "VALUES (";
+        $sqlInsert.= "'" . $this->prefix  . "', ";
         $sqlInsert.= "'" . $this->name  . "', ";
         $sqlInsert.= "'" . $this->description . "', ";
         $sqlInsert.= "'" . $this->orgUnitType_FK . "', ";
@@ -155,6 +158,7 @@ class OrganizationStructure extends SuperEntity{
     function update(){
         $update = "UPDATE Org_Tree ";
         $set = "SET ";        
+        $set.= "Prefix='" . $this->prefix . "', ";        
         $set.= "Name='" . $this->name . "', ";        
         $set.= "Description='" . $this->description . "', ";        
         $set.= "OrgUnitType_FK='" . $this->orgUnitType_FK . "', ";   

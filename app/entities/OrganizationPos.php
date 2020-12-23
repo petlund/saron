@@ -8,6 +8,7 @@ class OrganizationPos extends SuperEntity{
     private $posTreeId;
     private $comment;
     private $people_FK;
+    private $function_FK;
     private $prevPeople_FK;
     private $orgPosStatus_FK;
     private $orgRole_FK;
@@ -24,6 +25,7 @@ class OrganizationPos extends SuperEntity{
 
         $this->comment = (String)filter_input(INPUT_POST, "Comment", FILTER_SANITIZE_STRING);
         
+        $this->function_FK = (int)filter_input(INPUT_POST, "Function_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->people_FK = (int)filter_input(INPUT_POST, "People_FK", FILTER_SANITIZE_NUMBER_INT);
         if($this->people_FK === 0){
             $this->people_FK = (int)filter_input(INPUT_GET, "People_FK", FILTER_SANITIZE_NUMBER_INT);
@@ -43,22 +45,30 @@ class OrganizationPos extends SuperEntity{
         $error["Result"] = "ERROR";
         $error["Message"] = "";
 
-        if($this->orgPosStatus_FK < 3 and $this->people_FK === 0){
-            $error["Message"] = "Det saknas ett förslag eller en överenskommelse med någon person.";
-            throw new Exception(json_encode($error));
-        }
-        if($this->orgPosStatus_FK > 2 and $this->people_FK !== 0 ){
-            if($this->source === "EngagementView"){
-                $this->people_FK = 0; 
-            }
-            else{
-                $error["Message"] = "Om positionen inte ska tillsättas eller är vakant ska ingen person kopplas till positionen.";
+        if($this->orgPosStatus_FK === 6 ){
+            if($this->people_FK > 0 || !($this->function_FK > 0)){
+                $error["Message"] = "Eftersom ett funktionsansvar är angivet ska endast en funktion sättas som ansvarig.";
                 throw new Exception(json_encode($error));
             }
         }
-        if($this->orgPosStatus_FK === 6 and strlen($this->comment) === 0 ){
-            $error["Message"] = "Ange med en kommentar vilken funktion som har ansvaret.";
-            throw new Exception(json_encode($error));
+        else{
+            if($this->orgPosStatus_FK < 3 and $this->people_FK === 0){
+                $error["Message"] = "Det saknas ett förslag eller en överenskommelse med någon person.";
+                throw new Exception(json_encode($error));
+            }
+            if($this->orgPosStatus_FK > 2 and $this->people_FK !== 0 ){
+                if($this->source === "EngagementView"){
+                    $this->people_FK = 0; 
+                }
+                else{
+                    $error["Message"] = "Om positionen inte ska tillsättas eller är vakant ska ingen person kopplas till positionen.";
+                    throw new Exception(json_encode($error));
+                }
+            }
+            if($this->function_FK > 0){
+                $error["Message"] = "Igen funktion ska anges som ansvarig.";
+                throw new Exception(json_encode($error));
+            }
         }
     }
 
@@ -81,6 +91,8 @@ class OrganizationPos extends SuperEntity{
         $select = "SELECT Pos.*, Tree.ParentTreeNode_FK, Role.Name, Role.RoleType, Pos.Id as PosId,  IF(Pos.Updated>Role.updated, Pos.Updated, Role.Updated) as LatestUpdated, ";
         $select.= "(Select SortOrder from `Org_Role-UnitType` as RUT WHERE  RUT.OrgRole_FK = Pos.OrgRole_FK and RUT.OrgUnitType_FK = Tree.OrgUnitType_FK) as SortOrder, ";
         $select.= getPersonSql("pPrev", "PrevPerson", true);
+        $select.= "IF(Pos.OrgPosStatus_FK = 6, (Select T.Name From Org_Tree as T Where T.Id = Pos.Function_FK), IF(People_FK > 0," . getPersonSql("pCur", null, false) . ", (Select R.Name From Org_Role as R Where R.Id = -People_FK))) as Responsible, ";
+        $select.= "IF(Pos.PrevOrgPosStatus_FK = 6, (Select T.Name From Org_Tree as T Where T.Id = Pos.PrevFunction_FK), IF(PrevPeople_FK > 0," . getPersonSql("pPrev", null, false) . ", (Select R.Name From Org_Role as R Where R.Id = -PrevPeople_FK))) as PrevResponsible, ";
         $select.= "Role.Name as RoleName, ";
         $select.= getMemberStateSql("pCur", "MemberState", true);
         $select.= getFieldSql("pCur", "Email", "EmailEncrypt", "", true, true);
@@ -147,9 +159,10 @@ class OrganizationPos extends SuperEntity{
     
     function insert(){
         $this->checkEngagementData();
-        $sqlInsert1 = "INSERT INTO Org_Pos (People_FK, Comment, OrgPosStatus_FK, OrgSuperPos_FK, OrgRole_FK, OrgTree_FK, Updater) ";
+        $sqlInsert1 = "INSERT INTO Org_Pos (People_FK, Function_FK, Comment, OrgPosStatus_FK, OrgSuperPos_FK, OrgRole_FK, OrgTree_FK, Updater) ";
         $sqlInsert1.= "VALUES (";
         $sqlInsert1.= "'" . $this->people_FK . "', ";
+        $sqlInsert1.= "'" . $this->function_FK . "', ";
         $sqlInsert1.= "'" . $this->comment . "', ";
         $sqlInsert1.= "'" . $this->orgPosStatus_FK . "', ";
         $sqlInsert1.= "null,"; //"'" . $this->orgSuperPos_FK . "', ";
@@ -174,6 +187,7 @@ class OrganizationPos extends SuperEntity{
         $set.= "Comment='" . $this->comment . "', ";
         $set.= "OrgPosStatus_FK='" . $this->orgPosStatus_FK . "', ";
         $set.= "People_FK=" . $this->people_FK . ", ";
+        $set.= "Function_FK=" . $this->function_FK . ", ";
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater=" . $this->saronUser->WP_ID . " ";
         $where = "WHERE id=" . $this->posId;

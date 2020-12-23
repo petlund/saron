@@ -4,16 +4,8 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/config/config.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/util/timeout.js</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/db.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/access/wp-authenticate.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/SaronUser.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/menu.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/People.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/web-api/listHomes.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/web-api/listSaronUser.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/pdf/OrganizationReport.php</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/util/util.js</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/web-api/getServerTime.php</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/teest.php</file>
         </group>
     </open-files>
