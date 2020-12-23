@@ -234,7 +234,7 @@ function getSQL($type){
             . "(Select SortOrder from `Org_Role-UnitType` as RUT WHERE  RUT.OrgRole_FK = Pos.OrgRole_FK and RUT.OrgUnitType_FK = Tree.OrgUnitType_FK) as SortOrder,  "
             . "PState.Name as State_Name, PState.Id as State_Id, Pos.People_FK as PersonId, "
             . "Pos.PrevPeople_FK as PrevPersonId, Unit.Name as Unit_Name, "; 
-    $sql.= "(Select T.Name from Org_Tree as T Where t.Id = Function_FK) as FunctionRespons, ";
+    $sql.= "(Select T.Name from Org_Tree as T Where T.Id = Function_FK) as FunctionRespons, ";
     $sql.= getFieldSql("People", "Email", "EmailEncrypt", null, true, true);
     $sql.= getFieldSql("People", "Mobile", "MobileEncrypt", null, true, true);
     $sql.= "IF(People_FK>0, CONCAT(";
