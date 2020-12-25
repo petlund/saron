@@ -117,13 +117,18 @@ function createOrganizationCalender(TCPDF $pdf, String $type){
     
     $pdf->SetLineStyle(array('width' => 0.2, 'color' => array(100, 100, 100)));
     $pdf->SetFillColor(200, 200, 200);
-    
+
+    $result = $db->sqlQuery("Select * from Org_Version WHERE id in (Select max(id) from Org_Version)");
+    $decisionInfo = "Beslutsinformations saknas om orgnisation";
+    foreach($result as $aRow){
+        $decisionDate  = substr($aRow['decision_date'], 0, 10);
+    }    
     switch ($type){
         case "proposal":
-            $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, "Arbetsmaterial med förslag till förändringar", 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_HEAD_CELL_HIGHT, 'T', true);
+            $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, "Förslag till förändringar utifrån beslutad organisation - " . $decisionDate, 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_HEAD_CELL_HIGHT, 'T', true);
             break;
         default:
-            $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, "Beslutad organisation", 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_HEAD_CELL_HIGHT, 'T', true);
+            $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, "Beslutad organisation - " . $decisionDate, 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_HEAD_CELL_HIGHT, 'T', true);
     }
 
     

@@ -5,14 +5,15 @@ require_once SARON_ROOT . 'app/entities/SaronUser.php';
 class OrganizationVersion extends SuperEntity{
     
     private $id;
+    private $decision_date;
     private $information;
             
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
         
-        $this->information = (String)filter_input(INPUT_POST, "information", FILTER_SANITIZE_STRING);
-        
         $this->id = (int)filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT);
+        $this->information = (String)filter_input(INPUT_POST, "information", FILTER_SANITIZE_STRING);
+        $this->decision_date = (String)filter_input(INPUT_POST, "decision_date", FILTER_SANITIZE_STRING);
     }
     
     function select($id = -1, $rec=RECORDS){
@@ -36,6 +37,12 @@ class OrganizationVersion extends SuperEntity{
             throw new Exception(json_encode($error));
         }
          
+        if(strlen($this->decision_date) < 10){
+            $error["Result"] = "ERROR";
+            $error["Message"] = "Giltigt dataum saknas för beslutstillfället.";
+            throw new Exception(json_encode($error));
+        }
+         
     }
     
     
@@ -47,14 +54,28 @@ class OrganizationVersion extends SuperEntity{
         $where = "WHERE OrgPosStatus_FK in (1, 5, 6)";
         $this->db->update($update, $set, $where);
     }
-    
-    
+
+
+    function  update(){ // TBD
+        $this->checkVersionData();
+        $update = "update Org_Version ";
+        $set = "SET ";        
+        $set.= "decision_date = '" . $this->decision_date .  "', ";        
+        $set.= "information = '". $this->information . "' ";        
+        $where = "WHERE id = "  . $this->id;
+        $this->db->update($update, $set, $where);        
+
+        $result =  $this->select($this->id, RECORD);
+        return $result;
+    }
+            
     function insert(){
         $this->checkVersionData();
         $this->update_Org();
 
-        $sqlInsert = "INSERT INTO Org_Version (information, UpdaterName) ";
+        $sqlInsert = "INSERT INTO Org_Version (decision_date, information, UpdaterName) ";
         $sqlInsert.= "VALUES (";
+        $sqlInsert.= "'" . $this->decision_date . "', ";
         $sqlInsert.= "'" . $this->information . "', ";
         $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "')";
         
