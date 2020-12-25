@@ -99,11 +99,12 @@ class OrganizationRoleUnitType extends SuperEntity{
 
     
     function insert(){
-        $sqlInsert = "INSERT INTO `Org_Role-UnitType` (OrgRole_FK, SortOrder, OrgUnitType_FK, Updater) ";
+        $sqlInsert = "INSERT INTO `Org_Role-UnitType` (OrgRole_FK, SortOrder, OrgUnitType_FK, UpdaterName, Updater) ";
         $sqlInsert.= "VALUES (";
         $sqlInsert.= "'" . $this->orgRole_FK . "', ";
         $sqlInsert.= "'" . $this->sortOrder . "', ";
         $sqlInsert.= "'" . $this->orgUnitType_FK . "', ";
+        $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "', ";
         $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
         
         $id = $this->db->insert($sqlInsert, "`Org_Role-UnitType`", "Id");
@@ -113,6 +114,8 @@ class OrganizationRoleUnitType extends SuperEntity{
      function update(){
         $update = "UPDATE `Org_Role-UnitType` ";
         $set = "SET ";        
+        $set.= "Updater=" . $this->saronUser->WP_ID . ", ";        
+        $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "SortOrder=" . $this->sortOrder . " ";        
         $where = "WHERE id=" . $this->id;
         $this->db->update($update, $set, $where);
