@@ -67,6 +67,7 @@ $(document).ready(function () {
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
+            addDialogDeleteListener(data);            
         },        
         deleteFormCreated: function (event, data){
             //id  'DeleteDialogButton'

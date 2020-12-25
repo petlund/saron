@@ -106,11 +106,12 @@ class OrganizationRole extends SuperEntity{
     
     function insert(){
         $this->checkRoletData();
-        $sqlInsert = "INSERT INTO Org_Role (Name, RoleType, Description, Updater) ";
+        $sqlInsert = "INSERT INTO Org_Role (Name, RoleType, Description, UpdaterName, Updater) ";
         $sqlInsert.= "VALUES (";
         $sqlInsert.= "'" . $this->name . "', ";
         $sqlInsert.= "'" . $this->roleType . "', ";
         $sqlInsert.= "'" . $this->description . "', ";
+        $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "', ";
         $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
         
         $id = $this->db->insert($sqlInsert, "Org_Role", "Id");

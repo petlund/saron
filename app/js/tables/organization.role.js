@@ -126,6 +126,9 @@ function roleTableDef(tableId, unitTypeId, orgName){
             }
             if (data.record.HasChild !== '0')
                 data.row.find('.jtable-delete-command-button').hide();
+            
+            addDialogDeleteListener(data);
+            
         },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === 'edit' || data.serverResponse.user_role === 'org'){ 
@@ -142,12 +145,6 @@ function roleTableDef(tableId, unitTypeId, orgName){
         formClosed: function (event, data){
             if(data.formType === 'edit')
                 data.row[0].style.backgroundColor = '';
-        },
-        deleteFormCreated: function (event, data){
-            data.row[0].style.backgroundColor = 'red';
-        },
-        deleteFormClosed: function (event, data){
-            data.row[0].style.backgroundColor = '';
         }
     };
 }
@@ -245,6 +242,7 @@ function subUnitTableDef(tableId, orgRole_FK, roleName){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
+            addDialogDeleteListener(data);
         },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === 'edit' || data.serverResponse.user_role === 'org'){ 

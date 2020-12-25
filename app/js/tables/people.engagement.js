@@ -232,6 +232,7 @@ function engagementTableDef(tableId, childTableRef, people_FK, personName){
             if (data.record.user_role !== 'edit' && data.record.user_role !== 'org'){
                 data.row.find('.jtable-edit-command-button').hide();
             }
+            addDialogDeleteListener(data);            
         },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === 'edit' || data.serverResponse.user_role === 'org'){ 

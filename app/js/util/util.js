@@ -192,3 +192,13 @@ function baptistFormAuto(data, selectedValue){
 }
 
 
+function addDialogDeleteListener(data){
+    data.row.find('.jtable-delete-command-button').click(data, function (event){
+        data.row[0].style.backgroundColor = "red";
+        $( ".ui-dialog" ).on( "dialogbeforeclose", function( event, ui ) {
+            data.row[0].style.backgroundColor = "";
+        });
+
+   });
+}
+

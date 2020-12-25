@@ -57,6 +57,7 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
             ParentTreeNode_FK:{
                 list: false,
                 edit: true, 
+                create: false,
                 title: 'Överordna verksamhet',
                 options: function(data) {
                     data.clearCache();
@@ -216,6 +217,7 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
             else
                 data.row.find('.jtable-delete-command-button').show();
 
+            addDialogDeleteListener(data);
         },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === 'edit' || data.serverResponse.user_role === 'org'){ 
@@ -413,6 +415,7 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
+            addDialogDeleteListener(data);
         },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === 'edit' || data.serverResponse.user_role === 'org'){ 

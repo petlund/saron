@@ -25,15 +25,7 @@ var timeout;
         });
     });
 
-
-
-//    window.addEventListener('beforeunload', function (e) {
-//        e.preventDefault();
-//        //deleteSaronUser();
-//        e.returnValue = '';
-//    });
-
-    
+   
 
     function newTimeStamp(){
         checkTimerDiff();
@@ -93,8 +85,10 @@ var timeout;
                     title.innerHTML = on + str.slice(off.length, str.length);
             }
         else
-            if(str.startsWith(on) || str.startsWith(off))
+            if(str.startsWith(off))
                 title.innerHTML = str.slice(off.length, str.length);
+            else
+                title.innerHTML = str.slice(on.length, str.length);
 
     }
 

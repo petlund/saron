@@ -117,6 +117,9 @@ function orgUnitTableDef(tableId){
             }
             if(data.record.HasPos !== '0')
                 data.row.find('.jtable-delete-command-button').hide();
+
+            addDialogDeleteListener(data);
+                        
         },        
         rowUpdated: function(event, data){
             if (data.record.user_role !== 'edit' && data.record.user_role !== 'org'){
@@ -259,6 +262,7 @@ function subRoleTableDef(tableId, orgUnitType_FK, orgName){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
+            addDialogDeleteListener(data);
         },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === 'edit' || data.serverResponse.user_role === 'org'){ 
