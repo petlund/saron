@@ -172,6 +172,7 @@ function subUnitTableDef(tableId, orgRole_FK, roleName){
                         success: function (data) {
                             $dfd.resolve(data);
                             if(data.Result === 'OK'){
+                                data.childTable.jtable('load');
                                 updateRoleRecord(data, 'create', orgRole_FK);                               
                             }
                         },

@@ -121,6 +121,7 @@ class OrganizationPos extends SuperEntity{
     
     function selectPersonEngagement($Id = -1, $rec=RECORDS){
         $select = "SELECT *, Pos.Id as PosId, ";
+        $select.= "(Select count(*) from Org_Pos as CountPos where CountPos.People_FK = xref.People_FK2) as Cnt, ";
         $select.= $this->saronUser->getRoleSql(false) . " ";
         $from = "FROM Org_Pos as Pos ";
         $from.= "inner join " . ORG_POS_XREF . " on xref.Id =Pos.Id ";
