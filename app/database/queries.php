@@ -147,7 +147,7 @@
 
     function getMemberStateIndexSql($tableAlias = "People", $fieldAlias, $continue){
         $sql="Case ";
-        $sql.="WHEN " . $tableAlias . ".Id is null Then -1 ";
+        $sql.="WHEN " . $tableAlias . ".Id is null Then 0 ";
         $sql.="WHEN " . $tableAlias . ".DateOfDeath > 0 Then 5 ";
         $sql.="WHEN " . $tableAlias . ".DateOfMembershipStart > 0 AND " . $tableAlias . ".DateOfMembershipEnd is null Then 2 ";
         $sql.="WHEN UPPER(CONVERT(BINARY " . getFieldSql($tableAlias, null, "LastNameEncrypt", null, true, false) . " USING utf8)) like '%" . ANONYMOUS . "%' THEN 4 ";
