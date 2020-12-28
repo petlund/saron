@@ -242,11 +242,12 @@ function getSQL($type){
     $sql.= "(Select T.Name from Org_Tree as T Where T.Id = Function_FK) as FunctionRespons, ";
     $sql.= getFieldSql("People", "Email", "EmailEncrypt", null, true, true);
     $sql.= getFieldSql("People", "Mobile", "MobileEncrypt", null, true, true);
-    $sql.= "IF(People_FK>0, CONCAT(";
+    $sql.= "IF(People.Id>0, CONCAT(";
     $sql.= getFieldSql("People", null, "FirstNameEncrypt", null, true, false);
     $sql.= ", ' ', "; 
     $sql.= getFieldSql("People", null, "LastNameEncrypt", null, true, false);
-    $sql.= "),(Select Name from Org_Role Where Org_Role.Id = -People_FK)) as Person, ";
+    $sql.= "),";
+    $sql.= "(Select Name from Org_Role Where Org_Role.Id = -People_FK)) as Person, ";
     $sql.= "QueryPath.Path, QueryPath.rel_depth as Head_Level ";
     $sql.= "from Org_Tree as Tree ";
     $sql.= "inner join Org_UnitType as Unit on Unit.Id = Tree.OrgUnitType_FK ";
