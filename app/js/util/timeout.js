@@ -1,7 +1,7 @@
 /* global SARON_URI, SESSION_EXPIRES, green */
 
 "use strict";
-const t0 = SESSION_EXPIRES; //timer time in seconds
+const passiveTimeout = SESSION_EXPIRES; //timer time in seconds
 const LAST_ACTIVITY_TIMESTAMP = 'lastActivityTimeStamp';
 const SERVER_NOW = 'serverNow';
 var timeout;
@@ -35,10 +35,10 @@ var timeout;
 
     function checkTimerDiff(){
         var diff = (new Date().getTime() - localStorage.getItem(LAST_ACTIVITY_TIMESTAMP))/1000;
-        if(diff > t0 && !timeout){
+        if(diff > passiveTimeout && !timeout){
             timeout=true;
             deleteSaronUser();
-            updateProgressbar(t0);
+            updateProgressbar(passiveTimeout);
             window.location.replace('/' + SARON_URI + 'app/access/SaronLogin.php?logout=true'); 
         }
         else
@@ -51,12 +51,12 @@ var timeout;
         if(elem === null)
             return;
         
-        var tr = (t0-t)/t0 * 100; 
+        var tr = (passiveTimeout-t)/passiveTimeout * 100; 
         if(tr > 25){
             titleBlink(false);
             elem.style.background = 'lightgreen';
         }
-        else if(tr > 10){
+        else if(tr > 15){
             titleBlink(false);
             elem.style.background = 'yellow';
         }

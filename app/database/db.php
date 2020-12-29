@@ -104,7 +104,7 @@ class db {
     public function isItTimeToReNewTicket($ticket){
 
         try{
-            $sql = "select if(Now() - Time_Stamp > " . TICKET_RENEWIAL_PERIOD_IN_SEC . ",if(Now() - Time_Stamp > 2 * " . SESSION_EXPIRES . ", -1, 1),0) as Answer from SaronUser Where AccessTicket = '" . $ticket ."'";
+            $sql = "select if(TIME_TO_SEC(TIMEDIFF(Now(), Time_Stamp)) > " . TICKET_RENEWIAL_PERIOD_IN_SEC . ",if(TIME_TO_SEC(TIMEDIFF(Now(), Time_Stamp)) > " . HTTP_SESSION_EXPIRES . ", -1, 1),0) as Answer from SaronUser Where AccessTicket = '" . $ticket ."'";
             $result = $this->sqlQuery($sql);
 
             $answer=0;
@@ -115,10 +115,10 @@ class db {
             if($answer === '1'){
                 return true;
             }
-            else if($answer === '-1'){
+            else if($answer === '-1'){ // Not relevant with the new sql statement
                 throw new Exception("Session timed out!");
             }
-            return false;            
+            return false;  // It is´t time yet          
         }
         catch(Exception $ex){
             throw new Exception($ex);
@@ -239,7 +239,7 @@ class db {
   
     
     function cleanSaronUser($wp_id){
-        $sql = "DELETE from SaronUser where  (Now() - Time_Stamp) > 2 * " . SESSION_EXPIRES . " OR WP_ID=" . $wp_id;
+        $sql = "DELETE from SaronUser where TIME_TO_SEC(TIMEDIFF(Now(), Time_Stamp)) > " . HTTP_SESSION_EXPIRES . " OR WP_ID=" . $wp_id;
         $this->delete($sql);
     }
     
