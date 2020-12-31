@@ -28,11 +28,27 @@ var timeout;
    
 
     function newTimeStamp(){
-        checkTimerDiff();
-        localStorage.setItem(LAST_ACTIVITY_TIMESTAMP, new Date().getTime());
+        var diff = (new Date().getTime() - localStorage.getItem(LAST_ACTIVITY_TIMESTAMP))/1000;
+        if(diff > 10){
+            checkTimerDiff();
+            localStorage.setItem(LAST_ACTIVITY_TIMESTAMP, new Date().getTime());
+            setUserLastActivityTime();
+        }
     }
 
 
+    function setUserLastActivityTime(){
+        var httpCall = $.get( '/' + SARON_URI + 'app/web-api/updateSaronUser.php', function() {})
+        .done(function(){
+        })
+        .fail(function() {
+        })
+        .always(function() {
+        });
+    }
+        
+        
+        
     function checkTimerDiff(){
         var diff = (new Date().getTime() - localStorage.getItem(LAST_ACTIVITY_TIMESTAMP))/1000;
         if(diff > passiveTimeout && !timeout){
@@ -125,27 +141,7 @@ var timeout;
 //        .always(function() {
 //        });
 //    }
-//        
-//        
-//        
-//    function getUserSessionTime(){
-//        var httpCall = $.get( '/' + SARON_URI + 'app/web-api/listSaronUser.php?selection=time', function(jsonTime) {
-//            var data = JSON.parse(jsonTime);
-//
-//            if(data.Record.Time_Stamp.length > 0){
-//                var strTime = data.Record.Time_Stamp;
-//                var time = new Date(strTime).getTime();
-//                localStorage.setItem(LAST_ACTIVITY_TIMESTAMP, time);
-//            }
-//        })
-//        .done(function(){
-//        })
-//        .fail(function() {
-//        })
-//        .always(function() {
-//        });
-//    }
-//        
-//        
-//        
+        
+        
+        
 

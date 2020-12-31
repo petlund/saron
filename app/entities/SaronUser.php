@@ -135,4 +135,10 @@ class SaronUser{
         return $this->db->delete("delete from SaronUser where WP_ID=" . $this->WP_ID);
         
     }
+
+
+    function update(){
+        return $this->db->update("Update SaronUser ", "Set Last_Activity = Now() ", "where WP_ID=" . $this->WP_ID);
+        
+    }
 }

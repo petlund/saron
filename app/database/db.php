@@ -214,7 +214,8 @@ class db {
 
             $update = "update SaronUser ";
             $set = "SET ";        
-            $set.= "AccessTicket = " . $this->getAccessTicket() . " ";
+            $set.= "AccessTicket = " . $this->getAccessTicket() . ", ";
+            $set.= "Time_Stamp = Now() ";
             $where = "WHERE AccessTicket = '" . $oldTicket . "'";
 
             $this->update($update, $set, $where);
@@ -239,7 +240,7 @@ class db {
   
     
     function cleanSaronUser($wp_id){
-        $sql = "DELETE from SaronUser where TIME_TO_SEC(TIMEDIFF(Now(), Time_Stamp)) > " . HTTP_SESSION_EXPIRES . " OR WP_ID=" . $wp_id;
+        $sql = "DELETE from SaronUser where TIME_TO_SEC(TIMEDIFF(Now(), Last_Activity)) > " . SESSION_EXPIRES . " OR WP_ID=" . $wp_id;
         $this->delete($sql);
     }
     
