@@ -5,14 +5,15 @@ require_once SARON_ROOT . 'app/entities/SaronUser.php';
 class News extends SuperEntity{
     
     private $id;
+    private $severity;
     private $information;
             
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
         
-        $this->information = (String)filter_input(INPUT_POST, "information", FILTER_SANITIZE_STRING);
-        
         $this->id = (int)filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT);
+        $this->severity = (int)filter_input(INPUT_POST, "severity", FILTER_SANITIZE_NUMBER_INT);
+        $this->information = (String)filter_input(INPUT_POST, "information", FILTER_SANITIZE_STRING);
     }
     
     function select($id = -1, $rec=RECORDS){
@@ -28,9 +29,10 @@ class News extends SuperEntity{
     }
 
     function insert(){
-        $sqlInsert = "INSERT INTO News (information, writer) ";
+        $sqlInsert = "INSERT INTO News (information, severity, writer) ";
         $sqlInsert.= "VALUES (";
         $sqlInsert.= "'" . $this->information . "', ";
+        $sqlInsert.= "'" . $this->severity . "', ";
         $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "')";
         
         $id = $this->db->insert($sqlInsert, "News", "id");
@@ -43,6 +45,7 @@ class News extends SuperEntity{
         $update = "UPDATE News ";
         $set = "SET ";        
         $set.= "information='" . $this->information . "', ";        
+        $set.= "severity='" . $this->severity . "', ";        
         $set.= "writer='" . $this->saronUser->getDisplayName() . "' ";
         $where = "WHERE id=" . $this->id;
         $this->db->update($update, $set, $where);

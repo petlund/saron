@@ -68,16 +68,6 @@ $(document).ready(function () {
                 data.row.find('.jtable-delete-command-button').hide();
             }
             addDialogDeleteListener(data);            
-        },        
-        deleteFormCreated: function (event, data){
-            //id  'DeleteDialogButton'
-            //className 'data-record-key'
-            //className 'jtabel-delete-command-button'
-            //className 'jtabel-delete-confirm-message'
-            data.row[0].style.backgroundColor = 'red';
-        },
-        deleteFormClosed: function (event, data){
-            data.row[0].style.backgroundColor = '';
         }
     });
     

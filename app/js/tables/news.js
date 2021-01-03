@@ -20,25 +20,7 @@ function newsTableDef(){
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listNews.php',
             createAction:   '/' + SARON_URI + 'app/web-api/createNews.php',
-            //updateAction:   '/' + SARON_URI + 'app/web-api/updateNews.php'
-            updateAction: function(postData) {
-                return $.Deferred(function ($dfd) {
-                    $.ajax({
-                        url: '/' + SARON_URI + 'app/web-api/updateNews.php',
-                        type: 'POST',
-                        dataType: 'json',
-                        data: postData,
-                        success: function (data) {
-                            $dfd.resolve(data);
-                            if(data.Result === 'OK'){
-                            }
-                        },
-                        error: function () {
-                            $dfd.reject();
-                        }
-                    });
-                });
-            },
+            updateAction:   '/' + SARON_URI + 'app/web-api/updateNews.php',
             deleteAction: '/' + SARON_URI + 'app/web-api/deleteNews.php'
         },
         fields: {
@@ -53,11 +35,20 @@ function newsTableDef(){
                 width: '15%',
                 type: 'date',
                 displayFormat: DATE_FORMAT
-                //,
-//                display: function (data){
-//                    return _setClassAndValue(data.record, "news_date", NEWS);
-//                }       
-
+            },
+            severity:{
+                title: "Typ",    
+                options: {0:'Meddelande', 1:'Viktigt meddelande', 2:'Varning'},
+                display: function(data){
+                    if(data.record.severity === "1"){
+                        return '<b>' + this.options[1] + '</b>';
+                    }
+                    if(data.record.severity === "2"){
+                        return '<b style="color:red">' + this.options[2] + '</b>';
+                    }
+                    else 
+                        return this.options[0];
+                }
             },
             information: {
                 title: 'Information',
@@ -92,12 +83,6 @@ function newsTableDef(){
         formClosed: function (event, data){
             if(data.formType === 'edit')
                 data.row[0].style.backgroundColor = '';
-        },
-        deleteFormCreated: function (event, data){
-            data.row[0].style.backgroundColor = 'red';
-        },
-        deleteFormClosed: function (event, data){
-            data.row[0].style.backgroundColor = '';
         }
     };
 

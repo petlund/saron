@@ -85,12 +85,6 @@ function orgVersionTableDef(){
         formClosed: function (event, data){
             if(data.formType === 'edit')
                 data.row[0].style.backgroundColor = '';
-        },
-        deleteFormCreated: function (event, data){
-            data.row[0].style.backgroundColor = 'red';
-        },
-        deleteFormClosed: function (event, data){
-            data.row[0].style.backgroundColor = '';
         }
     };
 

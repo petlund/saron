@@ -148,7 +148,7 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
             },
             Name: {
                 width: '10%',
-                title: 'Namn',
+                title: 'Namn'
             },
             Description: {
                 width: '15%',
@@ -235,10 +235,6 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
         formClosed: function (event, data){
             if(data.formType === 'edit')
                 data.row[0].style.backgroundColor = '';
-        },
-        deleteFormCreated: function (event, data){
-        },
-        deleteFormClosed: function (event, data){
         }
     };
 }    
@@ -432,12 +428,6 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
         formClosed: function (event, data){
             if(data.formType === 'edit')
                 data.row[0].style.backgroundColor = '';
-        },
-        deleteFormCreated: function (event, data){
-            data.row[0].style.backgroundColor = 'red';
-        },
-        deleteFormClosed: function (event, data){
-            data.row[0].style.backgroundColor = '';
         }
     };
 }

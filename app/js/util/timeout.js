@@ -97,13 +97,13 @@ var timeout;
             else{
                 if(str.startsWith(on))
                     title.innerHTML = off + str.slice(on.length, str.length);
-                else
+                if(str.startsWith(off))
                     title.innerHTML = on + str.slice(off.length, str.length);
             }
         else
             if(str.startsWith(off))
                 title.innerHTML = str.slice(off.length, str.length);
-            else
+            if(str.startsWith(on))
                 title.innerHTML = str.slice(on.length, str.length);
 
     }
@@ -122,26 +122,4 @@ var timeout;
         });
     }
         
-        
-        
-
-//    function setServerTime(){
-//        var httpCall = $.get( '/' + SARON_URI + 'app/web-api/getServerTime.php', function(jsonTime) {
-//            var data = JSON.parse(jsonTime);
-//
-//            if(data.millis > 0){
-//                var time = data.millis;
-//                localStorage.setItem(SERVER_NOW, time * 1000);
-//            }
-//        })
-//        .done(function(){
-//        })
-//        .fail(function() {
-//        })
-//        .always(function() {
-//        });
-//    }
-        
-        
-        
-
+      

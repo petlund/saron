@@ -114,12 +114,6 @@ function peopleEngagementTableDef(tableId){
         formClosed: function (event, data){
             if(data.formType === 'edit')
                 data.row[0].style.backgroundColor = '';
-        },
-        deleteFormCreated: function (event, data){
-            data.row[0].style.backgroundColor = 'red';
-        },
-        deleteFormClosed: function (event, data){
-            data.row[0].style.backgroundColor = '';
         }
     }    
 }
@@ -172,8 +166,7 @@ function engagementTableDef(tableId, PersonName, PersonId, Cnt){
                         }
                     });
                 });
-            },
-            deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationPos.php'
+            }
         },
         fields: {
             PosId: {
