@@ -4,12 +4,19 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/config/config.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/scribble</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/access/SaronCookie.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/ping.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/db.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/news.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/util/js.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/SaronUser.php</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/queries.php</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/SuperEntity.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/util/timeout.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/scribble</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/delta.sql</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/organization.unit.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/ping.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/util/PrevYear.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/menu.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/util/CurrentYear.php</file>
         </group>
     </open-files>
 </project-private>
