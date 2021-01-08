@@ -33,13 +33,10 @@
     $sql.="((Select HomeId, HomeId as hid, substr(" . DECRYPTED_LASTNAME . ", 1, 5) as SortName, ";
     $sql.="(select max(" . DECRYPTED_LASTNAME . ") from People where hid=HomeId and substr(" . DECRYPTED_LASTNAME . ", 1, 5)=SortName and length(" . DECRYPTED_LASTNAME . ")=(select min(length(" . DECRYPTED_LASTNAME . ")) from People where hid=HomeId and substr(" . DECRYPTED_LASTNAME . ", 1, 5)=SortName)) as GroupName from People ";
     $sql.="WHERE  DateOfMembershipStart is not null and DateOfMembershipEnd is null and DateOfDeath is null and VisibleInCalendar=2 group by HomeId, SortName) as SortList "; 
-//        $sql.="MAX(" . DECRYPTED_LASTNAME . ") as GroupName from People group by HomeId, SortName) as SortList "; 
     $sql.="inner join People on People.HomeId=SortList.HomeId) "; 
     $sql.="left outer join Homes on People.HomeId = Homes.id ";  
-//        $sql.="People left outer join Homes on HomeId = Homes.id ";  
     $sql.="where DateOfMembershipStart is not null and  DateOfMembershipEnd is null and DateOfDeath is null and VisibleInCalendar=2 "; 
     $sql.="order by SortList.GroupName, " . DECRYPTED_ADDRESS . ", Homes.Id, People.DateOfBirth"; 
-//        $sql.="order by " . DECRYPTED_FAMILYNAME . ", Homes.Id, DateOfBirth"; 
 
     // create new PDF document
     $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -50,9 +47,6 @@
     $pdf->SetTitle('Adresskalender');
     $pdf->SetSubject('');
     $pdf->SetKeywords('Adresskalender');
-
-    // set default header data
-    //$pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 005', PDF_HEADER_STRING);
 
     // set header and footer fonts
     $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
@@ -116,7 +110,6 @@
     }
 
     foreach($listResult as $aRow){
-//            if($aRow['HomeId']!=$prevFamId){
         if($aRow['GroupName']!=$prevGroupName or $aRow['HomeId']!=$prevFamId){
             $GroupName=$aRow['GroupName'];
             $line_count+=$aRow['fam_member_count']+1;

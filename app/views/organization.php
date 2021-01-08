@@ -12,13 +12,13 @@ header("Cache-Control: no-cache, must-revalidate");
         <title><?php echo NameOfRegistry;?> - Organisation</title> 
     </Head>
     <body> 
-        <script type="text/JavaScript" src="/<?php echo SARON_URI;?>app/js/tables/organization.unit.js"></script>     
-        <script type="text/JavaScript" src="/<?php echo SARON_URI;?>app/js/tables/organization.structure.js"></script>     
-        <script type="text/JavaScript" src="/<?php echo SARON_URI;?>app/js/tables/organization.role.js"></script>     
-        <script type="text/JavaScript" src="/<?php echo SARON_URI;?>app/js/tables/organization.status.js"></script>     
-        <script type="text/JavaScript" src="/<?php echo SARON_URI;?>app/js/tables/organization.version.js"></script>     
-        <script type="text/JavaScript" src="/<?php echo SARON_URI;?>app/js/tables/engagement.js"></script>     
-        <script type="text/JavaScript" src="/<?php echo SARON_URI;?>app/js/tables/memberstate.js"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "organization.unit.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "organization.structure.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "organization.role.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "organization.status.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "organization.version.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "memberstate.js");?>"></script>     
+
         <script type="text/javascript" src="/<?php echo SARON_URI;?>jtable/jquery.jtable.js"></script>
         <script type="text/javascript" src="/<?php echo SARON_URI;?>jtable/localization/jquery.jtable.se.js"></script>   
         <div class='saronSmallText'></div>

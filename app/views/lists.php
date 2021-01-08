@@ -12,8 +12,8 @@
         <title><?php echo NameOfRegistry;?> - email</title>
    </head>
     <body>
-        <script type="text/JavaScript" src="/<?php echo SARON_URI;?>app/js/lists/mobileInsteadOfMail.js"></script>     
-        <script type="text/JavaScript" src="/<?php echo SARON_URI;?>app/js/lists/email.js"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("lists/", "mobileInsteadOfMail.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("lists/", "email.js");?>"></script>     
         <script type="text/javascript" src="/<?php echo SARON_URI;?>jtable/jquery.jtable.js"></script>
         <script type="text/javascript" src="/<?php echo SARON_URI;?>jtable/localization/jquery.jtable.se.js"></script>                  
         

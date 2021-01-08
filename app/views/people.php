@@ -14,12 +14,13 @@ require_once SARON_ROOT . "menu.php";
         <title><?php echo NameOfRegistry;?> - Person</title>
     </head>
     <body>
-        <script type="text/JavaScript" src="/<?php echo SARON_URI;?>app/js/tables/people.js"></script>     
-        <script type="text/JavaScript" src="/<?php echo SARON_URI;?>app/js/tables/member.js"></script>     
-        <script type="text/JavaScript" src="/<?php echo SARON_URI;?>app/js/tables/keys.js"></script>     
-        <script type="text/JavaScript" src="/<?php echo SARON_URI;?>app/js/tables/birthdays.js"></script>     
-        <script type="text/JavaScript" src="/<?php echo SARON_URI;?>app/js/tables/baptist.js"></script>     
-        <script type="text/JavaScript" src="/<?php echo SARON_URI;?>app/js/tables/total.js"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "people.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "member.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "keys.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "birthdays.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "baptist.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "total.js");?>"></script>     
+        
         <script type="text/javascript" src="/<?php echo SARON_URI;?>jtable/jquery.jtable.js"></script>
         <script type="text/javascript" src="/<?php echo SARON_URI;?>jtable/localization/jquery.jtable.se.js"></script>        
         <form id="mainfilter">

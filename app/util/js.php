@@ -11,6 +11,11 @@
     
     
     function getJsAppDistPath($jsUri, $jsFileName){
-        return SARON_URI . APP_JS . $jsUri . JS_DIST . JS_VERSION_PREFIX . "_" . $jsFileName;            
+        if(JS_VERSION_PREFIX !== "JS_VERSION_PREFIX" ){
+            return SARON_URI . APP_JS . $jsUri . JS_DIST . JS_VERSION_PREFIX . $jsFileName;            
+        }
+        else{
+            return SARON_URI . APP_JS . $jsUri . $jsFileName;                        
+        }
 
     }

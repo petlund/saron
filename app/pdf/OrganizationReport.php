@@ -11,16 +11,14 @@
     }
     $type = (String)filter_input(INPUT_GET, "type", FILTER_SANITIZE_STRING);
 
-
-  
-
     define ("INNER", 1);
     define ("OUTER", 2);
     define ("BOOKLET_OUTER_MARGIN", 10);
     define ("BOOKLET_INNER_MARGIN", 30);
     define ("INNER_HEADER_TEXT", FullNameOfCongregation);
     define ("OUTER_HEADER_TEXT", 'Utskriftsdatum: ' . date("Y-m-d", time()));
-    define ("INNER_FOOTER_TEXT", 'Endast för kontakt mellan medlemmar');
+    define ("INNER_FOOTER_TEXT", 'Får endast användas i kontakt mellan medlemmar');
+    define ("OUTER_FOOTER_TEXT", 'Får endast användas i kontakt mellan medlemmar');
     //define ("HEADER_MARGIN", 10);
     //define ("FOOTER_MARGIN", 10);
     define ("HEADER_FOOTER_CELL_WIDTH", 90);
@@ -37,7 +35,7 @@
     $pdf->SetKeywords('Organisaton');
 
     // set default header data
-    $pdf->SetHeaderData('', 0, FullNameOfCongregation, 'Rapport från: ' . UrlOfRegistry . ' ' . date('Y-m-d', time()));
+    $pdf->SetHeaderData('', 0, FullNameOfCongregation, 'Rapport från: ' . UrlOfRegistry . ' ' . date('Y-m-d', time()) . "\r\nEndast för kontakt mellan medlemmar.");
 
 
     // set header and footer fonts

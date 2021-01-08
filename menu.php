@@ -25,9 +25,9 @@
     <link href="/<?php echo SARON_URI;?>jtable/themes/lightcolor/gray/jtable.min.css" rel="stylesheet" type="text/css" />        
     <link href="/<?php echo SARON_URI;?>jtable/jquery-ui-1.12.1.custom/jquery-ui.css" rel="stylesheet" type="text/css" />          
 
-    <script src="/<?php echo SARON_URI;?>app/js/util/menu.js"></script>
-    <script src="/<?php echo SARON_URI;?>app/js/util/timeout.js"></script>
-    <script src="/<?php echo SARON_URI;?>app/js/util/util.js"></script>
+    <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("util/", "menu.js");?>"></script>     
+    <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("util/", "timeout.js");?>"></script>     
+    <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("util/", "util.js");?>"></script>     
     
     <link rel="stylesheet" type="text/css" href="/<?php echo SARON_URI;?>app/css/saron.css" />
 
@@ -107,7 +107,8 @@
                             <ul>
                                 <li><a href="/<?php echo SARON_URI;?>app/about/about.php">Om <?php echo NameOfRegistry;?></a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/about/gdpr.php" target="_empty">Hantering av personuppgifter</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/about/help.php" target="_empty">Hjälp</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/about/help.php" target="_empty">Hjälp Medlemsfuntioner</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/about/organisation.php" target="_empty">Hjälp Organisationsfunktioner</a></li>
                             </ul>
                         </li>
                         <li>
