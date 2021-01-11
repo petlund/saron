@@ -24,6 +24,7 @@ function roleTableDef(tableId, unitTypeId, orgName){
         sorting: true, //Enable sorting
         multiSorting: true,
         defaultSorting: 'Name', //Set default sorting        
+        messages: {addNewRecord: 'Lägg till ny roll'},
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationRole.php',
             createAction:   '/' + SARON_URI + 'app/web-api/createOrganizationRole.php',
@@ -160,6 +161,7 @@ function subUnitTableDef(tableId, orgRole_FK, roleName){
         sorting: true, //Enable sorting
         multiSorting: true,
         defaultSorting: 'Name', //Set default sorting        
+        messages: {addNewRecord: 'Koppla roll till typ av organisatorisk enhet.'},
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationRole-UnitType.php?selection=unitTypes&OrgRole_FK=' + orgRole_FK,
             createAction: function(postData) {

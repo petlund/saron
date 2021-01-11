@@ -138,7 +138,16 @@ class SaronUser{
 
 
     function update(){
-        return $this->db->update("Update SaronUser ", "Set Last_Activity = Now() ", "where WP_ID=" . $this->WP_ID);
-        
+
+        if($this->db->fieldValueExist($this->WP_ID, -1, "WP_ID", "SaronUser")){
+            return $this->db->update("Update SaronUser ", "Set Last_Activity = Now() ", "where WP_ID=" . $this->WP_ID);
+        }
+        else{
+            $error = array();
+            $error['Result'] = 'ERROR';
+            $error['Message'] = 'User Id is missing';
+            throw new Exception(json_encode($error));
+            
+        }
     }
 }

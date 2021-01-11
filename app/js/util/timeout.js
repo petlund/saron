@@ -39,9 +39,11 @@ var timeout;
 
     function setUserLastActivityTime(){
         var httpCall = $.get( '/' + SARON_URI + 'app/web-api/updateSaronUser.php', function() {})
-        .done(function(){
+        .done(function(data){
+            if(data.includes('ERROR'))
+                window.location.replace('/' + SARON_URI + 'app/access/SaronLogin.php?logout=true');             
         })
-        .fail(function() {
+        .fail(function(data) {
         })
         .always(function() {
         });

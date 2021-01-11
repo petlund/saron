@@ -1,2 +1,2 @@
 <?php
-define("JS_VERSION_PREFIX", "VER_7554_");
+define("JS_VERSION_PREFIX", "VER_3153_");

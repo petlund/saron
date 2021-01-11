@@ -16,7 +16,7 @@ require_once SARON_ROOT . "menu.php";
     </head>
     <Body>
     <div class="saron-about-text">
-    <H1>Om <?php echo NameOfRegistry;?></H1>
+    <H1>Om <?php echo NameOfRegistry;?> - Organisation och bemanning</H1>
     <H2>Organisation - Inledning</H2>
     <ul>    
         För att kunna ändra i organisationsinformationen krävs separat behörighet. Endast personer som är definierade i medlemsregistret kan kopplas till uppdrag. 
@@ -137,31 +137,77 @@ require_once SARON_ROOT . "menu.php";
         </ul>
         <h3>Organisation & Bemanning</h3>
         <ul>    
-            Detta är den mest komplexa tabellen av alla. Den är central för att bygga organisationsträdet och bemanna det.<br>
-            Under menyerna "Typer av organisationsenheter" och "Organisationsroller" sätter du regelverket för hur organisationsträdet kan byggas.
+            <div>Detta är den mest komplexa tabellen av alla. Den är central för att bygga organisationsträdet och bemanna det.<br>
+            Under menyerna "Typer av organisationsenheter" och "Organisationsroller" sätter du regelverket för hur organisationsträdet kan byggas.</div>
+
+            <h4>Organisatorisk enhet</h4>
             <ul>
                 <li>
-                    Organisationslöen
-                </li>
-                <li>
+                    Skapa
                 </li>
                 <ul> 
                     <li>
                     </li>
                     <li>
                     </li>
-                </ul>
-                <li>
-                </li>
-                <li>
-                </li>    
-                <ul>
                     <li>
                     </li>
                     <li>    
                     </li>
                 </ul>
                 <li>
+                    Uppdatera
+                </li>
+                <li>
+                    Ta bort
+                </li>
+                <li>
+                    Flytta
+                </li>
+            </ul>
+                
+            <h4>Positioner att bemanna</h4>
+            <ul>
+                <li>
+                    ...
+                </li>
+                <ul> 
+                    <li>
+                    </li>
+                    <li>
+                    </li>
+                    <li>
+                    </li>
+                    <li>    
+                    </li>
+                </ul>
+                <li>
+                    ...
+                </li>
+                <li>
+                    ...
+                </li>
+            </ul>
+            <h4>Bemanna positioner</h4>
+            <ul>
+                <li>
+                    Lägg till
+                </li>
+                <ul> 
+                    <li>
+                    </li>
+                    <li>
+                    </li>
+                    <li>
+                    </li>
+                    <li>    
+                    </li>
+                </ul>
+                <li>
+                    Uppdatera
+                </li>
+                <li>
+                    Ta bort
                 </li>
             </ul>
         </ul>
@@ -176,16 +222,62 @@ require_once SARON_ROOT . "menu.php";
         </ul>
         <H3>Organisationsroller</H3>
         <ul>    
+            Här definieras organisationsroller och kopplas till de typer av organisationsenheter som de ingår i.<br>
+            Kommentar: Det kan vara bra att koll igenom vilka roller som finns innan ny skapas.     
             <ul>
                 <li>
-                    Organisationslöen
+                    Lägg till ny roll genom att klicka på [ + Lägg till ny roll]
                 </li>
+                <ul>
+                    <li>
+                        Ange benämning. Den måste vara unik för hela systemet.
+                    </li>
+                    <li>
+                        Ange beskrivning. Det gör det lättare för exempelvis valberedning och hitta lämpliga personer.
+                    </li>
+                    <li>
+                        Ange Typ, det vill säga om det är en "Organisationsroll" eller "Verksamhetsroll"
+                    </li>
+                    <ul> 
+                        <li>
+                            En verksamhetsroll är kopplad till den verksamhet den befinner sig i.
+                        </li>
+                        <li>
+                            En Organisationsroll placeras förslagsvis i en Organisatorisk enhet som kallas "Organisation". Den bör ligga högt upp i organisationsträdet.<br>
+                            Lämpliga organisationsroller är Försalingsordförande, Församlingskassör. Dessa roller kan finnas i många verksamheter.
+                        </li>
+                    </ul>
+                </ul>
                 <li>
+                    Uppdatering av roll görs genom att klicka på <img src="/<?php echo SARON_URI;?>app/images/edit.png" title="ändra"/>
                 </li>
                 <ul> 
                     <li>
+                        Benämningen kan ändras till något nytt, men som fortfarande är unikt i systemet. Ändringen får genomslag på alla pltaser den används.
                     </li>
                     <li>
+                        Beskrivningen kan ändras.                        
+                    </li>
+                    <li>
+                        Även Typ kan ändras men der bör göras med mycket stor eftertanke.
+                    </li>
+                </ul>
+                <li>
+                    Borttag av roll är endast möjlig om rollen inte är kopplad till någon typ av organisatorisk enhet. Om <img src="/<?php echo SARON_URI;?>app/images/delete.png" title="Radera"/> är synlig kan rollen tas bort.
+                </li>
+                <li>
+                    Koppling av roll till en typ av organisatorisk enhet görs genom att klicka på <img src="/<?php echo SARON_URI;?>app/images/pos.png" title="Inga roller"/> eller <img src="/<?php echo SARON_URI;?>app/images/haspos.png" title="Roller"/> 
+                </li>
+                <ul> 
+                    <li>
+                        Lägg till en ny koppling genom att klicka på [ + Lägg till en ny koppling till en roll.]
+                    </li>
+                    <li>
+                        Ange sorteringsordning. Sorteringsordningen påverkar listordningen i rapporter.
+                    </li>
+                    <li>
+                        Ta bort en koppling genom att klicka på <img src="/<?php echo SARON_URI;?>app/images/delete.png" title="Radera"/><br>
+                        Rollern finns kvar. Det är bara kopplingen som försvinner.
                     </li>
                 </ul>
             </ul>
@@ -195,14 +287,55 @@ require_once SARON_ROOT . "menu.php";
             Listan innehåller de typer av organisationsenheter som definerats. Till varje typ av organisationsenhet kan en uppsättning roller kopplas. 
             <ul>
                 <li>
-                    
+                    Lägg till ny enhetstyp genom att klicka på [ + Lägg till en ny typ av organisatorisk enhet.]
                 </li>
+                <ul>
+                    <li>
+                        Ange benämning. Den måste vara unik för hela systemet.
+                    </li>
+                    <li>
+                        Ange om den organisatorsika enhetstypen ska kunna ha bemanning.
+                    </li>
+                    <li>
+                        Ange om den organisatorsika enhetstypen ska kunna ha underenheter. 
+                    </li>
+                    OBS: Om någon av de två ovanstående valen ändras från ja till nej så förloras den visuella kopplingen till Bemanningen eller Underenheterna. Det är inte rekommenderbart att göra så.
+                    <li>
+                        Ange beskrivning. Det gör det lättare för exempelvis valberedning och hitta lämpliga personer.
+                    </li>
+                </ul>
                 <li>
+                    Uppdatering av organisatorisk enhetstyp görs genom att klicka på <img src="/<?php echo SARON_URI;?>app/images/edit.png" title="ändra"/>
                 </li>
                 <ul> 
                     <li>
+                        Benämningen kan ändras till något nytt, men som fortfarande är unikt i systemet. Ändringen får genomslag på alla pltaser den används.
                     </li>
                     <li>
+                        Ange om den organisatorsika enhetstypen ska kunna ha bemanning.
+                    </li>
+                    <li>
+                        Ange om den organisatorsika enhetstypen ska kunna ha underenheter. 
+                    </li>
+                    OBS: Om någon av de två ovanstående valen ändras från ja till nej så förloras den visuella kopplingen till Bemanningen eller Underenheterna. Det är inte rekommenderbart att göra så.
+                    <li>
+                        Uppdatera beskrivning.
+                    </li>
+                </ul>
+                <li>
+                    Borttag av roll är endast möjlig om organisatorisk enhetstyp inte är kopplad till någon roll. Om <img src="/<?php echo SARON_URI;?>app/images/delete.png" title="Radera"/> är synlig kan den organisatorisk enhetstyp tas bort.
+                </li>
+                <li>
+                    Koppling av en typ av organisatorisk enhet till en roll görs genom att klicka på <img src="/<?php echo SARON_URI;?>app/images/haschild.png" title="Organisation"/>
+                    eller <img src="/<?php echo SARON_URI;?>app/images/child.png" title="Organisation"/> 
+                </li>
+                <ul> 
+                    <li>
+                        Lägg till en ny koppling genom att klicka på [ + Koppla roll till typ av organisatorisk enhet.]
+                    </li>
+                    <li>
+                        Ta bort en koppling genom att klicka på <img src="/<?php echo SARON_URI;?>app/images/delete.png" title="Radera"/><br>
+                        Den organisatoriska enheten finns kvar. Det är bara kopplingen som försvinner.
                     </li>
                 </ul>
             </ul>
@@ -235,13 +368,13 @@ require_once SARON_ROOT . "menu.php";
                     </li>
                 <ul> 
                     <li>
-                        Samtliga personnamn som har status "Avstämd" och funktioner som ligger under "Förslag" kommer att kopieras till "Senast beslutad". Se även menyn "Organisation & Bemanning"
+                        Samtliga personnamn som har status "Avstämd" eller "Funktionsansvar" som ligger under "Förslag" kommer att kopieras till "Senast beslutad". Se även menyn "Organisation & Bemanning"
                     </li>
                     <li>
-                        Eftesom alla beslutad organisation då är lika som föreslagen organiation försvinner alla status "Ny" i rapporten "Organisationskalender förslag (pdf-fil)"
+                        När en ny version är skapad, är alla personer i beslutad organisation lika med dem i föreslagen organiation. Då försvinner alla status "Ny" i rapporten "Organisationskalender förslag (pdf-fil)"
                     </li>
                     <li>
-                        "Organisationskalender beslutad (pdf)" uppdateras i enlighet med förslaget.
+                        "Organisationskalender beslutad (pdf)" uppdateras omedelbar i enlighet med förslaget.
                     </li>
                 </ul>
                 </ul>
