@@ -30,6 +30,7 @@ function peopleEngagementTableDef(tableId){
         sorting: true, //Enable sorting
         multiSorting: true,
         defaultSorting: 'Name', //Set default sorting        
+        messages: {addNewRecord: 'Tilldela personen ett vakant uppdrag'},
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listEngagement.php'
         },

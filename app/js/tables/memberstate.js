@@ -36,7 +36,7 @@ function memberstateTableDef(){
             Name: {
                 edit: false,
                 title: 'Namn',
-                width: '15%',
+                width: '10%',
             },
             Description: {
                 edit: true,
@@ -44,14 +44,14 @@ function memberstateTableDef(){
                 width: '40%'
             },
             FilterUpdate: {
-                edit: true,
-                title: 'Filter för uppdatering',
+                edit: false,
+                title: 'Kan kopplas till uppdaterade uppdrag',
                 width: '15%',
                 options: {"0":"Nej", "1":"Ja"}
             },
             FilterCreate: {
-                edit: true,
-                title: 'Filter för lägga till',
+                edit: false,
+                title: 'Kan kopplas till nya uppdrag',
                 width: '15%',
                 options: {"0":"Nej", "1":"Ja"}
             },

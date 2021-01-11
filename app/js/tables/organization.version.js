@@ -19,6 +19,7 @@ function orgVersionTableDef(){
         sorting: true, //Enable sorting
         multiSorting: true,
         defaultSorting: 'decision_date desc', //Set default sorting        
+        messages: {addNewRecord: 'Skapa ny version av organisationen'},
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationVersion.php',
             updateAction:   '/' + SARON_URI + 'app/web-api/updateOrganizationVersion.php',

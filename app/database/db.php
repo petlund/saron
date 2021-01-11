@@ -240,7 +240,7 @@ class db {
   
     
     function cleanSaronUser($wp_id){
-        $sql = "DELETE from SaronUser where TIME_TO_SEC(TIMEDIFF(Now(), Last_Activity)) > " . SESSION_EXPIRES . " OR WP_ID=" . $wp_id;
+        $sql = "DELETE from SaronUser where TIME_TO_SEC(TIMEDIFF(Now(), Last_Activity)) > " . SESSION_EXPIRES . " OR TIME_TO_SEC(TIMEDIFF(Now(), Time_Stamp)) > " . HTTP_SESSION_EXPIRES . " OR WP_ID=" . $wp_id;
         $this->delete($sql);
     }
     

@@ -95,7 +95,7 @@
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_STRUCT">Organisation & Bemanning</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_ROLE_STATUS">Bemanningsstatus</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_ROLE">Organisationsroller</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_UNIT">Organisationsenheter</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_UNIT">Typer av organisationsenheter</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=MEMBER_STATE">Medlemsstatus</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_VER">Beslut om organisation</a></li>
                             <!--    <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_GRAPH">Grafisk presentation</a></li>

@@ -354,7 +354,7 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
                 create: false,
                 edit: false,
                 width: '15%',
-                title: 'Ansvar',
+                title: 'Förslag',
                 list: true,
             },
             MemberState: {

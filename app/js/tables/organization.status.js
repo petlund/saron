@@ -49,6 +49,8 @@ function statusTableDef(tableId){
                 list: false
             },
             Name: {
+                edit: false,
+                create: false, 
                 title: 'Benämning',
                 width: '15%'
             },

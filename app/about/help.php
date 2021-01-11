@@ -228,9 +228,14 @@ require_once SARON_ROOT . "menu.php";
     
     <table class="saronHtmlTable">
         <tr class="saronHtmlTable head"><th>Händelse</th><th>Status</th><th>Automatiska uppdateringar</th></tr>
-        <tr class="saronHtmlTable row odd">
-            <td class="saronHtmlTable col">En ny person läggs in i registret utan medlems och dopuppgifter</td>
+        <tr class="saronHtmlTable row even">
+            <td class="saronHtmlTable col"> - En ny person läggs in i registret utan medlems och dopuppgifter</td>
             <td class="saronHtmlTable col">Ej Medlem</td>
+            <td class="saronHtmlTable col">-Inga andra uppdateringar</td>
+        </tr>
+        <tr class="saronHtmlTable row odd">
+            <td class="saronHtmlTable col"> - Uppdrag kopplas till en person med status Ej Medlem</td>
+            <td class="saronHtmlTable col">Medhjälpare</td>
             <td class="saronHtmlTable col">-Inga andra uppdateringar</td>
         </tr>
         <tr class="saronHtmlTable row even">
@@ -259,7 +264,7 @@ require_once SARON_ROOT . "menu.php";
             </td>
         </tr>
         <tr class="saronHtmlTable row odd">
-            <td class="saronHtmlTable col">- En person raderas/anonymiseras</td>
+            <td class="saronHtmlTable col">- En person anonymiseras<ul>Kommentar: Personer som avslutar sitt medlemskap kommer att av systemet kommande år föreslås anonymisering. <br>Se separat meny: Register - Personuppgifter - Grupp. </ul> </td>
             <td class="saronHtmlTable col">Anonymiserad</td>
             <td class="saronHtmlTable col">- Personen kopplas bort från sina kontakt och adressuppgifter. Personen kommer inte att tillhöra något hem längre.<br>
                 - Personen kommer inte att finnas med bland de som behöver anonymiseras.<br>
