@@ -53,7 +53,7 @@ require_once SARON_ROOT . "menu.php";
                     Här definieras vilka roller som ska finnas i organisationsträdet samt till vilka typer organisatoriska enheter rollerna är kopplade till. <br>                   
                 </li>            
                 <li>
-                    <b>Typer av organisationsenheter</b><br>
+                    <b>Organisationsenheter</b><br>
                     Här defineras vilka typer av organisatoriska enheter som ska finnas i organisationsträdet. I samband med att en gren i det organisatoriska trädet skapas namnsätts den angivna typen av organisatorisk enhet.
                     Exempelvis sätts namnet Församlingsledning medan typen av organisatorisk enhet är styrelse.<br>
                 </li>            
@@ -138,7 +138,7 @@ require_once SARON_ROOT . "menu.php";
         <h3>Organisation & Bemanning</h3>
         <ul>    
             <div>Detta är den mest komplexa tabellen av alla. Den är central för att bygga organisationsträdet och bemanna det.<br>
-            Under menyerna "Typer av organisationsenheter" och "Organisationsroller" sätter du regelverket för hur organisationsträdet kan byggas.</div>
+            Under menyerna "Organisationsenheter" och "Organisationsroller" sätter du regelverket för hur organisationsträdet kan byggas.</div>
 
             <h4>Organisatorisk enhet</h4>
             <ul>
@@ -277,12 +277,12 @@ require_once SARON_ROOT . "menu.php";
                     </li>
                     <li>
                         Ta bort en koppling genom att klicka på <img src="/<?php echo SARON_URI;?>app/images/delete.png" title="Radera"/><br>
-                        Rollern finns kvar. Det är bara kopplingen som försvinner.
+                        Rollern finnsar. Det är bara kopplingen som försvinner.
                     </li>
                 </ul>
             </ul>
         </ul>
-        <H3>Typer av organisationsenheter</H3>
+        <H3>Organisationsenheter</H3>
         <ul>    
             Listan innehåller de typer av organisationsenheter som definerats. Till varje typ av organisationsenhet kan en uppsättning roller kopplas. 
             <ul>
