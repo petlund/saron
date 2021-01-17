@@ -3,7 +3,6 @@
     require_once SARON_ROOT . "app/access/SaronCookie.php";
     require_once SARON_ROOT . 'app/database/queries.php';
     require_once SARON_ROOT . 'app/database/db.php';
-
     require_once TCPDF_PATH . '/tcpdf.php';
 
     if(!hasValidSaronSession()){
@@ -11,6 +10,11 @@
     }
     $type = (String)filter_input(INPUT_GET, "type", FILTER_SANITIZE_STRING);
 
+    if(strlen($type) > 0){
+        setUpPdfDoc($type);
+    }
+    
+function setUpPdfDoc($type){
     define ("INNER", 1);
     define ("OUTER", 2);
     define ("BOOKLET_OUTER_MARGIN", 10);
@@ -24,8 +28,6 @@
     define ("HEADER_FOOTER_CELL_WIDTH", 90);
     define ("FONT_FAMILY", 'times');
 
-  
-    $PersonId = (int)filter_input(INPUT_GET, "PersonId", FILTER_SANITIZE_NUMBER_INT);
 
     $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
     $pdf->SetCreator(PDF_CREATOR);
@@ -63,24 +65,29 @@
         require_once(dirname(__FILE__).'/lang/eng.php');
         $pdf->setLanguageArray($l);
     }
+    define("STORE_AT_SERVER_FILE_SYSTEM", "F");
     
     $typ = "";
     switch ($type){
-        case "proposal":
-            $typ = "Förslag";
-
+        case "server":
+            $typ = "Beslutad";
+            $name = createOrganizationCalender($pdf, $type);
+            $path = SARON_ROOT . 'data/Organisationskalender.pdf';
+            $pdf->Output($path, 'F'); // F = File on server
+            break;
+        case "decided":
+            $typ = "Beslutad";
+            $name = createOrganizationCalender($pdf, $type);
+            $pdf->Output('Organisationskalender - ' . $typ . ' ' . date('Y-m-d', time()).'.pdf');
             break;
         default:
-            $typ = "Beslutad";
+            $typ = "Förslag";
+            $name = createOrganizationCalender($pdf, $type);
+            $pdf->Output('Organisationskalender - ' . $typ . ' ' . date('Y-m-d', time()).'.pdf');
     }
-    $name = createOrganizationCalender($pdf, $type);
-    $pdf->Output('Organisationskalender - ' . $typ . ' ' . date('Y-m-d', time()).'.pdf');
     $pdf->close();
-
-// ******************** Functions ************************************
-
-
-
+}
+    
 
 
 function createOrganizationCalender(TCPDF $pdf, String $type){

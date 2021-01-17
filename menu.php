@@ -68,7 +68,7 @@
                             <a href="#">Rapporter</a>
                             <ul>
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/DirectoryReport.php" target="_blank">Adresskalender (pdf-fil)</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/pdf/OrganizationReport.php?type=decided" target="_blank">Organisationskalender beslutad (pdf-fil)</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>data/Organisationskalender.pdf" target="_blank">Organisationskalender beslutad (pdf-fil)</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/BaptistDirectoryReport.php" target="_blank">Dopregister (pdf-fil)</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/people.php?tableview=birthdays">Födelsedagslista</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/lists.php?tableview=EMAIL_LIST">Mailadresser</a></li>

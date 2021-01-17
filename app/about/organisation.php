@@ -282,7 +282,7 @@ require_once SARON_ROOT . "menu.php";
                 </ul>
             </ul>
         </ul>
-        <H3>Organisationsenheter</H3>
+        <H3>Organisationsenheter </H3>
         <ul>    
             Listan innehåller de typer av organisationsenheter som definerats. Till varje typ av organisationsenhet kan en uppsättning roller kopplas. 
             <ul>

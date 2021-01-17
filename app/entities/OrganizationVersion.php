@@ -1,6 +1,7 @@
 <?php
 require_once SARON_ROOT . 'app/entities/SuperEntity.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
+require_once SARON_ROOT . 'app/pdf/OrganizationReport.php';
 
 class OrganizationVersion extends SuperEntity{
     
@@ -81,6 +82,9 @@ class OrganizationVersion extends SuperEntity{
         
         $id = $this->db->insert($sqlInsert, "Org_Version", "id");
         $result =  $this->select($id, RECORD);
+
+        setUpPdfDoc("server");
+        
         return $result;
     }
     

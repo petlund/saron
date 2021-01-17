@@ -3,27 +3,16 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/views/lists.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/views/organization.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/views/people.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/views/statistics.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/views/users.php</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/about/organisation.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/util/js.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/SaronUser.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/.gitignore</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/views/homes.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/about/about.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/SuperEntity.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/Person.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/util/timeout.js</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/delta.sql</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/organization.unit.js</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/scribble</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/ping.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/db.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/Engagement.php</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/engagement.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/organization.role.js</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/menu.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/util/js_version_prefix.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationUnit.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationRole.php</file>
         </group>
     </open-files>
 </project-private>
