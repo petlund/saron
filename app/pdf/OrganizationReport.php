@@ -149,14 +149,14 @@ function createOrganizationCalender(TCPDF $pdf, String $type){
 //                $pdf->MultiCell(ORG_UNIT_TYPE_CELL_WIDTH, CELL_HIGHT, $aRow['Unit_Name'], 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');
             }
             else If($aRow['Head_Level'] === "1"){
-                $pdf->SetFont(FONT_FAMILY, 'B', 12);
+                $pdf->SetFont(FONT_FAMILY, 'B', 14);
                 $pdf->Ln();
                 $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, $longName, 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_HEAD_CELL_HIGHT, 'T');
             }
             else{
-                $pdf->SetFont(FONT_FAMILY, 'B', 12);
+                $pdf->SetFont(FONT_FAMILY, 'P', 12);
                 $pdf->Ln();                
-                $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, $longName, 'B', 'L', BACKGROUND_NOT_FILLED, NL, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');
+                $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, $longName, 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');
                 
             }
             $info = $aRow['Info'];

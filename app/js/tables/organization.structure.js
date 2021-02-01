@@ -310,9 +310,11 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
                 options: function(data){
                     if(data.source === 'list')
                         return '/' + SARON_URI + 'app/web-api/listOrganizationRole.php?selection=options';
-                    else
-                        return '/' + SARON_URI + 'app/web-api/listOrganizationRole.php?selection=options&OrgUnitType_FK=' + orgUnitType_FK;
-                }
+                    else{
+                        data.clearCache();
+                        return '/' + SARON_URI + 'app/web-api/listOrganizationRole.php?selection=options&OrgUnitType_FK=' + orgUnitType_FK + '&Id=' + data.record.OrgRole_FK;
+                        }
+                    }
             },
             OrgPosStatus_FK: {
                 width: '5%',

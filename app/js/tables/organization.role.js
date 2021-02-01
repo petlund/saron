@@ -1,14 +1,5 @@
 /* global SARON_URI, J_TABLE_ID, DATE_FORMAT, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID */
-"use strict";
-
-const ORG_ROLE = "#ORG_ROLE";
-    
-$(document).ready(function () {
-
-        $(ORG_ROLE).jtable(roleTableDef(ORG_ROLE, -1, null));
-        $(ORG_ROLE).jtable('load');
-    }
-);
+ 
 
 function roleTableDef(tableId, unitTypeId, orgName){
     return {
@@ -160,7 +151,7 @@ function subUnitTableDef(tableId, orgRole_FK, roleName){
         pageList: 'minimal',
         sorting: true, //Enable sorting
         multiSorting: true,
-        defaultSorting: 'Name', //Set default sorting        
+        defaultSorting: 'OrgUnitType_FK', //Set default sorting        
         messages: {addNewRecord: 'Koppla roll till typ av organisatorisk enhet.'},
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationRole-UnitType.php?selection=unitTypes&OrgRole_FK=' + orgRole_FK,
@@ -174,7 +165,6 @@ function subUnitTableDef(tableId, orgRole_FK, roleName){
                         success: function (data) {
                             $dfd.resolve(data);
                             if(data.Result === 'OK'){
-                                data.childTable.jtable('load');
                                 updateRoleRecord(data, 'create', orgRole_FK);                               
                             }
                         },
@@ -215,8 +205,12 @@ function subUnitTableDef(tableId, orgRole_FK, roleName){
                 edit: false,
                 create: true,
                 width: '20%',
-                options: function(){
-                    return '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php?selection=options';
+                options: function(data){
+                    if(data.source === 'list')
+                        return '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php?selection=options';
+    
+                    data.clearCache();                    
+                    return '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php?selection=options&OrgRole_FK=' + orgRole_FK;
                 }                
             },
             Description: {

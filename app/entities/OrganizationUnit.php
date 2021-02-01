@@ -9,15 +9,17 @@ class OrganizationUnit extends SuperEntity{
     private $description;
     private $subUnitEnabled;
     private $posEnabled;
+    private $orgRole_FK;
     
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
-        
         $this->id = (int)filter_input(INPUT_POST, "Id", FILTER_SANITIZE_NUMBER_INT);
         $this->name = (String)filter_input(INPUT_POST, "Name", FILTER_SANITIZE_STRING);
         $this->description = (String)filter_input(INPUT_POST, "Description", FILTER_SANITIZE_STRING);
         $this->subUnitEnabled = (int)filter_input(INPUT_POST, "SubUnitEnabled", FILTER_SANITIZE_NUMBER_INT);
         $this->posEnabled = (int)filter_input(INPUT_POST, "PosEnabled", FILTER_SANITIZE_NUMBER_INT);
+
+        $this->orgRole_FK = (int)filter_input(INPUT_GET, "OrgRole_FK", FILTER_SANITIZE_NUMBER_INT);
     }
 
     function checkUnittData(){
@@ -77,7 +79,9 @@ class OrganizationUnit extends SuperEntity{
 //        $sql = "SELECT 0 as Value, ' Topp' as DisplayText "; 
 //        $sql.= "Union "; 
         $select = "SELECT id as Value, Name as DisplayText ";
-        $result = $this->db->select($this->saronUser, $select , "FROM Org_UnitType ", "", "Order by DisplayText ", "", "Options");    
+        $where = "WHERE id not in(select OrgUnitType_FK from `Org_Role-UnitType` where OrgRole_FK = " . $this->orgRole_FK . ") ";
+        $from = "FROM Org_UnitType ";
+        $result = $this->db->select($this->saronUser, $select , $from, $where, "Order by DisplayText ", "", "Options");    
         return $result; 
     }
     

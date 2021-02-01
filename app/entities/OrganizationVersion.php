@@ -62,7 +62,8 @@ class OrganizationVersion extends SuperEntity{
         $update = "update Org_Version ";
         $set = "SET ";        
         $set.= "decision_date = '" . $this->decision_date .  "', ";        
-        $set.= "information = '". $this->information . "' ";        
+        $set.= "information = '". $this->information . "', ";        
+        $set.= "UpdaterName = '". $this->saronUser->getDisplayName() . "' ";        
         $where = "WHERE id = "  . $this->id;
         $this->db->update($update, $set, $where);        
 

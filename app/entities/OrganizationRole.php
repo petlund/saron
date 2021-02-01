@@ -98,6 +98,7 @@ class OrganizationRole extends SuperEntity{
         if($this->orgUnitType_FK > 0){
             $from.= "inner join `Org_Role-UnitType` Typ on Role.Id = Typ.OrgRole_FK "; 
             $where = "WHERE OrgUnitType_FK = " . $this->orgUnitType_FK . " ";
+            $where.=" and Role.Id not in (select P.OrgRole_FK from Org_Pos as P inner join Org_Role as R on R.Id = P.OrgRole_FK where R.RoleType = 1 and P.OrgRole_FK <> " . $id . ") ";
         }
             
         $result = $this->db->select($this->saronUser, $select , $from, $where, "Order by DisplayText ", "", "Options");    
