@@ -89,6 +89,7 @@ function roleTableDef(tableId, unitTypeId, orgName){
                 width: '40%'
             },
             RoleType:{
+                edit: false,
                 title: 'Typ',
                 width: '10%',
                 options:  { '0' : 'Verksamhetsroll', '1' : 'Organisationsroll [Org]' }
