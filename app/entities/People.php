@@ -7,7 +7,7 @@ require_once SARON_ROOT . 'app/entities/PeopleFilter.php';
 
 class People extends SuperEntity{
 
-    protected $home;
+    protected $personId;
     protected $tableview;
     protected $uppercaseSearchString;
     protected $filter;
@@ -15,6 +15,7 @@ class People extends SuperEntity{
     function __construct($db, $saronUser) {
         parent::__construct($db, $saronUser);
         $this->tableview = (String)filter_input(INPUT_POST, "tableview", FILTER_SANITIZE_STRING);
+        $this->personId = (String)filter_input(INPUT_GET, "PersonId", FILTER_SANITIZE_STRING);
         $this->filter = (String)filter_input(INPUT_GET, "filter", FILTER_SANITIZE_STRING);
     }
     
@@ -40,8 +41,13 @@ class People extends SuperEntity{
 
         $gf = new PeopleFilter();
         $sqlWhere = "WHERE ";       
-        $sqlWhere.= $gf->getPeopleFilterSql($this->groupId);
-        $sqlWhere.= $gf->getSearchFilterSql($this->uppercaseSearchString);
+        if($this->personId > 0){
+            $sqlWhere.= "People.Id = " . $this->personId . " ";
+        }
+        else{
+            $sqlWhere.= $gf->getPeopleFilterSql($this->groupId);
+            $sqlWhere.= $gf->getSearchFilterSql($this->uppercaseSearchString);
+        }
         $result =  $this->db->select($this->saronUser, $sqlSelect, SQL_FROM_PEOPLE_LEFT_JOIN_HOMES, $sqlWhere, $this->getSortSql(), $this->getPageSizeSql(), $rec);
         return $result;
         

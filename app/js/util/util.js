@@ -15,6 +15,7 @@ const inputFormFieldWidth = '480px';
 const NOT_VISIBLE = 'Ej synlig';
 const VISIBLE = 'Synlig';
 const DATE_FORMAT = 'yy-mm-dd';
+const CHILD_TABLE_PREFIX = 'child-to-parent-';
 
 
 var clearMembershipNoOptionCache = true;

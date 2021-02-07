@@ -1,4 +1,4 @@
-/* global PERSON, SARON_URI, SARON_IMAGES_URI */
+/* global PERSON, CHILD_TABLE_PREFIX, SARON_URI, SARON_IMAGES_URI */
 "use strict";
 
 const TABLE_ID = '#STATISTICS';
@@ -120,6 +120,18 @@ $(document).ready(function () {
                                 listAction:   '/' + SARON_URI + 'app/web-api/listStatistics.php?year=' + YEAR + '&selection=details'
                             },
                             fields: {
+                                link:{
+                                    title: '',
+                                    width: '1%',
+                                    sorting: false,
+                                    display: function(data){
+                                        var imgLink = '<img class="Person" src="/' + SARON_URI + SARON_IMAGES_URI + 'haspos.png" title="Personuppgifter">';
+                                        var hrefLink = '<a href="/' + SARON_URI + 'app/views/people.php?tableview=people&PersonId=' + data.record.PersonId + '">' + imgLink + '</a>';
+                                        console.log(hrefLink);
+                                        var $img = $(hrefLink);
+                                        return $img;
+                                    }
+                                },
                                 event_date: {
                                     title: 'Datum',
                                     key: true,

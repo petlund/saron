@@ -1,5 +1,14 @@
 /* global SARON_URI, J_TABLE_ID, DATE_FORMAT, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID */
  
+"use strict";
+
+const ORG_ROLE = "#ORG_ROLE";
+    
+$(document).ready(function () {
+        $(ORG_ROLE).jtable(roleTableDef(ORG_ROLE, -1, null));
+        $(ORG_ROLE).jtable('load');
+    }
+);
 
 function roleTableDef(tableId, unitTypeId, orgName){
     return {
@@ -61,7 +70,7 @@ function roleTableDef(tableId, unitTypeId, orgName){
                     
                     var imgTag = _setImageClass(data.record, "Role", src, -1);
                     var $imgChild = $(imgTag);
-
+                    
                     $imgChild.click(data, function (event){
                         var $tr = $imgChild.closest('tr');
                         $(tableId).jtable('openChildTable', $tr, subUnitTableDef(tableId, data.record.Id, data.record.Name), function(data){
@@ -192,7 +201,7 @@ function subUnitTableDef(tableId, orgRole_FK, roleName){
                         }
                     });
                 });
-            },        
+            }        
         },
         fields: {
             Id: {

@@ -16,6 +16,7 @@ require_once SARON_ROOT . "menu.php";
    </head>
     <body>
         <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "statistics.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "people.js");?>"></script>     
         <script type="text/javascript" src="/<?php echo SARON_URI;?>jtable/jquery.jtable.js"></script>
         <script type="text/javascript" src="/<?php echo SARON_URI;?>jtable/localization/jquery.jtable.se.js"></script>                  
         <div class="saronSmallText"></div>

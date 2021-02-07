@@ -2,7 +2,6 @@
 "use strict";
 
 const PEOPLE_ENG = "#PEOPLE_ENG";
-const CHILD_TABLE_PREFIX = 'child-to-parent-';
     
 $(document).ready(function () {
 

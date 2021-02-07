@@ -1,12 +1,24 @@
 /* global DATE_FORMAT, J_TABLE_ID, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID */
 
 "use strict";
-
 $(document).ready(function () {
-    //localStorage.clear();
     localStorage.setItem(NEW_HOME_ID, -1);
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
     
-    $(J_TABLE_ID).jtable({
+    var personId = -1; 
+    if(urlParams.has('PersonId'))
+        personId = urlParams.get('PersonId');
+        
+    $(J_TABLE_ID).jtable(peopleTableDef(J_TABLE_ID, personId));
+    $(J_TABLE_ID).jtable('load');
+    $(J_TABLE_ID).find('.jtable-toolbar-item-add-record').hide();
+});
+
+
+function peopleTableDef(placeHolder, personId) {
+    
+    return {
         title: 'Personuppgifter',
         paging: true, //Enable paging
         pageList: 'minimal',
@@ -15,7 +27,7 @@ $(document).ready(function () {
         defaultSorting: 'LongHomeName ASC, DateOfBirth ASC', //Set default sorting   
         messages: {addNewRecord: 'Ny person'},
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php',
+            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php?PersonId=' + personId,
             createAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
@@ -29,9 +41,9 @@ $(document).ready(function () {
                                 $("#groupId").val("2");
                                 var pData = {searchString: "", groupId: 2, tableview: "people"};
 
-                                $(J_TABLE_ID).jtable('load', pData, function (){
+                                $(placeHolder).jtable('load', pData, function (){
                                     if(data.Record.HomeId > 0)
-                                        _openHomeChildTable(data);                                    
+                                        _openHomeChildTable(placeHolder, data);                                    
                                 });
                             }
                             else
@@ -60,11 +72,11 @@ $(document).ready(function () {
                                 var $selectedRow = $("[data-record-key=" + data.Record.PersonId + "]"); 
                                 var moveToNewHome = (data.Record.HomeId > 0 && data.Record.OldHome_HomeId !== data.Record.HomeId);
                                 if(!(data.Record.HomeId > 0 && data.Record.OldHome_HomeId === data.Record.HomeId)){
-                                    isChildRowOpen = $(J_TABLE_ID).jtable('isChildRowOpen', $selectedRow),
-                                    $(J_TABLE_ID).jtable('closeChildTable', $selectedRow, function(){
+                                    isChildRowOpen = $(placeHolder).jtable('isChildRowOpen', $selectedRow),
+                                    $(placeHolder).jtable('closeChildTable', $selectedRow, function(){
                                         _updateHomeFields(data);
                                         if(data.Record.HomeId > 0 && (isChildRowOpen || moveToNewHome))
-                                            _openHomeChildTable(data);
+                                            _openHomeChildTable(placeHolder, data);
                                     });
                                 }
                                 else{ // no move to another home
@@ -82,9 +94,9 @@ $(document).ready(function () {
             }
         },       
         fields: {
-            HomeDetails: childTableHome(),
-            MemberShip: childTableMembership(), 
-            Baptism: childTableBaptism(), 
+            HomeDetails: childTableHome(placeHolder),
+            MemberShip: childTableMembership(placeHolder), 
+            Baptism: childTableBaptism(placeHolder), 
             PersonId: {
                 key: true,
                 list: false,
@@ -277,7 +289,7 @@ $(document).ready(function () {
         },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === 'edit'){ 
-                $(J_TABLE_ID).find('.jtable-toolbar-item-add-record').show();
+                $(placeHolder).find('.jtable-toolbar-item-add-record').show();
             }
         },        
         formCreated: function (event, data){
@@ -320,16 +332,8 @@ $(document).ready(function () {
             if(data.formType === 'edit')
                 data.row[0].style.backgroundColor = '';
         }
-    });
-    //Re-load records when user click 'load records' button.
-    $('#search_people').click(function (e) {
-        e.preventDefault();
-        filterPeople('people');
-    }); 
-    //Load all records when page is first shown
-    $('#search_people').click();
-    $(J_TABLE_ID).find('.jtable-toolbar-item-add-record').hide();
-});
+    };
+}
 
 function filterPeople(viewId){
     $('#' + viewId).jtable('load', {
@@ -344,7 +348,7 @@ function filterPeople(viewId){
 // SUBTABLE HOME
 // *********************************************************
 
-function childTableHome() {
+function childTableHome(placeHolder) {
     return {
         title: '',
         width: '1%',
@@ -365,7 +369,7 @@ function childTableHome() {
                     newHomeId = event.data.record.HomeId;
     
                 var $tr = $('.Name_P' + event.data.record.PersonId).closest('tr');
-                $(J_TABLE_ID).jtable('openChildTable', $tr, homeChildTableDef(event.data, newHomeId), function(data){
+                $(placeHolder).jtable('openChildTable', $tr, homeChildTableDef(event.data, newHomeId), function(data){
                     data.childTable.jtable('load');
                 });
             });
@@ -550,7 +554,7 @@ function homeFields(homeData) {
 // SUBTABLE MEMBERSHIP
 // *********************************************************
 
-function childTableMembership(){
+function childTableMembership(placeHolder){
     return {
         title: '',
         width: '1%',
@@ -561,7 +565,7 @@ function childTableMembership(){
         display: function (memberData) {                    
             var $imgMember = $('<img src="/' + SARON_URI + SARON_IMAGES_URI + 'member.png" title="Medlemsuppgifter" />');
             $imgMember.click(function () {
-                $(J_TABLE_ID).jtable('openChildTable', $imgMember.closest('tr'),{
+                $(placeHolder).jtable('openChildTable', $imgMember.closest('tr'),{
                     title: _setClassAndValuePrefix(memberData.record, "Name", PERSON, "Medlemsuppgifter för: "),
                     showCloseButton: false,
                     actions: {
@@ -703,7 +707,7 @@ function childTableMembership(){
 // SUBTABLE BAPTISM
 // *********************************************************
 
-function childTableBaptism(){
+function childTableBaptism(placeHolder){
     return {
         title: '',
         width: '1%',
@@ -715,7 +719,7 @@ function childTableBaptism(){
             var $imgBaptist = $('<img src="/' + SARON_URI + SARON_IMAGES_URI + 'baptist.png" title="Dopuppgifter" />');
             
             $imgBaptist.click(function () {
-                    $(J_TABLE_ID).jtable('openChildTable', $imgBaptist.closest('tr'),{
+                    $(placeHolder).jtable('openChildTable', $imgBaptist.closest('tr'),{
                     title: _setClassAndValuePrefix(baptistData.record, "Name", PERSON, "Dopuppgifter för: "),
                     showCloseButton: false,                                    
                     actions: {
@@ -744,7 +748,7 @@ function childTableBaptism(){
                         }
                     },
                     fields: {
-                        CloseChild: fieldCloseChildTable(baptistData.record.PersonId),
+                        CloseChild: fieldCloseChildTable(placeHolder, baptistData.record.PersonId),
                         PersonId: {
                             key: true,
                             update: false,
@@ -824,7 +828,7 @@ function childTableBaptism(){
     };
 }
 
-function fieldCloseChildTable(personId){
+function fieldCloseChildTable(placeHolder, personId){
     return {
         title: '',
         width: '1%',
@@ -837,7 +841,7 @@ function fieldCloseChildTable(personId){
             $imgClose.click(function () {
                 //closeChildTable(personId);
                 var $selectedRow = $("[data-record-key=" + personId + "]"); 
-                $(J_TABLE_ID).jtable('closeChildTable', $selectedRow);  
+                $(placeHolder).jtable('closeChildTable', $selectedRow);  
             });                
             return $imgClose;
        }
@@ -846,11 +850,11 @@ function fieldCloseChildTable(personId){
 
 
 
-function _openHomeChildTable(data){
+function _openHomeChildTable(placeHolder, data){
     var newData = {record: data.Record}
     var rowRef = "[data-record-key=" + data.Record.PersonId + "]";
     var $selectedRow = $(rowRef);
-    $(J_TABLE_ID).jtable('openChildTable', $selectedRow, homeChildTableDef(newData, data.Record.HomeId), function(data){
+    $(placeHolder).jtable('openChildTable', $selectedRow, homeChildTableDef(newData, data.Record.HomeId), function(data){
         data.childTable.jtable('load');
     });    
 }
