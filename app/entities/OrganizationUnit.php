@@ -55,6 +55,9 @@ class OrganizationUnit extends SuperEntity{
     
     function selectDefault($id = -1, $rec=RECORDS){
         $select = "SELECT Typ.Id, Typ.PosEnabled, Typ.SubUnitEnabled, Typ.Name, Typ.Description, Typ.UpdaterName, Typ.Updated, "; 
+        $select.= "(select If(count(*)=0,0,1) From Org_Tree as Tree where  Tree.OrgUnitType_FK = Typ.Id) as InUse, ";
+        $select.= "(select sum((select count(*) from Org_Tree as T2 where T2.ParentTreeNode_FK=T1.Id)) From Org_Tree as T1 where  T1.OrgUnitType_FK = Typ.Id Group by T1.OrgUnitType_FK) as UseChild, ";
+        $select.= "(select sum((select count(*) from Org_Pos as P where P.OrgTree_FK = T1.Id)) From Org_Tree as T1 where  T1.OrgUnitType_FK = Typ.Id Group by T1.OrgUnitType_FK) as UseRole, ";
         $select.= "(Select count(*) from `Org_Role-UnitType` as UnitRole WHERE UnitRole.OrgUnitType_FK = Typ.Id) as HasPos, ";
         $select.= $this->saronUser->getRoleSql(false) . " ";
         $from = "FROM Org_UnitType as Typ ";

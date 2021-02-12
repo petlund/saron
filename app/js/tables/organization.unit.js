@@ -48,12 +48,18 @@ function orgUnitTableDef(tableId){
                 key: true,
                 list: false
             },
+            InUse: {
+                title: 'Används',
+                width: '3%',
+                edit: false,
+                create: false,
+                options: { '0' : '', '1' : 'Ja' }
+            },
             HasPos:{
-                width: '10%',
-                title: 'Har roller',
+                width: '3%',
+                title: 'Roller',
                 create: false,
                 edit: false,
-                sorting: false,
                 display: function(data){
                     if(data.record.PosEnabled ===  "1"){
                         var src;
@@ -84,13 +90,23 @@ function orgUnitTableDef(tableId){
             },
             SubUnitEnabled: {
                 title: 'Kan ha underenheter',
-                width: '15%',
-                options: {"0":"Nej", "1":"Ja"}
+                width: '15%',                
+                options: function(data){
+                   var val =  data.record.UseChild;
+                   if (val === null)
+                       val = 0;
+                   return {"0":"Nej", "1":"Ja (" + val + ")"};
+                }
             },
             PosEnabled: {
                 title: 'Kan ha bemanning',
                 width: '15%',
-                options: {"0":"Nej", "1":"Ja"}
+                options: function(data){
+                   var val =  data.record.UseRole;
+                   if (val === null)
+                       val = 0;
+                   return {"0":"Nej", "1":"Ja (" + val + ")"};
+                }
             },
             Description: {
                 title: 'Beskrivning',
@@ -116,7 +132,7 @@ function orgUnitTableDef(tableId){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
-            if(data.record.HasPos !== '0')
+            if(data.record.InUse !== '0')
                 data.row.find('.jtable-delete-command-button').hide();
 
             addDialogDeleteListener(data);
@@ -128,7 +144,7 @@ function orgUnitTableDef(tableId){
                 data.row.find('.jtable-delete-command-button').hide();
             }
             else
-                if(data.record.HasPos !== '0')
+                if(data.record.InUse !== '0')
                     data.row.find('.jtable-delete-command-button').hide();
                 else
                     data.row.find('.jtable-delete-command-button').show();
@@ -141,6 +157,16 @@ function orgUnitTableDef(tableId){
         formCreated: function (event, data){
             if(data.formType === 'edit')
                 data.row[0].style.backgroundColor = "yellow";
+
+            if(data.record.UseChild > 0){
+                var inp = data.form.find('select[name=SubUnitEnabled]');            
+                inp[0].disabled=true;            
+            }
+
+            if(data.record.UseRole > 0){
+                var inp = data.form.find('select[name=PosEnabled]');            
+                inp[0].disabled=true;            
+            }
 
             data.form.css('width','600px');
             data.form.find('input[name=Description]').css('width','580px');
