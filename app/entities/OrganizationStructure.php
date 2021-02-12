@@ -24,7 +24,11 @@ class OrganizationStructure extends SuperEntity{
         $this->name = (String)filter_input(INPUT_POST, "Name", FILTER_SANITIZE_STRING);
         $this->description = (String)filter_input(INPUT_POST, "Description", FILTER_SANITIZE_STRING);
         $this->filter = (String)filter_input(INPUT_GET, "filter", FILTER_SANITIZE_STRING);
+        
         $this->orgUnitType_FK = (int)filter_input(INPUT_POST, "OrgUnitType_FK", FILTER_SANITIZE_NUMBER_INT);
+        if( $this->orgUnitType_FK === 0){
+            $this->orgUnitType_FK = (int)filter_input(INPUT_GET, "OrgUnitType_FK", FILTER_SANITIZE_NUMBER_INT);
+        }
         $this->newParentTreeNode_FK = (int)filter_input(INPUT_POST, "ParentTreeNode_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->parentTreeNode_FK = (int)filter_input(INPUT_GET, "ParentTreeNode_FK", FILTER_SANITIZE_NUMBER_INT);
     }
@@ -33,6 +37,8 @@ class OrganizationStructure extends SuperEntity{
         switch ($this->selection){
         case "options":
             return $this->selectOptions();       
+        case "unittype":
+            return $this->selectSpecUnitType();       
         case "single_node":
             return $this->selectDefault($this->treeId, RECORD);       
         default:
@@ -62,6 +68,16 @@ class OrganizationStructure extends SuperEntity{
         return $result; 
     }
     
+    
+    
+    function selectSpecUnitType(){
+        $select = "SELECT * ";
+        $from = "FROM Org_Tree ";
+        $where = "WHERE OrgUnitType_FK = " . $this->orgUnitType_FK . " ";
+
+        $result = $this->db->select($this->saronUser, $select , $from, $where, "Order by Name ", "", RECORDS);    
+        return $result; 
+    }
     
     function selectDefault($id = -1, $rec=RECORDS){
         //filter all nodes witch not have childs and all child below curret node

@@ -53,8 +53,27 @@ function orgUnitTableDef(tableId){
                 width: '3%',
                 edit: false,
                 create: false,
-                options: { '0' : '', '1' : 'Ja' }
-            },
+                display: function(data){
+                    var src;
+                    if(data.record.InUse ===  "1"){
+                        src= '"/' + SARON_URI + SARON_IMAGES_URI + 'haschild.png" title="Används på följande ställen"';
+                        
+                        var imgTag = _setImageClass(data.record, "Role", src, -1);
+                        var $imgChild = $(imgTag);
+
+                        $imgChild.click(data, function (event){
+                            var $tr = $imgChild.closest('tr');
+                            $(tableId).jtable('openChildTable', $tr, inUseTableDef(tableId, data.record.Id, data.record.Name), function(data){
+                                data.childTable.jtable('load');
+                            });
+                        });
+                        return $imgChild;
+                    }
+                    else{
+                        return null;
+                    }
+                }
+            },            
             HasPos:{
                 width: '3%',
                 title: 'Roller',
@@ -95,7 +114,7 @@ function orgUnitTableDef(tableId){
                    var val =  data.record.UseChild;
                    if (val === null)
                        val = 0;
-                   return {"0":"Nej", "1":"Ja (" + val + ")"};
+                   return {"0":"Nej", "1":"Ja (" + val + " underenheter)"};
                 }
             },
             PosEnabled: {
@@ -105,7 +124,7 @@ function orgUnitTableDef(tableId){
                    var val =  data.record.UseRole;
                    if (val === null)
                        val = 0;
-                   return {"0":"Nej", "1":"Ja (" + val + ")"};
+                   return {"0":"Nej", "1":"Ja (" + val + " positioner)"};
                 }
             },
             Description: {
@@ -178,6 +197,42 @@ function orgUnitTableDef(tableId){
     };    
 }
 
+
+
+function inUseTableDef(tableId, id, name){
+    return {
+        title: function (){
+            if(name !== null)
+                return 'Enhetstypen "' + name + '" används på följande ställen i organisationsträdet';
+            else
+                return 'Enhetstypen används på följande ställen i organisationsträdet';
+        },
+        paging: true, //Enable paging
+        pageSize: 10, //Set page size (default: 10)
+        pageList: 'minimal',
+        sorting: true, //Enable sorting
+        multiSorting: true,
+        defaultSorting: 'Name', //Set default sorting,
+        actions: {
+            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationStructure.php?selection=unittype&OrgUnitType_FK=' + id
+        },        
+        fields: {
+            Id: {
+                key: true,
+                list: false
+            },
+            Name: {
+                width: '20%',
+                title: 'Benämning'
+                
+            },
+            Description:{
+                width: '80%',
+                title: 'Beskrivning'
+            }
+        }
+    }
+}
 
 
 function subRoleTableDef(tableId, orgUnitType_FK, orgName){
