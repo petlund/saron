@@ -22,7 +22,7 @@ require_once SARON_ROOT . "menu.php";
         För att kunna ändra i organisationsinformationen krävs separat behörighet. Endast personer som är definierade i medlemsregistret kan kopplas till uppdrag. 
         För att lägga till personer eller redigera kontaktuppgifter behövs speciell behörighet.<br>
         Grunden för förtroende uppdrag är medlemskap. Ibland kan det passa med att låta icke medlemmar ha förtroendeuppdrag. Även dessa personer behöver då registreras i
-        medlemsregistret som icke medlemmar.
+        medlemsregistret som icke medlemmar. När icke edlemmar kopplas till ett uppdrag får de medlemsstatus Medhjälpare. Så länge de har status Medhjälpare kommer Saron inte att föreslå anonymisering av dessa personer. 
     </ul>    
         
         
@@ -104,7 +104,7 @@ require_once SARON_ROOT . "menu.php";
                     </li>
                 </ul>
                 <li>
-                Klickar man på  <img src="/<?php echo SARON_URI;?>app/images/pos.png" title="Inga uppdrag"/> eller <img src="/<?php echo SARON_URI;?>app/images/haspos.png" title="Uppdragslista"/> längst till vänster så öppnar sig en undertabell med innehåll motsvarande kolumnen uppdragsöversikt. Där kan justeringar göras av vilka
+                Klickar man på <img src="/<?php echo SARON_URI;?>app/images/pos.png" title="Inga uppdrag"/> eller <img src="/<?php echo SARON_URI;?>app/images/haspos.png" title="Uppdragslista"/> längst till vänster så öppnar sig en undertabell med innehåll motsvarande kolumnen uppdragsöversikt. Där kan justeringar göras av vilka
                 uppdrag en given person ska ha.
                 </li>
                 <ul>
@@ -140,74 +140,112 @@ require_once SARON_ROOT . "menu.php";
             <div>Detta är den mest komplexa tabellen av alla. Den är central för att bygga organisationsträdet och bemanna det.<br>
             Under menyerna "Organisationsenheter" och "Organisationsroller" sätter du regelverket för hur organisationsträdet kan byggas.</div>
 
-            <h4>Organisatorisk enhet</h4>
+            <h4>Navigering i organisationsträdet</h4>
+            Längst till vänster finns pilar att navigera sig genom trädet med.
             <ul>
                 <li>
-                    Skapa
+                     Använd <img src="/<?php echo SARON_URI;?>app/images/hasChild.png" title="Har undernivåer"/> eller  <img src="/<?php echo SARON_URI;?>app/images/child.png" title="Undernivåer saknas"/> för att komma nedåt i organisationsstrukturen
+                </li>
+                <li>
+                     Använd <img src="/<?php echo SARON_URI;?>app/images/unit.png" title=""/> eller  <img src="/<?php echo SARON_URI;?>app/images/unit_empty.png" title=""/> för att öppna en organisationisk enhet.
                 </li>
                 <ul> 
-                    <li>
-                    </li>
-                    <li>
-                    </li>
-                    <li>
-                    </li>
-                    <li>    
-                    </li>
+                    <ul>
+                        Bakgrundsfärgerna på pilarna anger
+                        <li>
+                            Gul: <img src="/<?php echo SARON_URI;?>app/images/unit_Y.png" title=""/>, <img src="/<?php echo SARON_URI;?>app/images/hasChild_Y.png" title="Har undernivåer"/> Det finns förslag på personer där personen inte är vidtalad
+                        </li>
+                        <li>
+                            Röd: <img src="/<?php echo SARON_URI;?>app/images/unit_R.png" title=""/>, <img src="/<?php echo SARON_URI;?>app/images/hasChild_R.png" title="Har undernivåer"/> Det finns vakanta positioner.
+                        </li>
+                        <li>
+                            Vakanser summeras upp genom organisationsträdet och presenteras på tooltip kopplad till pilarna. (Lägg muspekaren över en pil.)
+                        </li>
+                    </ul>
                 </ul>
                 <li>
-                    Uppdatera
-                </li>
-                <li>
-                    Ta bort
-                </li>
-                <li>
-                    Flytta
+                     Använd <img src="/<?php echo SARON_URI;?>app/images/close.png" title="Stäng"/> till höger för att stänga en underliggande del av organisationsstrukturen.
                 </li>
             </ul>
                 
-            <h4>Positioner att bemanna</h4>
+            <h4>Organisatorisk enhet</h4>
             <ul>
                 <li>
-                    ...
+                    Lägg till ny Organisatorisk enhet genom att klicka på [ + Lägg till en ny organisatorisk enhet.]. Den organisatoriska enheten skapas på den nivå i organisationsträdet som du befinner dig på. Du kan navigera dig ner i trädet för att placera den nya organisatoriska enheten rätt.
                 </li>
                 <ul> 
                     <li>
+                        Prefix ger dig möjlighet att styra sorteringsordning.
                     </li>
                     <li>
+                        Namnet på den organisatoriska enheten måste vara unikt inom organisationen
                     </li>
                     <li>
+                        Beskrivning underlättar arbete för bland annat valberedningen i samband med hantering av vakanser
                     </li>
                     <li>    
+                        Välj lämplig typ av enhet. Egenskaper som ges av enhetestypen är: Om Enheten får ha underenheter, Vilka roller som finns tillgängliga.
+                        För att välja rätt typ av enhet kan det vara bra att se vilket utbud som finns och om det är nödvändigt med en utökning av utbudet.
                     </li>
                 </ul>
                 <li>
-                    ...
+                    Uppdatering görs genom att klicka på knappen  <img src="/<?php echo SARON_URI;?>app/images/edit.png" title="ändra"/>. 
+                    Samtliga parametrar som sätts när en enhet skapas kan ändras med två undantag.
                 </li>
+                <ul> 
+                    <li>
+                        Du kan välja en annan överordnad verksamhet. Det betyder att den aktuella organisationsenheten med underliggande struktur kan flyttas till annan del i organisationsträdet.
+                    </li>
+                    <li>    
+                        Du kan inte ändra typ av enhet. 
+                        Denna begränsning är satt för att inte en annan enhetstyp ska orsaka att relationer till andra delar av orgransiationsträdet går förlorade.
+                    </li>
+                </ul>
                 <li>
-                    ...
+                    Ta bort genom att använda <img src="/<?php echo SARON_URI;?>app/images/delete.png" title="Radera"/>. Den är synlig när inga relationer till undeliggande enheter finns.
                 </li>
             </ul>
-            <h4>Bemanna positioner</h4>
+                
+            <h4>Positioner</h4>
+            Med positioner menas det behov av medlemsmedverkan som församlingen behöver för att bedriva sin ordinarie verksamhet.
             <ul>
                 <li>
-                    Lägg till
+                    Lägg till Position genom att klicka på [ + Lägg till en ny Position.]. 
                 </li>
                 <ul> 
                     <li>
+                        Utbudet av roller bestäms av vilken enhetstyp som är vald. För eventuell uppdataring av utbudet se Typer av organistionsenheter
                     </li>
                     <li>
+                        Status Se menyn [Organisation][Bemanningsstatus] för förklaring
                     </li>
                     <li>
+                        Kommentaren ska vara knuten till rollen inte personen. Kommentaren syns i utskrifter och bör därför vara kort. Exempel på kommentarer är: Specificering av ansvar, mandatperiod.
                     </li>
                     <li>    
+                        De två nedersta valen är exklusiva val. Det vill säga antingen det ena eller det andra. Antingen sätts en person som ansvarig eller så sätts en funktion som ansvarig.  Minst en av valen behöver vara "-".
                     </li>
+                    <ul> 
+                        <li>
+                            Ändras något av valen kommer 
+                        </li>
+                        <li>    
+                            Du kan inte ändra typ av enhet. 
+                            Denna begränsning är satt för att inte en annan enhetstyp ska orsaka att relationer till andra delar av orgransiationsträdet går förlorade.
+                        </li>
+                    </ul>
                 </ul>
                 <li>
-                    Uppdatera
+                    Uppdatering görs genom att klicka på knappen  <img src="/<?php echo SARON_URI;?>app/images/edit.png" title="ändra"/>. 
+                    Samtliga parametrar som sätts när en Positionen skapas kan ändras.
                 </li>
+                    <ul> 
+                        <li>
+                            Ändras ansvaret på en position sätts status Ny i Organisationskalender förslag (pdf-fil).
+                        </li>
+                    </ul>
                 <li>
-                    Ta bort
+                    Ta bort genom att använda <img src="/<?php echo SARON_URI;?>app/images/delete.png" title="Radera"/>.
                 </li>
             </ul>
         </ul>
@@ -277,12 +315,12 @@ require_once SARON_ROOT . "menu.php";
                     </li>
                     <li>
                         Ta bort en koppling genom att klicka på <img src="/<?php echo SARON_URI;?>app/images/delete.png" title="Radera"/><br>
-                        Rollern finnsar. Det är bara kopplingen som försvinner.
+                        Rollerna finns kvar. Det är bara kopplingen som försvinner.
                     </li>
                 </ul>
             </ul>
         </ul>
-        <H3>Organisationsenheter </H3>
+        <H3>Typer av Organisationsenheter </H3>
         <ul>    
             Listan innehåller de typer av organisationsenheter som definerats. Till varje typ av organisationsenhet kan en uppsättning roller kopplas. 
             <ul>
@@ -299,7 +337,6 @@ require_once SARON_ROOT . "menu.php";
                     <li>
                         Ange om den organisatorsika enhetstypen ska kunna ha underenheter. 
                     </li>
-                    OBS: Om någon av de två ovanstående valen ändras från ja till nej så förloras den visuella kopplingen till Bemanningen eller Underenheterna. Det är inte rekommenderbart att göra så.
                     <li>
                         Ange beskrivning. Det gör det lättare för exempelvis valberedning och hitta lämpliga personer.
                     </li>
@@ -317,7 +354,6 @@ require_once SARON_ROOT . "menu.php";
                     <li>
                         Ange om den organisatorsika enhetstypen ska kunna ha underenheter. 
                     </li>
-                    OBS: Om någon av de två ovanstående valen ändras från ja till nej så förloras den visuella kopplingen till Bemanningen eller Underenheterna. Det är inte rekommenderbart att göra så.
                     <li>
                         Uppdatera beskrivning.
                     </li>
@@ -374,7 +410,7 @@ require_once SARON_ROOT . "menu.php";
                         När en ny version är skapad, är alla personer i beslutad organisation lika med dem i föreslagen organiation. Då försvinner alla status "Ny" i rapporten "Organisationskalender förslag (pdf-fil)"
                     </li>
                     <li>
-                        "Organisationskalender beslutad (pdf)" uppdateras omedelbar i enlighet med förslaget.
+                        "Organisationskalender beslutad (pdf)" uppdateras omedelbar i enlighet med förslaget. Pdf: en nås under menyn Rapporter.
                     </li>
                 </ul>
                 </ul>

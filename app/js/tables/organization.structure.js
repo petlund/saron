@@ -25,6 +25,7 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
         sorting: true, //Enable sorting
         multiSorting: true,
         defaultSorting: 'Prefix, Name', //Set default sorting        
+        messages: {addNewRecord: 'Lägg till en ny organisatorisk enhet.'},
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationStructure.php?ParentTreeNode_FK=' + parentTreeNode_FK,
             createAction: '/' + SARON_URI + 'app/web-api/createOrganizationStructure.php?ParentTreeNode_FK=' + parentTreeNode_FK,
@@ -225,8 +226,14 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
             }
         },        
         formCreated: function (event, data){
-            if(data.formType === 'edit')
+            if(data.formType === 'edit'){
                 data.row[0].style.backgroundColor = "yellow";
+                data.form.find('select[name=ParentTreeNode_FK]')[0].disabled=false;
+                data.form.find('select[name=OrgUnitType_FK]')[0].disabled=true;                
+            }
+            else{
+                data.form.find('select[name=OrgUnitType_FK]')[0].disabled=false;
+            }
 
             data.form.css('width','600px');
             data.form.find('input[name=Name]').css('width','580px');
@@ -250,6 +257,7 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
         sorting: true, //Enable sorting
         multiSorting: true,
         defaultSorting: 'SortOrder', //Set default sorting        
+        messages: {addNewRecord: 'Lägg till en ny position.'},
         actions: {
             listAction: '/' + SARON_URI + 'app/web-api/listOrganizationPos.php?OrgTree_FK=' + orgTree_FK,
             createAction: '/' + SARON_URI + 'app/web-api/createOrganizationPos.php?OrgTree_FK=' + orgTree_FK,
@@ -312,7 +320,7 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
                         return '/' + SARON_URI + 'app/web-api/listOrganizationRole.php?selection=options';
                     else{
                         data.clearCache();
-                        return '/' + SARON_URI + 'app/web-api/listOrganizationRole.php?selection=options&OrgUnitType_FK=' + orgUnitType_FK + '&Id=' + data.record.OrgRole_FK;
+                        return '/' + SARON_URI + 'app/web-api/listOrganizationRole.php?selection=options&OrgUnitType_FK=' + orgUnitType_FK;
                         }
                     }
             },
@@ -326,6 +334,7 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
             },
             Comment:{
                 width: '10%',
+                inputTitle: "Kort kommentar som ska vara knuten till uppdraget inte personen.",
                 title: 'Kommentar',                
             },
             People_FK: {
@@ -425,7 +434,6 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
                 data.row[0].style.backgroundColor = "yellow";
 
             data.form.css('width','600px');
-            data.form.find('input[name=Description]').css('width','580px');
         },
         formClosed: function (event, data){
             if(data.formType === 'edit')
