@@ -236,7 +236,8 @@ function createOrganizationCalender(TCPDF $pdf, String $type){
                    $pdf->MultiCell(CELL_WIDTH * 3, CELL_HIGHT, "", $line_comment, 'L', BACKGROUND_NOT_FILLED, NL, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');
                 }
         }        
-    }    
+    } 
+    return 'Organisationskalender - ' . $type;
 }
 
 function getSQL($type){

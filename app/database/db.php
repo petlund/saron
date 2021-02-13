@@ -192,6 +192,10 @@ class db {
         $sql = "select * from  SaronUser where AccessTicket='" . $ticket . "'"; 
         
         $attributes = $this->sqlQuery($sql);
+        if(count($attributes) === 0){
+            throw new exception("Could not load saronUser data.");
+        }
+            
         return $attributes;       
     }
     
@@ -314,6 +318,7 @@ class db {
     
     
     public function selectSeparate($saronUser, $sqlSelect, $sqlCount, $responstype=RECORDS){
+
         $listResult = $this->connection->query($sqlSelect);
         if(!$listResult){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
@@ -402,7 +407,7 @@ class db {
 
         $countRows = "0";
         while($countRow = mysqli_fetch_array($countResult)){
-            $countRows = $countRow["c"];
+            $countRows = $countRow[0];
         } 
         mysqli_free_result($countResult);
 
