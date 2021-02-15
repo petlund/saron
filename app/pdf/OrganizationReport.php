@@ -215,25 +215,21 @@ function createOrganizationCalender(TCPDF $pdf, String $type){
                     $line_comment = $line;
                     $line = '0';
                 }
-                    
-                $pdf->MultiCell(CELL_WIDTH * 2, CELL_HIGHT, $aRow['Role_Name']."\n", $line, 'L', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', true);
-                if(strlen($pName) >0){
-                    $pdf->MultiCell(CELL_WIDTH * 1.5, CELL_HIGHT, $pName."\n", $line, 'L', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', True); 
+                $role = $aRow['Role_Name'];
+                if(strlen($aRow['Pos_Comment']) > 0 ){
+                    $role.=", " . $aRow['Pos_Comment'];
+                }
+                
+                $pdf->MultiCell(CELL_WIDTH * 2, CELL_HIGHT, $role . "\n", $line, 'J', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', true);
+
+                if($aRow['State_Id'] > 3){ // not checked person
+                    $pdf->MultiCell(CELL_WIDTH * 3, CELL_HIGHT, $aRow['FunctionRespons'] . "\n", $line, 'J', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', True);                     
+                    $pdf->MultiCell(CELL_WIDTH * 1, CELL_HIGHT, $aRow['State_Name'] . "\n", $line, 'J', BACKGROUND_NOT_FILLED, NL, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', True);                     
                 }
                 else{
-                    if($aRow['State_Id'] === '6'){ // Funktionsansvar
-                            $pdf->MultiCell(CELL_WIDTH * 1.5, CELL_HIGHT, $aRow['FunctionRespons'] . "\n", $line, 'L', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', True);                     
-                    }
-                    else{
-                        $pdf->MultiCell(CELL_WIDTH * 1.5, CELL_HIGHT, $pName . "\n", $line, 'L', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', True);                                             
-                    }
-                }
-                $pdf->MultiCell(CELL_WIDTH * 1.5, CELL_HIGHT, $aRow['People_Email']."\n", $line, 'J', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', true); 
-                $pdf->MultiCell(CELL_WIDTH * 1, CELL_HIGHT, $aRow['People_Mobile']."\n", $line, 'J', BACKGROUND_NOT_FILLED, NL, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', true); 
-
-                if(strlen($aRow['Pos_Comment']) > 0) {
-                   $pdf->MultiCell(CELL_WIDTH * 3, CELL_HIGHT, " - " . $aRow['Pos_Comment'], $line_comment, 'L', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');
-                   $pdf->MultiCell(CELL_WIDTH * 3, CELL_HIGHT, "", $line_comment, 'L', BACKGROUND_NOT_FILLED, NL, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');
+                    $pdf->MultiCell(CELL_WIDTH * 1.5, CELL_HIGHT, $pName . "\n", $line, 'J', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', True);                                             
+                    $pdf->MultiCell(CELL_WIDTH * 1.5, CELL_HIGHT, $aRow['People_Email']."\n", $line, 'J', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', true); 
+                    $pdf->MultiCell(CELL_WIDTH * 1, CELL_HIGHT, $aRow['People_Mobile']."\n", $line, 'J', BACKGROUND_NOT_FILLED, NL, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', true); 
                 }
         }        
     } 
@@ -245,7 +241,7 @@ function getSQL($type){
             . "(Select SortOrder from `Org_Role-UnitType` as RUT WHERE  RUT.OrgRole_FK = Pos.OrgRole_FK and RUT.OrgUnitType_FK = Tree.OrgUnitType_FK) as SortOrder,  "
             . "PState.Name as State_Name, PState.Id as State_Id, Pos.People_FK as PersonId, "
             . "Pos.PrevPeople_FK as PrevPersonId, Unit.Name as Unit_Name, "; 
-    $sql.= "(Select T.Name from Org_Tree as T Where T.Id = Function_FK) as FunctionRespons, ";
+    $sql.= "(Select T.Name from Org_Tree as T Where T.Id = PrevFunction_FK) as FunctionRespons, ";
     $sql.= getFieldSql("People", "Email", "EmailEncrypt", null, true, true);
     $sql.= getFieldSql("People", "Mobile", "MobileEncrypt", null, true, true);
     $sql.= "IF(People.Id>0, CONCAT(";

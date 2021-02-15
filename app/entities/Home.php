@@ -15,7 +15,7 @@ class Home extends Homes{
         $error["Result"] = "OK";
         $error["Message"] = "";
         
-        if(strlen($familyName) === 0){
+        if(strlen($this->FamilyName) === 0){
             $error["Message"] = "Det måste finnas ett Familjenamn.";
         }
 
