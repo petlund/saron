@@ -389,7 +389,7 @@ class Person extends People{
     
     function anonymization(){
         $Today = date("Y-m-d") ;
-        $result = $this->db->select($this->saronUser, "Select Id ", "From People ", "Where DateOfMembershipEnd is null and Id = " . $this->PersonId, "", "");
+        $result = $this->db->select($this->saronUser, "Select Id ", "From People ", "Where DateOfMembershipStart is not null and DateOfMembershipEnd is null and Id = " . $this->PersonId, "", "");
         $jResult = json_decode($result);
 
         $sql = "update People set ";
