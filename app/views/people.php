@@ -23,7 +23,7 @@ require_once SARON_ROOT . "menu.php";
         
         <script type="text/javascript" src="/<?php echo SARON_URI;?>jtable/jquery.jtable.js"></script>
         <script type="text/javascript" src="/<?php echo SARON_URI;?>jtable/localization/jquery.jtable.se.js"></script>        
-        <table class="saronSmallText" style="width:0%">
+        <table class="saronSmallText" style="width:0%; white-space: nowrap">
             <tr>
                 <td>
                     <form class="forms" id="mainfilter">Grupp:

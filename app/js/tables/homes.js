@@ -1,9 +1,28 @@
 /* global SARON_URI, PERSON, inputFormWidth, inputFormFieldWidth */
 "use strict";
 
-$(document).ready(function () {
 
-    $('#homes').jtable({
+const HOMES_TABLE_ID = '#homes';
+
+$(document).ready(function () {
+    $(HOMES_TABLE_ID).jtable(homeTableDef());
+    $(HOMES_TABLE_ID).jtable('load');
+    $(HOMES_TABLE_ID).find('.jtable-toolbar-item-add-record').hide();
+});
+
+
+
+function filterHomes(viewId){
+    $('#' + viewId).jtable('load', {
+        searchString: $('#searchString').val(),
+        groupId: $('#groupId').val(),
+        tableview: viewId
+    });
+}
+
+
+function homeTableDef(){
+    return {
         title: 'Hem',
         paging: true, //Enable paging
         pageList: 'minimal',
@@ -108,22 +127,5 @@ $(document).ready(function () {
              data.row[0].style.backgroundColor = '';
          }                        
 
-    });
-    //Re-load records when user click 'load records' button.
-    $('#search_homes').click(function (e) {
-        e.preventDefault();
-        filterHomes('homes');
-    });
-    //Load all records when page is first shown
-    $('#search_homes').click();
-    $('#homes').find('.jtable-toolbar-item-add-record').hide();
-});
-
-
-function filterHomes(viewId){
-    $('#' + viewId).jtable('load', {
-        searchString: $('#searchString').val(),
-        groupId: $('#groupId').val(),
-        tableview: viewId
-    });
+    };
 }
