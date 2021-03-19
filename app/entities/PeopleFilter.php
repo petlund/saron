@@ -49,7 +49,7 @@ class PeopleFilter {
                 return SQL_WHERE_MEMBER . " and Zip not like '6%' ";
             case 14:
                 //ej medlem
-                return "(DateOfMembershipStart is null and DateOfMembershipEnd is null) or ((DateOfMembershipEnd is not null)) and DateOfDeath is null and (" . DECRYPTED_LASTNAME . " NOT like '" . ANONYMOUS . "') ";
+                return "((DateOfMembershipStart is null and DateOfMembershipEnd is null) or DateOfMembershipEnd is not null) and DateOfDeath is null and (" . DECRYPTED_LASTNAME . " NOT like '" . ANONYMOUS . "') ";
             case 15:
                 //underlag för anonymisering nästa år
                 $sqlWhere = DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "%' AND DateOfDeath is null AND NOT (";
