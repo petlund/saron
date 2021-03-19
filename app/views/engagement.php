@@ -16,12 +16,10 @@ header("Cache-Control: no-cache, must-revalidate");
 
         <script type="text/javascript" src="/<?php echo SARON_URI;?>jtable/jquery.jtable.js"></script>
         <script type="text/javascript" src="/<?php echo SARON_URI;?>jtable/localization/jquery.jtable.se.js"></script>   
-        <div class='saronSmallText'></div>
-        <form id="mainfilter">
-                Söksträng:
-                <input type="text" name="searchString" id="searchString" oninput="filterPeople('<?php include('../includes/viewId.php');?>');"/>
-                </div> 
-            </form>
-            <div id="<?php include('../includes/viewId.php');?>"></div>
+        <div class='saronSmallText'>
+            Söksträng:
+            <input type="text" name="searchString" id="searchString" oninput="filterPeople('<?php include('../includes/viewId.php');?>');"/>
+        </div>
+        <div id="<?php include('../includes/viewId.php');?>"></div>
     </body>
 </html> 

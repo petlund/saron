@@ -23,8 +23,10 @@ require_once SARON_ROOT . "menu.php";
         
         <script type="text/javascript" src="/<?php echo SARON_URI;?>jtable/jquery.jtable.js"></script>
         <script type="text/javascript" src="/<?php echo SARON_URI;?>jtable/localization/jquery.jtable.se.js"></script>        
-        <form id="mainfilter">
-                <div class="forms saronSmallText">Grupp:          
+        <table class="saronSmallText" style="width:0%">
+            <tr>
+                <td>
+                    <form class="forms" id="mainfilter">Grupp:
                         <select id="groupId" name="groupId" onchange="filterPeople('<?php include('../includes/viewId.php');?>');" >
                         <option selected="selected" value="0">Medlemmar</option>
                         <option value="1">Dopregister</option>
@@ -44,13 +46,15 @@ require_once SARON_ROOT . "menu.php";
                         <option value="15">Underlag för anonymisering under <?php include('../util/CurrentYear.php');?></option>
                         <option value="16">Anonymiserade</option>
                         <option value="17">Medhjälpare</option>
-                    </select>     
+                        </select>     
+                   </form>
+                </td>
+                <td>
                     Söksträng:
-                <input type="text" name="searchString" id="searchString" oninput="filterPeople('<?php include('../includes/viewId.php');?>');"/>
-                <button name="submitButton" type="submit" <?php include('../includes/searchId.php');?>>Sök</button>
-                </div> 
-            </form>
-            
-            <div id="<?php include('../includes/viewId.php');?>"></div>
+                    <input type="text" name="searchString" id="searchString" oninput="filterPeople('<?php include('../includes/viewId.php');?>');"/>
+                </td>
+            </tr>
+        </table>
+        <div id="<?php include('../includes/viewId.php');?>"></div>
     </body>
 </html>
