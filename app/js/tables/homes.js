@@ -12,12 +12,14 @@ $(document).ready(function () {
 
 
 
-function filterHomes(viewId){
+function filterHomes(viewId, reload){
     $('#' + viewId).jtable('load', {
         searchString: $('#searchString').val(),
         groupId: $('#groupId').val(),
         tableview: viewId
     });
+    if(reload)
+        $('#searchString').val('');
 }
 
 

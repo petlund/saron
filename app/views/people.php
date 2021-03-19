@@ -27,7 +27,7 @@ require_once SARON_ROOT . "menu.php";
             <tr>
                 <td>
                     <form class="forms" id="mainfilter">Grupp:
-                        <select id="groupId" name="groupId" onchange="filterPeople('<?php include('../includes/viewId.php');?>');" >
+                        <select id="groupId" name="groupId" onchange="filterPeople('<?php include('../includes/viewId.php');?>', true);" >
                         <option selected="selected" value="0">Medlemmar</option>
                         <option value="1">Dopregister</option>
                         <option value="2">Senast ändrade personer</option>
