@@ -41,7 +41,7 @@ class db {
             throw new Exception($this->jsonErrorMessage("Transaktionsfel (Begin). Kan inte uppdatera."));                               
         }
     }
-    
+  
     
     function transaction_end(){
         $this->php_dev_error_log("transaction_end  ", "");
@@ -441,6 +441,6 @@ class db {
             }
         }
     }
-
+    
     
 }

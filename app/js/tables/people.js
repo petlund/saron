@@ -369,7 +369,7 @@ function childTableHome(placeHolder) {
                     newHomeId = event.data.record.HomeId;
     
                 var $tr = $('.Name_P' + event.data.record.PersonId).closest('tr');
-                $(placeHolder).jtable('openChildTable', $tr, homeChildTableDef(event.data, newHomeId), function(data){
+                $(placeHolder).jtable('openChildTable', $tr, homeChildTableDef(placeHolder, event.data, newHomeId), function(data){
                     data.childTable.jtable('load');
                 });
             });
@@ -387,7 +387,7 @@ function childTableHome(placeHolder) {
 }
 
 
-function homeChildTableDef(homeData, newHomeId){
+function homeChildTableDef(placeHolder, homeData, newHomeId){
     return {
         title: _setClassAndValue(homeData.record, "LongHomeName", HOME),                            
         showCloseButton: false,
@@ -441,7 +441,7 @@ function homeChildTableDef(homeData, newHomeId){
                 });
             }
         },
-        fields: homeFields(homeData),
+        fields: homeFields(placeHolder, homeData),
         rowInserted: function(event, homeData){
             if (homeData.record.user_role !== 'edit'){
                 homeData.row.find('.jtable-edit-command-button').hide();
@@ -470,9 +470,9 @@ function homeChildTableDef(homeData, newHomeId){
 }
 
 
-function homeFields(homeData) {
+function homeFields(placeHolder, homeData) {
     return {
-        CloseChild: fieldCloseChildTable(homeData.record.PersonId),
+        CloseChild: fieldCloseChildTable(placeHolder, homeData.record.PersonId),
         PersonId: {
             key: true,
             update: false,
@@ -597,7 +597,7 @@ function childTableMembership(placeHolder){
                         }
                     },
                     fields: {
-                        CloseChild: fieldCloseChildTable(memberData.record.PersonId),
+                        CloseChild: fieldCloseChildTable(placeHolder, memberData.record.PersonId),
                         PersonId: {
                             key: true,
                             update: false,
