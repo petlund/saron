@@ -336,13 +336,14 @@ function peopleTableDef(placeHolder, personId) {
 }
 
 function filterPeople(viewId, reload){
+    if(reload)
+        $('#searchString').val('');
+
     $('#' + viewId).jtable('load', {
         searchString: $('#searchString').val(),
         groupId: $('#groupId').val(),
         tableview: viewId
     });
-    if(reload)
-        $('#searchString').val('');
 }
 
 

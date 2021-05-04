@@ -8,13 +8,11 @@ require_once SARON_ROOT . 'app/entities/PeopleFilter.php';
 class People extends SuperEntity{
 
     protected $personId;
-    protected $tableview;
     protected $uppercaseSearchString;
     protected $filter;
 
     function __construct($db, $saronUser) {
         parent::__construct($db, $saronUser);
-        $this->tableview = (String)filter_input(INPUT_POST, "tableview", FILTER_SANITIZE_STRING);
         $this->personId = (String)filter_input(INPUT_GET, "PersonId", FILTER_SANITIZE_STRING);
         $this->filter = (String)filter_input(INPUT_GET, "filter", FILTER_SANITIZE_STRING);
     }
