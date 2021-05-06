@@ -1,10 +1,18 @@
-/* global DATE_FORMAT,
-*/ 
+/* global DATE_FORMAT, SARON_URI, PERSON, inputFormWidth, inputFormFieldWidth */
+
 "use strict";
 
 $(document).ready(function () {
 
-    $('#keys').jtable({
+    const J_TABLE_ID = '#keys';
+
+    $(J_TABLE_ID).jtable(keyTableDef(J_TABLE_ID));
+    $(J_TABLE_ID).jtable('load');
+    $(J_TABLE_ID).find('.jtable-toolbar-item-add-record').hide();
+});  
+
+function keyTableDef(placeHolder){
+    return {
         title: 'Nyckelinnehav',
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
@@ -98,7 +106,8 @@ $(document).ready(function () {
             if(data.formType === 'edit')
                 data.row[0].style.backgroundColor = '';
         }
-    });
+    };
+}
         //Re-load records when user click 'load records' button.
     $('#search_keys').click(function (e) {
         e.preventDefault();
@@ -109,5 +118,5 @@ $(document).ready(function () {
     $('#search_keys').click();
 //    $('#KEYS').jtable('load');
 //    $('#KEYS').find('.jtable-toolbar-item-add-record').hide();
-});
+//});
     

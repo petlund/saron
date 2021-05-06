@@ -4,7 +4,15 @@
 
 $(document).ready(function () {
 
-    $('#member').jtable({
+    const J_TABLE_ID = '#member';
+
+    $(J_TABLE_ID).jtable(baptistTableDef(J_TABLE_ID));
+    $(J_TABLE_ID).jtable('load');
+    $(J_TABLE_ID).find('.jtable-toolbar-item-add-record').hide();
+});  
+
+function memberTableDef(placeHolder){
+    return {
         title: 'Medlemsuppgifter',
             paging: true, //Enable paging
             pageSize: 10, //Set page size (default: 10)
@@ -13,7 +21,7 @@ $(document).ready(function () {
             multiSorting: true,
             defaultSorting: 'FamilyName ASC, DateOfBirthr ASC', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php',
+            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php?tableview=member',
             updateAction: function(data) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
@@ -140,14 +148,15 @@ $(document).ready(function () {
         formClosed: function (event, data){
             data.row[0].style.backgroundColor = '';
         }    
-    });
-    //Re-load records when user click 'load records' button.
-    $('#search_member').click(function (e) {
-        e.preventDefault();
-        filterPeople('member');
-    });
-
-    //Load all records when page is first shown
-    $('#search_member').click();
-});
+    };
+}
+//    //Re-load records when user click 'load records' button.
+//    $('#search_member').click(function (e) {
+//        e.preventDefault();
+//        filterPeople('member');
+//    });
+//
+//    //Load all records when page is first shown
+//    $('#search_member').click();
+//});
     

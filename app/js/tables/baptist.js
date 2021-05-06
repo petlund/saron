@@ -2,8 +2,16 @@
 "use strict";
 
 $(document).ready(function () {
-  
-    $('#baptist').jtable({
+
+    const J_TABLE_ID = '#baptist';
+
+    $(J_TABLE_ID).jtable(baptistTableDef(J_TABLE_ID));
+    $(J_TABLE_ID).jtable('load');
+    $(J_TABLE_ID).find('.jtable-toolbar-item-add-record').hide();
+});  
+    
+function baptistTableDef(placeHolder){
+    return {
         title: 'Dopuppgifter',
             paging: true, //Enable paging
             pageSize: 10, //Set page size (default: 10)
@@ -12,15 +20,15 @@ $(document).ready(function () {
             multiSorting: true,
             defaultSorting: 'FamilyName ASC, DateOfBirthr ASC', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php', 
+            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php?tableview=baptist', 
             updateAction: function(data) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=baptism',
+                        url: '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=baptist',
                         type: 'POST',
                         dataType: 'json',
                         data: data,
-                        success: function (data) {
+                        success: function (data){
                             $dfd.resolve(data);
                             if(data.Result === 'OK'){
                                 _updateFields(data.Record, "DateOfBaptism", PERSON);                                                
@@ -114,16 +122,18 @@ $(document).ready(function () {
         formClosed: function (event, data){
             data.row[0].style.backgroundColor = '';
         }
-    });
-    //Re-load records when user click 'load records' button.
-    $('#search_baptist').click(function (e) {
-        e.preventDefault();
-        filterPeople('baptist');
-    });
+    };
+};
+//    );
+//    //Re-load records when user click 'load records' button.
+//    $('#search_baptist').click(function (e) {
+//        e.preventDefault();
+//        filterPeople('baptist');
+//    });
+//
+//    //Load all records when page is first shown
+//    $('#search_baptist').click();
 
-    //Load all records when page is first shown
-    $('#search_baptist').click();
-});
 
                                 
     

@@ -75,12 +75,12 @@
         };
     
         //Re-load records when user click 'load records' button.
-           $('#search_birthdays').click(function (e) {
-               e.preventDefault();
-               filterPeople(placeHolder);
-           });
-
-           //Load all records when page is first shown
-           $('#search_birthdays').click();
+//           $('#search_birthdays').click(function (e) {
+//               e.preventDefault();
+//               filterPeople(placeHolder);
+//           });
+//
+//           //Load all records when page is first shown
+//           $('#search_birthdays').click();
     };
     
