@@ -7,5 +7,5 @@ require_once SARON_ROOT . 'app/database/db.php';
         echo "Inloggad som " . $saronUser->getNameAndRole(); 
     }
     catch(Exception $error){
-        throw new Exception($error);
+        echo "login error";
     }

@@ -11,8 +11,6 @@ require_once SARON_ROOT . "app/database/db.php";
         /*** AUTHENTICATE WP LOGIN ATTEMPT ***/
 	$wpUser = wp_signon();
         
-        $_POST = array();
-        
 	if ( is_wp_error( $wpUser ) ) {
             return false;
 	} 
