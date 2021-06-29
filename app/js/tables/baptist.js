@@ -124,15 +124,6 @@ function baptistTableDef(placeHolder){
         }
     };
 };
-//    );
-//    //Re-load records when user click 'load records' button.
-//    $('#search_baptist').click(function (e) {
-//        e.preventDefault();
-//        filterPeople('baptist');
-//    });
-//
-//    //Load all records when page is first shown
-//    $('#search_baptist').click();
 
 
                                 

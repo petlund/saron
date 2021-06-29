@@ -84,7 +84,7 @@ require_once SARON_ROOT . "app/database/db.php";
         $userDisplayName = $wpUser->display_name;
         $wp_id = $wpUser->ID;
 
-        $db = new db();
+        $db = new db();        
         
         $ticket = $db->storeSaronSessionUser($wp_id, $editor, $org_editor, $userDisplayName);
         setSaronCookie($ticket);

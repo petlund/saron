@@ -1,8 +1,18 @@
+/* global DATE_FORMAT, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID */
+
 "use strict";
 
 $(document).ready(function () {
+    const J_TABLE_ID = '#total';
 
-    $('#total').jtable({
+    $(J_TABLE_ID).jtable(totalTableDef(J_TABLE_ID));
+    $(J_TABLE_ID).jtable('load');
+    $(J_TABLE_ID).find('.jtable-toolbar-item-add-record').hide();
+
+});
+
+function totalTableDef(placeHolder){
+    return{
         title: 'Översikt per person',
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
@@ -22,7 +32,7 @@ $(document).ready(function () {
             data.deleteConfirmMessage = message;
         },         
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php',            
+            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php?tableview=total',            
             deleteAction: '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=anonymization'
         },  
         fields: {
@@ -33,6 +43,7 @@ $(document).ready(function () {
             PDF: {
                 title: 'Pdf',
                 width: '5%',
+                sorting: false,
                 display: function (data) {
                     var $imgPdf = $('<img src="/' + SARON_URI + 'app/images/pdf.png" title="Skapa personakt PDF" />');
                     $imgPdf.click(function () {                        
@@ -69,24 +80,25 @@ $(document).ready(function () {
             }
             addDialogDeleteListener(data);            
         }
-    });
+    };
+}
     
- //Re-load records when user click 'load records' button.
-        $('#search_total').click(function (e) {
-            e.preventDefault();            
-            $('#total').jtable('load', {
-                searchString: $('#searchString').val(),
-                groupId: $('#groupId').val(),
-                tableview: "total"
-            });
-        });
-        //Load all records when page is first shown
-        $('#search_total').click();
+// //Re-load records when user click 'load records' button.
+//        $('#search_total').click(function (e) {
+//            e.preventDefault();            
+//            $('#total').jtable('load', {
+//                searchString: $('#searchString').val(),
+//                groupId: $('#groupId').val(),
+//                tableview: "total"
+//            });
+//        });
+//        //Load all records when page is first shown
+//        $('#search_total').click();
 
-        var deleteButtons = document.getElementsByClassName('jtable-delete-command-button');
-        for(var i=0; i<deleteButtons.length; i++){
-            deleteButtons[i].addEventListener("click", deleteButtonClicked(this),false);
-            deleteButtons[i].attr('onclick', 'deleteButtonClicked(this);');
-        }
-});
+    var deleteButtons = document.getElementsByClassName('jtable-delete-command-button');
+    for(var i=0; i<deleteButtons.length; i++){
+        deleteButtons[i].addEventListener("click", deleteButtonClicked(this),false);
+        deleteButtons[i].attr('onclick', 'deleteButtonClicked(this);');
+    }
+
     

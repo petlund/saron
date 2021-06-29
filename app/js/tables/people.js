@@ -27,7 +27,7 @@ function peopleTableDef(placeHolder, personId) {
         defaultSorting: 'LongHomeName ASC, DateOfBirth ASC', //Set default sorting   
         messages: {addNewRecord: 'Ny person'},
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php?PersonId=' + personId,
+            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php?tableview=people&PersonId=' + personId,
             createAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
