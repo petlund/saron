@@ -86,7 +86,8 @@
     define("EMBEDDED_SELECT_SUPERPOS", "if(People_FK < 0, concat(' (som ', (Select Name from Org_Role as r2 where -People_FK = r2.Id),')'),'') ");
     define("ORG_POS_XREF", "(Select p1.Id, if(p1.People_FK < 0,(select p2.People_FK from Org_Pos as p2 where -p1.People_FK = p2.OrgRole_FK ), p1.People_FK) as People_FK2 from Org_Pos as p1) as xref ");
        
-
+    define("NOW_TIME_STAMP_DIFF", "if(TO_DAYS(NOW()) - TO_DAYS(Time_Stamp) > 0, 86400, 0) + (TIME_TO_SEC(now()) - TIME_TO_SEC(Time_Stamp)) ");
+    define("NOW_LAST_ACTIVITY_DIFF", "if(TO_DAYS(NOW()) - TO_DAYS(Last_Activity) > 0, 86400, 0) + (TIME_TO_SEC(now()) - TIME_TO_SEC(Last_Activity)) ");
    
     function getFieldSql($tableAlias, $fieldAlias, $fieldName, $nullValue, $encrypt, $continue){
         $sql = "";

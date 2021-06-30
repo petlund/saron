@@ -104,7 +104,11 @@ class db {
     public function isItTimeToReNewTicket($ticket){
 
         try{
-            $sql = "select if((TIME_TO_SEC(Now()) - TIME_TO_SEC(Time_Stamp)) > " . TICKET_RENEWIAL_PERIOD_IN_SEC . ",if((TIME_TO_SEC(Now()) - TIME_TO_SEC(Last_Activity)) > " . SESSION_EXPIRES . ", -1, 1),0) as Answer from SaronUser Where AccessTicket = '" . $ticket ."'";
+            $sql = "select if(" . NOW_TIME_STAMP_DIFF . " > " . TICKET_RENEWIAL_PERIOD_IN_SEC . ","
+                    . "if(" . NOW_LAST_ACTIVITY_DIFF . " > " . SESSION_EXPIRES . ", -1, 1)"
+                    . ",0) as Answer "
+                    . "from SaronUser Where AccessTicket = '" . $ticket ."'";
+            
             $result = $this->sqlQuery($sql);
 
             $answer=0;
@@ -133,10 +137,12 @@ class db {
         }
         $this->cleanSaronUser(-1);
         
-        $sql = "Select count(*) as c FROM SaronUser ";
-        $sql.= "WHERE AccessTicket = '" . $ticket . "' and ";
-        $sql.= "Editor >= " . $editor . " AND (";
-        $sql.= "Org_Editor >= " . $org_editor . " OR Editor >= " . $editor . ")";
+        $sql = "Select count(*) as c FROM SaronUser "
+        . "WHERE AccessTicket = '" . $ticket . "' "
+        . "AND " . NOW_LAST_ACTIVITY_DIFF . " < " . SESSION_EXPIRES . " "
+        . "AND " . NOW_TIME_STAMP_DIFF. " < " . COOCKIE_EXPIRES . " "       
+        . "AND Editor >= " . $editor . " "
+        . "AND (Org_Editor >= " . $org_editor . " OR Editor >= " . $editor . ")";
     
         if(!$listResult = $this->connection->query($sql)){
             $this->php_dev_error_log("Exception in exist function", $sql);
@@ -189,8 +195,13 @@ class db {
     
     
     function loadSaronUser($ticket){
-        $sql = "select * from  SaronUser where AccessTicket='" . $ticket . "'"; 
-        
+        $this->cleanSaronUser(-1);   
+
+        $sql = "select * from  SaronUser where "
+                . "AccessTicket='" . $ticket . "'"
+                . "AND " . NOW_LAST_ACTIVITY_DIFF . " < " . SESSION_EXPIRES . " "
+                . "AND " . NOW_TIME_STAMP_DIFF. " < " . COOCKIE_EXPIRES;        
+
         $attributes = $this->sqlQuery($sql);
         if(count($attributes) === 0){
             throw new exception("Could not load saronUser data.");
@@ -204,8 +215,13 @@ class db {
     function renewTicket($oldTicket){
         try{
             $this->transaction_begin();
+            $sql = "Select Id from SaronUser where "
+                    . "AccessTicket = '" . $oldTicket . "'"
+                    . "AND " . NOW_LAST_ACTIVITY_DIFF . " < " . SESSION_EXPIRES . " "
+                    . "AND " . NOW_TIME_STAMP_DIFF. " < " . COOCKIE_EXPIRES;
 
-            $result1 = $this->sqlQuery("Select Id from SaronUser where AccessTicket = '" . $oldTicket . "'");
+            $result1 = $this->sqlQuery($sql);
+            
             $id;
             if($result1){
                 foreach($result1 as $aRow){
@@ -226,7 +242,7 @@ class db {
             
             $result2 = $this->sqlQuery("Select AccessTicket from SaronUser where Id = " . $id);
     
-            $ticket;
+            $ticket = "";
             foreach($result2 as $aRow){
                 $ticket = $aRow["AccessTicket"];
             }
@@ -245,9 +261,10 @@ class db {
     
     function cleanSaronUser($wp_id){
         $sql = "DELETE from SaronUser "
-                . "where TIME_TO_SEC(Now()) - TIME_TO_SEC(Last_Activity) > " . SESSION_EXPIRES . " "
-                . "OR TIME_TO_SEC(Now()) - TIME_TO_SEC(Time_Stamp) > " . COOCKIE_EXPIRES . " "
+                . "where " . NOW_LAST_ACTIVITY_DIFF. " > " . SESSION_EXPIRES . " "
+                . "OR " . NOW_TIME_STAMP_DIFF . " > " . COOCKIE_EXPIRES . " "
                 . "OR WP_ID=" . $wp_id;
+        
         $this->delete($sql);
     }
     
@@ -257,6 +274,7 @@ class db {
         $sql.= "UPPER(CONVERT(BINARY " . DECRYPTED_FIRSTNAME . " USING utf8)) like '" . $FirstName . "' and ";
         $sql.= "UPPER(CONVERT(BINARY " . DECRYPTED_LASTNAME . " USING utf8)) like '" . $LastName . "' and ";
         $sql.= "DateOfBirth like '" . $DateOfBirth . "'";
+        
         if($Id>0){
             $sql.= " and ID <> '" . $Id . "'";            
         }
