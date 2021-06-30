@@ -104,7 +104,7 @@ class db {
     public function isItTimeToReNewTicket($ticket){
 
         try{
-            $sql = "select if(TIME_TO_SEC(TIMEDIFF(Now(), Time_Stamp)) > " . TICKET_RENEWIAL_PERIOD_IN_SEC . ",if(TIME_TO_SEC(TIMEDIFF(Now(), Last_Activity)) > " . SESSION_EXPIRES . ", -1, 1),0) as Answer from SaronUser Where AccessTicket = '" . $ticket ."'";
+            $sql = "select if((TIME_TO_SEC(Now()) - TIME_TO_SEC(Time_Stamp)) > " . TICKET_RENEWIAL_PERIOD_IN_SEC . ",if((TIME_TO_SEC(Now()) - TIME_TO_SEC(Last_Activity)) > " . SESSION_EXPIRES . ", -1, 1),0) as Answer from SaronUser Where AccessTicket = '" . $ticket ."'";
             $result = $this->sqlQuery($sql);
 
             $answer=0;
