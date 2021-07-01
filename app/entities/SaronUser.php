@@ -132,8 +132,7 @@ class SaronUser{
     
     
     function delete(){
-        return $this->db->delete("delete from SaronUser where WP_ID=" . $this->WP_ID);
-        
+        return $this->db->cleanSaronUser($this->WP_ID);         
     }
 
 

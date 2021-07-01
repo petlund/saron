@@ -267,7 +267,7 @@ class db {
         
         $this->delete($sql);
     }
-    
+ 
     
     public function exist($FirstName, $LastName, $DateOfBirth, $Id=-1){
         $sql = "select count(*) as c from People where "; 
