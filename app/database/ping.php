@@ -10,7 +10,8 @@ function ping(){
     $ping =  "Databas: " . DATABASE;
     try{
         $db = new db();
-        $saronUser = new SaronUser($db);    
+        $saronUser = new SaronUser($db);
+        $saronUser->hasValidSaronSession(REQUIRE_VIEWER_ROLE, REQUIRE_ORG_VIEWER_ROLE);            
         $ping.= " - Anslutning  OK!";
         echo $ping;
     }

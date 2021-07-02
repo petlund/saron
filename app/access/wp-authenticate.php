@@ -61,7 +61,7 @@ require_once SARON_ROOT . "app/database/db.php";
     
     
     function deletePersistentSaron($db, $id){
-        $db->delete("DELETE FROM SaronUser WHERE Id = " . $id);
+        $db->delete("DELETE FROM SaronUser WHERE WP_ID = " . $id);
     }
     
     
