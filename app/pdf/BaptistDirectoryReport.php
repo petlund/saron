@@ -1,15 +1,21 @@
 <?php
     require_once 'config.php';
-    require_once SARON_ROOT . "app/access/SaronCookie.php";
+    require_once SARON_ROOT . 'app/entities/SaronUser.php';
     require_once SARON_ROOT . 'app/database/queries.php';
     require_once SARON_ROOT . 'app/database/db.php';
 
     require_once TCPDF_PATH . '/tcpdf.php';
 
-    if(!hasValidSaronSession()){
-        exit();
+    $db = new db();
+    try{
+        $saronUser = new SaronUser($db);
+        $saronUser->hasValidSaronSession(REQUIRE_VIEWER_ROLE, REQUIRE_ORG_VIEWER_ROLE);
     }
-
+    catch(Exception $ex){
+        header("Location: /" . SARON_URI . LOGOUT_URI);
+        exit();                                                
+    }
+                    
     define ("INNER", 1);
     define ("OUTER", 2);
     define ("BOOKLET_OUTER_MARGIN", 10);
@@ -105,7 +111,6 @@
     $line_count=0;
     $firstPage=true;
 
-    $db = new db();
     $listResult = $db->sqlQuery($sql);
     if(!$listResult){
         exit();
