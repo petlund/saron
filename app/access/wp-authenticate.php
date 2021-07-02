@@ -1,6 +1,7 @@
 <?php
 require_once "config.php";
 require_once SARON_ROOT . "app/access/SaronCookie.php";
+require_once SARON_ROOT . "app/access/Ticket.php";
 require_once SARON_ROOT . "app/database/db.php";
 
     define( 'WP_USE_THEMES', false );
@@ -22,7 +23,7 @@ require_once SARON_ROOT . "app/database/db.php";
         
         try{
             if(isSaronUser($wpUser)){
-                createSaronSessionUser($wpUser);
+                createPersistentSaronSessionUser($wpUser);
             }
             else{
                 logout();
@@ -47,7 +48,7 @@ require_once SARON_ROOT . "app/database/db.php";
         try{
             $db = new db();
             $wpUser = wp_get_current_user();
-            $db->cleanSaronUser($wpUser->ID);
+            deletePersistentSaron($db, $wpUser->ID);
         } 
         catch (Exception $ex) {
             ;
@@ -55,6 +56,12 @@ require_once SARON_ROOT . "app/database/db.php";
         finally{
             wp_logout();
         }
+    }
+    
+    
+    
+    function deletePersistentSaron($db, $id){
+        $db->delete("DELETE FROM SaronUser WHERE Id = " . $id);
     }
     
     
@@ -70,7 +77,7 @@ require_once SARON_ROOT . "app/database/db.php";
     
  
     
-    function createSaronSessionUser($wpUser){
+    function createPersistentSaronSessionUser($wpUser){
         $editor=0; 
         if(isEditor($wpUser)){
             $editor = 1;
@@ -84,11 +91,39 @@ require_once SARON_ROOT . "app/database/db.php";
         $userDisplayName = $wpUser->display_name;
         $wp_id = $wpUser->ID;
 
-        $db = new db();        
         
-        $ticket = $db->storeSaronSessionUser($wp_id, $editor, $org_editor, $userDisplayName);
+        $ticket = insertSaronSessionUser($wp_id, $editor, $org_editor, $userDisplayName);
         setSaronCookie($ticket);
     }
+    
+    
+    
+    function insertSaronSessionUser($wp_id, $editor, $org_editor, $userDisplayName ){
+        $db = new db();        
+
+        deletePersistentSaron($db, $wp_id);   
+        
+        $sql = "INSERT INTO SaronUser (AccessTicket, Editor, Org_Editor, WP_ID, UserDisplayName) values (";
+        $sql.= getAccessTicket() . ", "; 
+        $sql.= $editor . ", ";
+        $sql.= $org_editor . ", ";
+        $sql.= $wp_id . ", '";
+        $sql.= $userDisplayName . "') ";
+        echo $sql;
+        try{
+            $lastId = $db->insert($sql, "SaronUser", "Id");
+            $result = $db->sqlQuery("Select AccessTicket from SaronUser where Id = " . $lastId);
+    
+            $ticket = "";
+            foreach($result as $aRow){
+                $ticket = $aRow["AccessTicket"];
+            }
+            return $ticket;
+        }
+        catch(Exception $ex){
+            throw new Exception($ex);
+        }
+    }   
     
     
     

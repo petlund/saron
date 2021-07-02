@@ -6,6 +6,7 @@
 
     require_once "config.php";
     require_once SARON_ROOT . "app/access/SaronCookie.php";
+    require_once SARON_ROOT . 'app/entities/SaronUser.php';
     require_once SARON_ROOT . "app/database/ping.php";
    
 ?>  
@@ -46,7 +47,17 @@
                     </div>
                 </td>
             </tr>
-                <?php if(!hasValidSaronSession()){exit();}?>
+                <?php 
+                    $db = new db();
+                    try{
+                        $saronUser = new SaronUser($db);
+                        $saronUser->hasValidSaronSession(REQUIRE_VIEWER_ROLE, REQUIRE_ORG_VIEWER_ROLE);
+                    }
+                    catch(Exception $ex){
+                        header("Location: /" . SARON_URI . LOGOUT_URI);
+                        exit();                                                
+                    }
+                ?>
             <tr>
                 <td colspan="4"><div>
                     <ul id="menu-bar">

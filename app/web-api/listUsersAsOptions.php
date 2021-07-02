@@ -11,14 +11,11 @@ require_once SARON_ROOT . 'app/entities/SaronUsers.php';
 require_once WP_ROOT . "wp-load.php";
 
 
-    /*** REQUIRE USER AUTHENTICATION ***/
-    $requireEditorRole = 0;
-    $requireOrg = 0; 
-
 
     try{
         $db = new db();
-        $saronUser = new SaronUser($db, $requireEditorRole, $requireOrg);
+        $saronUser = new SaronUser($db);
+        $saronUser->hasValidSaronSession(REQUIRE_VIEWER_ROLE, REQUIRE_ORG_VIEWER_ROLE);
         $saronUsers = new SaronUsers($db, $saronUser);
         $result = $saronUsers->getUsers(OPTIONS);
         

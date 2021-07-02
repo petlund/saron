@@ -1,6 +1,8 @@
 <?php
 require_once "config.php";
+require_once SARON_ROOT . 'app/database/db.php';
 
+    // 
     function setSaronCookie($ticket){
 
         $arr_cookie_options = array (
@@ -25,29 +27,6 @@ require_once "config.php";
     }
 
 
-    function hasValidSaronSession($requireEditor=0, $requireOrg=0){
-        try{
-                $ticket = getTicketFromCookie();
-            
-            if(strlen($ticket) === 0){  
-                throw new Exception();
-            }
-            
-            $db = new db();
-            $db->checkTicket($ticket, 0, 0);
-            if($db->isItTimeToReNewTicket($ticket)){
-                $newTicket = $db->renewTicket($ticket);
-                    setSaronCookie($newTicket);
-            }
-            return true;
-        }
-        catch(Exception $ex){
-            header("Location: /" . SARON_URI . LOGOUT_URI);
-            return false;
-        }
-    }
-
-    
     
     function removeSaronCookie(){
         if(isset($_COOKIE[COOKIE_NAME])) {
@@ -61,5 +40,8 @@ require_once "config.php";
         if(isset($_COOKIE[COOKIE_NAME])) {
             return (String)filter_input(INPUT_COOKIE, COOKIE_NAME, FILTER_SANITIZE_STRING);                
         }
-        return "NOT_VALID";
+        return "";
     }
+
+    
+    

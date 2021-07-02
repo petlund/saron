@@ -1,19 +1,14 @@
 <?php
 require_once 'config.php'; 
-require_once SARON_ROOT . "app/access/SaronCookie.php";
-require_once SARON_ROOT . 'app/database/queries.php'; 
 require_once SARON_ROOT . 'app/database/db.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
 require_once SARON_ROOT . 'app/entities/News.php';
 
 
-    /*** REQUIRE USER AUTHENTICATION ***/
-    $requireEditorRole = 0;
-    $requireOrg = 0;
-
     try{
         $db = new db();
-        $saronUser = new SaronUser($db, $requireEditorRole, $requireOrg);
+        $saronUser = new SaronUser($db);
+        $saronUser->hasValidSaronSession(REQUIRE_VIEWER_ROLE, REQUIRE_ORG_VIEWER_ROLE);
         $news = new News($db, $saronUser);
         $result = $news->select();    
         echo $result;        
