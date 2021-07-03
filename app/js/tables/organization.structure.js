@@ -61,7 +61,9 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
                 create: false,
                 title: 'Överordna verksamhet',
                 options: function(data) {
-                    data.clearCache();
+                    if(data.source !== 'list'){
+                        data.clearCache();
+                    } 
                     return '/' + SARON_URI + 'app/web-api/listOrganizationStructure.php?selection=options&filter=yes&TreeId=' + data.record.TreeId;
                 }                
             },
@@ -156,11 +158,9 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
                 title: 'Beskrivning'
             },
             OrgUnitType_FK:{
-                create: true,
-                edit: true,
                 title: 'Typ av enhet',
-                width: '5%'
-                ,
+                inputTitle: 'Typ av enhet (Kan inte ändras. Vill du ändra behöver du skapa en ny organisatorisk enhet).',
+                width: '5%',
                 options: function (data){
                     if(data.source !== 'list'){
                         data.clearCache();
