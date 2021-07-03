@@ -44,7 +44,7 @@ class SaronUser{
 
     
     
-    public function hasValidSaronSession($requireEditor=0, $requireOrg=0){
+    public function hasValidSaronSession($requireEditor=0, $requireOrg=0, $checkTicketRenewalTime=false){
         try{
             $ticket = getTicketFromCookie();
             
@@ -53,10 +53,11 @@ class SaronUser{
             }
                         
             $this->checkTicket($ticket, $requireEditor, $requireOrg);
-            
-            if($this->isItTimeToReNewTicket($ticket)){
-                $newTicket = $this->renewTicket($ticket);
+            if($checkTicketRenewalTime){
+                if($this->isItTimeToReNewTicket($ticket)){
+                    $newTicket = $this->renewTicket($ticket);
                     setSaronCookie($newTicket);
+                }
             }
             return true;
         }

@@ -10,7 +10,7 @@
     $db = new db();
     try{
         $saronUser = new SaronUser($db);
-        $saronUser->hasValidSaronSession(REQUIRE_VIEWER_ROLE, REQUIRE_ORG_VIEWER_ROLE);
+        $saronUser->hasValidSaronSession(REQUIRE_VIEWER_ROLE, REQUIRE_ORG_VIEWER_ROLE, TICKET_RENEWAL_CHECK);
     }
     catch(Exception $ex){
         header("Location: /" . SARON_URI . LOGOUT_URI);
