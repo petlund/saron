@@ -49,7 +49,7 @@ class SaronUser{
             $ticket = getTicketFromCookie();
             
             if(strlen($ticket) === 0){  
-                throw new Exception();
+                throw new Exception($this->getErrorMessage("(9) Your session is out of scope. " . $ex));
             }
                         
             $this->checkTicket($ticket, $requireEditor, $requireOrg);
@@ -61,7 +61,7 @@ class SaronUser{
             return true;
         }
         catch(Exception $ex){
-            throw new Exception("Your session is not valid for this operation.");
+            throw new Exception($this->getErrorMessage("(8) Your session is out of scope. " . $ex));
         }
     }
     
@@ -156,10 +156,7 @@ class SaronUser{
             return $this->db->update("Update SaronUser ", "Set Last_Activity = Now() ", "where WP_ID=" . $this->WP_ID);
         }
         else{
-            $error = array();
-            $error['Result'] = 'ERROR';
-            $error['Message'] = 'User Id is missing';
-            throw new Exception(json_encode($error));
+            throw new Exception($this->getErrorMessage("(7) Your session is out of scope. " . $ex));
             
         }
     }
@@ -188,12 +185,20 @@ class SaronUser{
         $attributes = $this->db->sqlQuery($sql);
         
         if(count($attributes) === 0){
-            throw new exception("Could not load saronUser data.");
+            throw new exception($this->getErrorMessage("You are not authorized for this service"));
         }
             
         return $attributes;       
     }
 
+    
+    
+    private function getErrorMessage($msg){
+        $error = array();
+        $error["Result"] = "ERROR";
+        $error["Message"] = $msg;
+        return json_encode($error);
+    }
     
     
     
@@ -214,7 +219,7 @@ class SaronUser{
             return true;
         }
         else if($answer === '-1'){ // Not relevant with the new sql statement
-            throw new Exception("Session timed out!");
+            throw new Exception($this->getErrorMessage("(6) Your session is out of scope. " . $ex));
         }
         return false;  // It is´t time yet          
 
@@ -224,7 +229,7 @@ class SaronUser{
     
     private function checkTicket($ticket, $editor, $org_editor){
         if(strlen($ticket) === 0){
-            throw new Exception($this->jsonErrorMessage("Missing ticket", null, ""));
+            throw new Exception($this->getErrorMessage("(5) Your session is out of scope. " . $ex));
         }
         
         $this->cleanSaronUser(-1);
@@ -238,7 +243,7 @@ class SaronUser{
     
         if(!$listResult = $this->db->sqlQuery($sql)){
             $this->php_dev_error_log("Exception in exist function", $sql);
-            throw new Exception("Missing valid ticket");
+            throw new Exception($this->getErrorMessage("(4) Your session is out of scope. " . $ex));
         }
         
         $countRows = $listResult[0]["c"];
@@ -246,7 +251,7 @@ class SaronUser{
         if($countRows === '1'){
             return true;
         }
-        throw new Exception("Missing valid ticket");
+        throw new Exception($this->getErrorMessage("(3) Your session is out of scope. " . $ex));
     }
     
     
@@ -269,7 +274,7 @@ class SaronUser{
                 }
             }
             else{
-                throw new Exception("Valid ticket is missing.");
+                throw new Exception($this->getErrorMessage("(2) Your session is out of scope. " . $ex));
             }
 
             $update = "update SaronUser ";
@@ -293,7 +298,7 @@ class SaronUser{
         catch(Exception $ex){
             $this->db->transaction_roll_back();
             $this->db->transaction_end();
-            throw new Exception($ex);
+            throw new Exception($this->getErrorMessage("(1) Your session is out of scope. " . $ex));
         }
     }
 }
