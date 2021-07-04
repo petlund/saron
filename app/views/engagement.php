@@ -14,8 +14,8 @@ header("Cache-Control: no-cache, must-revalidate");
     <body> 
        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "engagement.js");?>"></script>     
 
-        <script type="text/javascript" src="/<?php echo SARON_URI;?>jtable/jquery.jtable.js"></script>
-        <script type="text/javascript" src="/<?php echo SARON_URI;?>jtable/localization/jquery.jtable.se.js"></script>   
+        <script type="text/javascript" src="/<?php echo SARON_URI;?>3pp/jtable/jquery.jtable.js"></script>
+        <script type="text/javascript" src="/<?php echo SARON_URI;?>3pp/jtable/localization/jquery.jtable.se.js"></script>   
         <div class='saronSmallText'>
             Söksträng:
             <input type="text" name="searchString" id="searchString" oninput="filterPeople('<?php include('../includes/viewId.php');?>');"/>
