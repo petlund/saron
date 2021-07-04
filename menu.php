@@ -41,7 +41,7 @@
                 </td>
                 <td style='text-align: right'><?php include("app/includes/userDisplay.php")?>
                 </td>
-                <td style='text-align: right'>
+                <td style='width: 20px'>
                     <div id="timerProgress">
                         <div id="timerBar"></div>
                     </div>
@@ -99,7 +99,7 @@
                             </ul>
                         </li>
                         <li>
-                            <a href="">Organisation</a>
+                            <a href="#">Organisation</a>
                             <ul>
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/OrganizationReport.php?type=proposal" target="_blank">Organisationskalender förslag(pdf-fil)</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/engagement.php?tableview=PEOPLE_ENG">Ansvar per person</a></li>
@@ -114,7 +114,7 @@
                             </ul>
                         </li>
                         <li>
-                            <a href="">Om <?php echo NameOfRegistry;?></a>
+                            <a href="#">Om <?php echo NameOfRegistry;?></a>
                             <ul>
                                 <li><a href="/<?php echo SARON_URI;?>app/about/about.php">Om <?php echo NameOfRegistry;?></a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/about/gdpr.php" target="_empty">Hantering av personuppgifter</a></li>

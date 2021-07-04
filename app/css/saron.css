@@ -123,15 +123,15 @@ ul{
 
 
  #timerProgress {
-  width: 100%;
+  width: 20px;
   background-color: white;
   border-color: gray;
   border-style: solid;
   border-width: 1px;    
 }
 
-#timerBar {
-  width: 100%;
+#timerBar {   
+  width: 20px;
   height: 10px;
   background-color: lightgreen;
 }
