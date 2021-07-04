@@ -16,8 +16,8 @@ require_once SARON_ROOT . "menu.php";
    </head>
     <body>
         <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "efk.js");?>"></script>     
-        <script type="text/javascript" src="/<?php echo SARON_URI;?>3pp/jtable/jquery.jtable.js"></script>
-        <script type="text/javascript" src="/<?php echo SARON_URI;?>3pp/jtable/localization/jquery.jtable.se.js"></script>                  
+        <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/jquery.jtable.js"></script>
+        <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/localization/jquery.jtable.se.js"></script>                  
         <div class="saronSmallText">Regelverk från 2015</div>
         <div id="EFK"></div> 
     </body>

@@ -4,7 +4,7 @@
     require_once SARON_ROOT . 'app/database/queries.php';
     require_once SARON_ROOT . 'app/database/db.php';
 
-    require_once TCPDF_PATH . '/tcpdf.php';
+    require_once THREE_PP_PATH . 'tcpdf/tcpdf.php';
 
     $db = new db();
     try{

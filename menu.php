@@ -19,12 +19,12 @@
     <?php include ('app/util/js.php') ?>
     <link rel="icon" href=<?php echo Favicon;?> type="png"/>        
 
-    <script type="text/javascript" src="/<?php echo SARON_URI;?>3pp/jtable/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="/<?php echo SARON_URI;?>3pp/jtable/jquery-3.3.1.js"></script>
-    <script type="text/javascript" src="/<?php echo SARON_URI;?>3pp/jtable/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+    <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
 
-    <link href="/<?php echo SARON_URI;?>3pp/jtable/themes/lightcolor/gray/jtable.min.css" rel="stylesheet" type="text/css" />        
-    <link href="/<?php echo SARON_URI;?>3pp/jtable/jquery-ui-1.12.1.custom/jquery-ui.css" rel="stylesheet" type="text/css" />          
+    <link href="/<?php echo THREE_PP_URI;?>jtable/themes/lightcolor/gray/jtable.min.css" rel="stylesheet" type="text/css" />        
+    <link href="/<?php echo THREE_PP_URI;?>jtable/jquery-ui-1.12.1.custom/jquery-ui.css" rel="stylesheet" type="text/css" />          
 
     <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("util/", "menu.js");?>"></script>     
     <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("util/", "timeout.js");?>"></script>     
