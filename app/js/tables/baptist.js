@@ -45,8 +45,7 @@ function baptistTableDef(placeHolder){
         fields: { 
             PersonId: {
                 key: true,
-                list: false,
-                update: false
+                list: false
             },
             Name: {
                 title: 'Namn',

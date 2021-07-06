@@ -100,9 +100,7 @@ function peopleTableDef(placeHolder, personId) {
             PersonId: {
                 key: true,
                 list: false,
-                create: false,
-                edit: false,
-                update: false
+                create: false
             },
             HomeId: {
                 create: true,
@@ -478,7 +476,6 @@ function homeFields(placeHolder, homeData) {
         CloseChild: fieldCloseChildTable(placeHolder, homeData.record.PersonId),
         PersonId: {
             key: true,
-            update: false,
             create: false,
             type: 'hidden',
             defaultValue: homeData.record.PersonId
@@ -603,7 +600,6 @@ function childTableMembership(placeHolder){
                         CloseChild: fieldCloseChildTable(placeHolder, memberData.record.PersonId),
                         PersonId: {
                             key: true,
-                            update: false,
                             create: false,
                             type: 'hidden',
                             defaultValue: memberData.record.PersonId
@@ -754,7 +750,6 @@ function childTableBaptism(placeHolder){
                         CloseChild: fieldCloseChildTable(placeHolder, baptistData.record.PersonId),
                         PersonId: {
                             key: true,
-                            update: false,
                             create: false,
                             type: 'hidden',
                             defaultValue: baptistData.record.PersonId
