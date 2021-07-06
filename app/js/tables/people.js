@@ -98,9 +98,7 @@ function peopleTableDef(placeHolder, personId) {
             MemberShip: childTableMembership(placeHolder), 
             Baptism: childTableBaptism(placeHolder), 
             PersonId: {
-                key: true,
-                list: false,
-                create: false
+                key: true
             },
             HomeId: {
                 create: true,
@@ -118,7 +116,6 @@ function peopleTableDef(placeHolder, personId) {
                 list: true,
                 create: false,
                 edit: true,
-                type: 'hidden',
                 defaultValue: function (data){
                     if(data.record.HomeId > 0 || data.record.HomeId < 0)
                        return data.record.HomeId;
@@ -477,7 +474,6 @@ function homeFields(placeHolder, homeData) {
         PersonId: {
             key: true,
             create: false,
-            type: 'hidden',
             defaultValue: homeData.record.PersonId
         },
         Residents:{
@@ -601,7 +597,6 @@ function childTableMembership(placeHolder){
                         PersonId: {
                             key: true,
                             create: false,
-                            type: 'hidden',
                             defaultValue: memberData.record.PersonId
                         },
                         PreviousCongregation: {
@@ -751,7 +746,6 @@ function childTableBaptism(placeHolder){
                         PersonId: {
                             key: true,
                             create: false,
-                            type: 'hidden',
                             defaultValue: baptistData.record.PersonId
                         },
                         CongregationOfBaptismThis: {
