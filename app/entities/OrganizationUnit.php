@@ -109,10 +109,15 @@ class OrganizationUnit extends SuperEntity{
         $update = "UPDATE Org_UnitType ";
         $set = "SET ";        
         $set.= "Name='" . $this->name . "', "; 
-// **** Not on update, disabled ****        
-//        $set.= "PosEnabled='" . $this->posEnabled . "', ";        
-//        $set.= "SubUnitEnabled='" . $this->subUnitEnabled . "', ";        
-//    
+
+        if($this->posEnabled > 0){
+            $set.= "PosEnabled='" . $this->posEnabled . "', ";            
+        }        
+
+        if($this->subUnitEnabled > 0){
+            $set.= "SubUnitEnabled='" . $this->subUnitEnabled . "', ";        
+        }
+
         $set.= "Description='" . $this->description . "', ";        
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater='" . $this->saronUser->WP_ID . "' ";

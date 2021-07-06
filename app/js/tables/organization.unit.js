@@ -80,7 +80,7 @@ function orgUnitTableDef(tableId){
                 create: false,
                 edit: false,
                 display: function(data){
-                    if(data.record.PosEnabled ===  "1"){
+                    if(data.record.PosEnabled ===  "2"){
                         var src;
                         if(data.record.HasPos === '0')
                             src= '"/' + SARON_URI + SARON_IMAGES_URI + 'pos.png" title="Inga roller"';
@@ -113,8 +113,8 @@ function orgUnitTableDef(tableId){
                 options: function(data){
                    var val =  data.record.UseChild;
                    if (val === null)
-                       val = 0;
-                   return {"0":"Nej", "1":"Ja (" + val + " underenheter)"};
+                       val = 1;
+                   return {"1":"Nej", "2":"Ja (" + val + " underenheter)"};
                 }
             },
             PosEnabled: {
@@ -123,8 +123,8 @@ function orgUnitTableDef(tableId){
                 options: function(data){
                    var val =  data.record.UseRole;
                    if (val === null)
-                       val = 0;
-                   return {"0":"Nej", "1":"Ja (" + val + " positioner)"};
+                       val = 1;
+                   return {"1":"Nej", "2":"Ja (" + val + " positioner)"};
                 }
             },
             Description: {
