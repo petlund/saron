@@ -98,14 +98,14 @@ function peopleTableDef(placeHolder, personId) {
             MemberShip: childTableMembership(placeHolder), 
             Baptism: childTableBaptism(placeHolder), 
             PersonId: {
-                key: true
+                key: true,
+                list: false
             },
             HomeId: {
                 create: true,
                 edit: true,
                 list: false,
-                title: 'Hem',
-                inputTitle: 'Välj hem',
+                title: 'Välj hem',
                 options: function(data){
                     if(data.source !== 'list')
                         data.clearCache();
@@ -116,6 +116,7 @@ function peopleTableDef(placeHolder, personId) {
                 list: true,
                 create: false,
                 edit: true,
+                type: 'hidden',
                 defaultValue: function (data){
                     if(data.record.HomeId > 0 || data.record.HomeId < 0)
                        return data.record.HomeId;
@@ -473,7 +474,7 @@ function homeFields(placeHolder, homeData) {
         CloseChild: fieldCloseChildTable(placeHolder, homeData.record.PersonId),
         PersonId: {
             key: true,
-            create: false,
+            list: false,
             defaultValue: homeData.record.PersonId
         },
         Residents:{
@@ -596,7 +597,7 @@ function childTableMembership(placeHolder){
                         CloseChild: fieldCloseChildTable(placeHolder, memberData.record.PersonId),
                         PersonId: {
                             key: true,
-                            create: false,
+                            list: false,
                             defaultValue: memberData.record.PersonId
                         },
                         PreviousCongregation: {
@@ -745,7 +746,7 @@ function childTableBaptism(placeHolder){
                         CloseChild: fieldCloseChildTable(placeHolder, baptistData.record.PersonId),
                         PersonId: {
                             key: true,
-                            create: false,
+                            list: false,
                             defaultValue: baptistData.record.PersonId
                         },
                         CongregationOfBaptismThis: {

@@ -113,7 +113,7 @@ function orgUnitTableDef(tableId){
                 options: function(data){
                    var val =  data.record.UseChild;
                    if (val === null)
-                       val = 1;
+                       val = 0;
                    return {"1":"Nej", "2":"Ja (" + val + " underenheter)"};
                 }
             },
@@ -123,7 +123,7 @@ function orgUnitTableDef(tableId){
                 options: function(data){
                    var val =  data.record.UseRole;
                    if (val === null)
-                       val = 1;
+                       val = 0;
                    return {"1":"Nej", "2":"Ja (" + val + " positioner)"};
                 }
             },
