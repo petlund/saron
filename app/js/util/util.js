@@ -16,7 +16,10 @@ const NOT_VISIBLE = 'Ej synlig';
 const VISIBLE = 'Synlig';
 const DATE_FORMAT = 'yy-mm-dd';
 const CHILD_TABLE_PREFIX = 'child-to-parent-';
-
+const POS_ENABLED = "2";
+const POS_DISABLED = "1";
+const SUBUNIT_ENABLED = "2";
+const SUBUNIT_DISABLED = "1";
 
 var clearMembershipNoOptionCache = true;
     

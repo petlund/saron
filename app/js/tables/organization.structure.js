@@ -1,4 +1,10 @@
-/* global DATE_FORMAT, J_TABLE_ID, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID */
+/* global DATE_FORMAT, J_TABLE_ID, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, 
+ SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, 
+ NO_HOME, NEW_HOME_ID,
+ POS_ENABLED, POS_DISABLED,
+ SUBUNIT_ENABLED, SUBUNIT_DISABLED
+ */
+
 "use strict";
     
 $(document).ready(function () {
@@ -76,7 +82,7 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
                 delete: false,
                 
                 display: function (data) {
-                    if(data.record.SubUnitEnabled === '1'){
+                    if(data.record.SubUnitEnabled === SUBUNIT_ENABLED){
                         var src;
                         if(data.record.HasSubUnit === '0' || data.record.statusSubProposal === null  || data.record.statusSubVacant === null){
                             src = '"/' + SARON_URI + SARON_IMAGES_URI + 'child.png" title="Under organisation"';                            
@@ -112,7 +118,7 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
                 create: false,
                 delete: false,
                 display: function (data) {
-                    if(data.record.PosEnabled === '1'){
+                    if(data.record.PosEnabled === POS_ENABLED){
                         var src;
                         if(data.record.HasPos === '0')
                             src = '"/' + SARON_URI + SARON_IMAGES_URI + 'unit_empty.png" title="Inga positioner"';

@@ -1,4 +1,9 @@
-/* global DATE_FORMAT, SARON_URI, J_TABLE_ID, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID */
+/* global DATE_FORMAT, SARON_URI, J_TABLE_ID, 
+ PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, 
+ inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID,
+ POS_ENABLED, POS_DISABLED,
+ SUBUNIT_ENABLED, SUBUNIT_DISABLED
+*/
 "use strict";
     
 const ORG_UNIT = "#ORG_UNIT";
@@ -78,9 +83,9 @@ function orgUnitTableDef(tableId){
                 width: '3%',
                 title: 'Roller',
                 create: false,
-                edit: false,
+                edit: false,    
                 display: function(data){
-                    if(data.record.PosEnabled ===  "2"){
+                    if(data.record.PosEnabled ===  POS_ENABLED){
                         var src;
                         if(data.record.HasPos === '0')
                             src= '"/' + SARON_URI + SARON_IMAGES_URI + 'pos.png" title="Inga roller"';
