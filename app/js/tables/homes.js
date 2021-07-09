@@ -75,8 +75,16 @@ function homeTableDef(){
                     return _setClassAndValue(data.record, "Zip", PERSON);
                 }       
             },
-            Country: {
+            City: {
                 title: 'Stad',
+                width: '10%',
+                edit: true,
+                display: function (data){
+                    return _setClassAndValue(data.record, "City", PERSON);
+                }       
+            },
+            Country: {
+                title: 'Land',
                 width: '10%',
                 edit: true,
                 display: function (data){
