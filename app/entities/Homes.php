@@ -31,6 +31,23 @@ class Homes extends SuperEntity{
         }
     }
 
+
+    function checkHomesData(){
+        $error = array();
+        $error["Result"] = "OK";
+        $error["Message"] = "";
+        
+        if(strlen($this->FamilyName) === 0){
+            $error["Message"] = "Det måste finnas ett Familjenamn för hemmet.";
+        }
+
+        if(strlen($error["Message"])>0){
+            $error["Result"] = "ERROR";
+            return json_encode($error);
+        }
+    }
+
+
     
     function select(){
         switch ($this->selection){
@@ -38,18 +55,23 @@ class Homes extends SuperEntity{
             $this->deleteEmptyHomes(); // clean up
             return $this->selectHomesAsOptions();       
         default:
-            return $this->selectDefault();
+            return $this->selectDefault(RECORDS);
         }
     }
 
 
-    function selectDefault(){
+    function selectDefault($rec){
         $filter = new HomesFilter();
         $sqlSelect = SQL_STAR_HOMES . ", " . $this->saronUser->getRoleSql(true) . CONTACTS_ALIAS_RESIDENTS;
         $sqlWhere = "WHERE ";
+        if($rec === RECORDS){
         $sqlWhere.= $filter->getHomesFilterSql($this->groupId);
         $sqlWhere.= $filter->getSearchFilterSql($this->uppercaseSearchString);
-        $result = $this->db->select($this->saronUser, $sqlSelect, "FROM Homes ", $sqlWhere, $this->getSortSql(), $this->getPageSizeSql());
+        }
+        else {
+            $sqlWhere.= "Id = " . $this->HomeId . ";";
+        }
+        $result = $this->db->select($this->saronUser, $sqlSelect, "FROM Homes ", $sqlWhere, $this->getSortSql(), $this->getPageSizeSql(), $rec);
         return $result;        
     }
 
@@ -71,6 +93,25 @@ class Homes extends SuperEntity{
         return $result;
     } 
     
+
+    
+    function update(){
+        $sqlUpdate = "UPDATE Homes ";
+        $sqlSet = "SET ";
+        $sqlSet.= "FamilyNameEncrypt = " . $this->getEncryptedSqlString($this->FamilyName) . ", ";
+        $sqlSet.= "AddressEncrypt = " . $this->getEncryptedSqlString($this->Address) . ", ";
+        $sqlSet.= "PhoneEncrypt = " .  $this->getEncryptedSqlString($this->Phone) . ", ";
+        $sqlSet.= "CoEncrypt = " .  $this->getEncryptedSqlString($this->Co) . ", ";
+        $sqlSet.= "City = " . $this->getSqlString($this->City) . ", ";
+        $sqlSet.= "Zip = " . $this->getSqlString($this->Zip) . ", ";
+        $sqlSet.= "Letter = " . $this->Letter . ", ";
+        $sqlSet.= "Country = " . $this->getSqlString($this->Country) . " ";     
+        $sqlWhere = "WHERE Id=" . $this->HomeId . ";";
+        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
+        
+        return $this->select(RECORD);
+    }    
+
     
     function deleteEmptyHomes(){
         $oldHomeIdString = "";
