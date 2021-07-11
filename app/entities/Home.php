@@ -52,6 +52,8 @@ class Home extends Homes{
         return $this->select(RECORD);
     }    
 
+    
+    
     function select($rec = RECORDS){
         $sqlSelect = "SELECT "; 
         $sqlSelect.= $this->saronUser->getRoleSql(true);

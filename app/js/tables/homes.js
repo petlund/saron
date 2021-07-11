@@ -35,7 +35,7 @@ function homeTableDef(){
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listHomes.php',
             //createAction: 'create.php',
-            updateAction: '/' + SARON_URI + 'app/web-api/updateHome.php'
+            updateAction: '/' + SARON_URI + 'app/web-api/updateHomes.php'
             //deleteAction: 'delete.php'
         },
         fields: {
@@ -44,7 +44,7 @@ function homeTableDef(){
                 key: true
             },
             FamilyName: {
-                title: 'Hem',
+                title: 'Hem (Familjenamn)',
                 width: '10%',
                 edit: true,
                 display: function (data){
@@ -75,8 +75,16 @@ function homeTableDef(){
                     return _setClassAndValue(data.record, "Zip", PERSON);
                 }       
             },
-            Country: {
+            City: {
                 title: 'Stad',
+                width: '10%',
+                edit: true,
+                display: function (data){
+                    return _setClassAndValue(data.record, "City", PERSON);
+                }       
+            },
+            Country: {
+                title: 'Land',
                 width: '10%',
                 edit: true,
                 display: function (data){
