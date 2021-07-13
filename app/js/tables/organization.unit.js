@@ -116,20 +116,28 @@ function orgUnitTableDef(tableId){
                 title: 'Kan ha underenheter',
                 width: '15%',                
                 options: function(data){
-                   var val =  data.record.UseChild;
-                   if (val === null)
-                       val = 0;
-                   return {"1":"Nej", "2":"Ja (" + val + " underenheter)"};
+                    
+                    if(data.source !== "create"){    
+                        var val = data.record.UseChild;
+                        if(val === null)
+                            val = 0;
+                        return {"1":"Nej", "2":"Ja (" + val + " underenheter)"};
+                    }
+                    return {"1":"Nej", "2":"Ja"};
                 }
             },
             PosEnabled: {
                 title: 'Kan ha bemanning',
                 width: '15%',
                 options: function(data){
-                   var val =  data.record.UseRole;
-                   if (val === null)
-                       val = 0;
-                   return {"1":"Nej", "2":"Ja (" + val + " positioner)"};
+                   
+                    if(data.source !== "create"){
+                        var val = data.record.UseRole;
+                        if(val === null)
+                            val = 0;
+                        return {"1":"Nej", "2":"Ja (" + val + " positioner)"};
+                    }
+                    return {"1":"Nej", "2":"Ja"};
                 }
             },
             Description: {
@@ -156,7 +164,7 @@ function orgUnitTableDef(tableId){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
-            if(data.record.InUse !== '0')
+            if(data.record.InUse > 0 || data.record.HasPos > 0)
                 data.row.find('.jtable-delete-command-button').hide();
 
             addDialogDeleteListener(data);
@@ -182,14 +190,16 @@ function orgUnitTableDef(tableId){
             if(data.formType === 'edit')
                 data.row[0].style.backgroundColor = "yellow";
 
-            if(data.record.UseChild > 0){
-                var inp = data.form.find('select[name=SubUnitEnabled]');            
-                inp[0].disabled=true;            
-            }
+            if(data.formType !== "create"){
+                if(data.record.UseChild > 0){
+                    var inp = data.form.find('select[name=SubUnitEnabled]');            
+                    inp[0].disabled=true;            
+                }
 
-            if(data.record.UseRole > 0){
-                var inp = data.form.find('select[name=PosEnabled]');            
-                inp[0].disabled=true;            
+                if(data.record.UseRole > 0){
+                    var inp = data.form.find('select[name=PosEnabled]');            
+                    inp[0].disabled=true;            
+                }
             }
 
             data.form.css('width','600px');
