@@ -103,9 +103,8 @@ function orgUnitTableDef(tableId){
                         });
                         return $imgChild;
                     }
-                    else{
+                    else
                         return null;
-                    }
                 }
             },
             Name: {
@@ -254,7 +253,7 @@ function subRoleTableDef(tableId, orgUnitType_FK, orgName){
     return {
         title: function (){
             if(orgName !== null)
-                return 'Roller för ' + orgName;
+                return 'Tillhörande roller för enhetstyp "' + orgName + '"';
             else
                 return 'Roller';
         },
@@ -321,6 +320,15 @@ function subRoleTableDef(tableId, orgUnitType_FK, orgName){
                     return '/' + SARON_URI + 'app/web-api/listOrganizationRole.php?selection=options';
                 }
             },
+            PosOccurrency:{
+                edit: false,
+                create: false,
+                title: "Antal positioner",
+                width: "10%",
+                display: function (data){
+                    return _setClassAndValue(data.record, "PosOccurrency", -1);
+                }                  
+            },
             Description: {
                 edit: false,
                 create: false,
@@ -354,6 +362,12 @@ function subRoleTableDef(tableId, orgUnitType_FK, orgName){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
+            
+            if(data.record.PosOccurrency > 0){ // Pos exist
+                data.row.find('.jtable-delete-command-button').hide();
+
+            }
+
             addDialogDeleteListener(data);
         },        
         recordsLoaded: function(event, data) {
@@ -364,7 +378,7 @@ function subRoleTableDef(tableId, orgUnitType_FK, orgName){
         formCreated: function (event, data){
             if(data.formType === 'edit')
                 data.row[0].style.backgroundColor = "yellow";
-
+                        
             data.form.css('width','600px');
             data.form.find('input[name=Description]').css('width','580px');
         },

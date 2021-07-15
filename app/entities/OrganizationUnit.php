@@ -82,7 +82,10 @@ class OrganizationUnit extends SuperEntity{
 //        $sql = "SELECT 0 as Value, ' Topp' as DisplayText "; 
 //        $sql.= "Union "; 
         $select = "SELECT id as Value, Name as DisplayText ";
-        $where = "WHERE id not in(select OrgUnitType_FK from `Org_Role-UnitType` where OrgRole_FK = " . $this->orgRole_FK . ") ";
+        $where = "WHERE id not in(select OrgUnitType_FK from `Org_Role-UnitType` where OrgRole_FK = " . $this->orgRole_FK . ") "; 
+        if($this->source === 'organization.role.js'){
+            $where.=" AND PosEnabled = 2"; // only units with posenabled list
+        }
         $from = "FROM Org_UnitType ";
         $result = $this->db->select($this->saronUser, $select , $from, $where, "Order by DisplayText ", "", "Options");    
         return $result; 

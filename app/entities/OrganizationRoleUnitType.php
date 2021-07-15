@@ -61,18 +61,26 @@ class OrganizationRoleUnitType extends SuperEntity{
     }
 
     function selectRole($id = -1, $rec=RECORDS){
-        $select = "SELECT *, Role.Name as RoleName, ";
-        $select.= $this->saronUser->getRoleSql(false) . " ";
-        $from = "FROM Org_Role as Role inner join `Org_Role-UnitType` as Rut on Rut.OrgRole_FK = Role.Id ";
+        
         if($id > 0){
             $where = "WHERE Rut.Id= " . $id . " ";            
         }
         else if($this->orgUnitType_FK > 0){
             $where = "WHERE Rut.OrgUnitType_FK = " . $this->orgUnitType_FK . " ";
+
+            $subSelect = '(Select Count(*) ';
+            $subSelect.= 'From Org_Pos as Pos inner Join Org_Tree as Tree on Pos.OrgTree_FK = Tree.Id ';
+            $subSelect.= 'Where Pos.OrgRole_FK = Rut.OrgRole_FK AND Tree.OrgUnitType_FK = Rut.OrgUnitType_FK ';
+            $subSelect.= ') as PosOccurrency';
         }
         else{
             $where = "";
         }
+
+        $select = "SELECT *, Role.Name as RoleName, " . $subSelect . ", ";
+        $select.= $this->saronUser->getRoleSql(false) . " ";
+
+        $from = "FROM Org_Role as Role inner join `Org_Role-UnitType` as Rut on Rut.OrgRole_FK = Role.Id ";
 
         $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $rec);    
         return $result;
@@ -80,7 +88,19 @@ class OrganizationRoleUnitType extends SuperEntity{
 
     
     function selectUnitTypes($id = -1, $rec=RECORDS){
-        $select = "SELECT *, ";
+        $subSelect = '(SELECT GROUP_CONCAT("- ", TreeName SEPARATOR "<br>") '
+                . 'FROM ('
+                . 'Select Tree.Name as TreeName '
+                . 'From Org_Tree as Tree ' 
+                    . 'inner join Org_Pos as Pos on Pos.OrgTree_FK=Tree.Id '
+                . 'Where Tree.OrgUnitType_FK = Rut.OrgUnitType_FK  and Pos.OrgRole_FK = ' .  $this->orgRole_FK . ' '
+                . 'GROUP BY Tree.Name '
+                . 'ORDER BY Tree.Name '
+                . ') as TreeName'
+            . ') as Occurrency ';
+        
+        $select = "SELECT *, " ;
+        $select.=$subSelect . ", ";
         $select.= $this->saronUser->getRoleSql(false) . " ";
         $from = "FROM Org_UnitType as Typ inner join `Org_Role-UnitType` as Rut on Rut.OrgUnitType_FK = Typ.Id ";
         if($id > 0){
@@ -92,7 +112,6 @@ class OrganizationRoleUnitType extends SuperEntity{
         else{
             $where = "";
         }
-
         $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $rec);    
         return $result;
     }

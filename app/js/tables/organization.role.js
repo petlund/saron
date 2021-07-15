@@ -55,8 +55,9 @@ function roleTableDef(tableId, unitTypeId, orgName){
                 list: false
             },
             Org:{
-                width: '1%',
+                width: '5%',
                 create: false,
+                title: "Används",
                 edit: false,
                 sorting: false,
                 display: function(data){
@@ -155,7 +156,7 @@ function roleTableDef(tableId, unitTypeId, orgName){
 
 function subUnitTableDef(tableId, orgRole_FK, roleName){
     return {
-        title: '"' + roleName + '" finns i nedanstående typer av organisatoriska enheter',
+        title: '"' + roleName + '" kan ingå i nedanstående typer av organisatoriska enheter',
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
@@ -210,24 +211,28 @@ function subUnitTableDef(tableId, orgRole_FK, roleName){
                 list: false
             },
             OrgUnitType_FK:{
-                title: 'Benämning',
+                title: 'Organisatorisk enhetstyp',
                 list: true,
                 edit: false,
                 create: true,
-                width: '20%',
+                width: '15%',
                 options: function(data){
                     if(data.source === 'list')
                         return '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php?selection=options';
     
                     data.clearCache();                    
-                    return '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php?selection=options&OrgRole_FK=' + orgRole_FK;
+                    return '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php?selection=options&OrgRole_FK=' + orgRole_FK + "&source='organization.role.js'";
                 }                
+            },
+            Occurrency:{
+                width: '30%',
+                title: "Rollen förekommer"
             },
             Description: {
                 edit: false,
                 create: false,
                 title: 'Beskrivning',
-                width: '50%'
+                width: '40%'
             },
             UpdaterName: {
                 edit: false,
@@ -249,6 +254,10 @@ function subUnitTableDef(tableId, orgRole_FK, roleName){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
+            if(data.record.Occurrency !== null)
+                if (data.record.Occurrency.length > 0)
+                    data.row.find('.jtable-delete-command-button').hide();
+            
             addDialogDeleteListener(data);
         },        
         recordsLoaded: function(event, data) {
