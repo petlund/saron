@@ -12,6 +12,7 @@ class OrganizationStructure extends SuperEntity{
     private $parentTreeNode_FK;
     private $newParentTreeNode_FK;
     private $orgUnitType_FK;
+    private $orgRole_FK;
     
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
@@ -29,6 +30,11 @@ class OrganizationStructure extends SuperEntity{
         if( $this->orgUnitType_FK === 0){
             $this->orgUnitType_FK = (int)filter_input(INPUT_GET, "OrgUnitType_FK", FILTER_SANITIZE_NUMBER_INT);
         }
+        $this->orgRole_FK = (int)filter_input(INPUT_POST, "OrgRole_FK", FILTER_SANITIZE_NUMBER_INT);
+        if( $this->orgRole_FK === 0){
+            $this->orgRole_FK = (int)filter_input(INPUT_GET, "OrgRole_FK", FILTER_SANITIZE_NUMBER_INT);
+        }
+        
         $this->newParentTreeNode_FK = (int)filter_input(INPUT_POST, "ParentTreeNode_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->parentTreeNode_FK = (int)filter_input(INPUT_GET, "ParentTreeNode_FK", FILTER_SANITIZE_NUMBER_INT);
     }
@@ -38,7 +44,9 @@ class OrganizationStructure extends SuperEntity{
         case "options":
             return $this->selectOptions();       
         case "unittype":
-            return $this->selectSpecUnitType();       
+            return $this->selectSpecUnitTypeFromTree();       
+        case "role":
+            return $this->selectSpecRoleFromTree();       
         case "single_node":
             return $this->selectDefault($this->treeId, RECORD);       
         default:
@@ -70,14 +78,31 @@ class OrganizationStructure extends SuperEntity{
     
     
     
-    function selectSpecUnitType(){
+    function selectSpecUnitTypeFromTree(){
         $select = "SELECT * ";
         $from = "FROM Org_Tree ";
-        $where = "WHERE OrgUnitType_FK = " . $this->orgUnitType_FK . " ";
-
+        $where ="";
+        if($this->orgUnitType_FK > 0){
+            $where = "WHERE OrgUnitType_FK = " . $this->orgUnitType_FK . " ";
+        }
         $result = $this->db->select($this->saronUser, $select , $from, $where, "Order by Name ", "", RECORDS);    
         return $result; 
     }
+    
+
+    
+    function selectSpecRoleFromTree(){
+        $select = "SELECT Rut.OrgRole_FK, Tree.* ";
+        $from = "FROM Org_Tree  as Tree inner join `Org_Role-UnitType` as Rut on Tree.OrgUnitType_FK=Rut.OrgUnitType_FK ";
+        $where ="";
+        if($this->orgRole_FK > 0){
+            $where = "WHERE Rut.OrgRole_FK = " . $this->orgRole_FK . " ";
+        }
+        $result = $this->db->select($this->saronUser, $select , $from, $where, "Order by Name ", "", RECORDS);    
+        return $result; 
+    }
+    
+    
     
     function selectDefault($id = -1, $rec=RECORDS){
         //filter all nodes witch not have childs and all child below curret node

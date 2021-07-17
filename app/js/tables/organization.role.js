@@ -54,7 +54,7 @@ function roleTableDef(tableId, unitTypeId, orgName){
                 key: true,
                 list: false
             },
-            Org:{
+            UsedIn:{
                 width: '5%',
                 create: false,
                 title: "Används",
@@ -63,10 +63,45 @@ function roleTableDef(tableId, unitTypeId, orgName){
                 display: function(data){
                     var src;
                     if(data.record.HasChild === '0'){
-                        src = '"/' + SARON_URI + SARON_IMAGES_URI + 'child.png" title="Organisation"';
+                        src = '"/' + SARON_URI + SARON_IMAGES_URI + 'unit_empty.png" title="Organisation"';
                     }
                     else{
-                        src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haschild.png" title="Organisation"';
+                        src = '"/' + SARON_URI + SARON_IMAGES_URI + 'unit.png" title="Organisation"';
+                    }
+                    
+                    var imgTag = _setImageClass(data.record, "Role", src, data.record.Id);
+                    var $imgChild = $(imgTag);
+                    var isChildRowOpen=false;
+                    
+                    $imgChild.click(data, function (event){
+                        var $tr = $imgChild.closest('tr');
+                        $(tableId).jtable('openChildTable', $tr, listTableDef(tableId, data.record.Name, "Rollen", "role", "OrgRole_FK", data.record.Id), function(data){
+                            var $currentRow = $(tableId).jtable('getRowByKey', event.data.record.Id);
+                            isChildRowOpen = $(tableId).jtable('isChildRowOpen', $currentRow);
+
+                            data.childTable.jtable('load');
+                        });
+                    });
+                    if(isChildRowOpen)
+                        return $imgChild;
+                    else
+                        return $imgChild;
+
+                }               
+            },
+            Org:{
+                width: '5%',
+                create: false,
+                title: "Ingår i",
+                edit: false,
+                sorting: false,
+                display: function(data){
+                    var src;
+                    if(data.record.HasChild === '0'){
+                        src = '"/' + SARON_URI + SARON_IMAGES_URI + 'pos.png" title="Organisation"';
+                    }
+                    else{
+                        src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haspos.png" title="Organisation"';
                     }
                     
                     var imgTag = _setImageClass(data.record, "Role", src, -1);
@@ -74,7 +109,7 @@ function roleTableDef(tableId, unitTypeId, orgName){
                     
                     $imgChild.click(data, function (event){
                         var $tr = $imgChild.closest('tr');
-                        $(tableId).jtable('openChildTable', $tr, subUnitTableDef(tableId, data.record.Id, data.record.Name), function(data){
+                        $(tableId).jtable('openChildTable', $tr, unitTypeTableDef(tableId, data.record.Id, data.record.Name), function(data){
                             data.childTable.jtable('load');
                         });
                     });
@@ -152,31 +187,34 @@ function roleTableDef(tableId, unitTypeId, orgName){
     };
 }
 
-
-
-function subUnitTableDef(tableId, orgRole_FK, roleName){
+function subRoleTableDef(tableId, orgUnitType_FK, orgName){
     return {
-        title: '"' + roleName + '" kan ingå i nedanstående typer av organisatoriska enheter',
+        title: function (){
+            if(orgName !== null)
+                return 'Tillhörande roller för enhetstyp "' + orgName + '"';
+            else
+                return 'Roller';
+        },
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
         sorting: true, //Enable sorting
         multiSorting: true,
-        defaultSorting: 'OrgUnitType_FK', //Set default sorting        
-        messages: {addNewRecord: 'Koppla roll till typ av organisatorisk enhet.'},
+        defaultSorting: 'SortOrder', //Set default sorting        
+        messages: {addNewRecord: 'Lägg till en ny koppling till en roll.'},
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationRole-UnitType.php?selection=unitTypes&OrgRole_FK=' + orgRole_FK,
+            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationRole-UnitType.php?selection=role&OrgUnitType_FK=' + orgUnitType_FK,
             createAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url:  '/' + SARON_URI + 'app/web-api/createOrganizationRole-UnitType.php?selection=unitTypes&OrgRole_FK=' + orgRole_FK,
+                        url:  '/' + SARON_URI + 'app/web-api/createOrganizationRole-UnitType.php?selection=role&OrgUnitType_FK=' + orgUnitType_FK,
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
                         success: function (data) {
                             $dfd.resolve(data);
                             if(data.Result === 'OK'){
-                                updateRoleRecord(data, 'create', orgRole_FK);                               
+                                updateUnitRecord(data, 'create', orgUnitType_FK);                               
                             }
                         },
                         error: function () {
@@ -185,17 +223,18 @@ function subUnitTableDef(tableId, orgRole_FK, roleName){
                     });
                 });
             },
+            updateAction:   '/' + SARON_URI + 'app/web-api/updateOrganizationRole-UnitType.php?selection=role',
             deleteAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url:  '/' + SARON_URI + 'app/web-api/deleteOrganizationRole-UnitType.php?OrgRole_FK=' + orgRole_FK,
+                        url:  '/' + SARON_URI + 'app/web-api/deleteOrganizationRole-UnitType.php?OrgUnitType_FK=' + orgUnitType_FK,
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
                         success: function (data) {
                             $dfd.resolve(data);
                             if(data.Result === 'OK'){
-                                updateRoleRecord(data, 'delete', orgRole_FK);                               
+                                updateUnitRecord(data, 'delete', orgUnitType_FK);                               
                             }
                         },
                         error: function () {
@@ -203,36 +242,43 @@ function subUnitTableDef(tableId, orgRole_FK, roleName){
                         }
                     });
                 });
-            }        
+            },        
         },
         fields: {
             Id: {
                 key: true,
                 list: false
             },
-            OrgUnitType_FK:{
-                title: 'Organisatorisk enhetstyp',
+            OrgRole_FK: {
                 list: true,
                 edit: false,
-                create: true,
-                width: '15%',
-                options: function(data){
-                    if(data.source === 'list')
-                        return '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php?selection=options';
-    
-                    data.clearCache();                    
-                    return '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php?selection=options&OrgRole_FK=' + orgRole_FK + "&source='organization.role.js'";
-                }                
+                width: '20%',
+                title: 'Rollbenämning',
+                options: function(){
+                    return '/' + SARON_URI + 'app/web-api/listOrganizationRole.php?selection=options';
+                }
             },
-            Occurrency:{
-                width: '30%',
-                title: "Rollen förekommer"
+            PosOccurrency:{
+                edit: false,
+                create: false,
+                title: "Antal positioner",
+                width: "10%",
+                display: function (data){
+                    return _setClassAndValue(data.record, "PosOccurrency", -1);
+                }                  
             },
             Description: {
                 edit: false,
                 create: false,
                 title: 'Beskrivning',
-                width: '40%'
+                width: '50%'
+            },
+            SortOrder: {
+                edit: true,
+                create: true,
+                title: 'Sortering',
+                options: {"0": "-", "1": "Nivå 1", "2": "Nivå 2", "3":"Nivå 3", "4": "Nivå 4", "5":"Nivå 5","6":"Nivå 6"},
+                width: '10%'
             },
             UpdaterName: {
                 edit: false,
@@ -254,10 +300,12 @@ function subUnitTableDef(tableId, orgRole_FK, roleName){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
-            if(data.record.Occurrency !== null)
-                if (data.record.Occurrency.length > 0)
-                    data.row.find('.jtable-delete-command-button').hide();
             
+            if(data.record.PosOccurrency > 0){ // Pos exist
+                data.row.find('.jtable-delete-command-button').hide();
+
+            }
+
             addDialogDeleteListener(data);
         },        
         recordsLoaded: function(event, data) {
@@ -268,7 +316,7 @@ function subUnitTableDef(tableId, orgRole_FK, roleName){
         formCreated: function (event, data){
             if(data.formType === 'edit')
                 data.row[0].style.backgroundColor = "yellow";
-
+                        
             data.form.css('width','600px');
             data.form.find('input[name=Description]').css('width','580px');
         },
@@ -276,8 +324,9 @@ function subUnitTableDef(tableId, orgRole_FK, roleName){
             if(data.formType === 'edit')
                 data.row[0].style.backgroundColor = '';
         }
-    };    
+    };
 }
+
 
 
 function updateRoleRecord(data, method, orgRole_FK){

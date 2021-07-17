@@ -103,10 +103,11 @@
                             <ul>
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/OrganizationReport.php?type=proposal" target="_blank">Organisationskalender förslag(pdf-fil)</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/engagement.php?tableview=PEOPLE_ENG">Ansvar per person</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_STRUCT">Organisation & Bemanning</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_TREE">Organisationsträd</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_LIST">Organisationslista</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_ROLE_STATUS">Bemanningsstatus</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_ROLE">Organisationsroller</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_UNIT">Organisationsenheter</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_ROLE">Roller</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_UNIT">Organisatoriska enhetstyper</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=MEMBER_STATE">Medlemsstatus</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_VER">Beslut om organisation</a></li>
                             <!--    <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_GRAPH">Grafisk presentation</a></li>
