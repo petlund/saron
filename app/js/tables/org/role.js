@@ -63,22 +63,21 @@ function roleTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                 edit: false,
                 list: includedIn(tableViewId, TABLE_VIEW_ROLE),
                 sorting: false,
-                display: function(data){                    
-                    var srcChild;
-                    if(data.record.HasChild === '0'){
-                        srcChild = '"/' + SARON_URI + SARON_IMAGES_URI + 'unit_empty.png" title="Inga organisatoriska enheter"';
-                    }
-                    else{
-                        srcChild = '"/' + SARON_URI + SARON_IMAGES_URI + 'unit.png" title="Organisatoriska enheter"';
-                    }
+                display: function(data){
                     
-                    var imgTagChild = _setImageClass(data.record, TABLE_NAME_UNIT, srcChild, data.record.Id);
-                    var $imgChild = $(imgTagChild);
-                    const tag = TABLE_NAME_ROLE + '_Child_' +  data.record.Id;
+                    var $imgChild=null;                    
+                    if(data.record.HasChild === '0')
+                        $imgChild = getImageTag(data, "unit_empty.png", "Inga organisatoriska enheter", TABLE_NAME_UNIT);
+                    else
+                        $imgChild = getImageTag(data, "unit.png", "Organisatoriska enheter", TABLE_NAME_UNIT);
+                    
+                    var allOpenClasses = getChildOpenClass(data, TABLE_NAME_UNIT) + ' ' + getChildOpenClass(data, TABLE_NAME_UNITTYPE);
+                    var currentOpenClass = getChildOpenClass(data, TABLE_NAME_UNIT);
+                    
                     $imgChild.click(data, function (event){
                         var $tr = $imgChild.closest('tr'); 
-                        $tr.removeClass(TABLE_NAME_ROLE + '_Child_' +  data.record.Id + ' ' + TABLE_NAME_UNITTYPE + '_' + data.record.Id);
-                        $tr.addClass(tag);
+                        $tr.removeClass(allOpenClasses);
+                        $tr.addClass(currentOpenClass);
                         
                         var childTableTitleUsedInUnit = 'Rollen "' + data.record.Name + '" används i nedanstående organisatoriska enheter';
                         $(tableViewId).jtable('openChildTable', $tr, unitTableDef(tableViewId, tablePath,  data.record.Id, childTableTitleUsedInUnit), function(data){
@@ -87,20 +86,17 @@ function roleTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                         });
                     });
                     
-                    var srcClose = '"/' + SARON_URI + SARON_IMAGES_URI + 'cross.png" title="Stäng"';
-                    var imgTagClose= _setImageClass(data.record, TABLE_VIEW_ROLE, srcClose, data.record.Id);
-                    var $imgClose = $(imgTagClose);
-
+                    var $imgClose = getImageCloseTag(data, TABLE_NAME_ROLE);
                     $imgClose.click(data, function(event) {
-                        var $tr = $imgClose.closest('tr'); 
-                        $tr.removeClass(TABLE_NAME_UNIT + '_' +  data.record.Id + ' ' + TABLE_NAME_UNITTYPE + '_' + data.record.Id);
+                        var $tr = $imgChild.closest('tr'); 
+                        $tr.removeClass(allOpenClasses);
                         var $currentRow = $(tableViewId).jtable('getRowByKey', data.record.Id);
                         $(tableViewId).jtable('closeChildTable', $currentRow, function(data){  
                             updateRoleRecord(tableViewId, event.data);
                         });
                     });     
 
-                    var isChildRowOpen = $("." + TABLE_NAME_UNITTYPE + '_Child_' +  data.record.Id).length > 0;
+                    var isChildRowOpen = $("." + currentOpenClass).length > 0;
                     
                     if(isChildRowOpen)
                         return $imgClose;
@@ -116,44 +112,39 @@ function roleTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                 list: includedIn(tableViewId, TABLE_VIEW_ROLE),
                 sorting: false,
                 display: function(data){
-                    var childTableTitleOrg = 'Rollen "' + data.record.Name + '" används i nedanstående organisatoriska enhetstyper';
+                    var childTableTitle = 'Rollen "' + data.record.Name + '" används i nedanstående organisatoriska enhetstyper';
+                    var $imgChild;
 
-                    var src;
-                    if(data.record.HasChild === '0'){
-                        src = '"/' + SARON_URI + SARON_IMAGES_URI + 'unittype.png" title="Inga organisatoriska enhetstyper"';
-                    }
-                    else{
-                        src = '"/' + SARON_URI + SARON_IMAGES_URI + 'used_unittype.png" title="Organisatoriska enhetstyper"';
-                    }
-                    
-                    var imgTag = _setImageClass(data.record, TABLE_NAME_ROLE, src, data.record.Id, ORG);
-                    var $imgChild = $(imgTag);
+                    if(data.record.HasChild === '0')
+                        $imgChild = getImageTag(data, "unittype.png", "Inga organisatoriska enhetstyper", TABLE_NAME_UNITTYPE);
+                    else
+                        $imgChild = getImageTag(data, "used_unittype.png", "Organisatoriska enhetstyper", TABLE_NAME_UNITTYPE);
+
+                    var allOpenClasses = getChildOpenClass(data, TABLE_NAME_UNIT) + ' ' + getChildOpenClass(data, TABLE_NAME_UNITTYPE);
+                    var currentOpenClass = getChildOpenClass(data, TABLE_NAME_UNITTYPE);
                     
                     $imgChild.click(data, function (event){
-                        var $tr = $imgChild.closest('tr');
-                        $tr.removeClass(_getClassName_Id(data.record, TABLE_NAME_UNIT, ORG) + ' ' + _getClassName_Id(data.record, TABLE_NAME_UNITTYPE, ORG));
-                        $tr.addClass(_getClassName_Id(data.record, TABLE_NAME_UNITTYPE, ORG));
-                        $(tableViewId).jtable('openChildTable', $tr, unitTypeTableDef(tableViewId, tablePath, data.record.Id, childTableTitleOrg), function(data){
+                        var $tr = $imgChild.closest('tr'); 
+                        $tr.removeClass(allOpenClasses);
+                        $tr.addClass(currentOpenClass);
+                        $(tableViewId).jtable('openChildTable', $tr, unitTypeTableDef(tableViewId, tablePath, data.record.Id, childTableTitle), function(data){
                             data.childTable.jtable('load');
                             updateRoleRecord(tableViewId, event.data);
                         });
                     });
 
-                    var srcClose = '"/' + SARON_URI + SARON_IMAGES_URI + 'cross.png" title="Stäng"';
-                    var imgTagClose= _setImageClass(data.record, TABLE_NAME_UNITTYPE, srcClose, data.record.Id, ORG);
-                    var $imgClose = $(imgTagClose);
+                    var $imgClose = getImageCloseTag(data, TABLE_NAME_ROLE);
 
                     $imgClose.click(data, function(event) {
-                        var $tr = $imgClose.closest('tr');
-                        $tr.removeClass(_getClassName_Id(data.record, TABLE_NAME_UNIT, ORG) + ' ' + _getClassName_Id(data.record, TABLE_NAME_UNITTYPE, ORG));
+                        var $tr = $imgChild.closest('tr'); 
+                        $tr.removeClass(allOpenClasses);
                         var $currentRow = $(tableViewId).jtable('getRowByKey', data.record.Id);
                         $(tableViewId).jtable('closeChildTable', $currentRow, function(data){  
                             updateRoleRecord(tableViewId, event.data);
                         });
                     });     
 
-
-                    var isChildRowOpen = $("." + _getClassName_Id(data.record, TABLE_NAME_UNITTYPE, ORG)).length > 0;
+                    var isChildRowOpen = $("." + currentOpenClass).length > 0;
                     if(isChildRowOpen)
                         return $imgClose;
                     else
