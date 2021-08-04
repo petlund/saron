@@ -7,13 +7,13 @@ require_once 'config.php';
 require_once SARON_ROOT . 'app/database/db.php';
 require_once SARON_ROOT . 'app/entities/OrganizationUnit.php';
 
-
+    
     try{
         $db = new db();
         $db->transaction_begin();
-        $saronUser = new SaronUser($db);
+        $saronUser = new SaronUser($db);        
         $saronUser->hasValidSaronSession(REQUIRE_VIEWER_ROLE, REQUIRE_ORG_EDITOR_ROLE);
-        $org = new OrganizationUnit($db, $saronUser);
+        $org = new OrganizationStructure($db, $saronUser);
         $result = $org->insert();
         $db->transaction_end();            
         echo $result;

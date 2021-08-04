@@ -1,6 +1,7 @@
 <?php
 require_once "config.php";
 require_once SARON_ROOT . "app/database/queries.php";
+require_once SARON_ROOT . "app/util/GlobalConstants_php.php";
  
 class db {
     

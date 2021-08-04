@@ -11,6 +11,10 @@
  *
  * @author peter
  */
+
+require_once SARON_ROOT . "app/util/GlobalConstants_php.php";
+
+
 class SuperEntity {
     protected $db;
     protected $saronUser;
@@ -18,13 +22,17 @@ class SuperEntity {
     protected $jtPageSize;
     protected $jtStartIndex;
     protected $jtSorting;
-    protected $source;
     protected $tableview;
+    protected $tablePath;
+    protected $parentId;
+    protected $resultType;
 
-    
+
+
     protected function __construct($db, $saronUser) {
         $this->db = $db;
         $this->saronUser = $saronUser;
+
 
         $this->groupId = (int)filter_input(INPUT_POST, "groupId", FILTER_SANITIZE_NUMBER_INT);    
         $this->tableview = (String)filter_input(INPUT_POST, "tableview", FILTER_SANITIZE_STRING);    
@@ -38,12 +46,30 @@ class SuperEntity {
         $this->jtPageSize = (int)filter_input(INPUT_GET, "jtPageSize", FILTER_SANITIZE_NUMBER_INT);
         $this->jtStartIndex = (int)filter_input(INPUT_GET, "jtStartIndex", FILTER_SANITIZE_NUMBER_INT);
         $this->jtSorting = (String)filter_input(INPUT_GET, "jtSorting", FILTER_SANITIZE_STRING);
-    
-        $this->source = (String)filter_input(INPUT_GET, "Source", FILTER_SANITIZE_STRING);
+            
+        $this->tablePath = (String)filter_input(INPUT_GET, "TablePath", FILTER_SANITIZE_STRING);
+        IF(strlen($this->tablePath) === 0){
+            $this->tablePath = (String)filter_input(INPUT_POST, "TablePath", FILTER_SANITIZE_STRING);
+        }
+        $this->parentId = (int)filter_input(INPUT_GET, "ParentId", FILTER_SANITIZE_NUMBER_INT);
+        $this->resultType = (String)filter_input(INPUT_GET, "ResultType", FILTER_SANITIZE_STRING);
 
     }
 
     
+    
+    protected function getId($entityId, $clientId){
+        if($entityId > 0){
+            return $entityId;
+        }
+        else if($clientId > 0){
+            return $clientId;
+        }
+        else{
+            return -1;
+        }
+    }
+
     
     protected function getSortSql(){
         $sqlOrderBy = "";
@@ -111,6 +137,14 @@ class SuperEntity {
         }
     }
 
+    
+    
+    function getTablePathSql(){
+        if(strlen($this->tablePath) > 0){    
+            return "'" . $this->tablePath . "' AS TablePath, ";
+        }
+        return "";
+    }
     
     
     function salt(){        

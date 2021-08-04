@@ -26,6 +26,14 @@ function orgVersionTableDef(){
             createAction: '/' + SARON_URI + 'app/web-api/createOrganizationVersion.php',
         },
         fields: {
+            TablePath:{
+                list: false,
+                edit: false,
+                create: false,
+                display: function(){
+                    return 'version';
+                }
+            },
             id: {
                 key: true,
                 list: false

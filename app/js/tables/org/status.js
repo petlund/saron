@@ -44,6 +44,14 @@ function statusTableDef(tableId){
             }, 
         },
         fields: {
+            TablePath:{
+                list: false,
+                edit: false,
+                create: false,
+                display: function(){
+                    return 'status';
+                }
+            },
             Id: {
                 key: true,
                 list: false

@@ -233,5 +233,3 @@ class SaronUsers extends SuperEntity{
         return 0;
     }
 }
-
-//{"Result":"OK","Records":[{"id":1,"display_name":"saron","user_login":"saron","user_email":"peter.lundin.64@gmail.com","wp_otp":"","saron_reader":0"  ,"saron_org":0,"saron_editor":1},{"id":2,"display_name":"Peter Lundin","user_login":"otpsaron","user_email":"peter.lundin@korskyrkan.se","wp_otp":"1","saron_reader":0","saron_org":1,"saron_editor":0}],"TotalRecordCount":2,"user_role":"edit"}

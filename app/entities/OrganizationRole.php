@@ -16,40 +16,28 @@ class OrganizationRole extends SuperEntity{
         parent::__construct($db, $saronUser);
         
         $this->id = (int)filter_input(INPUT_POST, "Id", FILTER_SANITIZE_NUMBER_INT);
-        if($this->id  === 0){
-            $this->id = (int)filter_input(INPUT_GET, "Id", FILTER_SANITIZE_NUMBER_INT);
-        }
-        
         $this->roleType = (int)filter_input(INPUT_POST, "RoleType", FILTER_SANITIZE_NUMBER_INT);
-
         $this->orgTreeNode_FK = (int)filter_input(INPUT_POST, "Org_Tree_FK", FILTER_SANITIZE_NUMBER_INT);
-        if($this->orgTreeNode_FK  === 0){
-            $this->orgTreeNode_FK = (int)filter_input(INPUT_GET, "Org_Tree_FK", FILTER_SANITIZE_NUMBER_INT);
-        }
-        
         $this->orgUnitType_FK = (int)filter_input(INPUT_POST, "OrgUnitType_FK", FILTER_SANITIZE_NUMBER_INT);
-        if($this->orgUnitType_FK === 0){        
-            $this->orgUnitType_FK = (int)filter_input(INPUT_GET, "OrgUnitType_FK", FILTER_SANITIZE_NUMBER_INT);
-        }
-        
         $this->name = (String)filter_input(INPUT_POST, "Name", FILTER_SANITIZE_STRING);
-        
         $this->description = (String)filter_input(INPUT_POST, "Description", FILTER_SANITIZE_STRING);
         
     }
 
 
-    function select($id = -1, $req = RECORDS){
-        if($id < 0 && $this->id > 0){
-            $id = $this->id;
-        }
-        switch ($this->selection){
-        case "options":
-            return $this->selectOptions($id);       
+    function select(){
+        switch ($this->resultType){
+        case OPTIONS:
+            return $this->selectOptions();       
+        case RECORDS:
+            return $this->selectDefault();       
+        case RECORD:
+            return $this->selectDefault();       
         default:
-            return $this->selectDefault($id, $req);
+            return $this->selectDefault();
         }
     }
+
 
     
     function checkRoletData(){
@@ -67,39 +55,99 @@ class OrganizationRole extends SuperEntity{
         }
     }
 
- 
-    function selectDefault($id = -1, $rec=RECORDS){
-        $select = "SELECT *, Role.UpdaterName as UpdaterName, Role.Updated as Updated, ";
-        $select.= "(Select count(*) from `Org_Role-UnitType` as UnitRole WHERE UnitRole.OrgRole_FK = Role.Id) as HasChild, ";
-        $select.= $this->saronUser->getRoleSql(false) . " ";
-        $from = "FROM Org_Role as Role ";
-        if($this->unitTypeId > 0){
-            $from = "FROM Org_Role as Role inner join `Org_Role-UnitType` as Rut on Rut.OrgRole_FK = Role.Id ";
-            $where = "WHERE OrgUnitType_FK = " . $this->orgUnitType_FK . " ";
-        }
-        else{
-            $where = "";
-        }
+    
+    
+    // from entity: role-unittype
+    function selectRole($idFromCreate = -1){
+        $id = $this->getId($idFromCreate, $this->id);
+        $rec = RECORDS;
+
+        $where = "";         
         if($id < 0){
-            $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $rec);    
-            return $result;
+            switch ($this->tablePath){
+                case TABLE_NAME_ROLE:            
+                    $where = "";
+                    break;
+                case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_ROLE:            
+                    $where.= "WHERE Rut.OrgUnitType_FK = " . $this->parentid . " ";
+                    break;
+                default:
+                    $where = "";
+            }
         }
         else{
-            $result = $this->db->select($this->saronUser, $select , "FROM Org_Role as Role ", "WHERE id = " . $id . " ", $this->getSortSql(), $this->getPageSizeSql(), RECORD);        
-            return $result;
+            $where.= "WHERE Role.Id = " . $id . " ";
+            $rec = RECORD;
         }
+
+        if($id > 0){
+            $where = "WHERE Rut.Id= " . $id . " ";            
+        }
+        else if($this->parentId > 0){
+            $where = "WHERE Rut.OrgRole_FK = " . $this->parentId . " ";
+        }
+
+        $subSelect = '(Select Count(*) ';
+        $subSelect.= 'From Org_Pos as Pos inner Join Org_Tree as Tree on Pos.OrgTree_FK = Tree.Id ';
+        $subSelect.= 'Where Pos.OrgRole_FK = Rut.OrgRole_FK AND Tree.OrgUnitType_FK = Rut.OrgUnitType_FK ';
+        $subSelect.= ') as PosOccurrency';
+
+        $select = "SELECT *, Role.Name as RoleName, " . $subSelect . ", ";
+        $select.= $this->getTablePathSql();
+        $select.= $this->saronUser->getRoleSql(false) . " ";
+
+        $from = "FROM Org_Role as Role inner join `Org_Role-UnitType` as Rut on Rut.OrgRole_FK = Role.Id ";
+
+        $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $this->resultType);    
+        return $result;
     }
 
-    function selectOptions($id){
+    
+    
+    function selectDefault($idFromCreate = -1){
+        $id = $this->getId($idFromCreate, $this->id);
+        $rec = RECORDS;
+        
+        $select = "SELECT *, Role.UpdaterName as UpdaterName, Role.Updated as Updated, ";
+        $select.= $this->getTablePathSql();
+        $select.= "(Select count(*) from `Org_Role-UnitType` as UnitRole WHERE UnitRole.OrgRole_FK = Role.Id) as HasChild, ";
+        $select.= "(Select count(*) from Org_Pos as Pos WHERE Pos.OrgRole_FK=Role.Id) as PosOccurrency, ";
+        $select.= $this->saronUser->getRoleSql(false) . " ";
+        $from = "FROM Org_Role as Role ";
+        
+        if($id < 0){
+            switch ($this->tablePath){
+                case TABLE_NAME_ROLE:            
+                    $where = "";
+                    break;
+                case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_ROLE:            
+                    $from.= "inner join `Org_Role-UnitType` as Rut on Rut.OrgRole_FK = Role.Id ";
+                    $where.= "WHERE Rut.OrgUnitType_FK = " . $this->parentId . " ";
+                    break;
+                default:
+                    $where = "";
+            }
+        }
+        else{
+            $where = "WHERE Role.id = " . $id . " ";
+        }
+
+        $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $rec);        
+        return $result;
+    }
+
+    
+    
+    function selectOptions(){
         $select = "SELECT Role.Id  as Value, Concat(Role.Name, if(RoleType = 1, ' (Org)','')) as DisplayText ";
         $from = "FROM Org_Role as Role "; 
         $where = "";
 
-        if($this->orgUnitType_FK > 0){
-            $from.= "inner join `Org_Role-UnitType` Typ on Role.Id = Typ.OrgRole_FK "; 
-            $where = "WHERE OrgUnitType_FK = " . $this->orgUnitType_FK . " ";
-            $where.=" and Role.Id not in (select P.OrgRole_FK from Org_Pos as P inner join Org_Role as R on R.Id = P.OrgRole_FK where R.RoleType = 1 and P.OrgRole_FK <> " . $id . ") ";
-        }
+//        if($this->parentId > 0){
+//            $from.= "inner join `Org_Role-UnitType` Typ on Role.Id = Typ.OrgRole_FK "; 
+//            $where = "WHERE OrgUnitType_FK = " . $this->parentId . " ";
+//            $where.=" and Role.Id not in (select P.OrgRole_FK from Org_Pos as P inner join Org_Role as R on R.Id = P.OrgRole_FK where R.RoleType = 1 and P.OrgRole_FK <> " . $this->id . ") ";
+//        }
             
         $result = $this->db->select($this->saronUser, $select , $from, $where, "Order by DisplayText ", "", "Options");    
         return $result; 

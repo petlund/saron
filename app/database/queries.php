@@ -6,9 +6,6 @@
     define("SALT_LENGTH", 13);
     define("MAX_STR_LEN", 250);
 
-    define ("RECORD", "Record");
-    define ("RECORDS", "Records");
-    define ("OPTIONS", "Options");
 
     define("DATE_FORMAT", "'%Y-%m-%d'");
     define("DATE_OF_BIRTH", "DATE_FORMAT(DateOfBirth, " . DATE_FORMAT . ")");

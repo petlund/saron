@@ -1,36 +1,69 @@
-/* global DATE_FORMAT, J_TABLE_ID, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, 
- SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, 
- NO_HOME, NEW_HOME_ID,
- POS_ENABLED, POS_DISABLED,
- SUBUNIT_ENABLED, SUBUNIT_DISABLED
+/* global DATE_FORMAT,
+SARON_URI,SARON_IMAGES_URI, 
+SUBUNIT_ENABLED, 
+ORG, POS_ENABLED, 
+TABLE_VIEW_ROLE, TABLE_NAME_ROLE, 
+TABLE_VIEW_UNITTYPE, TABLE_NAME_UNITTYPE,
+TABLE_VIEW_ROLE_UNITTYPE, TABLE_NAME_ROLE_UNITTYPE,
+TABLE_VIEW_UNIT, TABLE_NAME_UNIT,
+TABLE_VIEW_ORG, TABLE_NAME_ORG,
+TABLE_VIEW_UNITLIST, TABLE_NAME_UNITLIST,
+TABLE_VIEW_UNITTREE, TABLE_NAME_UNITTREE,
+TABLE_VIEW_POS, TABLE_NAME_POS,
+RECORDS, RECORD, OPTIONS, SOURCE_LIST, SOURCE_CREATE, SOURCE_EDIT
  */
 
 "use strict";
 
-function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
+$(document).ready(function () {
+        $(TABLE_VIEW_POS).jtable(posTableDef(TABLE_VIEW_POS, null, -1, null));
+        $(TABLE_VIEW_POS).jtable('load');
+    }
+);
+
+
+function posTableDef(tableViewId, parentTablePath, parentId,  childTableTitle){
+    const tableName = TABLE_NAME_POS;
+    var tablePath = tableName;
+    if(parentTablePath !== null)
+        tablePath = parentTablePath + "/" + tableName;
+    
     return {
-        title: function(){
-            return 'Positioner för "' + unitName + '"';
+        title: function (){
+            if(childTableTitle !== null)
+                return childTableTitle;
+            else
+                return 'Positioner';
         },
-        paging: true, //Enable paging
+        paging: true, //Enable paging§§
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
         sorting: true, //Enable sorting
         multiSorting: true,
-        defaultSorting: 'SortOrder', //Set default sorting        
+        defaultSorting: getDefaultPosSorting(tableViewId), //Set default sorting        
         messages: {addNewRecord: 'Lägg till en ny position.'},
         actions: {
-            listAction: '/' + SARON_URI + 'app/web-api/listOrganizationPos.php?OrgTree_FK=' + orgTree_FK,
-            createAction: '/' + SARON_URI + 'app/web-api/createOrganizationPos.php?OrgTree_FK=' + orgTree_FK,
-            updateAction: '/' + SARON_URI + 'app/web-api/updateOrganizationPos.php?OrgTree_FK=' + orgTree_FK,
-            deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationPos.php?OrgTree_FK=' + orgTree_FK
+            listAction: '/' + SARON_URI + 'app/web-api/listOrganizationPos.php?ParentId=' + parentId + '&TablePath=' + tablePath + "&ResultType=" + RECORDS,
+            createAction: function(){
+                if(tableViewId === TABLE_VIEW_POS)
+                    return null;
+                else
+                    return '/' + SARON_URI + 'app/web-api/createOrganizationPos.php';
+                },
+            updateAction: '/' + SARON_URI + 'app/web-api/updateOrganizationPos.php',
+            deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationPos.php'
         }, 
         fields: {
+            TablePath:{
+                list: true,
+                edit: false,
+                create: false,
+            },
             PosId: {
                 key: true,
                 list: false,
                 create: false
-            },
+            },         
             RoleType:{
                 sorting: false,
                 width: "1%",
@@ -59,7 +92,7 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
                                 src = '"/' + SARON_URI + SARON_IMAGES_URI + 'pos.png" title="Tillsätts ej"';
                         }
                     }
-                    var imgTag = _setImageClass(data.record, "Role", src, -1);
+                    var imgTag = _setImageClass(data.record, TABLE_NAME_ROLE, src, -1);
                     var $imgRole = $(imgTag);
                     return $imgRole;
                 }                
@@ -72,17 +105,33 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
                 edit: false
                 
             },
+            Unit_Id:{                
+                create: false,
+                edit: false,
+                list: includedIn(tableViewId, TABLE_VIEW_POS),
+                title: "Organisatorisk enhet",
+                options: function(data){
+                    var optionTablePath = tablePath + "/" + OPTIONS;
+                    var parameters = '?ParentId=' + parentId + '&TablePath=' + optionTablePath + "&ResultType=" + OPTIONS;
+                    
+                    if(data.source !== 'list')
+                        data.clearCache();
+
+                    return '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php' + parameters;
+                    }
+            },            
             OrgRole_FK: {
                 width: '10%',
                 title: 'Roll',
                 edit: true,
                 options: function(data){
-                    if(data.source === 'list')
-                        return '/' + SARON_URI + 'app/web-api/listOrganizationRole.php?selection=options';
-                    else{
+                    var optionTablePath = tablePath + "/" + OPTIONS;
+                    var parameters = '?ParentId=' + parentId + '&TablePath=' + optionTablePath + "&ResultType=" + OPTIONS;
+
+                    if(data.source !== 'list')
                         data.clearCache();
-                        return '/' + SARON_URI + 'app/web-api/listOrganizationRole.php?selection=options&OrgUnitType_FK=' + orgUnitType_FK;
-                        }
+
+                    return '/' + SARON_URI + 'app/web-api/listOrganizationRole.php' + parameters;
                     }
             },
             OrgPosStatus_FK: {
@@ -90,7 +139,10 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
                 title: 'Status',
                 defaultValue: '4',
                 options: function(data){
-                    return '/' + SARON_URI + 'app/web-api/listOrganizationStatus.php?selection=options';
+                    var optionTablePath = tablePath + "/" + OPTIONS;
+                    var parameters = '?ParentId=' + parentId + '&TablePath=' + optionTablePath + "&ResultType=" + OPTIONS;
+
+                    return '/' + SARON_URI + 'app/web-api/listOrganizationStatus.php' + parameters;
                 }
             },
             Comment:{
@@ -118,8 +170,10 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
                 create: true,
                 edit: true,
                 list: false,
-                options: function(data){
-                    return '/' + SARON_URI + 'app/web-api/listOrganizationStructure.php?selection=options';
+                options: function(){
+                    var optionTablePath = tablePath + "/" + OPTIONS;
+                    var parameters = '?ParentId=' + parentId + '&TablePath=' + optionTablePath + "&ResultType=" + OPTIONS;
+                    return '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php' + parameters;
                 }
             },
             Responsible: {
@@ -169,13 +223,13 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
             }
         },
         recordAdded: function(event, data){
-            updateTreeParent(tableId, data);            
+            updateParentUnit(tableViewId, data);            
         },
         recordUpdated: function(event, data){
-            updateTreeParent(tableId, data);            
+            updateParentUnit(tableViewId, data);            
         },
         recordDeleted: function(event, data){
-            updateTreeParent(tableId, data);            
+            updateParentUnit(tableViewId, data);            
         },
         rowInserted: function(event, data){
             data.row.addClass("PosId_" + data.record.PosId); 
@@ -187,10 +241,11 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
         },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === 'edit' || data.serverResponse.user_role === 'org'){ 
-                $(tableId).find('.jtable-toolbar-item-add-record').show();
+                $(tableViewId).find('.jtable-toolbar-item-add-record').show();
             }
         },        
         formCreated: function (event, data){
+            $('#jtable-edit-form').append('<input type="hidden" name="OrgTree_FK" value="' + parentId + '" />');
             if(data.formType === 'edit')
                 data.row[0].style.backgroundColor = "yellow";
 
@@ -201,4 +256,47 @@ function posTableDef(tableId, orgTree_FK, unitName, orgUnitType_FK){
                 data.row[0].style.backgroundColor = '';
         }
     };
+}
+
+function getAggregatedPosIcon(tableViewId, tablePath, parentId, childTableTitle, data){
+    if(data.record.PosEnabled === POS_ENABLED){
+        var src;
+        if(data.record.HasPos === '0')
+            src = '"/' + SARON_URI + SARON_IMAGES_URI + 'unit_empty.png" title="Inga positioner"';
+        else{
+            if(data.record.statusProposal !== "0" && data.record.statusVacant !== "0")
+                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'unit_YR.png" title="' + data.record.statusProposal + ' Förslag och ' + data.record.statusVacant + ' vakans(er) på position(er)"';
+            else if(data.record.statusProposal === "0" && data.record.statusVacant !== "0")
+                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'unit_R.png" title="' + data.record.statusVacant + ' Vakans(er) på position(er)"';
+            else if(data.record.statusProposal !== "0" && data.record.statusVacant === "0")
+                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'unit_Y.png" title="' + data.record.statusProposal + ' Förslag på position(er)"';
+            else
+                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'unit.png" title="Bemannade positioner"';
+        }
+
+        var imgTag = _setImageClass(data.record, TABLE_NAME_POS, src, -1);
+        var $imgRole = $(imgTag);
+
+        $imgRole.click(data, function (event){
+            var $tr = $imgRole.closest('tr');
+            $(tableViewId).jtable('openChildTable', $tr, posTableDef(tableViewId, tablePath, parentId, childTableTitle), function(data){
+                data.childTable.jtable('load');
+            });
+        });
+        return $imgRole;
+        }
+    else{
+        return null;
+    }
+ }
+
+
+
+function getDefaultPosSorting(tableViewId){
+    switch(tableViewId) {
+        case TABLE_VIEW_POS:
+            return "Unit_Id, SortOrder";
+        default:
+            return "SortOrder";
+    }
 }

@@ -1,11 +1,11 @@
-    <?php
+<?php
 require_once SARON_ROOT . 'app/entities/SuperEntity.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
 class OrganizationPos extends SuperEntity{
     
     private $posId;
-    private $posTreeId;
+    private $posUnitId;
     private $comment;
     private $people_FK;
     private $function_FK;
@@ -20,7 +20,7 @@ class OrganizationPos extends SuperEntity{
         
         $this->posId = (int)filter_input(INPUT_POST, "PosId", FILTER_SANITIZE_NUMBER_INT);
         $this->orgSuperPos_FK = (int)filter_input(INPUT_POST, "OrgSuperPos_FK", FILTER_SANITIZE_NUMBER_INT);
-        $this->posTreeId = (int)filter_input(INPUT_POST, "PosTreeId", FILTER_SANITIZE_NUMBER_INT);
+        $this->posUnitId = (int)filter_input(INPUT_POST, "PosUnitId", FILTER_SANITIZE_NUMBER_INT);
         $this->prevPeople_FK = (int)filter_input(INPUT_POST, "PrevPeople_FK", FILTER_SANITIZE_NUMBER_INT);
 
         $this->comment = (String)filter_input(INPUT_POST, "Comment", FILTER_SANITIZE_STRING);
@@ -57,7 +57,7 @@ class OrganizationPos extends SuperEntity{
                 throw new Exception(json_encode($error));
             }
             if($this->orgPosStatus_FK > 2 and $this->people_FK !== 0 ){
-                if($this->source === "EngagementView"){
+                if(str_contains("engagement", $this->tablePath)){
                     $this->people_FK = 0; 
                 }
                 else{
@@ -72,25 +72,29 @@ class OrganizationPos extends SuperEntity{
         }
     }
 
-    
-    function select($id = -1, $rec = RECORDS){
-            switch ($this->selection){
-        case "positionAsOptions":
-            return $this->selectPositionsAsOptions('');       
-        case "vacantPositionsAsOptions":
-            return $this->selectPositionsAsOptions('vacant');       
-        case "engagement":
-            return $this->selectPersonEngagement($id, $rec);
+     function select(){
+        switch ($this->resultType){
+        case OPTIONS:
+            return $this->selectOptions();     // vacant is not hanled yet  
+        case RECORDS:
+            return $this->selectDefault();       
+        case RECORD:
+            return $this->selectDefault();       
         default:
-            return $this->selectDefault($id, $rec);
+            return $this->selectDefault();
         }
     }
+    
 
     
-    function selectDefault($id = -1, $rec=RECORDS){
-        $select = "SELECT Pos.*, Tree.ParentTreeNode_FK, Role.Name, Role.RoleType, Pos.Id as PosId,  IF(Pos.Updated>Role.updated, Pos.Updated, Role.Updated) as LatestUpdated, ";
+    function selectDefault($idFromCreate = -1){
+        $id = $this->getId($idFromCreate, $this->posId);
+        $rec = RECORDS;
+         
+        $select = "SELECT Pos.*, Tree.ParentTreeNode_FK, Tree.Id as Unit_Id, Role.Name, Role.RoleType, Pos.Id as PosId,  IF(Pos.Updated>Role.updated, Pos.Updated, Role.Updated) as LatestUpdated, ";
         $select.= "(Select SortOrder from `Org_Role-UnitType` as RUT WHERE  RUT.OrgRole_FK = Pos.OrgRole_FK and RUT.OrgUnitType_FK = Tree.OrgUnitType_FK) as SortOrder, ";
         $select.= getPersonSql("pPrev", "PrevPerson", true);
+        $select.= $this->getTablePathSql();
         $select.= "IF(Pos.OrgPosStatus_FK = 6, (Select T.Name From Org_Tree as T Where T.Id = Pos.Function_FK), IF(People_FK > 0," . getPersonSql("pCur", null, false) . ", (Select R.Name From Org_Role as R Where R.Id = -People_FK))) as Responsible, ";
         $select.= "IF(Pos.PrevOrgPosStatus_FK = 6, (Select T.Name From Org_Tree as T Where T.Id = Pos.PrevFunction_FK), IF(PrevPeople_FK > 0," . getPersonSql("pPrev", null, false) . ", (Select R.Name From Org_Role as R Where R.Id = -PrevPeople_FK))) as PrevResponsible, ";
         $select.= "Role.Name as RoleName, ";
@@ -105,12 +109,35 @@ class OrganizationPos extends SuperEntity{
         $from.= "left outer join People as pPrev on pPrev.Id = Pos.PrevPeople_FK ";
         
         $where = "";
-
-        if($id > 0){
-            $where.= "WHERE Pos.Id = " . $id . " ";
+        if($id < 0){
+            switch ($this->tablePath){
+                case TABLE_NAME_POS:            
+                    $where = "";
+                    break;
+                case TABLE_NAME_UNITTREE . "/" . TABLE_NAME_POS:            
+                    $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
+                    break;
+                case TABLE_NAME_UNITTREE . "/" . TABLE_NAME_UNITTREE . "/" . TABLE_NAME_POS:            
+                    $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
+                    break;
+                case TABLE_NAME_ROLE . "/" . TABLE_NAME_UNIT . "/" . TABLE_NAME_POS:            
+                    $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
+                    break;
+                case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_UNIT . "/" . TABLE_NAME_POS:            
+                    $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
+                    break;
+                case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_UNIT . "/" . TABLE_NAME_POS:            
+                    $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
+                    break;
+                case TABLE_NAME_ENGAGEMENT . "/" . TABLE_NAME_POS:            
+                    return $this->selectPersonEngagement();            
+                default:
+                    $where = "";
+            }
         }
-        else if($this->orgTree_FK > 0){
-            $where.= "WHERE OrgTree_FK = " . $this->orgTree_FK . " ";            
+        else{
+            $where.= "WHERE Pos.Id = " . $id . " ";
+            $rec = RECORD;
         }
         
         $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $rec);        
@@ -119,13 +146,15 @@ class OrganizationPos extends SuperEntity{
 
 
     
-    function selectPersonEngagement($Id = -1, $rec=RECORDS){
+    function selectPersonEngagement(){
+        $rec = RECORDS;
+
         $select = "SELECT *, Pos.Id as PosId, ";
         $select.= "(Select count(*) from Org_Pos as CountPos where CountPos.People_FK = xref.People_FK2) as Cnt, ";
         $select.= $this->saronUser->getRoleSql(false) . " ";
         $from = "FROM Org_Pos as Pos ";
         $from.= "inner join " . ORG_POS_XREF . " on xref.Id =Pos.Id ";
-        $where = "WHERE xref.People_FK2 = " . $this->people_FK . " and OrgPosStatus_FK < 3 ";
+        $where = "WHERE xref.People_FK2 = " . $this->parentId . " and OrgPosStatus_FK < 3 ";
         
         $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $rec);        
         return $result;        
@@ -133,24 +162,29 @@ class OrganizationPos extends SuperEntity{
 
     
     
-    function selectPositionsAsOptions($filter){
+    function selectOptions(){
         $sql = "";
         $from = "FROM Org_Pos as Pos inner join Org_Tree as Tree on Pos.OrgTree_FK=Tree.Id ";
         $from.= "inner join Org_UnitType as UnitType on UnitType.Id = Tree.OrgUnitType_FK ";
         $from.= "inner join Org_Role as Role on Role.Id = Pos.OrgRole_FK ";
 
         $order = "Order by DisplayText ";
-
-        if($filter === "vacant"){
-            $select.= "SELECT Pos.Id as Value, Concat(Role.Name, ' (', Tree.Name, ". EMBEDDED_SELECT_SUPERPOS . ", ')') as DisplayText ";
-            $where = "WHERE Pos.OrgPosStatus_FK = 4 and People_FK = 0 or People_FK is null "; 
-            $sql = $select . $from . $where . $order;
-        }
-        else{
-            $sql = "Select null as Value, '-' as DisplayText ";
-            $sql.= "UNION "; 
-            $sql.= "SELECT Pos.Id as Value, Concat(' ', Role.Name, ': ', UnitType.Name, ' ', Tree.Name, ". EMBEDDED_SELECT_SUPERPOS . ") as DisplayText ";
-            $sql.= $from;
+        switch ($this->tablePath){
+            case TABLE_NAME_ENGAGEMENT . "/" . TABLE_NAME_POS . "/" . SOURCE_LIST:            
+                $select.= "SELECT Pos.Id as Value, Concat(Role.Name, ' (', Tree.Name, ". EMBEDDED_SELECT_SUPERPOS . ", ')') as DisplayText ";
+                $where = "WHERE People_FK = " . $this->parentId . " "; 
+                $sql = $select . $from . $where . $order;
+                break;
+            case TABLE_NAME_ENGAGEMENT . "/" . TABLE_NAME_POS . "/" . SOURCE_CREATE:            
+                $select.= "SELECT Pos.Id as Value, Concat(Role.Name, ' (', Tree.Name, ". EMBEDDED_SELECT_SUPERPOS . ", ')') as DisplayText ";
+                $where = "WHERE Pos.OrgPosStatus_FK = 4 and People_FK = 0 or People_FK is null ";
+                $sql = $select . $from . $where . $order;
+                break;
+            default:
+                $sql = "Select null as Value, '-' as DisplayText ";
+                $sql.= "UNION "; 
+                $sql.= "SELECT Pos.Id as Value, Concat(' ', Role.Name, ': ', UnitType.Name, ' ', Tree.Name, ". EMBEDDED_SELECT_SUPERPOS . ") as DisplayText ";
+                $sql.= $from;
         }
                 
         $result = $this->db->selectSeparate($this->saronUser, $sql, "Select 1",  "Options");    
@@ -160,20 +194,20 @@ class OrganizationPos extends SuperEntity{
     
     function insert(){
         $this->checkEngagementData();
-        $sqlInsert1 = "INSERT INTO Org_Pos (People_FK, Function_FK, Comment, OrgPosStatus_FK, OrgSuperPos_FK, OrgRole_FK, OrgTree_FK, Updater) ";
-        $sqlInsert1.= "VALUES (";
-        $sqlInsert1.= "'" . $this->people_FK . "', ";
-        $sqlInsert1.= "'" . $this->function_FK . "', ";
-        $sqlInsert1.= "'" . $this->comment . "', ";
-        $sqlInsert1.= "'" . $this->orgPosStatus_FK . "', ";
-        $sqlInsert1.= "null,"; //"'" . $this->orgSuperPos_FK . "', ";
-        $sqlInsert1.= "'" . $this->orgRole_FK . "', ";
-        $sqlInsert1.= "'" . $this->orgTree_FK . "', ";
-        $sqlInsert1.= "'" . $this->saronUser->WP_ID . "')";
+        $sqlInsert = "INSERT INTO Org_Pos (People_FK, Function_FK, Comment, OrgPosStatus_FK, OrgSuperPos_FK, OrgRole_FK, OrgTree_FK, Updater) ";
+        $sqlInsert.= "VALUES (";
+        $sqlInsert.= "'" . $this->people_FK . "', ";
+        $sqlInsert.= "'" . $this->function_FK . "', ";
+        $sqlInsert.= "'" . $this->comment . "', ";
+        $sqlInsert.= "'" . $this->orgPosStatus_FK . "', ";
+        $sqlInsert.= "null,"; //"'" . $this->orgSuperPos_FK . "', ";
+        $sqlInsert.= "'" . $this->orgRole_FK . "', ";
+        $sqlInsert.= "'" . $this->orgTree_FK . "', ";
+        $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
         
-        $id = $this->db->insert($sqlInsert1, "Org_Pos", "Id");
+        $id = $this->db->insert($sqlInsert, "Org_Pos", "Id");
         
-        $result = $this->select($id, RECORD);
+        $result = $this->select($id);
         return $result;
     }
     
@@ -194,9 +228,10 @@ class OrganizationPos extends SuperEntity{
         $where = "WHERE id=" . $this->posId;
         $response = $this->db->update($update, $set, $where);
         
-        return $this->select($this->posId, RECORD);
+        return $this->select($this->posId);
     }
 
+    
     function addPerson(){
         $this->checkEngagementData();
         $update = "UPDATE Org_Pos ";
@@ -208,9 +243,10 @@ class OrganizationPos extends SuperEntity{
         $where = "WHERE id=" . $this->posId;
         $response = $this->db->update($update, $set, $where);
         
-        return $this->select($this->posId, RECORD);
+        return $this->select($this->posId);
     }
 
+    
     function delete(){
         return  $this->db->delete("delete from Org_Pos where Id=" . $this->posId);
     }

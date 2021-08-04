@@ -20,20 +20,20 @@ require_once SARON_ROOT . "menu.php";
         <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/jquery.jtable.js"></script>
         <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/localization/jquery.jtable.se.js"></script>                  
         <table class="saronSmallText" style="width:0%; white-space: nowrap">
-            <tr>
-                <td>
+            <tr   class="saronFilter">
+                <td   class="saronFilter">
                     <form class="forms" id="mainfilter">
                         Grupp:          
-                        <select id="groupId" name="groupId" onchange="filterHomes('<?php include('../includes/viewId.php');?>', true);" >
+                        <select id="groupId" name="groupId" onchange="filterHomes('<?php include('../util/viewId.php');?>', true);" >
                             <option selected="selected" value="0">Alla hem</option>
                             <option value="1">Hem utan mail- och mobiluppgifter</option>
                             <option value="2">Hem med brevutskick</option>
                         </select>     
                     </form>
                 </td>
-                <td>
+                <td   class="saronFilter">
                     Söksträng:
-                    <input type="text" name="searchString" id="searchString" oninput="filterHomes('<?php include('../includes/viewId.php');?>');"/>
+                    <input type="text" name="searchString" id="searchString" oninput="filterHomes('<?php include('../util/viewId.php');?>');"/>
                 </td>
             </tr>
         </table>    

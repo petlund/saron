@@ -4,7 +4,7 @@ require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
 class OrganizationStructure extends SuperEntity{
     
-    private $treeId;
+    private $unitId;
     private $name;
     private $prefix;
     private $description;
@@ -13,128 +13,124 @@ class OrganizationStructure extends SuperEntity{
     private $newParentTreeNode_FK;
     private $orgUnitType_FK;
     private $orgRole_FK;
+    private $selectionId;
     
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
         
-        $this->treeId = (int)filter_input(INPUT_POST, "TreeId", FILTER_SANITIZE_NUMBER_INT);
-        if($this->treeId === 0){
-            $this->treeId = (int)filter_input(INPUT_GET, "TreeId", FILTER_SANITIZE_NUMBER_INT);            
-        }
+        $this->unitId = (int)filter_input(INPUT_POST, "UnitId", FILTER_SANITIZE_NUMBER_INT);
+//        if($this->unitId === 0){
+//            $this->unitId = (int)filter_input(INPUT_GET, "UnitId", FILTER_SANITIZE_NUMBER_INT);            
+//        }
         $this->prefix = (String)filter_input(INPUT_POST, "Prefix", FILTER_SANITIZE_STRING);
         $this->name = (String)filter_input(INPUT_POST, "Name", FILTER_SANITIZE_STRING);
         $this->description = (String)filter_input(INPUT_POST, "Description", FILTER_SANITIZE_STRING);
         $this->filter = (String)filter_input(INPUT_GET, "filter", FILTER_SANITIZE_STRING);
                                                                
         $this->orgUnitType_FK = (int)filter_input(INPUT_POST, "OrgUnitType_FK", FILTER_SANITIZE_NUMBER_INT);
-        if( $this->orgUnitType_FK === 0){
-            $this->orgUnitType_FK = (int)filter_input(INPUT_GET, "OrgUnitType_FK", FILTER_SANITIZE_NUMBER_INT);
-        }
+//        if( $this->orgUnitType_FK === 0){
+//            $this->orgUnitType_FK = (int)filter_input(INPUT_GET, "OrgUnitType_FK", FILTER_SANITIZE_NUMBER_INT);
+//        }
         $this->orgRole_FK = (int)filter_input(INPUT_POST, "OrgRole_FK", FILTER_SANITIZE_NUMBER_INT);
-        if( $this->orgRole_FK === 0){
-            $this->orgRole_FK = (int)filter_input(INPUT_GET, "OrgRole_FK", FILTER_SANITIZE_NUMBER_INT);
-        }
+//        if( $this->orgRole_FK === 0){
+//            $this->orgRole_FK = (int)filter_input(INPUT_GET, "OrgRole_FK", FILTER_SANITIZE_NUMBER_INT);
+//        }
         
         $this->newParentTreeNode_FK = (int)filter_input(INPUT_POST, "ParentTreeNode_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->parentTreeNode_FK = (int)filter_input(INPUT_GET, "ParentTreeNode_FK", FILTER_SANITIZE_NUMBER_INT);
+
+        $this->selectionId = (int)filter_input(INPUT_GET, "SelectionId", FILTER_SANITIZE_NUMBER_INT);
     }
     
-    function select($id = -1, $rec = RECORDS){
-        switch ($this->selection){
-        case "options":
+    
+    
+    
+    function select(){
+        switch ($this->resultType){
+        case OPTIONS:
             return $this->selectOptions();       
-        case "unittype":
-            return $this->selectSpecUnitTypeFromTree();       
-        case "role":
-            return $this->selectSpecRoleFromTree();       
-        case "single_node":
-            return $this->selectDefault($this->treeId, RECORD);       
+        case RECORDS:
+            return $this->selectDefault();       
+        case RECORD:
+            return $this->selectDefault();       
         default:
-            return $this->selectDefault($id, $rec);
+            return $this->selectDefault();
         }
     }
 
-    function selectOptions_OLD(){
-        $select = "SELECT Tree.Id as Value, Concat(Role.Name, ' ', Typ.Name, ' ', Tree.Name) as DisplayText ";
-        $result = $this->db->select($this->saronUser, $select , "FROM Org_Tree as Tree inner join Org_UnitType as Typ on Typ.Id= Tree.OrgUnitType_FK inner join Org_Role as Role on Role.Id = Tree.OrgRole_FK ", "", "Order by DisplayText ", "", "Options");    
-        return $result; 
-    }
     
-    
+       
     function selectOptions(){
-            
         $select = "SELECT -1 as Value, '  -'  as DisplayText ";
         $select.= "Union ";
         $select.= "SELECT Tree.Id as Value, Concat(Tree.Name, ' (', Typ.Name, ')')  as DisplayText ";
         $from = "FROM Org_Tree as Tree inner join Org_UnitType as Typ on Typ.Id= Tree.OrgUnitType_FK ";
         $where = "";    
         
-            If($this->filter === 'yes'){
-            $where = "WHERE NOT (Typ.SubUnitEnabled = 0 OR Tree.Id IN (" . $this->selectSubNodesSql($this->treeId) . ")) ";
+        If($this->filter === 'yes'){
+            $where = "WHERE NOT (Typ.SubUnitEnabled = 0 OR Tree.Id IN (" . $this->selectSubNodesSql($this->unitId) . ")) ";
         }        
+
         $result = $this->db->select($this->saronUser, $select , $from, $where, "Order by DisplayText ", "", "Options");    
         return $result; 
     }
     
     
     
-    function selectSpecUnitTypeFromTree(){
-        $select = "SELECT * ";
-        $from = "FROM Org_Tree ";
-        $where ="";
-        if($this->orgUnitType_FK > 0){
-            $where = "WHERE OrgUnitType_FK = " . $this->orgUnitType_FK . " ";
-        }
-        $result = $this->db->select($this->saronUser, $select , $from, $where, "Order by Name ", "", RECORDS);    
-        return $result; 
-    }
     
-
-    
-    function selectSpecRoleFromTree(){
-        $select = "SELECT Rut.OrgRole_FK, Tree.* ";
-        $from = "FROM Org_Tree  as Tree inner join `Org_Role-UnitType` as Rut on Tree.OrgUnitType_FK=Rut.OrgUnitType_FK ";
-        $where ="";
-        if($this->orgRole_FK > 0){
-            $where = "WHERE Rut.OrgRole_FK = " . $this->orgRole_FK . " ";
-        }
-        $result = $this->db->select($this->saronUser, $select , $from, $where, "Order by Name ", "", RECORDS);    
-        return $result; 
-    }
-    
-    
-    
-    function selectDefault($id = -1, $rec=RECORDS){
+    function selectDefault($idFromCreate = -1){
+        $id = $this->getId($idFromCreate, $this->unitId);
+        $rec = RECORDS;
         //filter all nodes witch not have childs and all child below curret node
         
-        $select = "Select stat.*, OrgUnitType_FK, Typ.PosEnabled, Tree.Name, Tree.ParentTreeNode_FK, Tree.Prefix, Tree.Description, Typ.Id as TypeId, Tree.Id as TreeId, Typ.SubUnitEnabled, Tree.UpdaterName, Tree.Updated, ";
+        $select = "Select stat.*, Tree.OrgUnitType_FK, Typ.PosEnabled, Tree.Name, Tree.ParentTreeNode_FK, Tree.Prefix, Tree.Description, Typ.Id as TypeId, Tree.Id as UnitId, Typ.SubUnitEnabled, Tree.UpdaterName, Tree.Updated, ";
+        $select.= $this->getTablePathSql();
         $select.= "(Select count(*) from Org_Tree as Tree1 where Tree1.ParentTreeNode_FK = Tree.Id) as HasSubUnit, ";
         $select.= "(Select count(*) from Org_Pos as Pos1 where Tree.Id = Pos1.OrgTree_FK) as HasPos, ";
-        IF($this->newParentTreeNode_FK !== $this->parentTreeNode_FK AND $rec===RECORD){
+        
+        IF($this->newParentTreeNode_FK !== $this->parentTreeNode_FK){
             $select.= "'1' as parentNodeChange, ";            
         }
         else{
             $select.= "'0' as parentNodeChange, ";                        
         }
-        $select.= $this->saronUser->getRoleSql(false) . " ";
+        
+        $select.= $this->saronUser->getRoleSql(false);
+        
         $from = "from Org_Tree as Tree ";
         $from.= "inner join Org_UnitType as Typ on Tree.OrgUnitType_FK = Typ.Id ";
         $from.= "left outer join (" . $this->getStatusSQL() .  ") as stat on Tree.Id = stat.sumId ";
-        $where = "";    
+        
+        
         if($id < 0){
-            if($this->parentTreeNode_FK === -1){
-                $where = "WHERE ParentTreeNode_FK is null ";
+            switch ($this->tablePath){
+                case TABLE_NAME_UNITTREE:            
+                    $where = "WHERE ParentTreeNode_FK is null ";
+                    break;
+                case TABLE_NAME_UNITTREE . "/" . TABLE_NAME_UNITTREE:            
+                    $where = "WHERE ParentTreeNode_FK = " . $this->parentId . " ";                
+                    break;
+                case TABLE_NAME_UNITLIST:
+                        $where = " ";                
+                    break;
+                case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_UNIT:
+                        $where = "WHERE Tree.OrgUnitType_FK = " . $this->parentId . " ";
+                    break;
+                case TABLE_NAME_UNITROLE . "/" . TABLE_NAME_UNIT:
+                    $where = "WHERE Rut.OrgRole_FK = " . $this->parentId . " ";
+                    $from.= "inner join `Org_Role-UnitType` as Rut on Tree.OrgUnitType_FK=Rut.OrgUnitType_FK ";
+                    break;
+                default:
+                    $where = "";    
             }
-            else{
-                $where = "WHERE ParentTreeNode_FK = " . $this->parentTreeNode_FK . " ";                
-            }
-            $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), RECORDS);    
-            return $result;
         }
         else{
-            $result = $this->db->select($this->saronUser, $select , $from, "WHERE Tree.Id = " . $id . " ", $this->getSortSql(), $this->getPageSizeSql(), RECORD);        
-            return $result;
+            $where = "WHERE Tree.Id = " . $this->unitId . " ";
+            $rec = RECORD;
         }
+
+        $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $rec);        
+        return $result;
     }
 
     
@@ -191,8 +187,8 @@ class OrganizationStructure extends SuperEntity{
         }
         $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
         
-        $id = $this->db->insert($sqlInsert, "Org_Tree", "Id");
-            return $this->select($id, RECORD);
+        $this->unitId = $this->db->insert($sqlInsert, "Org_Tree", "Id");
+        return $this->select();
     }
     
     
@@ -213,12 +209,12 @@ class OrganizationStructure extends SuperEntity{
         }
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater='" . $this->saronUser->WP_ID . "' ";
-        $where = "WHERE id=" . $this->treeId;
+        $where = "WHERE id=" . $this->unitId;
         $this->db->update($update, $set, $where);
-        return $this->select($this->treeId, RECORD);
+        return $this->select();
     }
 
     function delete(){
-        return $this->db->delete("delete from Org_Tree where Id=" . $this->treeId);
+        return $this->db->delete("delete from Org_Tree where Id=" . $this->unitId);
     }
 }

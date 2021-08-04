@@ -17,22 +17,29 @@ class OrganizationStatus extends SuperEntity{
         $this->description = (String)filter_input(INPUT_POST, "Description", FILTER_SANITIZE_STRING);
     }
 
-
-    function select($Id = -1, $rec = RECORDS){
-        switch ($this->selection){
-        case "options":
-            return $this->selectOptions();       
+     function select(){
+        switch ($this->resultType){
+        case OPTIONS:
+            return $this->selectOptions();     // vacant is not hanled yet  
+        case RECORDS:
+            return $this->selectDefault();       
+        case RECORD:
+            return $this->selectDefault();       
         default:
-            return $this->selectDefault($Id, $rec);
-        }   
+            return $this->selectDefault();
+        }
     }
-
     
-    function selectDefault($id = -1, $rec=RECORDS){
+    
+    function selectDefault($idFromCreate = -1){
+        $id = $this->getId($idFromCreate, $this->id);
+        $rec = RECORDS;
         $select = "SELECT *, " . $this->saronUser->getRoleSql(false) . " ";
         $from = "FROM Org_PosStatus ";
-        if($this->id > 0){
-            $where = "WHERE Id = " . $this->id . " ";
+        
+        if($id > 0){
+            $rec = RECORD;
+            $where = "WHERE Id = " . $id . " ";
         }
         else{
             $where = "";
@@ -42,18 +49,26 @@ class OrganizationStatus extends SuperEntity{
         return $result;
     }
 
+    
+    
     function selectOptions(){
         $select = "SELECT Id as Value, Name as DisplayText ";
+        $from = "FROM Org_PosStatus ";
+        $order = "Order by DisplayText ";
         $where = "";
-
-        if($this->statusfilter === 'engagement_edit'){
-            $where.= "WHERE Id not in (5, 6) "; // Tillsätts ej, funktionsorganisation
-        }
-        else if($this->statusfilter === 'engagement_create'){
-            $where.= "WHERE Id < 4 "; // Tillsätts ej
+        
+        switch ($this->tablePath){
+            case TABLE_NAME_ENGAGEMENT . "/" . TABLE_NAME_POS . "/" . SOURCE_EDIT:            
+                $where.= "WHERE Id not in (5, 6) "; // Tillsätts ej, funktionsorganisation
+                break;
+            case TABLE_NAME_ENGAGEMENT . "/" . TABLE_NAME_POS . "/" . SOURCE_CREATE:            
+                $where.= "WHERE Id < 4 "; // Tillsätts ej
+                break;
+            default:
+                $where = "";
         }
         
-        $result = $this->db->select($this->saronUser, $select , "FROM Org_PosStatus ", $where, "Order by DisplayText ", "", "Options");    
+        $result = $this->db->select($this->saronUser, $select , $from, $where, $order, "", OPTIONS);    
         return $result; 
     }
     
@@ -71,6 +86,8 @@ class OrganizationStatus extends SuperEntity{
         return $this->select($this->id, RECORD);
     }
 
+    
+    
     function delete(){
         return $this->db->delete("delete from Org_UnitType where Id=" . $this->id);
     }

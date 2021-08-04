@@ -1,28 +1,41 @@
-/* global DATE_FORMAT, J_TABLE_ID, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, 
- SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, 
- NO_HOME, NEW_HOME_ID,
- POS_ENABLED, POS_DISABLED,
- SUBUNIT_ENABLED, SUBUNIT_DISABLED
+/* global DATE_FORMAT,
+SARON_URI,SARON_IMAGES_URI, 
+SUBUNIT_ENABLED, 
+ORG,
+TABLE_VIEW_ROLE, TABLE_NAME_ROLE, 
+TABLE_VIEW_UNITTYPE, TABLE_NAME_UNITTYPE,
+TABLE_VIEW_ROLE_UNITTYPE, TABLE_NAME_ROLE_UNITTYPE,
+TABLE_VIEW_UNIT, TABLE_NAME_UNIT,
+TABLE_VIEW_UNITLIST, TABLE_NAME_UNITLIST,
+TABLE_VIEW_UNITTREE, TABLE_NAME_UNITTREE,
+RECORDS, RECORD, OPTIONS
  */
-
-"use strict";
     
-$(document).ready(function () {
-    const ORG_TREE = "#ORG_TREE";
+"use strict";    
 
-    $(ORG_TREE).jtable(treeTableDef(ORG_TREE, -1, '')); //-1 => null parent === topnode
-    $(ORG_TREE).jtable('load');
-    //$(TABLE_ID).find('.jtable-toolbar-item-add-record').hide();
-});
-
-
-function treeTableDef(tableId, parentTreeNode_FK, parentName){
+function unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
+    var tableName = "";
+    if(tableViewId === TABLE_VIEW_UNITTREE)
+        tableName = TABLE_NAME_UNITTREE;
+    else if(tableViewId === TABLE_VIEW_UNITLIST)
+        tableName = TABLE_NAME_UNITLIST;
+    else
+        tableName = TABLE_NAME_UNIT;
+    
+    var tablePath = tableName;
+    if(tableName === TABLE_NAME_UNITTREE && parentTablePath === TABLE_NAME_UNITTREE + "/" + TABLE_NAME_UNITTREE)
+        tablePath = TABLE_NAME_UNITTREE + "/" + TABLE_NAME_UNITTREE;
+    else
+        if(parentTablePath !== null){
+            tablePath = parentTablePath + "/" + tableName;
+        }
+            
     return {
-        title: function(data){
-            if(parentName.length > 0)
-                return 'Organisation under ' + parentName;
+        title: function(){
+            if(childTableTitle !== null)
+                return childTableTitle;
             else
-                return 'Organisation';
+                return 'Organisatoriska enheter';
                 
         },
         paging: true, //Enable paging
@@ -30,47 +43,36 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
         pageList: 'minimal',
         sorting: true, //Enable sorting
         multiSorting: true,
-        defaultSorting: 'Prefix, Name', //Set default sorting        
+        defaultSorting: getDefaultUnitSorting(tableViewId), //Set default sorting        
         messages: {addNewRecord: 'Lägg till en ny organisatorisk enhet.'},
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationStructure.php?ParentTreeNode_FK=' + parentTreeNode_FK,
-            createAction: '/' + SARON_URI + 'app/web-api/createOrganizationStructure.php?ParentTreeNode_FK=' + parentTreeNode_FK,
-            updateAction: function(postData) {
-                return $.Deferred(function ($dfd) {
-                    $.ajax({
-                        url:  '/' + SARON_URI + 'app/web-api/updateOrganizationStructure.php?ParentTreeNode_FK=' + parentTreeNode_FK,
-                        type: 'POST',
-                        dataType: 'json',
-                        data: postData,
-                        success: function (data) {
-                            $dfd.resolve(data);
-                            if(data.Result === 'OK'){
-                                
-                            }
-                        },
-                        error: function () {
-                            $dfd.reject();
-                        }
-                    });
-                });
-            },            
-            deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationStructure.php'
+            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php?ParentId=' + parentId + '&TablePath=' + tablePath + "&ResultType=" + RECORDS,
+            createAction: '/' + SARON_URI + 'app/web-api/createOrganizationUnit.php',
+            updateAction: '/' + SARON_URI + 'app/web-api/updateOrganizationUnit.php',
+            deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationUnit.php'
         }, 
         fields: {
-            TreeId: {
+            TablePath:{
+                list: true,
+                edit: false,
+                create: false
+            },
+            UnitId: {
                 key: true,
                 list: false
             },
             ParentTreeNode_FK:{
-                list: false,
+                list: includedIn(tableViewId, TABLE_NAME_UNITLIST),
                 edit: true, 
-                create: false,
+                create: true,
                 title: 'Överordna verksamhet',
                 options: function(data) {
+                    var optionTablePath = tablePath + "/" + OPTIONS;
+                    var parameters = '?ParentId=' + parentId + '&TablePath=' + optionTablePath + "&ResultType=" + OPTIONS;
                     if(data.source !== 'list'){
                         data.clearCache();
                     } 
-                    return '/' + SARON_URI + 'app/web-api/listOrganizationStructure.php?selection=options&filter=yes&TreeId=' + data.record.TreeId;
+                    return '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php' + parameters;
                 }                
             },
             SubUnitEnabled: {
@@ -80,12 +82,13 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
                 edit: false,
                 create: false,
                 delete: false,
+                list: includedIn(tableViewId, TABLE_VIEW_UNITTREE),
                 
                 display: function (data) {
                     if(data.record.SubUnitEnabled === SUBUNIT_ENABLED){
                         var src;
                         if(data.record.HasSubUnit === '0' || data.record.statusSubProposal === null  || data.record.statusSubVacant === null){
-                            src = '"/' + SARON_URI + SARON_IMAGES_URI + 'child.png" title="Under organisation"';                            
+                            src = '"/' + SARON_URI + SARON_IMAGES_URI + 'child.png" title="Underorganisation"';                            
                         }
                         else{
                             if(data.record.statusSubProposal > 0 && data.record.statusSubVacant > 0)
@@ -95,14 +98,15 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
                             else if(data.record.statusSubProposal !== "0" && data.record.statusSubVacant === "0")
                                 src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haschild_Y.png" title="Underorganisation med ' + data.record.statusSubProposal + ' förslag"';
                             else
-                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haschild.png" title="Under organisation"';
+                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haschild.png" title="Underorganisation"';
                         }
                         var imgTag = _setImageClass(data.record, "Org", src, -1);
                         var $imgChild = $(imgTag);
 
                         $imgChild.click(data, function (event){
                             var $tr = $imgChild.closest('tr');
-                            $(tableId).jtable('openChildTable', $tr, treeTableDef(tableId, data.record.TreeId, data.record.Name), function(data){
+                            var childTableTitle = "Underenheter till: " + data.record.Name;
+                            $(tableViewId).jtable('openChildTable', $tr, unitTableDef(tableViewId, tablePath, data.record.UnitId, childTableTitle), function(data){
                                 data.childTable.jtable('load');
                             });
                         });
@@ -117,36 +121,9 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
                 edit: false,
                 create: false,
                 delete: false,
-                display: function (data) {
-                    if(data.record.PosEnabled === POS_ENABLED){
-                        var src;
-                        if(data.record.HasPos === '0')
-                            src = '"/' + SARON_URI + SARON_IMAGES_URI + 'unit_empty.png" title="Inga positioner"';
-                        else{
-                            if(data.record.statusProposal !== "0" && data.record.statusVacant !== "0")
-                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'unit_YR.png" title="' + data.record.statusProposal + ' Förslag och ' + data.record.statusVacant + ' vakans(er) på position(er)"';
-                            else if(data.record.statusProposal === "0" && data.record.statusVacant !== "0")
-                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'unit_R.png" title="' + data.record.statusVacant + ' Vakans(er) på position(er)"';
-                            else if(data.record.statusProposal !== "0" && data.record.statusVacant === "0")
-                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'unit_Y.png" title="' + data.record.statusProposal + ' Förslag på position(er)"';
-                            else
-                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'unit.png" title="Bemannade positioner"';
-                        }
-                        
-                        var imgTag = _setImageClass(data.record, "Role", src, -1);
-                        var $imgRole = $(imgTag);
-
-                        $imgRole.click(data, function (event){
-                            var $tr = $imgRole.closest('tr');
-                            $(tableId).jtable('openChildTable', $tr, posTableDef(tableId, data.record.TreeId, data.record.Name, data.record.OrgUnitType_FK), function(data){
-                                data.childTable.jtable('load');
-                            });
-                        });
-                        return $imgRole;
-                        }
-                    else{
-                        return null;
-                    }
+                display: function(data){
+                    childTableTitle = data.record.Name + " har följande positioner";
+                    return getAggregatedPosIcon(tableViewId, tablePath, data.record.UnitId, childTableTitle, data);
                 }
             },
             Prefix: {
@@ -159,6 +136,18 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
                 width: '10%',
                 title: 'Namn'
             },
+            Path: {
+                title: "Sökväg",
+                create: false,
+                edit: false,
+                list: includedIn(tableViewId, TABLE_VIEW_ROLE + TABLE_VIEW_UNITTYPE + TABLE_VIEW_UNITLIST)
+            },
+            SubUnits: {
+                title: "Underenheter",
+                create: false,
+                edit: false,
+                list: includedIn(tableViewId, TABLE_VIEW_ROLE + TABLE_VIEW_UNITTYPE + TABLE_VIEW_UNITLIST)
+            },
             Description: {
                 width: '15%',
                 title: 'Beskrivning'
@@ -168,10 +157,13 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
                 inputTitle: 'Typ av enhet (Kan inte ändras. Vill du ändra behöver du skapa en ny organisatorisk enhet).',
                 width: '5%',
                 options: function (data){
+                    var optionTablePath = tablePath + "/" + OPTIONS;
+                    var parameters = '?ParentId=' + parentId + '&TablePath=' + optionTablePath + "&ResultType=" + OPTIONS;
+
                     if(data.source !== 'list'){
                         data.clearCache();
                     } 
-                    return '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php?selection=options';
+                    return '/' + SARON_URI + 'app/web-api/listOrganizationUnitType.php' + parameters;
                 }
             },
             UpdaterName: {
@@ -191,30 +183,31 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
         },
         recordUpdated: function (event, data){
             var table;
-            var treeId = data.record.TreeId;
-            var parentTreeId = data.record.ParentTreeNode_FK;
+            var UnitId = data.record.UnitId;
+            var parentUnitId = data.record.ParentTreeNode_FK;
             
-            if(parentTreeId > 0){
-                table = $(".TreeId_" + parentTreeId).closest('div.jtable-child-table-container');
+            if(parentUnitId > 0){
+                table = $(".UnitId_" + parentUnitId).closest('div.jtable-child-table-container');
     
                 if(table.length === 0) 
-                    table = $(tableId);
+                    table = $(tableViewId);
     
-                var url =  '/' + SARON_URI + 'app/web-api/listOrganizationStructure.php?selection=single_node';
-                var options = {record:{"TreeId": parentTreeId}, "clientOnly": false, "url":url};
+                var url =  '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php?selection=single_node';
+                var options = {record:{"UnitId": parentUnitId}, "clientOnly": false, "url":url};
                 table.jtable('updateRecord', options);                                
             }        
+            
             if(data.record.HasSubUnit !== '0' || data.record.HasPos !== '0')
                 data.row.find('.jtable-delete-command-button').hide();
             else
                 data.row.find('.jtable-delete-command-button').show();
             
             if(data.record.parentNodeChange !== '0')
-                $(tableId).jtable('load');
+                $(tableViewId).jtable('load');
 
         },  
         rowInserted: function(event, data){
-            data.row.addClass("TreeId_" + data.record.TreeId); 
+            data.row.addClass("UnitId_" + data.record.UnitId); 
             if (data.record.user_role !== 'edit' && data.record.user_role !== 'org'){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
@@ -228,7 +221,7 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
         },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === 'edit' || data.serverResponse.user_role === 'org'){ 
-                $(tableId).find('.jtable-toolbar-item-add-record').show();
+                $(tableViewId).find('.jtable-toolbar-item-add-record').show();
             }
         },        
         formCreated: function (event, data){
@@ -253,17 +246,33 @@ function treeTableDef(tableId, parentTreeNode_FK, parentName){
 }    
 
 
-function updateTreeParent(tableId, data){
+function updateParentUnit(tableId, data){
     var table;
-    var treeId = data.record.OrgTree_FK;
-
-    table = $(".TreeId_" + treeId).closest('div.jtable-child-table-container');       
+    var parentId = data.record.OrgTree_FK;
+    var tablePath = data.record.TablePath;
+    table = $(".UnitId_" + parentId).closest('div.jtable-child-table-container');       
     
     if(table.length === 0) 
         table = $(tableId);
-
-    var url =  '/' + SARON_URI + 'app/web-api/listOrganizationStructure.php?selection=single_node';
-    var options = {record:{"TreeId": treeId}, "clientOnly": false, "url":url};
+    var parameter = 'ParentId=' + parentId + '&TablePath=' + tablePath + "&ResultType=" + RECORD;
+    var url =  '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php' + parameter;
+    var options = {record:{"UnitId": parentId}, "clientOnly": false, "url":url};
     table.jtable('updateRecord', options);                                    
 }
 
+
+
+function getDefaultUnitSorting(currentTableId){
+    switch(currentTableId) {
+        case TABLE_VIEW_UNITLIST:
+            return "Name";
+        case TABLE_VIEW_UNITTREE:
+            return "Prefix, Name";
+        case TABLE_VIEW_ROLE:
+            return "Name";
+        case TABLE_VIEW_ROLE_UNITTYPE:
+            return "Name";
+        default:
+            return "Name";
+    }
+}

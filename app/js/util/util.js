@@ -1,4 +1,7 @@
-/* global SARON_URI, FullNameOfCongregation */
+/* global SARON_URI, FullNameOfCongregation, 
+ORG_ROLE, ORG_LIST, ORG_UNIT_TYPE, ORG_TREE,
+RECORDS
+*/
 "use strict";
 
 const J_TABLE_ID = "#people";
@@ -7,6 +10,7 @@ const OLD_HOME = 3;
 const PERSON = 2;
 const PERSON_AND_HOME = 4;
 const NEWS = 5;
+const ORG = 10;
 const NEW_HOME_ID = 'newHomeId';
 const OLD_HOME_PREFIX = "OldHome_";
 const NO_HOME = "Inget hem";
@@ -111,8 +115,10 @@ function _getId(record, type){
         return 'P' + record.PersonId;
     else if(type === NEWS)
         return 'N' + record.Id;
+    else if(type === ORG)
+        return 'Org_' + record.Id;
     else 
-        return 0;
+        return record.Id;
 }
 
 
@@ -207,4 +213,60 @@ function addDialogDeleteListener(data){
 
    });
 }
+
+
+
+function includedIn (currentTableId, requiredTableId){
+    if(requiredTableId.includes(currentTableId))
+        return true;
+
+    return false;
+}
+
+
+
+function getURLParameter(parentId, tablePath, source, reultType){
+    var first = true;
+    var parameter = "";
+    if(parentId !== null){
+        if(first){
+            parameter = "?";
+            first = false;
+        }
+        else
+            parameter+= "&";
+        
+        parameter+= 'ParentId=' + parentId;
+    }
+    
+    if(tablePath !== null){
+        if(first){
+            parameter = "?";
+            first = false;
+        }
+        else
+            parameter+= "&";
+        
+        parameter+= 'TablePath=' + tablePath;
+
+        if(source !== null){
+            parameter+=  "/"  + source;
+        }
+    }
+    if(reultType !== null){
+        if(first){
+            parameter = "?";
+            first = false;
+        }
+        else
+            parameter+= "&";
+        
+        parameter+= 'ResultType=' + reultType;
+    }
+    else
+        parameter+= 'ResultType=' + RECORDS;
+
+    return parameter;
+}
+
 

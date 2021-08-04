@@ -23,11 +23,11 @@ require_once SARON_ROOT . "menu.php";
         
         <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/jquery.jtable.js"></script>
         <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/localization/jquery.jtable.se.js"></script>        
-        <table class="saronSmallText" style="width:0%; white-space: nowrap">
-            <tr>
-                <td>
+        <table class="saronFilter saronSmallText" style="width:0%; white-space: nowrap">
+            <tr class="saronFilter">
+                <td  class="saronFilter">
                     <form class="forms" id="mainfilter">Grupp:
-                        <select id="groupId" name="groupId" onchange="filterPeople('<?php include('../includes/viewId.php');?>', true);" >
+                        <select id="groupId" name="groupId" onchange="filterPeople('<?php include('../util/viewId.php');?>', true);" >
                         <option selected="selected" value="0">Medlemmar</option>
                         <option value="1">Dopregister</option>
                         <option value="2">Senast ändrade personer</option>
@@ -49,12 +49,12 @@ require_once SARON_ROOT . "menu.php";
                         </select>     
                    </form>
                 </td>
-                <td>
+                <td  class="saronFilter">
                     Söksträng:
-                    <input type="text" name="searchString" id="searchString" oninput="filterPeople('<?php include('../includes/viewId.php');?>');"/>
+                    <input type="text" name="searchString" id="searchString" oninput="filterPeople('<?php include('../util/viewId.php');?>');"/>
                 </td>
             </tr>
         </table>
-        <div id="<?php include('../includes/viewId.php');?>"></div>
+        <div id="<?php include('../util/viewId.php');?>"></div>
     </body>
 </html>

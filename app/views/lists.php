@@ -18,7 +18,7 @@
         <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/localization/jquery.jtable.se.js"></script>                  
         
         <br>
-        <div id="<?php include('../includes/viewId.php');?>"></div> 
+        <div id="<?php include('../util/viewId.php');?>"></div> 
     </body>
 </html>
 

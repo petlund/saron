@@ -12,18 +12,19 @@ header("Cache-Control: no-cache, must-revalidate");
         <title><?php echo NameOfRegistry;?> - Organisation</title> 
     </Head>
     <body> 
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "organization.unit.js");?>"></script>     
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "organization.tree.js");?>"></script>     
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "organization.list.js");?>"></script>     
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "organization.role.js");?>"></script>     
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "organization.status.js");?>"></script>     
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "organization.pos.js");?>"></script>     
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "organization.version.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "unittype.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "unit.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "tree.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "list.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "role.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "status.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "pos.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "version.js");?>"></script>     
         <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "memberstate.js");?>"></script>     
 
         <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/jquery.jtable.js"></script>
         <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/localization/jquery.jtable.se.js"></script>   
         <div class='saronSmallText'></div>
-        <div id="<?php include('../includes/viewId.php');?>"></div>
+        <div id="<?php include('../util/viewId.php');?>"></div>
     </body>
 </html> 
