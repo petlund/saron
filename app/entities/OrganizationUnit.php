@@ -116,7 +116,7 @@ class OrganizationStructure extends SuperEntity{
                 case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_UNIT:
                         $where = "WHERE Tree.OrgUnitType_FK = " . $this->parentId . " ";
                     break;
-                case TABLE_NAME_UNITROLE . "/" . TABLE_NAME_UNIT:
+                case TABLE_NAME_ROLE . "/" . TABLE_NAME_UNIT:
                     $where = "WHERE Rut.OrgRole_FK = " . $this->parentId . " ";
                     $from.= "inner join `Org_Role-UnitType` as Rut on Tree.OrgUnitType_FK=Rut.OrgUnitType_FK ";
                     break;
