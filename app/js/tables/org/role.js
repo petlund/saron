@@ -120,10 +120,10 @@ function roleTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
 
                     var src;
                     if(data.record.HasChild === '0'){
-                        src = '"/' + SARON_URI + SARON_IMAGES_URI + 'pos.png" title="Inga organisatoriska enhetstyper"';
+                        src = '"/' + SARON_URI + SARON_IMAGES_URI + 'unittype.png" title="Inga organisatoriska enhetstyper"';
                     }
                     else{
-                        src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haspos.png" title="Organisatoriska enhetstyper"';
+                        src = '"/' + SARON_URI + SARON_IMAGES_URI + 'used_unittype.png" title="Organisatoriska enhetstyper"';
                     }
                     
                     var imgTag = _setImageClass(data.record, TABLE_NAME_ROLE, src, data.record.Id, ORG);

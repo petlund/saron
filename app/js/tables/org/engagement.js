@@ -136,8 +136,10 @@ function peopleEngagementTableDef(tableViewId, parentTablePath, parentId,  child
             if(data.formType === 'edit')
                 data.row[0].style.backgroundColor = '';
         }
-    }    
+    };  
 }
+
+
 
 function engagementTableDef(tableViewId, parentTablePath, parentId,  childTableTitle){
     const tableName = TABLE_NAME_POS;

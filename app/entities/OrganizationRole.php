@@ -114,18 +114,17 @@ class OrganizationRole extends SuperEntity{
         $select.= "(Select count(*) from Org_Pos as Pos WHERE Pos.OrgRole_FK=Role.Id) as PosOccurrency, ";
         $select.= $this->saronUser->getRoleSql(false) . " ";
         $from = "FROM Org_Role as Role ";
+        $where = "";
         
         if($id < 0){
             switch ($this->tablePath){
                 case TABLE_NAME_ROLE:            
-                    $where = "";
                     break;
                 case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_ROLE:            
                     $from.= "inner join `Org_Role-UnitType` as Rut on Rut.OrgRole_FK = Role.Id ";
-                    $where.= "WHERE Rut.OrgUnitType_FK = " . $this->parentId . " ";
+                    $where= "WHERE Rut.OrgUnitType_FK = " . $this->parentId . " ";
                     break;
                 default:
-                    $where = "";
             }
         }
         else{

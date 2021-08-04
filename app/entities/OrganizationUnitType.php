@@ -22,6 +22,8 @@ class OrganizationUnitType extends SuperEntity{
         $this->orgRole_FK = (int)filter_input(INPUT_GET, "OrgRole_FK", FILTER_SANITIZE_NUMBER_INT);
     }
 
+    
+    
     function checkUnitTypeData(){
         $error = array();
 
