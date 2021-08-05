@@ -6,6 +6,7 @@ ORG,
  SUBUNIT_ENABLED, SUBUNIT_DISABLED,
 TABLE_VIEW_ROLE, TABLE_NAME_ROLE, 
 TABLE_VIEW_UNITTYPE, TABLE_NAME_UNITTYPE,
+TABLE_VIEW_UNIT, TABLE_NAME_UNIT,
 RECORDS, RECORD, OPTIONS, SOURCE_LIST, SOURCE_CREATE, SOURCE_EDIT
 */
 "use strict";
@@ -57,59 +58,97 @@ function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitl
                 title: 'Används',
                 width: '3%',
                 edit: false,
+                sorting: false,
                 create: false,
                 list: includedIn(tableViewId, TABLE_VIEW_UNITTYPE),
                 display: function(data){
-                    var src;
+                    
+                    var $imgChild = null;
                     if(data.record.UsedInUnit ===  "1"){
-                        src= '"/' + SARON_URI + SARON_IMAGES_URI + 'unit.png" title="Används på följande ställen"';
-                        
-                        var imgTag = _setImageClass(data.record, TABLE_NAME_UNITTYPE, src, -1);
-                        var $imgChild = $(imgTag);
+                        $imgChild = getImageTag(data, "unit.png", "Används på följande ställen", TABLE_NAME_UNIT);
+
+                        var allOpenClasses = getChildOpenClassName(data, TABLE_NAME_UNIT) + getChildOpenClassName(data, TABLE_NAME_ROLE);
+                        var currentOpenClass = getChildOpenClassName(data, TABLE_NAME_UNIT);
 
                         $imgChild.click(data, function (event){
                             var $tr = $imgChild.closest('tr');
-                            var childTableTitleUsedInUnit = 'Enhetstypen "' + data.record.Name + '" används för nedanstående organisatoriska enheter';
-                            
+                            $tr.removeClass(allOpenClasses);
+                            $tr.addClass(currentOpenClass);
+
+                            var childTableTitleUsedInUnit = 'Enhetstypen "' + data.record.Name + '" används för nedanstående organisatoriska enheter';                            
                             $(tableViewId).jtable('openChildTable', $tr, unitTableDef(tableViewId, tablePath,  data.record.Id, childTableTitleUsedInUnit), function(data){
                                 data.childTable.jtable('load');
+                                updateUnitTypeRecord(tableViewId, event.data);
                             });
                         });
-                        return $imgChild;
+
+                        var $imgClose = getImageCloseTag(data, TABLE_NAME_UNITTYPE);
+                        $imgClose.click(data, function(event) {
+                            var $tr = $imgClose.closest('tr'); 
+                            $tr.removeClass(allOpenClasses);
+                            var $currentRow = $(tableViewId).jtable('getRowByKey', data.record.Id);
+                            $(tableViewId).jtable('closeChildTable', $currentRow, function(data){  
+                                updateUnitTypeRecord(tableViewId, event.data);
+                            });
+                        });     
+
+                        var isChildRowOpen = $("." + currentOpenClass).length > 0;
+                        if(isChildRowOpen)
+                            return $imgClose;
+                        else
+                            return $imgChild;
                     }
-                    else{
-                        return null;
-                    }
+                    return null;
                 }
             },            
             HasPos:{
                 width: '3%',
                 title: 'Roller',
                 create: false,
+                sorting: false,
                 edit: false,   
                 list: includedIn(tableViewId, TABLE_VIEW_UNITTYPE),
                 display: function(data){
-                    if(data.record.PosEnabled ===  POS_ENABLED){
-                        var src;
-                        if(data.record.HasPos === '0')
-                            src= '"/' + SARON_URI + SARON_IMAGES_URI + 'pos.png" title="Inga roller"';
-                        else
-                            src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haspos.png" title="Roller"';
-                        
-                        var imgTag = _setImageClass(data.record, "UnitType", src, -1);
-                        var $imgChild = $(imgTag);
-
-                        $imgChild.click(data, function (event){
-                            var $tr = $imgChild.closest('tr');
-                            var childTableTitleIncludedRole = 'Enhetstypen "' + data.record.Name + '" har följande roller';
-                            $(tableViewId).jtable('openChildTable', $tr, roleTableDef(tableViewId, tablePath, data.record.Id,childTableTitleIncludedRole ), function(data){
-                                data.childTable.jtable('load');
-                            });
-                        });
-                        return $imgChild;
-                    }
-                    else
+                    var $imgChild;
+                    
+                    if(data.record.PosEnabled !==  POS_ENABLED)
                         return null;
+
+                    if(data.record.HasPos === '0')
+                        $imgChild = getImageTag(data, "pos.png", "Inga roller", TABLE_NAME_ROLE);
+                    else
+                        $imgChild = getImageTag(data, "haspos.png", "Har roller", TABLE_NAME_ROLE);
+
+                    var allOpenClasses = getChildOpenClassName(data, TABLE_NAME_UNIT) + getChildOpenClassName(data, TABLE_NAME_ROLE);
+                    var currentOpenClass = getChildOpenClassName(data, TABLE_NAME_ROLE);
+
+                    $imgChild.click(data, function (event){
+                        var $tr = $imgChild.closest('tr');
+                        $tr.removeClass(allOpenClasses);
+                        $tr.addClass(currentOpenClass);
+
+                        var childTableTitleIncludedRole = 'Enhetstypen "' + data.record.Name + '" har följande roller';
+                        $(tableViewId).jtable('openChildTable', $tr, roleTableDef(tableViewId, tablePath, data.record.Id,childTableTitleIncludedRole ), function(data){
+                            data.childTable.jtable('load');
+                            updateUnitTypeRecord(tableViewId, event.data);
+                        });
+                    });
+                var $imgClose = getImageCloseTag(data, TABLE_NAME_ROLE);
+
+                $imgClose.click(data, function(event) {
+                    var $tr = $imgClose.closest('tr'); 
+                    $tr.removeClass(allOpenClasses);
+                    var $currentRow = $(tableViewId).jtable('getRowByKey', data.record.Id);
+                    $(tableViewId).jtable('closeChildTable', $currentRow, function(data){  
+                        updateUnitTypeRecord(tableViewId, event.data);
+                    });
+                });     
+
+                var isChildRowOpen = $("." + currentOpenClass).length > 0;
+                if(isChildRowOpen)
+                    return $imgClose;
+                else
+                    return $imgChild;
                 }
             },
             Name: {
@@ -218,9 +257,9 @@ function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitl
 
 
 
-function updateUnitRecord(tableViewId, data){
-    var url = '/' + SARON_URI + 'app/web-api/listOrganizationUnitType.php?Id=' + data.record.orgUnitType_FK;
-    var options = {record:{"Id": data.record.orgUnitType_FK}, "clientOnly": false, "url":url};
+function updateUnitTypeRecord(tableViewId, data){
+    var url = '/' + SARON_URI + 'app/web-api/listOrganizationUnitType.php';
+    var options = {record:{"Id": data.record.Id}, "clientOnly": false, "url":url};
     $(tableViewId).jtable('updateRecord', options);
 }
 

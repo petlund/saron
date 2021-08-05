@@ -98,7 +98,7 @@ function posTableDef(tableViewId, parentTablePath, parentId,  childTableTitle){
                 }                
             },
             SortOrder: {
-                list: true,
+                list: !includedIn(tableViewId, TABLE_VIEW_POS),
                 create: false,
                 width: '4%',
                 title: 'Sort',

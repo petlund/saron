@@ -71,8 +71,8 @@ function roleTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                     else
                         $imgChild = getImageTag(data, "unit.png", "Organisatoriska enheter", TABLE_NAME_UNIT);
                     
-                    var allOpenClasses = getChildOpenClass(data, TABLE_NAME_UNIT) + ' ' + getChildOpenClass(data, TABLE_NAME_UNITTYPE);
-                    var currentOpenClass = getChildOpenClass(data, TABLE_NAME_UNIT);
+                    var allOpenClasses = getChildOpenClassName(data, TABLE_NAME_UNIT) + getChildOpenClassName(data, TABLE_NAME_UNITTYPE);
+                    var currentOpenClass = getChildOpenClassName(data, TABLE_NAME_UNIT);
                     
                     $imgChild.click(data, function (event){
                         var $tr = $imgChild.closest('tr'); 
@@ -88,7 +88,7 @@ function roleTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                     
                     var $imgClose = getImageCloseTag(data, TABLE_NAME_ROLE);
                     $imgClose.click(data, function(event) {
-                        var $tr = $imgChild.closest('tr'); 
+                        var $tr = $imgClose.closest('tr'); 
                         $tr.removeClass(allOpenClasses);
                         var $currentRow = $(tableViewId).jtable('getRowByKey', data.record.Id);
                         $(tableViewId).jtable('closeChildTable', $currentRow, function(data){  
@@ -96,8 +96,7 @@ function roleTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                         });
                     });     
 
-                    var isChildRowOpen = $("." + currentOpenClass).length > 0;
-                    
+                    var isChildRowOpen = $("." + currentOpenClass).length > 0;                    
                     if(isChildRowOpen)
                         return $imgClose;
                     else
@@ -112,7 +111,6 @@ function roleTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                 list: includedIn(tableViewId, TABLE_VIEW_ROLE),
                 sorting: false,
                 display: function(data){
-                    var childTableTitle = 'Rollen "' + data.record.Name + '" används i nedanstående organisatoriska enhetstyper';
                     var $imgChild;
 
                     if(data.record.HasChild === '0')
@@ -120,13 +118,15 @@ function roleTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                     else
                         $imgChild = getImageTag(data, "used_unittype.png", "Organisatoriska enhetstyper", TABLE_NAME_UNITTYPE);
 
-                    var allOpenClasses = getChildOpenClass(data, TABLE_NAME_UNIT) + ' ' + getChildOpenClass(data, TABLE_NAME_UNITTYPE);
-                    var currentOpenClass = getChildOpenClass(data, TABLE_NAME_UNITTYPE);
+                    var allOpenClasses = getChildOpenClassName(data, TABLE_NAME_UNIT) + getChildOpenClassName(data, TABLE_NAME_UNITTYPE);
+                    var currentOpenClass = getChildOpenClassName(data, TABLE_NAME_UNITTYPE);
                     
                     $imgChild.click(data, function (event){
                         var $tr = $imgChild.closest('tr'); 
                         $tr.removeClass(allOpenClasses);
                         $tr.addClass(currentOpenClass);
+                        
+                        var childTableTitle = 'Rollen "' + data.record.Name + '" används i nedanstående organisatoriska enhetstyper';
                         $(tableViewId).jtable('openChildTable', $tr, unitTypeTableDef(tableViewId, tablePath, data.record.Id, childTableTitle), function(data){
                             data.childTable.jtable('load');
                             updateRoleRecord(tableViewId, event.data);
@@ -136,7 +136,7 @@ function roleTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                     var $imgClose = getImageCloseTag(data, TABLE_NAME_ROLE);
 
                     $imgClose.click(data, function(event) {
-                        var $tr = $imgChild.closest('tr'); 
+                        var $tr = $imgClose.closest('tr'); 
                         $tr.removeClass(allOpenClasses);
                         var $currentRow = $(tableViewId).jtable('getRowByKey', data.record.Id);
                         $(tableViewId).jtable('closeChildTable', $currentRow, function(data){  

@@ -128,6 +128,7 @@ class OrganizationRole extends SuperEntity{
             }
         }
         else{
+            $rec = RECORD;
             $where = "WHERE Role.id = " . $id . " ";
         }
 

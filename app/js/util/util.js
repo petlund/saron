@@ -1,7 +1,8 @@
 /* global SARON_URI, FullNameOfCongregation, 
 ORG_ROLE, ORG_LIST, ORG_UNIT_TYPE, ORG_TREE,
 SARON_IMAGES_URI,
-RECORDS
+RECORDS,
+TABLE_NAME_UNIT
 */
 "use strict";
 
@@ -73,7 +74,7 @@ function _setMailClassAndValue(record, field, nullValue, type){
 
 
 function _setImageClass(record, field, src, type){
-    var imgRef = '<img src = ' + src + '/>';
+    var imgRef = '<img class="saron_table_icon" src = ' + src + '/>';
 
     return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), imgRef);        
 }
@@ -287,6 +288,11 @@ function getImageCloseTag(data, childTableName){
 }
 
 
-function getChildOpenClass(data, childTableName){
-    return childTableName + '_is_open_' +  data.record.Id;
+function getChildOpenClassName(data, childTableName){
+    return childTableName + '_is_open_' +  data.record.Id + ' ';
+}
+
+
+function getUnitOpenClassName(id){
+    return TABLE_NAME_UNIT + '_is_open_' +  id + ' ';
 }

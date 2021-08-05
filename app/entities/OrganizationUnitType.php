@@ -83,7 +83,7 @@ class OrganizationUnitType extends SuperEntity{
             }                    
         }
         else{
-            $rec = RECORDS;
+            $rec = RECORD;
             $where = "WHERE Typ.Id= " . $id . " ";            
         }        
         
