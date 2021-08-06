@@ -95,7 +95,7 @@ function peopleTableDef(placeHolder, Id) {
         },       
         fields: {
             HomeDetails: childTableHome(placeHolder),
-            MemberShip: childTableMembership(placeHolder), 
+            MemberShip: memberTableDef(placeHolder), 
             Baptism: childTableBaptism(placeHolder), 
             Id: {
                 key: true,

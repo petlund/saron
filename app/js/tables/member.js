@@ -149,13 +149,4 @@ function memberTableDef(placeHolder){
         }    
     };
 }
-//    //Re-load records when user click 'load records' button.
-//    $('#search_member').click(function (e) {
-//        e.preventDefault();
-//        filterPeople('member');
-//    });
-//
-//    //Load all records when page is first shown
-//    $('#search_member').click();
-//});
-    
+

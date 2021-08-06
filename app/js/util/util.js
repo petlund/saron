@@ -29,38 +29,38 @@ const SUBUNIT_DISABLED = "1";
 
 var clearMembershipNoOptionCache = true;
     
-function _setClassAndValue(record, field, type){
+function _setClassAndValue(data, field, type){
     if(field === "VisibleInCalendar")
-        return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), _getVisibilityOption(record[field]), '');  
+        return _styleSaronValue(field + ' ' + _getClassName_Id(data, field, type), _getVisibilityOption(data.record[field]), '');  
     else if(field === "KeyToChurch" || field === "KeyToExp")
-        return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), _getKeyOption(record[field]), '');  
+        return _styleSaronValue(field + ' ' + _getClassName_Id(data, field, type), _getKeyOption(data.record[field]), '');  
     else if(field === "Letter")
-        return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), _getLetterOption(record[field]), '');  
+        return _styleSaronValue(field + ' ' + _getClassName_Id(data, field, type), _getLetterOption(data.record[field]), '');  
     else
-        return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), record[field], '');    
+        return _styleSaronValue(field + ' ' + _getClassName_Id(data, field, type), data.record[field], '');    
+
+}
+
+function _setClassAndValuePrefix(data, field, type, prefix){
+    return _styleSaronValue(field + ' ' + _getClassName_Id(data, field, type), prefix + ' ' + data.record[field], '');    
 }
 
 
-function _setClassAndValuePrefix(record, field, type, prefix){
-    return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), prefix + ' ' + record[field], '');    
-}
 
-
-
-function _setClassAndValueAltNull(record, field, nullValue, type){
+function _setClassAndValueAltNull(data, field, nullValue, type){
         if(type === PERSON_AND_HOME){
-            var classNames = field + ' ' + _getClassName_Id(record, field, PERSON) + ' ' + _getClassName_Id(record, field, HOME);
-            return _styleSaronValue(classNames, record[field], nullValue);
+            var classNames = field + ' ' + _getClassName_Id(data.record, field, PERSON) + ' ' + _getClassName_Id(data.record, field, HOME);
+            return _styleSaronValue(classNames, data.record[field], nullValue);
         }
         else    
-            return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), record[field], nullValue);    
+            return _styleSaronValue(field + ' ' + _getClassName_Id(data.record, field, type), data.record[field], nullValue);    
 }
 
 
-function _setMailClassAndValue(record, field, nullValue, type){
-    var mail = record.Email;
+function _setMailClassAndValue(data, field, nullValue, type){
+    var mail = data.record.Email;
     if(mail === null || mail === undefined)
-        mail = record.user_email;
+        mail = data.record.user_email;
     
     if(mail === undefined)
         mail = null;
@@ -69,19 +69,19 @@ function _setMailClassAndValue(record, field, nullValue, type){
     if(mail!==null)
         mailRef = '<a href="mailto:' + mail + '">' + mail + '</a>';
 
-    return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), mailRef, nullValue);        
+    return _styleSaronValue(field + ' ' + _getClassName_Id(data, field, type), mailRef, nullValue);        
 }
 
 
-function _setImageClass(record, field, src, type){
+function _setImageClass(data, field, src, type){
     var imgRef = '<img class="saron_table_icon" src = ' + src + '/>';
 
-    return _styleSaronValue(field + ' ' + _getClassName_Id(record, field, type), imgRef);        
+    return _styleSaronValue(field + ' ' + _getClassName_Id(data, field, type), imgRef);        
 }
 
 
-function _getClassName_Id(record, field, type){
-    return field + '_' + _getId(record, type);
+function _getClassName_Id(data, field, type){
+    return field + '_' + _getId(data, type);
 }
 
 
@@ -105,49 +105,49 @@ function _styleSaronValue(clazz, val, altValue){
 }
 
 
-function _getId(record, type){
+function _getId(data, type){
     if(type === HOME)
-        if(record.HomeId === "0")
+        if(data.record.HomeId === "0")
             return 'H' + localStorage.getItem('newHomeId');
         else
-            return 'H' + record.HomeId;
+            return 'H' + data.record.HomeId;
     else if(type === OLD_HOME)
-        return 'H' + record[OLD_HOME_PREFIX + 'HomeId'];
+        return 'H' + data.record[OLD_HOME_PREFIX + 'HomeId'];
     else if(type === PERSON)
-        return 'P' + record.Id;
+        return 'P' + data.record.Id;
     else if(type === NEWS)
-        return 'N' + record.Id;
+        return 'N' + data.record.Id;
     else if(type === ORG)
-        return 'Org_' + record.Id;
+        return 'Org_' + data.record.Id;
     else 
-        return record.Id;
+        return data.record.Id;
 }
 
 
-function _updateFields(record, field, type){
+function _updateFields(data, field, type){
     var elementValue;
     
     if(field === "VisibleInCalendar")
-        elementValue = _getVisibilityOption(record[field]);  
+        elementValue = _getVisibilityOption(data.record[field]);  
     else if(field === "Letter")
-        elementValue = _getLetterOption(record[field]);  
+        elementValue = _getLetterOption(data.record[field]);  
     else if(field === "KeyToChurch" || field === "KeyToExp")
-        elementValue = _getKeyOption(record[field]);  
+        elementValue = _getKeyOption(data.record[field]);  
     else
         if(type === OLD_HOME)
-            elementValue = record[OLD_HOME_PREFIX + field];
+            elementValue = data.record[OLD_HOME_PREFIX + field];
         else
-            elementValue = record[field];
+            elementValue = data.record[field];
   
-    var className_Id = _getClassName_Id(record, field, type);
+    var className_Id = _getClassName_Id(data, field, type);
     var element = document.getElementsByClassName(className_Id);
     for(var i = 0; i<element.length;i++)
         element[i].innerHTML = elementValue;
 }
 
 
-function _membershipOptions(Id){
-    return '/' + SARON_URI + 'app/web-api/listPerson.php?Id=' + Id + '&selection=nextMembershipNo';
+function _membershipOptions(data){
+    return '/' + SARON_URI + 'app/web-api/listPerson.php?Id=' + data.record.Id + '&selection=nextMembershipNo';
 }
 
 
@@ -273,9 +273,9 @@ function getURLParameter(parentId, tablePath, source, reultType){
 
 
 
-function getImageTag(Id, imgFile, title, childTableName){
+function getImageTag(data, imgFile, title, childTableName){
     var src = '"/' + SARON_URI + SARON_IMAGES_URI + imgFile + '" title="' + title + '"';
-    var imageTag = _setImageClass(data.record, childTableName, src, id);
+    var imageTag = _setImageClass(data, childTableName, src, ORG);
     return $(imageTag);
 }
 
@@ -286,7 +286,3 @@ function getChildOpenClassName(data, childTableName){
 }
 
 
-
-function getUnitOpenClassName(id){
-    return TABLE_NAME_UNIT + '_is_open_' +  id + ' ';
-}

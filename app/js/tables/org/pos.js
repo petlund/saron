@@ -274,7 +274,7 @@ function getAggregatedPosIcon(tableViewId, tablePath, parentId, childTableTitle,
                 src = '"/' + SARON_URI + SARON_IMAGES_URI + 'unit.png" title="Bemannade positioner"';
         }
 
-        var imgTag = _setImageClass(data.record, TABLE_NAME_POS, src, -1);
+        var imgTag = _setImageClass(data, TABLE_NAME_POS, src, ORG);
         var $imgRole = $(imgTag);
 
         $imgRole.click(data, function (event){

@@ -161,7 +161,7 @@ function roleTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                 title: "Antal positioner",
                 width: "10%",
                 display: function (data){
-                    return _setClassAndValue(data.record, "PosOccurrency", -1);
+                    return _setClassAndValue(data, "PosOccurrency", ORG);
                 }                  
             },
             Description: {

@@ -19,6 +19,7 @@ $(document).ready(function () {
 
 
 function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
+    const listUri = 'app/web-api/listOrganizationUnitType.php';
     const tableName = TABLE_NAME_UNITTYPE;
     var tablePath = tableName;
     if(parentTablePath !== null)
@@ -39,7 +40,7 @@ function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitl
         defaultSorting: 'Name', //Set default sorting        
         messages: {addNewRecord: 'Lägg till en ny typ av organisatorisk enhet.'},
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationUnitType.php' + getURLParameter(parentId, tablePath, SOURCE_LIST, RECORDS),
+            listAction:   '/' + SARON_URI + listUri + getURLParameter(parentId, tablePath, SOURCE_LIST, RECORDS),
             createAction: '/' + SARON_URI + 'app/web-api/createOrganizationUnitType.php',
             updateAction: '/' + SARON_URI + 'app/web-api/updateOrganizationUnitType.php',
             deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationUnitType.php'
@@ -63,29 +64,16 @@ function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitl
                 list: includedIn(tableViewId, TABLE_VIEW_UNITTYPE),
                 display: function(data){
                     var childTableName = TABLE_NAME_UNIT;
-                    var childTableTitleUsedInUnit = 'Enhetstypen "' + data.record.Name + '" används för nedanstående organisatoriska enheter';                            
+                    var childTableTitle = 'Enhetstypen "' + data.record.Name + '" används för nedanstående organisatoriska enheter';                            
+                    var tooltip = "Enhetstypen används inom följande organisatoriska enheter";
+                    var imgFile = "unit.png";
                     
-                    var $imgChild = null;
                     if(data.record.UsedInUnit ===  "1"){
-                        $imgChild = getImageTag(data.record.Id, "unit.png", "Används på följande ställen", TABLE_NAME_UNIT);
-
-                        var allOpenClasses = getAllClassNameOpenChild(data.record.Id);
-                        var currentOpenClass = getClassNameOpenChild(childTableName, data.record.Id);
-
-                        $imgChild.click(data, function (event){
-                            var $tr = $imgChild.closest('tr');
-                            $tr.removeClass(allOpenClasses);
-                            $tr.addClass(currentOpenClass);
-
-                            $(tableViewId).jtable('openChildTable', $tr, unitTableDef(tableViewId, tablePath,  data.record.Id, childTableTitleUsedInUnit), function(data){
-                                data.childTable.jtable('load');
-                                updateUnitTypeRecord(tableViewId, event.data);
-                            });
-                        });
+                        var childTable = unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle);
+                        var $imgChild = openChildTable(data, tableViewId, childTable, listUri, imgFile, tooltip, childTableName);
+                        var $imgClose = closeChildTable(data, tableViewId, childTableName);
                         
-                        var $imgClose = closeChildFunction(tableViewId, data.record.Id);
-                        
-                        return getChildNavIcon(childTableName, data.record.Id, $imgChild, $imgClose);
+                        return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                     }
                     return null;
                 }
@@ -104,9 +92,9 @@ function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitl
                         return null;
 
                     if(data.record.HasPos === '0')
-                        $imgChild = getImageTag(data.record.Id, "pos.png", "Inga roller", TABLE_NAME_ROLE);
+                        $imgChild = getImageTag(data, "pos.png", "Inga roller", TABLE_NAME_ROLE);
                     else
-                        $imgChild = getImageTag(data.record.Id, "haspos.png", "Har roller", TABLE_NAME_ROLE);
+                        $imgChild = getImageTag(data, "haspos.png", "Har roller", TABLE_NAME_ROLE);
 
                     var allOpenClasses = getChildOpenClassName(data, TABLE_NAME_UNIT) + getChildOpenClassName(data, TABLE_NAME_ROLE);
                     var currentOpenClass = getChildOpenClassName(data, TABLE_NAME_ROLE);
@@ -117,7 +105,7 @@ function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitl
                         $tr.addClass(currentOpenClass);
 
                         var childTableTitleIncludedRole = 'Enhetstypen "' + data.record.Name + '" har följande roller';
-                        $(tableViewId).jtable('openChildTable', $tr, roleTableDef(tableViewId, tablePath, data.record.Id,childTableTitleIncludedRole ), function(data){
+                        $(tableViewId).jtable('openChildTable', $tr, roleTableDef(tableViewId, tablePath, data.record.Id, childTableTitleIncludedRole ), function(data){
                             data.childTable.jtable('load');
                             updateUnitTypeRecord(tableViewId, event.data);
                         });
