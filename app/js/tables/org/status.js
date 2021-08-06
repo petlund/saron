@@ -26,10 +26,7 @@ function statusTableDef(tableId){
             TablePath:{
                 list: false,
                 edit: false,
-                create: false,
-                display: function(){
-                    return 'status';
-                }
+                create: false
             },
             Id: {
                 key: true,
