@@ -114,7 +114,7 @@ function _getId(record, type){
     else if(type === OLD_HOME)
         return 'H' + record[OLD_HOME_PREFIX + 'HomeId'];
     else if(type === PERSON)
-        return 'P' + record.PersonId;
+        return 'P' + record.Id;
     else if(type === NEWS)
         return 'N' + record.Id;
     else if(type === ORG)
@@ -146,8 +146,8 @@ function _updateFields(record, field, type){
 }
 
 
-function _membershipOptions(personId){
-    return '/' + SARON_URI + 'app/web-api/listPerson.php?PersonId=' + personId + '&selection=nextMembershipNo';
+function _membershipOptions(Id){
+    return '/' + SARON_URI + 'app/web-api/listPerson.php?Id=' + Id + '&selection=nextMembershipNo';
 }
 
 

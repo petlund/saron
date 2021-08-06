@@ -36,7 +36,7 @@ function totalTableDef(placeHolder){
             deleteAction: '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=anonymization'
         },  
         fields: {
-            PersonId:{
+            Id:{
                 key: true,
                 list: false
             },
@@ -47,7 +47,7 @@ function totalTableDef(placeHolder){
                 display: function (data) {
                     var $imgPdf = $('<img src="/' + SARON_URI + 'app/images/pdf.png" title="Skapa personakt PDF" />');
                     $imgPdf.click(function () {                        
-                        window.open('/' + SARON_URI + 'app/pdf/DossierReport.php?PersonId=' + data.record.PersonId, '_blank');
+                        window.open('/' + SARON_URI + 'app/pdf/DossierReport.php?Id=' + data.record.Id, '_blank');
                     });                
                 return $imgPdf;
                 }

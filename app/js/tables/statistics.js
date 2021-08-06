@@ -126,7 +126,7 @@ $(document).ready(function () {
                                     sorting: false,
                                     display: function(data){
                                         var imgLink = '<img class="Person" src="/' + SARON_URI + SARON_IMAGES_URI + 'haspos.png" title="Personuppgifter">';
-                                        var hrefLink = '<a href="/' + SARON_URI + 'app/views/people.php?tableview=people&PersonId=' + data.record.PersonId + '">' + imgLink + '</a>';
+                                        var hrefLink = '<a href="/' + SARON_URI + 'app/views/people.php?tableview=people&Id=' + data.record.Id + '">' + imgLink + '</a>';
                                         console.log(hrefLink);
                                         var $img = $(hrefLink);
                                         return $img;

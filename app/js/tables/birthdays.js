@@ -25,7 +25,7 @@
             },
 
             fields: {
-                PersonId: {
+                Id: {
                     title: 'id',
                     list: false,
                     key: true

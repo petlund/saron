@@ -25,7 +25,7 @@ function keyTableDef(placeHolder){
             updateAction:   '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=keyHolding'
         },
         fields: {
-            PersonId: {
+            Id: {
                 key: true,
                 list: false
             },

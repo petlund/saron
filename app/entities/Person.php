@@ -11,7 +11,7 @@ require_once SARON_ROOT . 'app/entities/Home.php';
 
 class Person extends People{
 
-    protected $PersonId;
+    protected $Id;
     protected $HomeId;
     protected $OldHomeId;
     protected $LastName;
@@ -39,9 +39,9 @@ class Person extends People{
     
     function __construct($db, $saronUser) {
         parent::__construct($db, $saronUser);
-        $this->PersonId = (int)filter_input(INPUT_POST, "PersonId", FILTER_SANITIZE_NUMBER_INT);
-        if($this->PersonId === 0){
-            $this->PersonId = (int)filter_input(INPUT_GET, "PersonId", FILTER_SANITIZE_NUMBER_INT);
+        $this->Id = (int)filter_input(INPUT_POST, "Id", FILTER_SANITIZE_NUMBER_INT);
+        if($this->Id === 0){
+            $this->Id = (int)filter_input(INPUT_GET, "Id", FILTER_SANITIZE_NUMBER_INT);
         }
         
         $this->HomeId = (int)filter_input(INPUT_POST, "HomeId", FILTER_SANITIZE_NUMBER_INT);
@@ -82,8 +82,8 @@ class Person extends People{
         return $this->HomeId;
     }
     
-    function getCurrentPersonId(){
-        return $this->PersonId;
+    function getCurrentId(){
+        return $this->Id;
     }
     
 
@@ -92,7 +92,7 @@ class Person extends People{
         $error["Result"] = "OK";
         $error["Message"] = "";
 
-        if($this->db->exist($this->FirstName, $this->LastName, $this->DateOfBirth, $this->PersonId)){
+        if($this->db->exist($this->FirstName, $this->LastName, $this->DateOfBirth, $this->Id)){
             $error["Message"] = "En person med identitet:<br><b>" . $this->FirstName . " " . $this->LastName . " " . $this->DateOfBirth . "</b><br>finns redan i databasen.";
         }
         else if(strlen($this->FirstName) === 0 or strlen($this->LastName)==0 or strlen($this->DateOfBirth) === 0){
@@ -236,7 +236,7 @@ class Person extends People{
         $sqlFrom.="left outer join Homes as " . ALIAS_OLD_HOMES . " on " .  ALIAS_OLD_HOMES . ".Id = " . $this->OldHomeId . " ";
         
         $sqlWhere = "WHERE ";
-        $sqlWhere.= "People.Id = " . $this->PersonId;
+        $sqlWhere.= "People.Id = " . $this->Id;
         
         $result =  $this->db->select($this->saronUser, $sqlSelect, $sqlFrom, $sqlWhere, "", "", $rec);            
         return $result;
@@ -246,7 +246,7 @@ class Person extends People{
         
         $sql = "SELECT 0 as Value, '[Inget medlemsnummer]' as DisplayText, 1 as ind ";
         $sql.= "Union "; 
-        $sql.= "select MembershipNo as Value, Concat(MembershipNo, ' [Nuvarande]') as DisplayText, 2 as ind From People Where MembershipNo>0 and Id = " . $this->PersonId . " ";
+        $sql.= "select MembershipNo as Value, Concat(MembershipNo, ' [Nuvarande]') as DisplayText, 2 as ind From People Where MembershipNo>0 and Id = " . $this->Id . " ";
         $sql.= "Union "; 
         $sql.= "select if(max(MembershipNo) is null, 0, max(MembershipNo)) + 1 as Value, CONCAT(if(max(MembershipNo) is null, 0, max(MembershipNo)) + 1, ' [Första lediga]') as DisplayText, 3 as ind ";
         $result = $this->db->select($this->saronUser, $sql, "FROM People ", "", "ORDER BY ind ", "", "Options");
@@ -271,7 +271,7 @@ class Person extends People{
         $sqlInsert.= "Inserter=" . $this->saronUser->WP_ID . ", ";
         $sqlInsert.= $this->getZeroToNull($this->HomeId) . ") ";
  
-        $this->PersonId = $this->db->insert($sqlInsert, "People", "Id");
+        $this->Id = $this->db->insert($sqlInsert, "People", "Id");
         return $this->select(RECORD);
     }
 
@@ -331,7 +331,7 @@ class Person extends People{
         $sqlSet.= "HomeId=" . $this->getZeroToNull($this->HomeId) . ", ";
         $sqlSet.= "CommentEncrypt=" . $this->getEncryptedSqlString($this->Comment) . ", ";
         $sqlSet.= "Updater = " . $this->saronUser->WP_ID . " ";
-        $sqlWhere = "where Id=" . $this->PersonId . ";";
+        $sqlWhere = "where Id=" . $this->Id . ";";
 
         $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
         return $this->select(RECORD);
@@ -349,7 +349,7 @@ class Person extends People{
         $sqlSet.= "NextCongregation=" . $this->getSqlString($this->NextCongregation) . ", ";
         $sqlSet.= "CommentEncrypt=" . $this->getEncryptedSqlString($this->Comment) . ", ";
         $sqlSet.= "Updater = " . $this->saronUser->WP_ID  . " ";
-        $sqlWhere = "where Id=" . $this->PersonId . ";";
+        $sqlWhere = "where Id=" . $this->Id . ";";
 
         $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
         return $this->select(RECORD);
@@ -366,7 +366,7 @@ class Person extends People{
         $sqlSet.= "CongregationOfBaptismThis=" . $this->CongregationOfBaptismThis  . ", ";
         $sqlSet.= "CommentEncrypt=" . $this->getEncryptedSqlString($this->Comment) . ", ";
         $sqlSet.= "Updater = " . $this->saronUser->WP_ID . " ";
-        $sqlWhere = "where Id=" . $this->PersonId . ";";
+        $sqlWhere = "where Id=" . $this->Id . ";";
         
         $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
         return $this->select(RECORD);
@@ -380,7 +380,7 @@ class Person extends People{
         $sqlSet.= "KeyToChurch=" . $this->KeyToChurch . ", ";
         $sqlSet.= "KeyToExp=" . $this->KeyToExp . ", ";
         $sqlSet.= "CommentKeyEncrypt=" . $this->getEncryptedSqlString($this->CommentKey) . " ";
-        $sqlWhere = "WHERE Id=" . $this->getCurrentPersonId();
+        $sqlWhere = "WHERE Id=" . $this->getCurrentId();
         $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
         return $this->select(RECORD);
         
@@ -389,7 +389,7 @@ class Person extends People{
     
     function anonymization(){
         $Today = date("Y-m-d") ;
-        $result = $this->db->select($this->saronUser, "Select Id ", "From People ", "Where DateOfMembershipStart is not null and DateOfMembershipEnd is null and Id = " . $this->PersonId, "", "");
+        $result = $this->db->select($this->saronUser, "Select Id ", "From People ", "Where DateOfMembershipStart is not null and DateOfMembershipEnd is null and Id = " . $this->Id, "", "");
         $jResult = json_decode($result);
 
         $sql = "update People set ";
@@ -409,7 +409,7 @@ class Person extends People{
         $sql.= "Updater = ". $this->saronUser->WP_ID . ", ";
 
         $sql.= "HomeId = NULL ";
-        $sql.= "where Id=" . $this->PersonId;
+        $sql.= "where Id=" . $this->Id;
         return $this->db->delete($sql); 
         
     }    

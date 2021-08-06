@@ -43,7 +43,7 @@ function baptistTableDef(placeHolder){
         },
         
         fields: { 
-            PersonId: {
+            Id: {
                 key: true,
                 list: false
             },

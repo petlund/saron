@@ -47,7 +47,7 @@ function memberTableDef(placeHolder){
             //deleteAction: 'delete.php'
         },
         fields: {
-            PersonId: {
+            Id: {
                 key: true,
                 list: false
             },
@@ -93,7 +93,7 @@ function memberTableDef(placeHolder){
                         data.clearCache();
                         clearMembershipNoOptionCache=false;
                     }
-                    return '/' + SARON_URI + 'app/web-api/listPerson.php?PersonId=' + data.record.PersonId + '&selection=nextMembershipNo';
+                    return '/' + SARON_URI + 'app/web-api/listPerson.php?Id=' + data.record.Id + '&selection=nextMembershipNo';
                 }
             },
             DateOfMembershipEnd: {

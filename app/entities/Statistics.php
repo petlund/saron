@@ -34,7 +34,7 @@ class Statistics extends SuperEntity{
     function selectStatisicsDetails(){
         $curYear = (int)filter_input(INPUT_GET, "year", FILTER_SANITIZE_NUMBER_INT);
 
-        $sqlSelect="SELECT p.Id as PersonId, " . DECRYPTED_ALIAS_LASTNAME . ", " . DECRYPTED_ALIAS_FIRSTNAME . ", " . DECRYPTED_ALIAS_COMMENT . ", DateOfBirth, ";
+        $sqlSelect="SELECT p.Id, " . DECRYPTED_ALIAS_LASTNAME . ", " . DECRYPTED_ALIAS_FIRSTNAME . ", " . DECRYPTED_ALIAS_COMMENT . ", DateOfBirth, ";
         $sql =$sqlSelect;  
         $sql.="DateOfMembershipStart as 'event_date', 
             'Ny' as event_type, 1 as 'Diff' 

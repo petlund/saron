@@ -48,7 +48,7 @@
     define("ALIAS_CUR_HOMES", "Homes");
     define("ALIAS_OLD_HOMES", "OldHome");
 
-    $ALL_PEOPLE_FIELDS = "People.Id as PersonId, ";
+    $ALL_PEOPLE_FIELDS = "People.Id, ";
     $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_FIRSTNAME . ", ";
     $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_LASTNAME . ", ";
     $ALL_PEOPLE_FIELDS.= DATE_OF_BIRTH_ALIAS_DATE_OF_BIRTH . ", DateOfDeath, PreviousCongregation, MembershipNo, VisibleInCalendar, DateOfMembershipStart, DateOfMembershipEnd, NextCongregation, DateOfBaptism, ";

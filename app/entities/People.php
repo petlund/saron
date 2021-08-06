@@ -7,13 +7,13 @@ require_once SARON_ROOT . 'app/entities/PeopleFilter.php';
 
 class People extends SuperEntity{
 
-    protected $personId;
+    protected $Id;
     protected $uppercaseSearchString;
     protected $filter;
 
     function __construct($db, $saronUser) {
         parent::__construct($db, $saronUser);
-        $this->personId = (String)filter_input(INPUT_GET, "PersonId", FILTER_SANITIZE_STRING);
+        $this->Id = (String)filter_input(INPUT_GET, "Id", FILTER_SANITIZE_STRING);
         $this->filter = (String)filter_input(INPUT_GET, "filter", FILTER_SANITIZE_STRING);
     }
     
@@ -39,8 +39,8 @@ class People extends SuperEntity{
 
         $gf = new PeopleFilter();
         $sqlWhere = "WHERE ";       
-        if($this->personId > 0){
-            $sqlWhere.= "People.Id = " . $this->personId . " ";
+        if($this->Id > 0){
+            $sqlWhere.= "People.Id = " . $this->Id . " ";
         }
         else{
             $sqlWhere.= $gf->getPeopleFilterSql($this->groupId);

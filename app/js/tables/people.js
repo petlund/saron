@@ -6,17 +6,17 @@ $(document).ready(function () {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     
-    var personId = -1; 
-    if(urlParams.has('PersonId'))
-        personId = urlParams.get('PersonId');
+    var Id = -1; 
+    if(urlParams.has('Id'))
+        Id = urlParams.get('Id');
         
-    $(J_TABLE_ID).jtable(peopleTableDef(J_TABLE_ID, personId));
+    $(J_TABLE_ID).jtable(peopleTableDef(J_TABLE_ID, Id));
     $(J_TABLE_ID).jtable('load');
     $(J_TABLE_ID).find('.jtable-toolbar-item-add-record').hide();
 });
 
 
-function peopleTableDef(placeHolder, personId) {
+function peopleTableDef(placeHolder, Id) {
     
     return {
         title: 'Personuppgifter',
@@ -27,7 +27,7 @@ function peopleTableDef(placeHolder, personId) {
         defaultSorting: 'LongHomeName ASC, DateOfBirth ASC', //Set default sorting   
         messages: {addNewRecord: 'Ny person'},
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php?tableview=people&PersonId=' + personId,
+            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php?tableview=people&Id=' + Id,
             createAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
@@ -69,7 +69,7 @@ function peopleTableDef(placeHolder, personId) {
                                 $dfd.resolve(data); //Mandatory
                                 var isChildRowOpen = false;
                                 
-                                var $selectedRow = $("[data-record-key=" + data.Record.PersonId + "]"); 
+                                var $selectedRow = $("[data-record-key=" + data.Record.Id + "]"); 
                                 var moveToNewHome = (data.Record.HomeId > 0 && data.Record.OldHome_HomeId !== data.Record.HomeId);
                                 if(!(data.Record.HomeId > 0 && data.Record.OldHome_HomeId === data.Record.HomeId)){
                                     isChildRowOpen = $(placeHolder).jtable('isChildRowOpen', $selectedRow),
@@ -97,7 +97,7 @@ function peopleTableDef(placeHolder, personId) {
             HomeDetails: childTableHome(placeHolder),
             MemberShip: childTableMembership(placeHolder), 
             Baptism: childTableBaptism(placeHolder), 
-            PersonId: {
+            Id: {
                 key: true,
                 list: false
             },
@@ -226,7 +226,7 @@ function peopleTableDef(placeHolder, personId) {
                         data.clearCache();
                         clearMembershipNoOptionCache=false;
                     }
-                    return '/' + SARON_URI + 'app/web-api/listPerson.php?PersonId=null' + '&selection=nextMembershipNo';
+                    return '/' + SARON_URI + 'app/web-api/listPerson.php?Id=null' + '&selection=nextMembershipNo';
                 }
             },
             MemberState: {
@@ -367,7 +367,7 @@ function childTableHome(placeHolder) {
                 else
                     newHomeId = event.data.record.HomeId;
     
-                var $tr = $('.Name_P' + event.data.record.PersonId).closest('tr');
+                var $tr = $('.Name_P' + event.data.record.Id).closest('tr');
                 $(placeHolder).jtable('openChildTable', $tr, homeChildTableDef(placeHolder, event.data, newHomeId), function(data){
                     data.childTable.jtable('load');
                 });
@@ -471,11 +471,11 @@ function homeChildTableDef(placeHolder, homeData, newHomeId){
 
 function homeFields(placeHolder, homeData) {
     return {
-        CloseChild: fieldCloseChildTable(placeHolder, homeData.record.PersonId),
-        PersonId: {
+        CloseChild: fieldCloseChildTable(placeHolder, homeData.record.Id),
+        Id: {
             key: true,
             list: false,
-            defaultValue: homeData.record.PersonId
+            defaultValue: homeData.record.Id
         },
         Residents:{
             edit: false,
@@ -566,11 +566,11 @@ function childTableMembership(placeHolder){
                     title: _setClassAndValuePrefix(memberData.record, "Name", PERSON, "Medlemsuppgifter för: "),
                     showCloseButton: false,
                     actions: {
-                        listAction: '/' + SARON_URI + 'app/web-api/listPerson.php?PersonId=' + memberData.record.PersonId,                                           
+                        listAction: '/' + SARON_URI + 'app/web-api/listPerson.php?Id=' + memberData.record.Id,                                           
                         updateAction: function(postData) {
                             return $.Deferred(function ($dfd) {
                                 $.ajax({
-                                    url: '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=membership&PersonId=' + memberData.record.PersonId,
+                                    url: '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=membership&Id=' + memberData.record.Id,
                                     type: 'POST',
                                     dataType: 'json',
                                     data: postData,
@@ -594,11 +594,11 @@ function childTableMembership(placeHolder){
                         }
                     },
                     fields: {
-                        CloseChild: fieldCloseChildTable(placeHolder, memberData.record.PersonId),
-                        PersonId: {
+                        CloseChild: fieldCloseChildTable(placeHolder, memberData.record.Id),
+                        Id: {
                             key: true,
                             list: false,
-                            defaultValue: memberData.record.PersonId
+                            defaultValue: memberData.record.Id
                         },
                         PreviousCongregation: {
                             title: 'Kommit från församling',
@@ -627,7 +627,7 @@ function childTableMembership(placeHolder){
                                     memberData.clearCache();
                                     clearMembershipNoOptionCache=false;
                                 }
-                                return '/' + SARON_URI + 'app/web-api/listPerson.php?PersonId=' + memberData.record.PersonId + '&selection=nextMembershipNo';
+                                return '/' + SARON_URI + 'app/web-api/listPerson.php?Id=' + memberData.record.Id + '&selection=nextMembershipNo';
                             }
                         },
                         DateOfMembershipEnd: {
@@ -718,11 +718,11 @@ function childTableBaptism(placeHolder){
                     title: _setClassAndValuePrefix(baptistData.record, "Name", PERSON, "Dopuppgifter för: "),
                     showCloseButton: false,                                    
                     actions: {
-                        listAction: '/' + SARON_URI + 'app/web-api/listPerson.php?PersonId=' + baptistData.record.PersonId,                                           
+                        listAction: '/' + SARON_URI + 'app/web-api/listPerson.php?Id=' + baptistData.record.Id,                                           
                         updateAction: function(postData) {
                             return $.Deferred(function ($dfd) {
                                 $.ajax({
-                                    url: '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=baptism&PersonId=' + baptistData.record.PersonId,
+                                    url: '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=baptism&Id=' + baptistData.record.Id,
                                     type: 'POST',
                                     dataType: 'json',
                                     data: postData,
@@ -743,11 +743,11 @@ function childTableBaptism(placeHolder){
                         }
                     },
                     fields: {
-                        CloseChild: fieldCloseChildTable(placeHolder, baptistData.record.PersonId),
-                        PersonId: {
+                        CloseChild: fieldCloseChildTable(placeHolder, baptistData.record.Id),
+                        Id: {
                             key: true,
                             list: false,
-                            defaultValue: baptistData.record.PersonId
+                            defaultValue: baptistData.record.Id
                         },
                         CongregationOfBaptismThis: {
                             list: false,
@@ -821,7 +821,7 @@ function childTableBaptism(placeHolder){
     };
 }
 
-function fieldCloseChildTable(placeHolder, personId){
+function fieldCloseChildTable(placeHolder, Id){
     return {
         title: '',
         width: '1%',
@@ -832,8 +832,8 @@ function fieldCloseChildTable(placeHolder, personId){
         display: function() {
             var $imgClose = $('<img src="/' + SARON_URI + SARON_IMAGES_URI + 'cross.png" title="Stäng" />');
             $imgClose.click(function () {
-                //closeChildTable(personId);
-                var $selectedRow = $("[data-record-key=" + personId + "]"); 
+                //closeChildTable(Id);
+                var $selectedRow = $("[data-record-key=" + Id + "]"); 
                 $(placeHolder).jtable('closeChildTable', $selectedRow);  
             });                
             return $imgClose;
@@ -845,7 +845,7 @@ function fieldCloseChildTable(placeHolder, personId){
 
 function _openHomeChildTable(placeHolder, data){
     var newData = {record: data.Record}
-    var rowRef = "[data-record-key=" + data.Record.PersonId + "]";
+    var rowRef = "[data-record-key=" + data.Record.Id + "]";
     var $selectedRow = $(rowRef);
     $(placeHolder).jtable('openChildTable', $selectedRow, homeChildTableDef(newData, data.Record.HomeId), function(data){
         data.childTable.jtable('load');

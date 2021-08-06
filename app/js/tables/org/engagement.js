@@ -184,7 +184,7 @@ function engagementTableDef(tableViewId, parentTablePath, parentId,  childTableT
             updateAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + SARON_URI + 'app/web-api/updateOrganizationPos.php?Source=EngagementView&People_FK=' + PersonId,
+                        url: '/' + SARON_URI + 'app/web-api/updateOrganizationPos.php?Source=EngagementView&People_FK=' + Id,
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
@@ -291,20 +291,20 @@ function engagementTableDef(tableViewId, parentTablePath, parentId,  childTableT
 
 
 
-function updatePersonEngagementRecord(PersonId){
-    var url = '/' + SARON_URI + 'app/web-api/listEngagement.php?Id=' + PersonId;
-    var options = {record:{"Id": PersonId}, "clientOnly": false, "url":url};
+function updatePersonEngagementRecord(Id){
+    var url = '/' + SARON_URI + 'app/web-api/listEngagement.php?Id=' + Id;
+    var options = {record:{"Id": Id}, "clientOnly": false, "url":url};
     $(TABLE_VIEW_ENGAGEMENT).jtable('updateRecord', options);
 }
   
 
 
-function updateChildRecord(PersonName, PersonId,  Cnt){
-    var $selectedRow = $("[data-record-key=" + PersonId + "]"); 
+function updateChildRecord(PersonName, Id,  Cnt){
+    var $selectedRow = $("[data-record-key=" + Id + "]"); 
     $(TABLE_VIEW_ENGAGEMENT).jtable('closeChildTable', $selectedRow, function(){
-        var $selectedRow = $("[data-record-key=" + PersonId + "]"); 
+        var $selectedRow = $("[data-record-key=" + Id + "]"); 
         if(Cnt > 1){
-            $(TABLE_VIEW_ENGAGEMENT).jtable('openChildTable', $selectedRow, engagementTableDef(PEOPLE_ENG, PersonName, PersonId, Cnt), function(data){
+            $(TABLE_VIEW_ENGAGEMENT).jtable('openChildTable', $selectedRow, engagementTableDef(PEOPLE_ENG, PersonName, Id, Cnt), function(data){
                 data.childTable.jtable('load');            
             });
         }

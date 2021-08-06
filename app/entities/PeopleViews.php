@@ -15,7 +15,7 @@ class PeopleViews {
         case "baptist":
             return SQL_STAR_PEOPLE . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . DATES_AS_ALISAS_MEMBERSTATES .  ", " . $saronUser->getRoleSql(false);
         case "keys":
-            return "Select People.Id as PersonId, KeyToExp, KeyToChurch, DateOfBirth, " . DECRYPTED_ALIAS_COMMENT_KEY . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . DATES_AS_ALISAS_MEMBERSTATES  . ", " . $saronUser->getRoleSql(false);
+            return "Select People.Id as Id, KeyToExp, KeyToChurch, DateOfBirth, " . DECRYPTED_ALIAS_COMMENT_KEY . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . DATES_AS_ALISAS_MEMBERSTATES  . ", " . $saronUser->getRoleSql(false);
         case "total":
             return $this->selectTotal() . ", " . $saronUser->getRoleSql(false);
         default:    
@@ -52,7 +52,7 @@ class PeopleViews {
     }
 
     function selectTotal(){
-        $selectPerson = "select People.Id as PersonId, concat('<b>'," . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ", '<BR>Född: </b>', DateOfBirth, if(DateOfDeath is null,'', concat (' -- ', DateOfDeath)), '<BR><B>Status: </B>', " . DATES_AS_MEMBERSTATES. ") as Person, ";
+        $selectPerson = "select People.Id as Id, concat('<b>'," . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ", '<BR>Född: </b>', DateOfBirth, if(DateOfDeath is null,'', concat (' -- ', DateOfDeath)), '<BR><B>Status: </B>', " . DATES_AS_MEMBERSTATES. ") as Person, ";
         $selectMember = "concat (";
         $selectMember.= "'<B>Medlemskap start: </B>', if(DateOfMembershipStart is null,'',DateOfMembershipStart), '<BR>', ";
         $selectMember.= "'<B>Medlemskap avslut: </B>', if(DateOfMembershipEnd is null, '',DateOfMembershipEnd ), '<BR>', ";
