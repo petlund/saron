@@ -105,7 +105,7 @@ function posTableDef(tableViewId, parentTablePath, parentId,  childTableTitle){
                 edit: false
                 
             },
-            Unit_Id:{                
+            OrgTree_FK:{                
                 create: false,
                 edit: false,
                 list: includedIn(tableViewId, TABLE_VIEW_POS),
@@ -295,7 +295,7 @@ function getAggregatedPosIcon(tableViewId, tablePath, parentId, childTableTitle,
 function getDefaultPosSorting(tableViewId){
     switch(tableViewId) {
         case TABLE_VIEW_POS:
-            return "Unit_Id, SortOrder";
+            return "OrgTree_FK, SortOrder";
         default:
             return "SortOrder";
     }
