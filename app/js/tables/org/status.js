@@ -20,28 +20,7 @@ function statusTableDef(tableId){
         defaultSorting: 'Name', //Set default sorting        
         actions: {
             listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationStatus.php',
-            updateAction: function(postData) {
-                return $.Deferred(function ($dfd) {
-                    $.ajax({
-                        url:  '/' + SARON_URI + 'app/web-api/updateOrganizationStatus.php',
-                        type: 'POST',
-                        dataType: 'json',
-                        data: postData,
-                        success: function (data) {
-                            $dfd.resolve(data);
-                            if(data.Result === 'OK'){
-                                
-                                
-                            }
-                            else
-                                $dfd.resolve(data);
-                        },
-                        error: function () {
-                            $dfd.reject();
-                        }
-                    });
-                });
-            }, 
+            updateAction: '/' + SARON_URI + 'app/web-api/updateOrganizationStatus.php',
         },
         fields: {
             TablePath:{
