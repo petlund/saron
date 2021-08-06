@@ -5,7 +5,6 @@ require_once SARON_ROOT . 'app/entities/SaronUser.php';
 class OrganizationPos extends SuperEntity{
     
     private $posId;
-    private $posUnitId;
     private $comment;
     private $people_FK;
     private $function_FK;
@@ -20,7 +19,6 @@ class OrganizationPos extends SuperEntity{
         
         $this->posId = (int)filter_input(INPUT_POST, "PosId", FILTER_SANITIZE_NUMBER_INT);
         $this->orgSuperPos_FK = (int)filter_input(INPUT_POST, "OrgSuperPos_FK", FILTER_SANITIZE_NUMBER_INT);
-        $this->posUnitId = (int)filter_input(INPUT_POST, "PosUnitId", FILTER_SANITIZE_NUMBER_INT);
         $this->prevPeople_FK = (int)filter_input(INPUT_POST, "PrevPeople_FK", FILTER_SANITIZE_NUMBER_INT);
 
         $this->comment = (String)filter_input(INPUT_POST, "Comment", FILTER_SANITIZE_STRING);

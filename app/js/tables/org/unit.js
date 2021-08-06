@@ -58,7 +58,7 @@ function unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                 edit: false,
                 create: false
             },
-            UnitId: {
+            Id: {
                 key: true,
                 list: false
             },
@@ -90,29 +90,29 @@ function unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                         var $imgChild;
                         var title = "";
                         if(data.record.HasSubUnit === '0' || data.record.statusSubProposal === null  || data.record.statusSubVacant === null){
-                            $imgChild = getImageTag(data.record.UnitId, "child.png", "Underorganisation", TABLE_NAME_UNIT);
+                            $imgChild = getImageTag(data.record.Id, "child.png", "Underorganisation", TABLE_NAME_UNIT);
                         }
                         else{
                             if(data.record.statusSubProposal > 0 && data.record.statusSubVacant > 0){
                                 title = '"Underorganisation med ' + data.record.statusSubProposal + ' förslag och ' + data.record.statusSubVacant + ' vakans(er)"';
-                                $imgChild = getImageTag(data.record.UnitId, "haschild_YR.png", title, TABLE_NAME_UNIT);
+                                $imgChild = getImageTag(data.record.Id, "haschild_YR.png", title, TABLE_NAME_UNIT);
                             }
                             else if(data.record.statusSubProposal === "0" && data.record.statusSubVacant !== "0"){
                                 title = '"Underorganisation med ' + data.record.statusSubVacant + ' vakans(er)"';
-                                $imgChild = getImageTag(data.record.UnitId, "haschild_R.png", title, TABLE_NAME_UNIT);
+                                $imgChild = getImageTag(data.record.Id, "haschild_R.png", title, TABLE_NAME_UNIT);
                             }
                             else if(data.record.statusSubProposal !== "0" && data.record.statusSubVacant === "0"){
                                 title = '"Underorganisation med ' + data.record.statusSubProposal + ' förslag"';
-                                $imgChild = getImageTag(data.record.UnitId, "haschild_Y.png", title, TABLE_NAME_UNIT);
+                                $imgChild = getImageTag(data.record.Id, "haschild_Y.png", title, TABLE_NAME_UNIT);
                             }
                             else{
                                 title = '"Underorganisation"';
-                                $imgChild = getImageTag(data.record.UnitId, "haschild.png", title, TABLE_NAME_UNIT);
+                                $imgChild = getImageTag(data.record.Id, "haschild.png", title, TABLE_NAME_UNIT);
                             }
                         }
                         //var allOpenClasses = getChildOpenClassName(data, TABLE_NAME_UNIT) + getChildOpenClassName(data, TABLE_NAME_POS);
-                        var allOpenClasses = getUnitOpenClassName(data.record.UnitId) + getChildOpenClassName(data, TABLE_NAME_POS);
-                        var currentOpenClass = getUnitOpenClassName(data.record.UnitId);
+                        var allOpenClasses = getUnitOpenClassName(data.record.Id) + getChildOpenClassName(data, TABLE_NAME_POS);
+                        var currentOpenClass = getUnitOpenClassName(data.record.Id);
                         //var currentOpenClass = getChildOpenClassName(data, TABLE_NAME_UNIT);
 
                         $imgChild.click(data, function (event){
@@ -121,7 +121,7 @@ function unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                             $tr.addClass(currentOpenClass);
 
                             var childTableTitle = "Underenheter till: " + data.record.Name;
-                            $(tableViewId).jtable('openChildTable', $tr, unitTableDef(tableViewId, tablePath, data.record.UnitId, childTableTitle), function(data){
+                            $(tableViewId).jtable('openChildTable', $tr, unitTableDef(tableViewId, tablePath, data.record.Id, childTableTitle), function(data){
                                 data.childTable.jtable('load');
                                 updateParentUnit(tableViewId, event.data);
                             });
@@ -131,7 +131,7 @@ function unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                     $imgClose.click(data, function(event) {
                         var $tr = $imgClose.closest('tr'); 
                         $tr.removeClass(allOpenClasses);
-                        var $currentRow = $(tableViewId).jtable('getRowByKey', data.record.UnitId);
+                        var $currentRow = $(tableViewId).jtable('getRowByKey', data.record.Id);
                         $(tableViewId).jtable('closeChildTable', $currentRow, function(data){  
                             updateParentUnit(tableViewId, event.data);
                         });
@@ -154,7 +154,7 @@ function unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                 delete: false,
                 display: function(data){
                     childTableTitle = data.record.Name + " har följande positioner";
-                    return getAggregatedPosIcon(tableViewId, tablePath, data.record.UnitId, childTableTitle, data);
+                    return getAggregatedPosIcon(tableViewId, tablePath, data.record.Id, childTableTitle, data);
                 }
             },
             Prefix: {
@@ -214,17 +214,17 @@ function unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
         },
         recordUpdated: function (event, data){
             var table;
-            var UnitId = data.record.UnitId;
-            var parentUnitId = data.record.ParentTreeNode_FK;
+            var Id = data.record.Id;
+            var parentId = data.record.ParentTreeNode_FK;
             
-            if(parentUnitId > 0){
-                table = $(".UnitId_" + parentUnitId).closest('div.jtable-child-table-container');
+            if(parentId > 0){
+                table = $(".Id_" + parentId).closest('div.jtable-child-table-container');
     
                 if(table.length === 0) 
                     table = $(tableViewId);
     
                 var url =  '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php?selection=single_node';
-                var options = {record:{"UnitId": parentUnitId}, "clientOnly": false, "url":url};
+                var options = {record:{"Id": parentId}, "clientOnly": false, "url":url};
                 table.jtable('updateRecord', options);                                
             }        
             
@@ -238,7 +238,7 @@ function unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
 
         },  
         rowInserted: function(event, data){
-            data.row.addClass("UnitId_" + data.record.UnitId); 
+            data.row.addClass("Id_" + data.record.Id); 
             if (data.record.user_role !== 'edit' && data.record.user_role !== 'org'){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
@@ -278,10 +278,10 @@ function unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
 
 
 function updateParentUnit(tableViewId, data){
-    var id = data.record.UnitId;
+    var id = data.record.Id;
     
     var url =  '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php';
-    var options = {record:{"UnitId": id}, "clientOnly": false, "url":url};
+    var options = {record:{"Id": id}, "clientOnly": false, "url":url};
     $(tableViewId).jtable('updateRecord', options);                                    
 }
 

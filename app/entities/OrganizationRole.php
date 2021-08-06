@@ -8,7 +8,6 @@ class OrganizationRole extends SuperEntity{
     private $id;
     private $name;
     private $description;
-    private $unitTypeId;
     private $orgTreeNode_FK;
     private $roleType;
     
