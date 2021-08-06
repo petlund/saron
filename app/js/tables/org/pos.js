@@ -59,7 +59,7 @@ function posTableDef(tableViewId, parentTablePath, parentId,  childTableTitle){
                 edit: false,
                 create: false,
             },
-            PosId: {
+            Id: {
                 key: true,
                 list: false,
                 create: false
@@ -232,7 +232,7 @@ function posTableDef(tableViewId, parentTablePath, parentId,  childTableTitle){
             updateParentUnit(tableViewId, data);            
         },
         rowInserted: function(event, data){
-            data.row.addClass("PosId_" + data.record.PosId); 
+            data.row.addClass("Id_" + data.record.Id); 
             if (data.record.user_role !== 'edit' && data.record.user_role !== 'org'){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();

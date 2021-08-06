@@ -4,7 +4,7 @@ require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
 class OrganizationPos extends SuperEntity{
     
-    private $posId;
+    private $Id;
     private $comment;
     private $people_FK;
     private $function_FK;
@@ -17,7 +17,7 @@ class OrganizationPos extends SuperEntity{
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
         
-        $this->posId = (int)filter_input(INPUT_POST, "PosId", FILTER_SANITIZE_NUMBER_INT);
+        $this->Id = (int)filter_input(INPUT_POST, "Id", FILTER_SANITIZE_NUMBER_INT);
         $this->orgSuperPos_FK = (int)filter_input(INPUT_POST, "OrgSuperPos_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->prevPeople_FK = (int)filter_input(INPUT_POST, "PrevPeople_FK", FILTER_SANITIZE_NUMBER_INT);
 
@@ -86,10 +86,10 @@ class OrganizationPos extends SuperEntity{
 
     
     function selectDefault($idFromCreate = -1){
-        $id = $this->getId($idFromCreate, $this->posId);
+        $id = $this->getId($idFromCreate, $this->Id);
         $rec = RECORDS;
          
-        $select = "SELECT Pos.*, Tree.ParentTreeNode_FK, Tree.Id as Unit_Id, Role.Name, Role.RoleType, Pos.Id as PosId,  IF(Pos.Updated>Role.updated, Pos.Updated, Role.Updated) as LatestUpdated, ";
+        $select = "SELECT Pos.*, Tree.ParentTreeNode_FK, Tree.Id as Unit_Id, Role.Name, Role.RoleType, Pos.Id,  IF(Pos.Updated>Role.updated, Pos.Updated, Role.Updated) as LatestUpdated, ";
         $select.= "(Select SortOrder from `Org_Role-UnitType` as RUT WHERE  RUT.OrgRole_FK = Pos.OrgRole_FK and RUT.OrgUnitType_FK = Tree.OrgUnitType_FK) as SortOrder, ";
         $select.= getPersonSql("pPrev", "PrevPerson", true);
         $select.= $this->getTablePathSql();
@@ -147,7 +147,7 @@ class OrganizationPos extends SuperEntity{
     function selectPersonEngagement(){
         $rec = RECORDS;
 
-        $select = "SELECT *, Pos.Id as PosId, ";
+        $select = "SELECT *, Pos.Id as Id, ";
         $select.= "(Select count(*) from Org_Pos as CountPos where CountPos.People_FK = xref.People_FK2) as Cnt, ";
         $select.= $this->saronUser->getRoleSql(false) . " ";
         $from = "FROM Org_Pos as Pos ";
@@ -223,10 +223,10 @@ class OrganizationPos extends SuperEntity{
         $set.= "Function_FK=" . $this->function_FK . ", ";
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater=" . $this->saronUser->WP_ID . " ";
-        $where = "WHERE id=" . $this->posId;
+        $where = "WHERE id=" . $this->Id;
         $response = $this->db->update($update, $set, $where);
         
-        return $this->select($this->posId);
+        return $this->select($this->Id);
     }
 
     
@@ -238,14 +238,14 @@ class OrganizationPos extends SuperEntity{
         $set.= "People_FK=" . $this->people_FK . ", ";
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater=" . $this->saronUser->WP_ID . " ";
-        $where = "WHERE id=" . $this->posId;
+        $where = "WHERE id=" . $this->Id;
         $response = $this->db->update($update, $set, $where);
         
-        return $this->select($this->posId);
+        return $this->select($this->Id);
     }
 
     
     function delete(){
-        return  $this->db->delete("delete from Org_Pos where Id=" . $this->posId);
+        return  $this->db->delete("delete from Org_Pos where Id=" . $this->Id);
     }
 }

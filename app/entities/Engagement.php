@@ -7,7 +7,7 @@ require_once SARON_ROOT . 'app/entities/SaronUser.php';
 class Engagement extends SuperEntity{
     private $id;
     private $nodeId;
-    private $posId;
+    private $Id;
     private $orgRole_FK;
     private $orgPosStatus_FK;
     private $orgTreeNode_FK;
@@ -24,7 +24,7 @@ class Engagement extends SuperEntity{
         $this->filterType = (String)filter_input(INPUT_GET, "filterType", FILTER_SANITIZE_STRING);
 
         $this->nodeId = (int)filter_input(INPUT_GET, "NodeId", FILTER_SANITIZE_NUMBER_INT);
-        $this->posId = (int)filter_input(INPUT_POST, "PosId", FILTER_SANITIZE_NUMBER_INT);
+        $this->Id = (int)filter_input(INPUT_POST, "Id", FILTER_SANITIZE_NUMBER_INT);
         $this->orgRole_FK = (int)filter_input(INPUT_POST, "OrgRole_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->orgPosStatus_FK = (int)filter_input(INPUT_POST, "OrgPosStatus_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->orgTreeNode_FK = (int)filter_input(INPUT_POST, "Org_Tree_FK", FILTER_SANITIZE_NUMBER_INT);
