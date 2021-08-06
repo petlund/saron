@@ -44,7 +44,7 @@ function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitl
             updateAction: '/' + SARON_URI + 'app/web-api/updateOrganizationUnitType.php',
             deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationUnitType.php'
         },
-        fields: {
+        fields:{
             TablePath:{
                 list: true,
                 edit: false,
@@ -62,41 +62,30 @@ function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitl
                 create: false,
                 list: includedIn(tableViewId, TABLE_VIEW_UNITTYPE),
                 display: function(data){
+                    var childTableName = TABLE_NAME_UNIT;
+                    var childTableTitleUsedInUnit = 'Enhetstypen "' + data.record.Name + '" används för nedanstående organisatoriska enheter';                            
                     
                     var $imgChild = null;
                     if(data.record.UsedInUnit ===  "1"){
-                        $imgChild = getImageTag(data, "unit.png", "Används på följande ställen", TABLE_NAME_UNIT);
+                        $imgChild = getImageTag(data.record.Id, "unit.png", "Används på följande ställen", TABLE_NAME_UNIT);
 
-                        var allOpenClasses = getChildOpenClassName(data, TABLE_NAME_UNIT) + getChildOpenClassName(data, TABLE_NAME_ROLE);
-                        var currentOpenClass = getChildOpenClassName(data, TABLE_NAME_UNIT);
+                        var allOpenClasses = getAllClassNameOpenChild(data.record.Id);
+                        var currentOpenClass = getClassNameOpenChild(childTableName, data.record.Id);
 
                         $imgChild.click(data, function (event){
                             var $tr = $imgChild.closest('tr');
                             $tr.removeClass(allOpenClasses);
                             $tr.addClass(currentOpenClass);
 
-                            var childTableTitleUsedInUnit = 'Enhetstypen "' + data.record.Name + '" används för nedanstående organisatoriska enheter';                            
                             $(tableViewId).jtable('openChildTable', $tr, unitTableDef(tableViewId, tablePath,  data.record.Id, childTableTitleUsedInUnit), function(data){
                                 data.childTable.jtable('load');
                                 updateUnitTypeRecord(tableViewId, event.data);
                             });
                         });
-
-                        var $imgClose = getImageCloseTag(data, TABLE_NAME_UNITTYPE);
-                        $imgClose.click(data, function(event) {
-                            var $tr = $imgClose.closest('tr'); 
-                            $tr.removeClass(allOpenClasses);
-                            var $currentRow = $(tableViewId).jtable('getRowByKey', data.record.Id);
-                            $(tableViewId).jtable('closeChildTable', $currentRow, function(data){  
-                                updateUnitTypeRecord(tableViewId, event.data);
-                            });
-                        });     
-
-                        var isChildRowOpen = $("." + currentOpenClass).length > 0;
-                        if(isChildRowOpen)
-                            return $imgClose;
-                        else
-                            return $imgChild;
+                        
+                        var $imgClose = closeChildFunction(tableViewId, data.record.Id);
+                        
+                        return getChildNavIcon(childTableName, data.record.Id, $imgChild, $imgClose);
                     }
                     return null;
                 }
@@ -115,9 +104,9 @@ function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitl
                         return null;
 
                     if(data.record.HasPos === '0')
-                        $imgChild = getImageTag(data, "pos.png", "Inga roller", TABLE_NAME_ROLE);
+                        $imgChild = getImageTag(data.record.Id, "pos.png", "Inga roller", TABLE_NAME_ROLE);
                     else
-                        $imgChild = getImageTag(data, "haspos.png", "Har roller", TABLE_NAME_ROLE);
+                        $imgChild = getImageTag(data.record.Id, "haspos.png", "Har roller", TABLE_NAME_ROLE);
 
                     var allOpenClasses = getChildOpenClassName(data, TABLE_NAME_UNIT) + getChildOpenClassName(data, TABLE_NAME_ROLE);
                     var currentOpenClass = getChildOpenClassName(data, TABLE_NAME_ROLE);

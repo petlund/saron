@@ -273,24 +273,18 @@ function getURLParameter(parentId, tablePath, source, reultType){
 
 
 
-function getImageTag(data, imgFile, title, childTableName){
+function getImageTag(id, imgFile, title, childTableName){
     var src = '"/' + SARON_URI + SARON_IMAGES_URI + imgFile + '" title="' + title + '"';
-    var imageTag = _setImageClass(data.record, childTableName, src, data.record.Id);
+    var imageTag = _setImageClass(data.record, childTableName, src, id);
     return $(imageTag);
 }
 
-
-
-function getImageCloseTag(data, childTableName){
-    var src = '"/' + SARON_URI + SARON_IMAGES_URI + 'cross.png "title="Stäng"';
-    var imageTag = _setImageClass(data.record, childTableName, src, data.record.Id);
-    return $(imageTag);
-}
 
 
 function getChildOpenClassName(data, childTableName){
     return childTableName + '_is_open_' +  data.record.Id + ' ';
 }
+
 
 
 function getUnitOpenClassName(id){

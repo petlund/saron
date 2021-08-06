@@ -67,9 +67,9 @@ function roleTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                     
                     var $imgChild=null;                    
                     if(data.record.HasChild === '0')
-                        $imgChild = getImageTag(data, "unit_empty.png", "Inga organisatoriska enheter", TABLE_NAME_UNIT);
+                        $imgChild = getImageTag(data.record.Id, "unit_empty.png", "Inga organisatoriska enheter", TABLE_NAME_UNIT);
                     else
-                        $imgChild = getImageTag(data, "unit.png", "Organisatoriska enheter", TABLE_NAME_UNIT);
+                        $imgChild = getImageTag(data.record.Id, "unit.png", "Organisatoriska enheter", TABLE_NAME_UNIT);
                     
                     var allOpenClasses = getChildOpenClassName(data, TABLE_NAME_UNIT) + getChildOpenClassName(data, TABLE_NAME_UNITTYPE);
                     var currentOpenClass = getChildOpenClassName(data, TABLE_NAME_UNIT);
@@ -114,9 +114,9 @@ function roleTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                     var $imgChild;
 
                     if(data.record.HasChild === '0')
-                        $imgChild = getImageTag(data, "unittype.png", "Inga organisatoriska enhetstyper", TABLE_NAME_UNITTYPE);
+                        $imgChild = getImageTag(data.record.Id, "unittype.png", "Inga organisatoriska enhetstyper", TABLE_NAME_UNITTYPE);
                     else
-                        $imgChild = getImageTag(data, "used_unittype.png", "Organisatoriska enhetstyper", TABLE_NAME_UNITTYPE);
+                        $imgChild = getImageTag(data.record.Id, "used_unittype.png", "Organisatoriska enhetstyper", TABLE_NAME_UNITTYPE);
 
                     var allOpenClasses = getChildOpenClassName(data, TABLE_NAME_UNIT) + getChildOpenClassName(data, TABLE_NAME_UNITTYPE);
                     var currentOpenClass = getChildOpenClassName(data, TABLE_NAME_UNITTYPE);

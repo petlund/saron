@@ -90,24 +90,24 @@ function unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                         var $imgChild;
                         var title = "";
                         if(data.record.HasSubUnit === '0' || data.record.statusSubProposal === null  || data.record.statusSubVacant === null){
-                            $imgChild = getImageTag(data, "child.png", "Underorganisation", TABLE_NAME_UNIT);
+                            $imgChild = getImageTag(data.record.UnitId, "child.png", "Underorganisation", TABLE_NAME_UNIT);
                         }
                         else{
                             if(data.record.statusSubProposal > 0 && data.record.statusSubVacant > 0){
                                 title = '"Underorganisation med ' + data.record.statusSubProposal + ' förslag och ' + data.record.statusSubVacant + ' vakans(er)"';
-                                $imgChild = getImageTag(data, "haschild_YR.png", title, TABLE_NAME_UNIT);
+                                $imgChild = getImageTag(data.record.UnitId, "haschild_YR.png", title, TABLE_NAME_UNIT);
                             }
                             else if(data.record.statusSubProposal === "0" && data.record.statusSubVacant !== "0"){
                                 title = '"Underorganisation med ' + data.record.statusSubVacant + ' vakans(er)"';
-                                $imgChild = getImageTag(data, "haschild_R.png", title, TABLE_NAME_UNIT);
+                                $imgChild = getImageTag(data.record.UnitId, "haschild_R.png", title, TABLE_NAME_UNIT);
                             }
                             else if(data.record.statusSubProposal !== "0" && data.record.statusSubVacant === "0"){
                                 title = '"Underorganisation med ' + data.record.statusSubProposal + ' förslag"';
-                                $imgChild = getImageTag(data, "haschild_Y.png", title, TABLE_NAME_UNIT);
+                                $imgChild = getImageTag(data.record.UnitId, "haschild_Y.png", title, TABLE_NAME_UNIT);
                             }
                             else{
                                 title = '"Underorganisation"';
-                                $imgChild = getImageTag(data, "haschild.png", title, TABLE_NAME_UNIT);
+                                $imgChild = getImageTag(data.record.UnitId, "haschild.png", title, TABLE_NAME_UNIT);
                             }
                         }
                         //var allOpenClasses = getChildOpenClassName(data, TABLE_NAME_UNIT) + getChildOpenClassName(data, TABLE_NAME_POS);

@@ -30,6 +30,7 @@
     <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("util/", "menu.js");?>"></script>     
     <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("util/", "timeout.js");?>"></script>     
     <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("util/", "util.js");?>"></script>     
+    <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("util/", "tableNavigationUtil.js");?>"></script>     
     
     <link rel="stylesheet" type="text/css" href="/<?php echo SARON_URI;?>app/css/saron.css" />
 
