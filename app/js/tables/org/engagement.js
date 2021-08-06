@@ -226,15 +226,15 @@ function engagementTableDef(tableViewId, parentTablePath, parentId,  childTableT
                 options: function (data){
                     if(data.source === 'create'){
                         var parameters = getURLParameter(parentId, tablePath, SOURCE_CREATE, OPTIONS);
-                        return '/' + SARON_URI + 'app/web-api/listOrganizationStatus.php' + parameters;
+                        return '/' + SARON_URI + 'app/web-api/listOrganizationPosStatus.php' + parameters;
                     }
                     else if(data.source === 'edit'){
                         var parameters = getURLParameter(parentId, tablePath, SOURCE_EDIT, OPTIONS);
-                        return '/' + SARON_URI + 'app/web-api/listOrganizationStatus.php' + parameters;
+                        return '/' + SARON_URI + 'app/web-api/listOrganizationPosStatus.php' + parameters;
                     }
                     else{
                         var parameters = getURLParameter(parentId, tablePath, null, OPTIONS);
-                        return '/' + SARON_URI + 'app/web-api/listOrganizationStatus.php' + parameters; 
+                        return '/' + SARON_URI + 'app/web-api/listOrganizationPosStatus.php' + parameters; 
                     }
                 }
             },

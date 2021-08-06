@@ -1,15 +1,19 @@
-/* global DATE_FORMAT, SARON_URI, J_TABLE_ID, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID */
+/* global DATE_FORMAT, 
+SARON_URI, SARON_IMAGES_URI, 
+inputFormWidth, inputFormFieldWidth, 
+TABLE_VIEW_ORG_ROLE_STATUS, TABLE_NAME_ORG_ROLE_STATUS
+*/
+
 "use strict";
     
 $(document).ready(function () {
-    const ORG_ROLE_STATUS = "#ORG_ROLE_STATUS";
 
-    $(ORG_ROLE_STATUS).jtable(statusTableDef(ORG_ROLE_STATUS));
-    $(ORG_ROLE_STATUS).jtable('load');
+    $(TABLE_VIEW_ORG_ROLE_STATUS).jtable(statusTableDef(TABLE_VIEW_ORG_ROLE_STATUS));
+    $(TABLE_VIEW_ORG_ROLE_STATUS).jtable('load');
     }
 );
 
-function statusTableDef(tableId){
+function statusTableDef(tableViewId){
     return {
         title: 'Status',
         paging: true, //Enable paging
@@ -19,8 +23,8 @@ function statusTableDef(tableId){
         multiSorting: true,
         defaultSorting: 'Name', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationStatus.php',
-            updateAction: '/' + SARON_URI + 'app/web-api/updateOrganizationStatus.php',
+            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationPosStatus.php',
+            updateAction: '/' + SARON_URI + 'app/web-api/updateOrganizationPosStatus.php',
         },
         fields: {
             TablePath:{
@@ -67,7 +71,7 @@ function statusTableDef(tableId){
         },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === 'edit' || data.serverResponse.user_role === 'org'){ 
-                $(tableId).find('.jtable-toolbar-item-add-record').show();
+                $(tableViewId).find('.jtable-toolbar-item-add-record').show();
             }
         },        
         formCreated: function (event, data){

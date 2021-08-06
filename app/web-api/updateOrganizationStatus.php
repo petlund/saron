@@ -6,7 +6,7 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 require_once 'config.php'; 
 require_once SARON_ROOT . 'app/database/db.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
-require_once SARON_ROOT . 'app/entities/OrganizationStatus.php';
+require_once SARON_ROOT . 'app/entities/OrganizationPosStatus.php';
 
 
     try{
@@ -14,7 +14,7 @@ require_once SARON_ROOT . 'app/entities/OrganizationStatus.php';
         $db->transaction_begin();
         $saronUser = new SaronUser($db);
         $saronUser->hasValidSaronSession(REQUIRE_VIEWER_ROLE, REQUIRE_ORG_EDITOR_ROLE);
-        $status = new OrganizationStatus($db, $saronUser);
+        $status = new OrganizationPosStatus($db, $saronUser);
         $respons = $status->update();        
         $db->transaction_end();
                     

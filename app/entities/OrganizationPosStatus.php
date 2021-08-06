@@ -2,7 +2,7 @@
 require_once SARON_ROOT . 'app/entities/SuperEntity.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
-class OrganizationStatus extends SuperEntity{
+class OrganizationPosStatus extends SuperEntity{
     
     private $id;
     private $name;
@@ -77,7 +77,7 @@ class OrganizationStatus extends SuperEntity{
     function update(){
         $update = "UPDATE Org_PosStatus ";
         $set = "SET ";        
-        $set.= "Name='" . $this->name . "', ";        
+//        $set.= "Name='" . $this->name . "', ";        Is not editable
         $set.= "Description='" . $this->description . "', ";        
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater='" . $this->saronUser->WP_ID . "' ";

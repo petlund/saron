@@ -49,5 +49,12 @@ require_once SARON_ROOT . "app/util/GlobalConstants_php.php";
     echo "<script>const TABLE_VIEW_UNITTREE = '" .  "#" . TABLE_VIEW_UNITTREE . "';</script>";    
     echo "<script>const TABLE_NAME_UNITTREE = '" . TABLE_NAME_UNITTREE . "';</script>";
 
+    echo "<script>const TABLE_VIEW_ORGVERSION = '" .  "#" . TABLE_VIEW_ORGVERSION . "';</script>";    
+    echo "<script>const TABLE_NAME_ORGVERSION = '" . TABLE_NAME_ORGVERSION . "';</script>";
+
+    echo "<script>const TABLE_VIEW_ORG_ROLE_STATUS = '" .  "#" . TABLE_VIEW_ORG_ROLE_STATUS . "';</script>";    
+    echo "<script>const TABLE_NAME_ORG_ROLE_STATUS = '" . TABLE_NAME_ORG_ROLE_STATUS . "';</script>";
+
+ 
 
     

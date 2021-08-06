@@ -142,7 +142,7 @@ function posTableDef(tableViewId, parentTablePath, parentId,  childTableTitle){
                     var optionTablePath = tablePath + "/" + OPTIONS;
                     var parameters = '?ParentId=' + parentId + '&TablePath=' + optionTablePath + "&ResultType=" + OPTIONS;
 
-                    return '/' + SARON_URI + 'app/web-api/listOrganizationStatus.php' + parameters;
+                    return '/' + SARON_URI + 'app/web-api/listOrganizationPosStatus.php' + parameters;
                 }
             },
             Comment:{

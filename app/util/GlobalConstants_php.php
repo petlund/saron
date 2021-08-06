@@ -49,5 +49,10 @@
     Define("TABLE_VIEW_UNITTYPE",  "ORG_UNITTYPE");
     Define("TABLE_NAME_UNITTYPE", "table_unittype");
 
+    Define("TABLE_VIEW_ORGVERSION",  "ORG_VERSION");
+    Define("TABLE_NAME_UNITTYPE", "table_org_version");
+
+    Define("TABLE_VIEW_ORG_ROLE_STATUS",  "ORG_ROLE_STATUS");
+    Define("TABLE_NAME_ORG_ROLE_STATUS", "table_org_role_status");
 
     
