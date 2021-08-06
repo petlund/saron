@@ -273,7 +273,7 @@ function getURLParameter(parentId, tablePath, source, reultType){
 
 
 
-function getImageTag(id, imgFile, title, childTableName){
+function getImageTag(Id, imgFile, title, childTableName){
     var src = '"/' + SARON_URI + SARON_IMAGES_URI + imgFile + '" title="' + title + '"';
     var imageTag = _setImageClass(data.record, childTableName, src, id);
     return $(imageTag);

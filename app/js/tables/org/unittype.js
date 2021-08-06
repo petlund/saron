@@ -39,7 +39,7 @@ function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitl
         defaultSorting: 'Name', //Set default sorting        
         messages: {addNewRecord: 'Lägg till en ny typ av organisatorisk enhet.'},
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationUnitType.php?ParentId=' + parentId + '&TablePath=' + tablePath + "&ResultType=" + RECORDS,
+            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationUnitType.php' + getURLParameter(parentId, tablePath, SOURCE_LIST, RECORDS),
             createAction: '/' + SARON_URI + 'app/web-api/createOrganizationUnitType.php',
             updateAction: '/' + SARON_URI + 'app/web-api/updateOrganizationUnitType.php',
             deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationUnitType.php'

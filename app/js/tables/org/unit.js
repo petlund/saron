@@ -9,7 +9,8 @@ TABLE_VIEW_UNIT, TABLE_NAME_UNIT,
 TABLE_VIEW_POS, TABLE_NAME_POS,
 TABLE_VIEW_UNITLIST, TABLE_NAME_UNITLIST,
 TABLE_VIEW_UNITTREE, TABLE_NAME_UNITTREE,
-RECORDS, RECORD, OPTIONS
+RECORDS, RECORD, OPTIONS,
+SOURCE_LIST
  */
     
 "use strict";    
@@ -47,7 +48,7 @@ function unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
         defaultSorting: getDefaultUnitSorting(tableViewId), //Set default sorting        
         messages: {addNewRecord: 'Lägg till en ny organisatorisk enhet.'},
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php?ParentId=' + parentId + '&TablePath=' + tablePath + "&ResultType=" + RECORDS,
+            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php' + getURLParameter(parentId, tablePath, SOURCE_LIST, RECORDS),
             createAction: '/' + SARON_URI + 'app/web-api/createOrganizationUnit.php',
             updateAction: '/' + SARON_URI + 'app/web-api/updateOrganizationUnit.php',
             deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationUnit.php'

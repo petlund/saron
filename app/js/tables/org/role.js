@@ -41,7 +41,7 @@ function roleTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
         defaultSorting: 'Name', //Set default sorting        
         messages: {addNewRecord: 'Lägg till ny roll'},
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationRole.php?ParentId=' + parentId + '&TablePath=' + tablePath + "&ResultType=" + RECORDS,
+            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationRole.php' + getURLParameter(parentId, tablePath, SOURCE_LIST, RECORDS),
             createAction: '/' + SARON_URI + 'app/web-api/createOrganizationRole.php',
             updateAction: '/' + SARON_URI + 'app/web-api/updateOrganizationRole.php',  
             deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationRole.php'
