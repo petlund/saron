@@ -86,46 +86,29 @@ function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitl
                 edit: false,   
                 list: includedIn(tableViewId, TABLE_VIEW_UNITTYPE),
                 display: function(data){
-                    var $imgChild;
-                    
-                    if(data.record.PosEnabled !==  POS_ENABLED)
-                        return null;
+                    var childTableName = TABLE_NAME_ROLE;
+                    var childTableTitle = 'Enhetstypen "' + data.record.Name + '" har följande roller';
+                    var tooltip = "";
+                    var imgFile = "";
 
-                    if(data.record.HasPos === '0')
-                        $imgChild = getImageTag(data, "pos.png", "Inga roller", TABLE_NAME_ROLE);
-                    else
-                        $imgChild = getImageTag(data, "haspos.png", "Har roller", TABLE_NAME_ROLE);
+                    if(data.record.PosEnabled ===  POS_ENABLED){
 
-                    var allOpenClasses = getChildOpenClassName(data, TABLE_NAME_UNIT) + getChildOpenClassName(data, TABLE_NAME_ROLE);
-                    var currentOpenClass = getChildOpenClassName(data, TABLE_NAME_ROLE);
-
-                    $imgChild.click(data, function (event){
-                        var $tr = $imgChild.closest('tr');
-                        $tr.removeClass(allOpenClasses);
-                        $tr.addClass(currentOpenClass);
-
-                        var childTableTitleIncludedRole = 'Enhetstypen "' + data.record.Name + '" har följande roller';
-                        $(tableViewId).jtable('openChildTable', $tr, roleTableDef(tableViewId, tablePath, data.record.Id, childTableTitleIncludedRole ), function(data){
-                            data.childTable.jtable('load');
-                            updateUnitTypeRecord(tableViewId, event.data);
-                        });
-                    });
-                var $imgClose = getImageCloseTag(data, TABLE_NAME_ROLE);
-
-                $imgClose.click(data, function(event) {
-                    var $tr = $imgClose.closest('tr'); 
-                    $tr.removeClass(allOpenClasses);
-                    var $currentRow = $(tableViewId).jtable('getRowByKey', data.record.Id);
-                    $(tableViewId).jtable('closeChildTable', $currentRow, function(data){  
-                        updateUnitTypeRecord(tableViewId, event.data);
-                    });
-                });     
-
-                var isChildRowOpen = $("." + currentOpenClass).length > 0;
-                if(isChildRowOpen)
-                    return $imgClose;
-                else
-                    return $imgChild;
+                        if(data.record.HasPos === '0'){
+                            imgFile = "pos.png";
+                            tooltip = "Inga roller";
+                        }
+                        else{
+                            imgFile = "haspos.png";
+                            tooltip = "Enhetstypen har roller";
+                        }
+                        
+                        var childTable = roleTableDef(tableViewId, parentTablePath, parentId, childTableTitle);
+                        var $imgChild = openChildTable(data, tableViewId, childTable, listUri, imgFile, tooltip, childTableName);
+                        var $imgClose = closeChildTable(data, tableViewId, childTableName);
+                        
+                        return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
+                    }
+                    return null;
                 }
             },
             Name: {
