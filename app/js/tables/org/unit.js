@@ -10,7 +10,8 @@ TABLE_VIEW_POS, TABLE_NAME_POS,
 TABLE_VIEW_UNITLIST, TABLE_NAME_UNITLIST,
 TABLE_VIEW_UNITTREE, TABLE_NAME_UNITTREE,
 RECORDS, RECORD, OPTIONS,
-SOURCE_LIST
+SOURCE_LIST,
+POS_ENABLED
  */
     
 "use strict";    
@@ -132,8 +133,42 @@ function unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                 create: false,
                 delete: false,
                 display: function(data){
-                    childTableTitle = data.record.Name + " har följande positioner";
-                    return getAggregatedPosIcon(tableViewId, tablePath, data.record.Id, childTableTitle, data);
+                    var childTableName = TABLE_NAME_POS;
+                    var childTableTitle = data.record.Name + " har följande positioner";
+                    var tooltip = "";
+                    var imgFile = "";         
+                    
+                    if(data.record.PosEnabled === POS_ENABLED){
+                        var src;
+                        if(data.record.HasPos === '0'){
+                            imgFile = 'unit_empty.png';
+                            tooltip = "Inga positioner";
+                        }
+                        else{
+                            if(data.record.statusProposal !== "0" && data.record.statusVacant !== "0"){
+                                imgFile = 'unit_YR.png';
+                                tooltip = data.record.statusProposal + ' Förslag och ' + data.record.statusVacant + ' vakans(er) på position(er)';
+                            }
+                            else if(data.record.statusProposal === "0" && data.record.statusVacant !== "0"){
+                                imgFile = 'unit_R.png'; 
+                                tooltip = data.record.statusVacant + ' Vakans(er) på position(er)';
+                            }
+                            else if(data.record.statusProposal !== "0" && data.record.statusVacant === "0"){
+                                imgFile = 'unit_Y.png'; 
+                                tooltip = data.record.statusProposal + ' Förslag på position(er)';
+                            }
+                            else{
+                                imgFile = 'unit.png" title="Bemannade positioner"';
+                            }
+                        }
+
+                        var childTableDef = posTableDef(tableViewId, tablePath, data.record.Id, childTableTitle);
+                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, listUri);
+                        var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
+                        
+                        return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
+                    }
+                    return null;
                 }
             },
             Prefix: {
@@ -198,7 +233,7 @@ function unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
             
             if(parentId > 0){
                 table = $(".Id_" + parentId).closest('div.jtable-child-table-container');
-    
+            
                 if(table.length === 0) 
                     table = $(tableViewId);
     

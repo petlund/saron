@@ -70,8 +70,8 @@ function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitl
                     
                     if(data.record.UsedInUnit ===  "1"){
                         var childTableDef = unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle);
-                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, listUri);
-                        var $imgClose = closeChildTable(data, tableViewId, childTableName, listUri);
+                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, listUri);
+                        var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
                         
                         return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                     }
@@ -103,8 +103,8 @@ function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitl
                         }
                         
                         var childTableDef = roleTableDef(tableViewId, parentTablePath, parentId, childTableTitle);
-                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, listUri);
-                        var $imgClose = closeChildTable(data, tableViewId, childTableName, listUri);
+                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, listUri);
+                        var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
                         
                         return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                     }
