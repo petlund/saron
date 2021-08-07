@@ -7,33 +7,33 @@ ORG
 "use strict";
 const is_open = "_is_open_";
 
-function openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, listParentRowUrl){
-    var $imgChild = getImageTag(data, imgFile, tooltip, childTableName);
+function openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, type, listParentRowUrl){
+    var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
 
     $imgChild.click(data, function (event){
         var $tr = $imgChild.closest('tr');
         $tr.removeClass(getAllClassNameOpenChild(data));
         $tr.addClass(getClassNameOpenChild(data, childTableName ));
 
-        $(tableViewId).jtable('openChildTable', $tr, childTableDef, function(data){
-            data.childTable.jtable('load');
-            updateParentRow(event, tableViewId, listParentRowUrl);        
+        $(tableViewId).jtable('openChildTable', $tr, childTableDef, function(childData){
+            childData.childTable.jtable('load');
+            updateParentRow(data, tableViewId, childTableName, listParentRowUrl);        
+            });
         });
-    });
     return $imgChild;
     
 }
 
 
 
-function closeChildTable(data, tableViewId, childTableName, listParentRowUrl){
-    var $imgClose = getImageCloseTag(data, childTableName);
+function closeChildTable(data, tableViewId, childTableName, type, listParentRowUrl){
+    var $imgClose = getImageCloseTag(data, childTableName, type);
     $imgClose.click(data, function(event) {
         var $tr = $imgClose.closest('tr'); 
         $tr.removeClass(getAllClassNameOpenChild(data));
-        var $currentRow = $(tableViewId).jtable('getRowByKey', data.record.Id);
-        $(tableViewId).jtable('closeChildTable', $currentRow, function(data){  
-            updateParentRow(event, tableViewId, listParentRowUrl);        
+        var table = getTableById(data, tableViewId, childTableName);        
+        table.jtable('closeChildTable', $tr, function(){  
+            updateParentRow(data, tableViewId, childTableName, listParentRowUrl);        
         });
     });    
     return $imgClose;
@@ -41,16 +41,28 @@ function closeChildTable(data, tableViewId, childTableName, listParentRowUrl){
 
 
 
-function updateParentRow(event, tableViewId, listParentRowUrl){
-        var url = '/' + SARON_URI + listParentRowUrl;
-        var options = {record:{"Id": event.data.record.Id}, "clientOnly": false, "url":url};
-        $(tableViewId).jtable('updateRecord', options);    
+function updateParentRow(data, tableViewId, childTableName, listParentRowUrl){
+    var url = '/' + SARON_URI + listParentRowUrl;
+    var options = {record:{"Id": data.record.Id}, "clientOnly": false, "url":url};
+    var table = getTableById(data, tableViewId, childTableName);
+    table.jtable('updateRecord', options);    
 }
 
 
-function getImageCloseTag(data, childTableName){
+
+function getTableById(data, tableViewId, childTableName){
+//    var table = $(".Id_" + data.record.Id).closest('div.jtable-child-table-container');
+    var table = $("." + _getClassName_Id(data, childTableName, ORG)).closest('div.jtable-child-table-container');
+    if(table.length === 0) 
+        table = $(tableViewId);
+
+    return table;
+}
+
+
+function getImageCloseTag(data, childTableName, type){
     var src = '"/' + SARON_URI + SARON_IMAGES_URI + 'cross.png "title="Stäng"';
-    var imageTag = _setImageClass(data, childTableName, src, ORG);
+    var imageTag = _setImageClass(data, childTableName, src, type);
     return $(imageTag);
 }
 

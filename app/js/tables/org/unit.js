@@ -116,8 +116,8 @@ function unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                             }
                         }
                         var childTableDef = unitTableDef(tableViewId, tablePath, data.record.Id, childTableTitle);
-                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, listUri);
-                        var $imgClose = closeChildTable(data, tableViewId, childTableName, listUri);
+                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, listUri);
+                        var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
                         
                         return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                     }

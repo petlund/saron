@@ -14,6 +14,7 @@ class OrganizationStructure extends SuperEntity{
     private $orgUnitType_FK;
     private $orgRole_FK;
     private $selectionId;
+    private $x;
     
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
@@ -28,7 +29,11 @@ class OrganizationStructure extends SuperEntity{
         $this->newParentTreeNode_FK = (int)filter_input(INPUT_POST, "ParentTreeNode_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->parentTreeNode_FK = (int)filter_input(INPUT_GET, "ParentTreeNode_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->selectionId = (int)filter_input(INPUT_GET, "SelectionId", FILTER_SANITIZE_NUMBER_INT);
-    
+
+        $this->x = (String)filter_input(INPUT_GET, "x", FILTER_SANITIZE_STRING);
+        
+        $x = $x + 1;
+
     }
     
     

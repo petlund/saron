@@ -273,9 +273,9 @@ function getURLParameter(parentId, tablePath, source, reultType){
 
 
 
-function getImageTag(data, imgFile, title, childTableName){
+function getImageTag(data, imgFile, title, childTableName, type){
     var src = '"/' + SARON_URI + SARON_IMAGES_URI + imgFile + '" title="' + title + '"';
-    var imageTag = _setImageClass(data, childTableName, src, ORG);
+    var imageTag = _setImageClass(data, childTableName, src, type);
     return $(imageTag);
 }
 
