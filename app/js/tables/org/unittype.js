@@ -40,7 +40,7 @@ function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitl
         defaultSorting: 'Name', //Set default sorting        
         messages: {addNewRecord: 'Lägg till en ny typ av organisatorisk enhet.'},
         actions: {
-            listAction:   '/' + SARON_URI + listUri + getURLParameter(parentId, tablePath, SOURCE_LIST, RECORDS),
+            listAction:   '/' + SARON_URI + listUri + getURLParameter(parentId, tablePath, null, RECORDS),
             createAction: '/' + SARON_URI + 'app/web-api/createOrganizationUnitType.php',
             updateAction: '/' + SARON_URI + 'app/web-api/updateOrganizationUnitType.php',
             deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationUnitType.php'
@@ -69,9 +69,9 @@ function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitl
                     var imgFile = "unit.png";
                     
                     if(data.record.UsedInUnit ===  "1"){
-                        var childTable = unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle);
-                        var $imgChild = openChildTable(data, tableViewId, childTable, listUri, imgFile, tooltip, childTableName);
-                        var $imgClose = closeChildTable(data, tableViewId, childTableName);
+                        var childTableDef = unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle);
+                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, listUri);
+                        var $imgClose = closeChildTable(data, tableViewId, childTableName, listUri);
                         
                         return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                     }
@@ -102,9 +102,9 @@ function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitl
                             tooltip = "Enhetstypen har roller";
                         }
                         
-                        var childTable = roleTableDef(tableViewId, parentTablePath, parentId, childTableTitle);
-                        var $imgChild = openChildTable(data, tableViewId, childTable, listUri, imgFile, tooltip, childTableName);
-                        var $imgClose = closeChildTable(data, tableViewId, childTableName);
+                        var childTableDef = roleTableDef(tableViewId, parentTablePath, parentId, childTableTitle);
+                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, listUri);
+                        var $imgClose = closeChildTable(data, tableViewId, childTableName, listUri);
                         
                         return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                     }

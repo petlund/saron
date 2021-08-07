@@ -16,6 +16,7 @@ SOURCE_LIST
 "use strict";    
 
 function unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
+    const listUri = 'app/web-api/listOrganizationUnit.php';
     var tableName = "";
     if(tableViewId === TABLE_VIEW_UNITTREE)
         tableName = TABLE_NAME_UNITTREE;
@@ -48,7 +49,7 @@ function unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
         defaultSorting: getDefaultUnitSorting(tableViewId), //Set default sorting        
         messages: {addNewRecord: 'Lägg till en ny organisatorisk enhet.'},
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php' + getURLParameter(parentId, tablePath, SOURCE_LIST, RECORDS),
+            listAction:   '/' + SARON_URI + listUri + getURLParameter(parentId, tablePath, null, RECORDS),
             createAction: '/' + SARON_URI + 'app/web-api/createOrganizationUnit.php',
             updateAction: '/' + SARON_URI + 'app/web-api/updateOrganizationUnit.php',
             deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationUnit.php'
@@ -69,8 +70,7 @@ function unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                 create: true,
                 title: 'Överordna verksamhet',
                 options: function(data) {
-                    var optionTablePath = tablePath + "/" + OPTIONS;
-                    var parameters = '?ParentId=' + parentId + '&TablePath=' + optionTablePath + "&ResultType=" + OPTIONS;
+                    var parameters = getURLParameter(parentId, tablePath, null, OPTIONS);
                     if(data.source !== 'list'){
                         data.clearCache();
                     } 
@@ -87,63 +87,41 @@ function unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                 list: includedIn(tableViewId, TABLE_VIEW_UNITTREE),
                 
                 display: function (data) {
+                    var childTableName = TABLE_NAME_UNITTREE;
+                    var childTableTitle = 'Enhetstypen "' + data.record.Name + '" har följande roller';
+                    var tooltip = "";
+                    var imgFile = "";
+
                     if(data.record.SubUnitEnabled === SUBUNIT_ENABLED){
-                        var $imgChild;
-                        var title = "";
                         if(data.record.HasSubUnit === '0' || data.record.statusSubProposal === null  || data.record.statusSubVacant === null){
-                            $imgChild = getImageTag(data.record.Id, "child.png", "Underorganisation", TABLE_NAME_UNIT);
+                            tooltip = "Underorganisation";
+                            imgFile = "child.png";
                         }
                         else{
                             if(data.record.statusSubProposal > 0 && data.record.statusSubVacant > 0){
-                                title = '"Underorganisation med ' + data.record.statusSubProposal + ' förslag och ' + data.record.statusSubVacant + ' vakans(er)"';
-                                $imgChild = getImageTag(data.record.Id, "haschild_YR.png", title, TABLE_NAME_UNIT);
+                                tooltip = 'Underorganisation med ' + data.record.statusSubProposal + ' förslag och ' + data.record.statusSubVacant + ' vakans(er)';
+                                imgFile = "haschild_YR.png";
                             }
                             else if(data.record.statusSubProposal === "0" && data.record.statusSubVacant !== "0"){
-                                title = '"Underorganisation med ' + data.record.statusSubVacant + ' vakans(er)"';
-                                $imgChild = getImageTag(data.record.Id, "haschild_R.png", title, TABLE_NAME_UNIT);
+                                tooltip = 'Underorganisation med ' + data.record.statusSubVacant + ' vakans(er)';
+                                imgFile = "haschild_R.png";
                             }
                             else if(data.record.statusSubProposal !== "0" && data.record.statusSubVacant === "0"){
-                                title = '"Underorganisation med ' + data.record.statusSubProposal + ' förslag"';
-                                $imgChild = getImageTag(data.record.Id, "haschild_Y.png", title, TABLE_NAME_UNIT);
+                                tooltip = 'Underorganisation med ' + data.record.statusSubProposal + ' förslag';
+                                imgFile = "haschild_Y.png";
                             }
                             else{
-                                title = '"Underorganisation"';
-                                $imgChild = getImageTag(data.record.Id, "haschild.png", title, TABLE_NAME_UNIT);
+                                tooltip = "Underorganisation";
+                                imgFile =  "haschild.png";
                             }
                         }
-                        //var allOpenClasses = getChildOpenClassName(data, TABLE_NAME_UNIT) + getChildOpenClassName(data, TABLE_NAME_POS);
-                        var allOpenClasses = getUnitOpenClassName(data.record.Id) + getChildOpenClassName(data, TABLE_NAME_POS);
-                        var currentOpenClass = getUnitOpenClassName(data.record.Id);
-                        //var currentOpenClass = getChildOpenClassName(data, TABLE_NAME_UNIT);
-
-                        $imgChild.click(data, function (event){
-                            var $tr = $imgChild.closest('tr');
-                            $tr.removeClass(allOpenClasses);
-                            $tr.addClass(currentOpenClass);
-
-                            var childTableTitle = "Underenheter till: " + data.record.Name;
-                            $(tableViewId).jtable('openChildTable', $tr, unitTableDef(tableViewId, tablePath, data.record.Id, childTableTitle), function(data){
-                                data.childTable.jtable('load');
-                                updateParentUnit(tableViewId, event.data);
-                            });
-                        });
-                    var $imgClose = getImageCloseTag(data, TABLE_NAME_ROLE);
-
-                    $imgClose.click(data, function(event) {
-                        var $tr = $imgClose.closest('tr'); 
-                        $tr.removeClass(allOpenClasses);
-                        var $currentRow = $(tableViewId).jtable('getRowByKey', data.record.Id);
-                        $(tableViewId).jtable('closeChildTable', $currentRow, function(data){  
-                            updateParentUnit(tableViewId, event.data);
-                        });
-                    });     
-
-                    var isChildRowOpen = $("." + currentOpenClass).length > 0;
-                    if(isChildRowOpen)
-                        return $imgClose;
-                    else
-                        return $imgChild;
+                        var childTableDef = unitTableDef(tableViewId, tablePath, data.record.Id, childTableTitle);
+                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, listUri);
+                        var $imgClose = closeChildTable(data, tableViewId, childTableName, listUri);
+                        
+                        return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                     }
+                    return null;
                 }
             },
             PosEnabled: {

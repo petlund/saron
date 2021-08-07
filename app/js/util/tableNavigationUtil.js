@@ -7,7 +7,7 @@ ORG
 "use strict";
 const is_open = "_is_open_";
 
-function openChildTable(data, tableViewId, childTable, listParentRowUrl, imgFile, tooltip, childTableName){
+function openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, listParentRowUrl){
     var $imgChild = getImageTag(data, imgFile, tooltip, childTableName);
 
     $imgChild.click(data, function (event){
@@ -15,12 +15,9 @@ function openChildTable(data, tableViewId, childTable, listParentRowUrl, imgFile
         $tr.removeClass(getAllClassNameOpenChild(data));
         $tr.addClass(getClassNameOpenChild(data, childTableName ));
 
-        $(tableViewId).jtable('openChildTable', $tr, childTable, function(data){
+        $(tableViewId).jtable('openChildTable', $tr, childTableDef, function(data){
             data.childTable.jtable('load');
-            //update parent row
-            var url = '/' + SARON_URI + listParentRowUrl;
-            var options = {record:{"Id": event.data.record.Id}, "clientOnly": false, "url":url};
-            $(tableViewId).jtable('updateRecord', options);
+            updateParentRow(event, tableViewId, listParentRowUrl);        
         });
     });
     return $imgChild;
@@ -29,19 +26,26 @@ function openChildTable(data, tableViewId, childTable, listParentRowUrl, imgFile
 
 
 
-function closeChildTable(data, tableViewId, childTableName){
+function closeChildTable(data, tableViewId, childTableName, listParentRowUrl){
     var $imgClose = getImageCloseTag(data, childTableName);
     $imgClose.click(data, function(event) {
         var $tr = $imgClose.closest('tr'); 
         $tr.removeClass(getAllClassNameOpenChild(data));
         var $currentRow = $(tableViewId).jtable('getRowByKey', data.record.Id);
         $(tableViewId).jtable('closeChildTable', $currentRow, function(data){  
-            updateUnitTypeRecord(tableViewId, event.data);
+            updateParentRow(event, tableViewId, listParentRowUrl);        
         });
     });    
     return $imgClose;
 }
 
+
+
+function updateParentRow(event, tableViewId, listParentRowUrl){
+        var url = '/' + SARON_URI + listParentRowUrl;
+        var options = {record:{"Id": event.data.record.Id}, "clientOnly": false, "url":url};
+        $(tableViewId).jtable('updateRecord', options);    
+}
 
 
 function getImageCloseTag(data, childTableName){

@@ -92,7 +92,7 @@ function posTableDef(tableViewId, parentTablePath, parentId,  childTableTitle){
                                 src = '"/' + SARON_URI + SARON_IMAGES_URI + 'pos.png" title="Tillsätts ej"';
                         }
                     }
-                    var imgTag = _setImageClass(data.record, TABLE_NAME_ROLE, src, -1);
+                    var imgTag = _setImageClass(data, TABLE_NAME_ROLE, src, -1);
                     var $imgRole = $(imgTag);
                     return $imgRole;
                 }                
