@@ -17,6 +17,7 @@ RECORDS, RECORD, OPTIONS, SOURCE_LIST, SOURCE_CREATE, SOURCE_EDIT
 
 $(document).ready(function () {
         $(TABLE_VIEW_POS).jtable(posTableDef(TABLE_VIEW_POS, null, -1, null));
+        var options = getPostData(TABLE_VIEW_POS, null, TABLE_NAME_POS, null, RECORDS);
         $(TABLE_VIEW_POS).jtable('load');
     }
 );
@@ -109,41 +110,44 @@ function posTableDef(tableViewId, parentTablePath, parentId,  childTableTitle){
                 create: false,
                 edit: false,
                 list: includedIn(tableViewId, TABLE_VIEW_POS),
-                title: "Organisatorisk enhet",
-                options: function(data){
-                    var optionTablePath = tablePath + "/" + OPTIONS;
-                    var parameters = '?ParentId=' + parentId + '&TablePath=' + optionTablePath + "&ResultType=" + OPTIONS;
-                    
-                    if(data.source !== 'list')
-                        data.clearCache();
-
-                    return '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php' + parameters;
-                    }
+                title: "Organisatorisk enhet"
+//                ,
+//                options: function(data){
+//                    var optionTablePath = tablePath + "/" + OPTIONS;
+//                    var parameters = '?ParentId=' + parentId + '&TablePath=' + optionTablePath + "&ResultType=" + OPTIONS;
+//                    
+//                    if(data.source !== 'list')
+//                        data.clearCache();
+//
+//                    return '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php' + parameters;
+//                    }
             },            
             OrgRole_FK: {
                 width: '10%',
                 title: 'Roll',
-                edit: true,
-                options: function(data){
-                    var optionTablePath = tablePath + "/" + OPTIONS;
-                    var parameters = '?ParentId=' + parentId + '&TablePath=' + optionTablePath + "&ResultType=" + OPTIONS;
-
-                    if(data.source !== 'list')
-                        data.clearCache();
-
-                    return '/' + SARON_URI + 'app/web-api/listOrganizationRole.php' + parameters;
-                    }
+                edit: true
+//                ,
+//                options: function(data){
+//                    var optionTablePath = tablePath + "/" + OPTIONS;
+//                    var parameters = '?ParentId=' + parentId + '&TablePath=' + optionTablePath + "&ResultType=" + OPTIONS;
+//
+//                    if(data.source !== 'list')
+//                        data.clearCache();
+//
+//                    return '/' + SARON_URI + 'app/web-api/listOrganizationRole.php' + parameters;
+//                    }
             },
             OrgPosStatus_FK: {
                 width: '5%',
                 title: 'Status',
-                defaultValue: '4',
-                options: function(data){
-                    var optionTablePath = tablePath + "/" + OPTIONS;
-                    var parameters = '?ParentId=' + parentId + '&TablePath=' + optionTablePath + "&ResultType=" + OPTIONS;
-
-                    return '/' + SARON_URI + 'app/web-api/listOrganizationPosStatus.php' + parameters;
-                }
+                defaultValue: '4'
+//                ,
+//                options: function(data){
+//                    var optionTablePath = tablePath + "/" + OPTIONS;
+//                    var parameters = '?ParentId=' + parentId + '&TablePath=' + optionTablePath + "&ResultType=" + OPTIONS;
+//
+//                    return '/' + SARON_URI + 'app/web-api/listOrganizationPosStatus.php' + parameters;
+//                }
             },
             Comment:{
                 width: '10%',
@@ -154,27 +158,29 @@ function posTableDef(tableViewId, parentTablePath, parentId,  childTableTitle){
                 title: 'Ansvarig person',
                 create: true,
                 edit: true,
-                list: false,
-                options: function(data){
-                    var filterDef = "&filter=true";
-                    var filter = "";
-                    if(data.source !== 'list'){
-                        data.clearCache();
-                        filter = filterDef;
-                    }
-                    return '/' + SARON_URI + 'app/web-api/listPeople.php?selection=options' + filter;
-                }
+                list: false
+//                ,
+//                options: function(data){
+//                    var filterDef = "&filter=true";
+//                    var filter = "";
+//                    if(data.source !== 'list'){
+//                        data.clearCache();
+//                        filter = filterDef;
+//                    }
+//                    return '/' + SARON_URI + 'app/web-api/listPeople.php?selection=options' + filter;
+//                }
             },
             Function_FK: {
                 title: 'Alternativt funktionsansvar',
                 create: true,
                 edit: true,
-                list: false,
-                options: function(){
-                    var optionTablePath = tablePath + "/" + OPTIONS;
-                    var parameters = '?ParentId=' + parentId + '&TablePath=' + optionTablePath + "&ResultType=" + OPTIONS;
-                    return '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php' + parameters;
-                }
+                list: false
+//                ,
+//                options: function(){
+//                    var optionTablePath = tablePath + "/" + OPTIONS;
+//                    var parameters = '?ParentId=' + parentId + '&TablePath=' + optionTablePath + "&ResultType=" + OPTIONS;
+//                    return '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php' + parameters;
+//                }
             },
             Responsible: {
                 create: false,

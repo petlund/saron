@@ -16,7 +16,7 @@ RECORDS, RECORD, OPTIONS, SOURCE_LIST, SOURCE_CREATE, SOURCE_EDIT
     
 $(document).ready(function () {
 
-    $(TABLE_VIEW_ENGAGEMENT).jtable(peopleEngagementTableDef(TABLE_VIEW_ENGAGEMENT, null, -1, null));
+    $(TABLE_VIEW_ENGAGEMENT).jtable(peopleEngagementTableDef(TABLE_VIEW_ENGAGEMENT));
     $(TABLE_VIEW_ENGAGEMENT).jtable('load');
     $(TABLE_VIEW_ENGAGEMENT).find('.jtable-toolbar-item-add-record').hide();
 });
@@ -31,11 +31,10 @@ function filterPeople(viewId){
 }
 
 
-function peopleEngagementTableDef(tableViewId, parentTablePath, parentId,  childTableTitle){
+function peopleEngagementTableDef(tableViewId){
+    const listUri = 'app/web-api/listEngagement.php';
     const tableName = TABLE_NAME_ENGAGEMENT;
     var tablePath = tableName;
-    if(parentTablePath !== null)
-        tablePath = parentTablePath + "/" + tableName;
  
     return {
         title: 'Personer',
@@ -47,7 +46,7 @@ function peopleEngagementTableDef(tableViewId, parentTablePath, parentId,  child
         defaultSorting: 'Name', //Set default sorting        
         messages: {addNewRecord: 'Tilldela personen ett vakant uppdrag'},
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listEngagement.php'
+            listAction:   '/' + SARON_URI + listUri,
         },
         fields: {
             TablePath:{
@@ -63,25 +62,25 @@ function peopleEngagementTableDef(tableViewId, parentTablePath, parentId,  child
                 width: '1%',
                 sorting: false,
                 display: function(data){
-                    var src;
-                    if(data.record.Engagement ===  null)
-                        src = '"/' + SARON_URI + SARON_IMAGES_URI + 'pos.png" title="Inga upppdrag"';
-                    else
-                        src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haspos.png" title="Uppdragslista"';
-                    
-                    var imgTag = _setImageClass(data.record, TABLE_NAME_ENGAGEMENT, src, -1);
-                    var $imgChild = $(imgTag);
+                    var childTableName = TABLE_NAME_UNITTREE;
+                    var childTableTitle = data.record.Name + '" har nedanstående uppdrag';
+                    var tooltip = "";
+                    var imgFile = "";
 
-                    $imgChild.click(data, function (event){
-                        var $tr = $imgChild.closest('tr');
-                        var childTableTitle = data.record.Name + '" har nedanstående uppdrag';
-                        var parentId = data.record.Id;
-                        
-                        $(tableViewId).jtable('openChildTable', $tr, engagementTableDef(tableViewId, tablePath, parentId,  childTableTitle), function(data){
-                            data.childTable.jtable('load');
-                        });
-                    });
-                    return $imgChild;
+                    if(data.record.Engagement ===  null){
+                        tooltip = 'Inga uppdrag';
+                        imgFile = "pos.png";
+                    }
+                    else{
+                        tooltip = 'Uppdragslista';
+                        imgFile = "haspos.png";
+                    }                    
+
+                    var childTableDef = engagementTableDef(tableViewId, data.record.Id, tablePath, childTableTitle);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, listUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
+
+                    return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                 }
             },
             Name: {
@@ -94,7 +93,7 @@ function peopleEngagementTableDef(tableViewId, parentTablePath, parentId,  child
             Email: {
                 title: 'Mail',
                 display: function (data){
-                    return _setMailClassAndValue(data.record, "Email", '', PERSON);
+                    return _setMailClassAndValue(data, "Email", '', PERSON);
                 }       
             },
             Mobile: {
@@ -141,7 +140,7 @@ function peopleEngagementTableDef(tableViewId, parentTablePath, parentId,  child
 
 
 
-function engagementTableDef(tableViewId, parentTablePath, parentId,  childTableTitle){
+function engagementTableDef(tableViewId, parentId, parentTablePath, childTableTitle){
     const tableName = TABLE_NAME_POS;
     var tablePath = tableName;
     if(parentTablePath !== null)
@@ -206,37 +205,42 @@ function engagementTableDef(tableViewId, parentTablePath, parentId,  childTableT
                 title: 'Position',
                 width: '25%',                
                 create: true,
-                key: true,
-                options: function (data){
-                    if(data.source === 'list'){
-                        var parameters = getURLParameter(parentId, tablePath, SOURCE_LIST, OPTIONS);
-                        return '/' + SARON_URI + 'app/web-api/listOrganizationPos.php' + parameters;
-                    }
-                    else{
-                        data.clearCache();
-                        var parameters = getURLParameter(parentId, tablePath, null, OPTIONS);
-                        return '/' + SARON_URI + 'app/web-api/listOrganizationPos.php' + parameters;
-                    }
-                }
+                key: true
+//                ,
+//                options: function (data){
+//                    if(data.source === 'list'){
+//                        var parameters = getURLParameter(parentId, tablePath, SOURCE_LIST, OPTIONS);
+//                        return '/' + SARON_URI + 'app/web-api/listOrganizationPos.php' + parameters;
+//                    }
+//                    else{
+//                        data.clearCache();
+//                        var parameters = getURLParameter(parentId, tablePath, null, OPTIONS);
+//                        return '/' + SARON_URI + 'app/web-api/listOrganizationPos.php' + parameters;
+//                    }
+//                }
+            },
+            ParentId:{
+                
             },
             OrgPosStatus_FK: {
                 title: 'Status',
                 width: '10%',
-                defaultValue: 2,
-                options: function (data){
-                    if(data.source === 'create'){
-                        var parameters = getURLParameter(parentId, tablePath, SOURCE_CREATE, OPTIONS);
-                        return '/' + SARON_URI + 'app/web-api/listOrganizationPosStatus.php' + parameters;
-                    }
-                    else if(data.source === 'edit'){
-                        var parameters = getURLParameter(parentId, tablePath, SOURCE_EDIT, OPTIONS);
-                        return '/' + SARON_URI + 'app/web-api/listOrganizationPosStatus.php' + parameters;
-                    }
-                    else{
-                        var parameters = getURLParameter(parentId, tablePath, null, OPTIONS);
-                        return '/' + SARON_URI + 'app/web-api/listOrganizationPosStatus.php' + parameters; 
-                    }
-                }
+                defaultValue: 2
+//                ,
+//                options: function (data){
+//                    if(data.source === 'create'){
+//                        var parameters = getURLParameter(parentId, tablePath, SOURCE_CREATE, OPTIONS);
+//                        return '/' + SARON_URI + 'app/web-api/listOrganizationPosStatus.php' + parameters;
+//                    }
+//                    else if(data.source === 'edit'){
+//                        var parameters = getURLParameter(parentId, tablePath, SOURCE_EDIT, OPTIONS);
+//                        return '/' + SARON_URI + 'app/web-api/listOrganizationPosStatus.php' + parameters;
+//                    }
+//                    else{
+//                        var parameters = getURLParameter(parentId, tablePath, null, OPTIONS);
+//                        return '/' + SARON_URI + 'app/web-api/listOrganizationPosStatus.php' + parameters; 
+//                    }
+//                }
             },
             
             Comment:{

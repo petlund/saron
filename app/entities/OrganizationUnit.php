@@ -23,17 +23,14 @@ class OrganizationStructure extends SuperEntity{
         $this->prefix = (String)filter_input(INPUT_POST, "Prefix", FILTER_SANITIZE_STRING);
         $this->name = (String)filter_input(INPUT_POST, "Name", FILTER_SANITIZE_STRING);
         $this->description = (String)filter_input(INPUT_POST, "Description", FILTER_SANITIZE_STRING);
-        $this->filter = (String)filter_input(INPUT_GET, "filter", FILTER_SANITIZE_STRING);
         $this->orgUnitType_FK = (int)filter_input(INPUT_POST, "OrgUnitType_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->orgRole_FK = (int)filter_input(INPUT_POST, "OrgRole_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->newParentTreeNode_FK = (int)filter_input(INPUT_POST, "ParentTreeNode_FK", FILTER_SANITIZE_NUMBER_INT);
-        $this->parentTreeNode_FK = (int)filter_input(INPUT_GET, "ParentTreeNode_FK", FILTER_SANITIZE_NUMBER_INT);
+        $this->parentTreeNode_FK = (int)filter_input(INPUT_POST, "ParentTreeNode_FK", FILTER_SANITIZE_NUMBER_INT);
+
+        $this->filter = (String)filter_input(INPUT_GET, "filter", FILTER_SANITIZE_STRING);
+
         $this->selectionId = (int)filter_input(INPUT_GET, "SelectionId", FILTER_SANITIZE_NUMBER_INT);
-
-        $this->x = (String)filter_input(INPUT_GET, "x", FILTER_SANITIZE_STRING);
-        
-        $x = $x + 1;
-
     }
     
     
@@ -87,36 +84,47 @@ class OrganizationStructure extends SuperEntity{
             $select.= "'0' as parentNodeChange, ";                        
         }
         
-        $select.= $this->saronUser->getRoleSql(false);
+        $select.= $this->saronUser->getRoleSql(true);
         
         $from = "from Org_Tree as Tree ";
         $from.= "inner join Org_UnitType as Typ on Tree.OrgUnitType_FK = Typ.Id ";
         $from.= "left outer join (" . $this->getStatusSQL() .  ") as stat on Tree.Id = stat.sumId ";
         
+        $where = "";
         
         if($id < 0){
             switch ($this->tablePath){
                 case TABLE_NAME_UNITTREE:            
-                    $where = "WHERE ParentTreeNode_FK is null ";
+                    $select.= $this->setParentAlias("ParentTreeNode_FK");
+                    if($this->parentId < 0){
+                        $where = "WHERE ParentTreeNode_FK is null ";
+                    }
+                    else{
+                        $where = "WHERE ParentTreeNode_FK = " . $this->parentId . " ";                    
+                    }
                     break;
                 case TABLE_NAME_UNITTREE . "/" . TABLE_NAME_UNITTREE:            
-                    $where = "WHERE ParentTreeNode_FK = " . $this->parentId . " ";                
+                    $select.= $this->setParentAlias("ParentTreeNode_FK");
+                    $where = "WHERE ParentTreeNode_FK = " . $this->parentId . " ";
                     break;
                 case TABLE_NAME_UNITLIST:
-                        $where = " ";                
-                    break;
+                    $select.= $this->setParentAlias(ParentTreeNode_FK);
+                break;
                 case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_UNIT:
-                        $where = "WHERE Tree.OrgUnitType_FK = " . $this->parentId . " ";
-                    break;
+                    $select.= $this->setParentAlias("Tree.OrgUnitType_FK");
+                    $where = "WHERE OrgUnitType_FK = " . $this->parentId . " ";
+                break;
                 case TABLE_NAME_ROLE . "/" . TABLE_NAME_UNIT:
+                    $select.= $this->setParentAlias("Rut.OrgRole_FK");
                     $where = "WHERE Rut.OrgRole_FK = " . $this->parentId . " ";
                     $from.= "inner join `Org_Role-UnitType` as Rut on Tree.OrgUnitType_FK=Rut.OrgUnitType_FK ";
                     break;
                 default:
-                    $where = "";    
-            }
+                    $select.= $this->setParentAlias(ParentTreeNode_FK);
+            }            
         }
         else{
+            $select.= $this->setParentAlias("ParentTreeNode_FK");
             $where = "WHERE Tree.Id = " . $this->Id . " ";
             $rec = RECORD;
         }
@@ -125,6 +133,7 @@ class OrganizationStructure extends SuperEntity{
         return $result;
     }
 
+   
     
     function selectSubNodesSql($nodeId){
         $sql = "(With RECURSIVE SubTree as ( ";

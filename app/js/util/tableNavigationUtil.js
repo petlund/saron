@@ -1,7 +1,8 @@
 /* global 
 SARON_URI, SARON_IMAGES_URI,
 TABLE_NAME_UNIT, TABLE_NAME_UNITTYPE, TABLE_NAME_UNITLIST, TABLE_NAME_UNITTREE, TABLE_NAME_ROLE, TABLE_NAME_POS,
-ORG
+ORG,
+RECORDS
 */
 
 "use strict";
@@ -15,11 +16,13 @@ function openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, chil
         $tr.removeClass(getAllClassNameOpenChild(data));
         $tr.addClass(getClassNameOpenChild(data, childTableName ));
 
-        $(tableViewId).jtable('openChildTable', $tr, childTableDef, function(childData){
-            childData.childTable.jtable('load');
+        $(tableViewId).jtable('openChildTable', $tr, childTableDef, function(placeholder){
+            var options = getPostData(tableViewId, data.record.parentId, childTableName, null, RECORDS);
             updateParentRow(data, tableViewId, childTableName, listParentRowUrl);        
+            placeholder.childTable.jtable('load', options, function(){
             });
         });
+    });
     return $imgChild;
     
 }
@@ -33,7 +36,7 @@ function closeChildTable(data, tableViewId, childTableName, type, listParentRowU
         $tr.removeClass(getAllClassNameOpenChild(data));
         var table = getTableById(data, tableViewId, childTableName);        
         table.jtable('closeChildTable', $tr, function(){  
-            updateParentRow(data, tableViewId, childTableName, listParentRowUrl);        
+            updateParentRow(event.data, tableViewId, childTableName, listParentRowUrl);        
         });
     });    
     return $imgClose;
@@ -41,10 +44,10 @@ function closeChildTable(data, tableViewId, childTableName, type, listParentRowU
 
 
 
-function updateParentRow(data, tableViewId, childTableName, listParentRowUrl){
+function updateParentRow(parentData, tableViewId, childTableName, listParentRowUrl){
     var url = '/' + SARON_URI + listParentRowUrl;
-    var options = {record:{"Id": data.record.Id}, "clientOnly": false, "url":url};
-    var table = getTableById(data, tableViewId, childTableName);
+    var options = {record:{Id: parentData.record.Id}, clientOnly: false, url:url};
+    var table = getTableById(parentData, tableViewId, childTableName);
     table.jtable('updateRecord', options);    
 }
 

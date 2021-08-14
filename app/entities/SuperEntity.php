@@ -33,27 +33,40 @@ class SuperEntity {
         $this->db = $db;
         $this->saronUser = $saronUser;
 
-
-        $this->groupId = (int)filter_input(INPUT_POST, "groupId", FILTER_SANITIZE_NUMBER_INT);    
-        $this->tableview = (String)filter_input(INPUT_POST, "tableview", FILTER_SANITIZE_STRING);    
-        if(strlen($this->tableview)===0){
-            $this->tableview = (String)filter_input(INPUT_GET, "tableview", FILTER_SANITIZE_STRING);            
-        }
-        $this->selection = (String)filter_input(INPUT_GET, "selection", FILTER_SANITIZE_STRING);    
-
-        $this->uppercaseSearchString = strtoupper((String)filter_input(INPUT_POST, "searchString", FILTER_SANITIZE_STRING));
-
         $this->jtPageSize = (int)filter_input(INPUT_GET, "jtPageSize", FILTER_SANITIZE_NUMBER_INT);
         $this->jtStartIndex = (int)filter_input(INPUT_GET, "jtStartIndex", FILTER_SANITIZE_NUMBER_INT);
         $this->jtSorting = (String)filter_input(INPUT_GET, "jtSorting", FILTER_SANITIZE_STRING);
             
-        $this->tablePath = (String)filter_input(INPUT_GET, "TablePath", FILTER_SANITIZE_STRING);
-        IF(strlen($this->tablePath) === 0){
-            $this->tablePath = (String)filter_input(INPUT_POST, "TablePath", FILTER_SANITIZE_STRING);
-        }
-        $this->parentId = (int)filter_input(INPUT_GET, "ParentId", FILTER_SANITIZE_NUMBER_INT);
-        $this->resultType = (String)filter_input(INPUT_GET, "ResultType", FILTER_SANITIZE_STRING);
+        $this->groupId = (int)filter_input(INPUT_POST, "groupId", FILTER_SANITIZE_NUMBER_INT);    
+        $this->uppercaseSearchString = strtoupper((String)filter_input(INPUT_POST, "searchString", FILTER_SANITIZE_STRING));
 
+        
+        // POST for table load and GET for Options
+        $this->selection = (String)filter_input(INPUT_GET, "selection", FILTER_SANITIZE_STRING);    
+        
+        $this->tableview = (String)filter_input(INPUT_POST, "tableview", FILTER_SANITIZE_STRING);    
+        if($this->tableview !== null){
+            $this->tableview = (String)filter_input(INPUT_GET, "tableview", FILTER_SANITIZE_STRING);    
+        }
+        $this->tablePath = (String)filter_input(INPUT_POST, "TablePath", FILTER_SANITIZE_STRING);
+        if($this->tablePath !== null){
+            $this->tablePath = (String)filter_input(INPUT_GET, "TablePath", FILTER_SANITIZE_STRING);
+        }
+        $this->source = (String)filter_input(INPUT_POST, "Source", FILTER_SANITIZE_STRING);
+        if($this->source !== null){
+            $this->source = (String)filter_input(INPUT_GET, "Source", FILTER_SANITIZE_STRING);
+        }
+        $this->parentId = (int)filter_input(INPUT_POST, "ParentId", FILTER_SANITIZE_NUMBER_INT);
+        if($this->parentId === 0){
+            $this->parentId = (int)filter_input(INPUT_GET, "ParentId", FILTER_SANITIZE_NUMBER_INT);
+            if($this->parentId === 0){
+                $this->parentId=-1;
+            }
+        }
+        $this->resultType = (String)filter_input(INPUT_POST, "ResultType", FILTER_SANITIZE_STRING);
+        if($this->resultType !== null){
+            $this->resultType = (String)filter_input(INPUT_POST, "ResultType", FILTER_SANITIZE_STRING);
+        }
     }
 
     
@@ -108,6 +121,15 @@ class SuperEntity {
         
     }
     
+    protected function setParentAlias($field, $continue = false){
+        $sql = $field . " as ParentId";
+        if($continue){
+            return $sql . ", ";
+        }
+        return $sql . " ";
+    }
+
+
     function getEncryptedSqlString($str){
         if(strlen($str)>0){
             return "AES_ENCRYPT('" . $this->salt() . $str . "', " . PKEY . ")";

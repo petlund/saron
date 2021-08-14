@@ -40,7 +40,7 @@ function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitl
         defaultSorting: 'Name', //Set default sorting        
         messages: {addNewRecord: 'Lägg till en ny typ av organisatorisk enhet.'},
         actions: {
-            listAction:   '/' + SARON_URI + listUri + getURLParameter(parentId, tablePath, null, RECORDS),
+            listAction:   '/' + SARON_URI + listUri,
             createAction: '/' + SARON_URI + 'app/web-api/createOrganizationUnitType.php',
             updateAction: '/' + SARON_URI + 'app/web-api/updateOrganizationUnitType.php',
             deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationUnitType.php'
@@ -69,7 +69,7 @@ function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitl
                     var imgFile = "unit.png";
                     
                     if(data.record.UsedInUnit ===  "1"){
-                        var childTableDef = unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle);
+                        var childTableDef = unitTableDef(tableViewId, tablePath, parentId, childTableTitle);
                         var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, listUri);
                         var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
                         

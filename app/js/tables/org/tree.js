@@ -13,7 +13,8 @@ RECORDS, RECORD, OPTIONS
 "use strict";
     
 $(document).ready(function () {
-    $(TABLE_VIEW_UNITTREE).jtable(unitTableDef(TABLE_VIEW_UNITTREE, null, -1, null)); 
+    $(TABLE_VIEW_UNITTREE).jtable(unitTableDef(TABLE_VIEW_UNITTREE, TABLE_NAME_UNITTREE, null));
+    var options = getPostData(TABLE_VIEW_UNITTREE, null, TABLE_NAME_UNITTREE, null, RECORDS);
     $(TABLE_VIEW_UNITTREE).jtable('load');
 });
 

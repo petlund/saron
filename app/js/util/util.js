@@ -230,14 +230,14 @@ function includedIn (currentTableId, requiredTableId){
 function getURLParameter(parentId, tablePath, source, reultType){
     var first = true;
     var parameter = "";
-    if(parentId !== null){
+    if(parentId !== null){        
         if(first){
             parameter = "?";
             first = false;
-        }
+    }
         else
             parameter+= "&";
-        
+    
         parameter+= 'ParentId=' + parentId;
     }
     
@@ -245,31 +245,54 @@ function getURLParameter(parentId, tablePath, source, reultType){
         if(first){
             parameter = "?";
             first = false;
-        }
+    }
         else
             parameter+= "&";
-        
+    
         parameter+= 'TablePath=' + tablePath;
 
-        if(source !== null){
+    if(source !== null){
             parameter+=  "/"  + source;
-        }
+    }
     }
     if(reultType !== null){
         if(first){
             parameter = "?";
             first = false;
-        }
-        else
-            parameter+= "&";
-        
-        parameter+= 'ResultType=' + reultType;
     }
     else
-        parameter+= 'ResultType=' + RECORDS;
+            parameter+= "&";
 
-    return parameter;
+        parameter+= 'ResultType=' + reultType;
 }
+    else
+        parameter+= 'ResultType=' + RECORDS;
+    
+    return parameter;
+    }
+    
+
+
+    function getPostData(tableview, parentId, tablePath, source, resultType){
+    if(parentId === null){        
+            parentId = -1;
+        }
+
+        if(tablePath !== null){
+            var extTablePath = tablePath;
+            if(source !== null)
+                extTablePath+= '/' + source;
+            else
+                source="";
+        }
+
+        if(resultType === null){
+            resultType = RECORDS;
+        }
+        var options = {record:{tableview:tableview, ParentId:parentId, TablePath:extTablePath, Source:source, ResultType:resultType}};
+        console.log(options);
+        return options;
+    }
 
 
 
@@ -286,3 +309,16 @@ function getChildOpenClassName(data, childTableName){
 }
 
 
+
+async function post(url, options, transport){
+    var response = await $.post( url, options)
+        .done(function(data){
+            this.data = data;
+    }.bind(this), "json"); 
+    return response;
+}
+
+
+function getRespons(data){
+    return data;    
+}

@@ -163,7 +163,7 @@ class OrganizationUnitType extends SuperEntity{
         $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
         
         $id = $this->db->insert($sqlInsert, "Org_UnitType", "Id");
-        return $this->select($id, RECORD);
+        return $this->select($id);
     }
     
     
@@ -186,7 +186,7 @@ class OrganizationUnitType extends SuperEntity{
         $set.= "Updater='" . $this->saronUser->WP_ID . "' ";
         $where = "WHERE id=" . $this->id;
         $this->db->update($update, $set, $where);
-        return $this->select($this->id, RECORD);
+        return $this->select($this->id);
     }
 
     function delete(){

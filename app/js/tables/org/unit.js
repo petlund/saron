@@ -16,8 +16,9 @@ POS_ENABLED
     
 "use strict";    
 
-function unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
+function unitTableDef(tableViewId, parentTablePath, childTableTitle){
     const listUri = 'app/web-api/listOrganizationUnit.php';
+    //var options = getPostData(tableViewId, )
     var tableName = "";
     if(tableViewId === TABLE_VIEW_UNITTREE)
         tableName = TABLE_NAME_UNITTREE;
@@ -50,7 +51,7 @@ function unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
         defaultSorting: getDefaultUnitSorting(tableViewId), //Set default sorting        
         messages: {addNewRecord: 'Lägg till en ny organisatorisk enhet.'},
         actions: {
-            listAction:   '/' + SARON_URI + listUri + getURLParameter(parentId, tablePath, null, RECORDS),
+            listAction:   '/' + SARON_URI + listUri,
             createAction: '/' + SARON_URI + 'app/web-api/createOrganizationUnit.php',
             updateAction: '/' + SARON_URI + 'app/web-api/updateOrganizationUnit.php',
             deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationUnit.php'
@@ -65,18 +66,24 @@ function unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                 key: true,
                 list: false
             },
+            ParentId:{
+            },
             ParentTreeNode_FK:{
-                list: includedIn(tableViewId, TABLE_NAME_UNITLIST),
+                list: includedIn(tableViewId, TABLE_VIEW_UNITLIST),
                 edit: true, 
                 create: true,
-                title: 'Överordna verksamhet',
-                options: function(data) {
-                    var parameters = getURLParameter(parentId, tablePath, null, OPTIONS);
-                    if(data.source !== 'list'){
-                        data.clearCache();
-                    } 
-                    return '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php' + parameters;
-                }                
+                title: 'Överordna verksamhet'
+//                ,
+//                options: function(data) {
+//                    var url =  '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php';
+// 
+//                    if(data.source !== 'list'){
+//                        data.clearCache();
+//                    } 
+//                    var options = getURLParameter(null, tablePath, data.source, OPTIONS);
+//
+//                    return post(url, options);
+//                }                
             },
             SubUnitEnabled: {
                 title: '',
@@ -116,7 +123,7 @@ function unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                                 imgFile =  "haschild.png";
                             }
                         }
-                        var childTableDef = unitTableDef(tableViewId, tablePath, data.record.Id, childTableTitle);
+                        var childTableDef = unitTableDef(tableViewId, tablePath, childTableTitle);
                         var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, listUri);
                         var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
                         
@@ -198,17 +205,18 @@ function unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
                 title: 'Beskrivning'
             },
             OrgUnitType_FK:{
+                list: true,
                 title: 'Typ av enhet',
                 inputTitle: 'Typ av enhet (Kan inte ändras. Vill du ändra behöver du skapa en ny organisatorisk enhet).',
                 width: '5%',
                 options: function (data){
-                    var optionTablePath = tablePath + "/" + OPTIONS;
-                    var parameters = '?ParentId=' + parentId + '&TablePath=' + optionTablePath + "&ResultType=" + OPTIONS;
+                    var url = '/' + SARON_URI + 'app/web-api/listOrganizationUnitType.php';
+                    var parameters = getURLParameter(data.record.ParentId, tablePath, data.source, OPTIONS);
 
                     if(data.source !== 'list'){
                         data.clearCache();
                     } 
-                    return '/' + SARON_URI + 'app/web-api/listOrganizationUnitType.php' + parameters;
+                    return url + parameters;
                 }
             },
             UpdaterName: {
@@ -228,20 +236,20 @@ function unitTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
         },
         recordUpdated: function (event, data){
             var table;
-            var Id = data.record.Id;
-            var parentId = data.record.ParentTreeNode_FK;
+            var parentId = data.record.ParentId;
+
             
             if(parentId > 0){
                 table = $(".Id_" + parentId).closest('div.jtable-child-table-container');
-            
                 if(table.length === 0) 
                     table = $(tableViewId);
-    
+
                 var url =  '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php?selection=single_node';
                 var options = {record:{"Id": parentId}, "clientOnly": false, "url":url};
                 table.jtable('updateRecord', options);                                
-            }        
-            
+            }  
+                
+                    
             if(data.record.HasSubUnit !== '0' || data.record.HasPos !== '0')
                 data.row.find('.jtable-delete-command-button').hide();
             else
