@@ -103,7 +103,7 @@ function unitTypeTableDef(tableViewId, childTableTitle){
                         }
                         
                         var childTableDef = roleTableDef(tableViewId, childTableTitle);
-                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, TABLE_NAME_ROLE, ORG, childUri);
+                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, childUri);
                         var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
                         
                         return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
@@ -215,12 +215,5 @@ function unitTypeTableDef(tableViewId, childTableTitle){
     };    
 }
 
-
-
-function updateUnitTypeRecord(tableViewId, data){
-    var url = '/' + SARON_URI + 'app/web-api/listOrganizationUnitType.php';
-    var postData = {record:{"Id": data.record.Id}, "clientOnly": false, "url":url};
-    $(tableViewId).jtable('updateRecord', postData);
-}
 
 

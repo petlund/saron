@@ -56,7 +56,7 @@ function unitTableDef(tableViewId, childTableTitle){
                 create: false
             },
             Id: {
-                key: false,
+                key: true,
                 list: false,
                 edit: false,
                 create: false
@@ -104,7 +104,7 @@ function unitTableDef(tableViewId, childTableTitle){
                             }
                         }
                         var childTableDef = unitTableDef(tableViewId, childTableTitle);
-                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, TABLE_NAME_UNITTREE, ORG, listUri);
+                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, tableName, ORG, listUri);
                         var $imgClose = closeChildTable(data, tableViewId, tableName, ORG, listUri);
                         
                         return getChildNavIcon(data, tableName, $imgChild, $imgClose);
@@ -293,13 +293,7 @@ function unitTableDef(tableViewId, childTableTitle){
 }    
 
 
-function updateParentUnit(tableViewId, data){
-    var id = data.record.Id;
-    
-    var url =  '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php';
-    var postData = {record:{"Id": id}, "clientOnly": false, "url":url};
-    $(tableViewId).jtable('updateRecord', postData);                                    
-}
+
 
 
 

@@ -1,12 +1,13 @@
-/* global SARON_URI, DATE_FORMAT, NEWS */
+/* global SARON_URI, DATE_FORMAT,
+ TABLE_VIEW_ORGVERSION, TABLE_NAME_ORGVERSION
+ */
 "use strict";
 
-const TABLE_ID = "#ORG_VER";
     
 $(document).ready(function () {
-    $(TABLE_ID).jtable(orgVersionTableDef());
-    $(TABLE_ID).jtable('load');
-    $(TABLE_ID).find('.jtable-toolbar-item-add-record').hide();
+    $(TABLE_VIEW_ORGVERSION).jtable(orgVersionTableDef());
+    $(TABLE_VIEW_ORGVERSION).jtable('load');
+    $(TABLE_VIEW_ORGVERSION).find('.jtable-toolbar-item-add-record').hide();
 });
 
 
@@ -71,8 +72,8 @@ function orgVersionTableDef(){
         },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === 'edit' || data.serverResponse.user_role === 'org'){ 
-                $(TABLE_ID).find('.jtable-toolbar-item-add-record').show();
-                $(TABLE_ID).find('.jtable-edit-command-button').show();
+                $(TABLE_VIEW_ORGVERSION).find('.jtable-toolbar-item-add-record').show();
+                $(TABLE_VIEW_ORGVERSION).find('.jtable-edit-command-button').show();
             }
         },        
         formCreated: function (event, data){
