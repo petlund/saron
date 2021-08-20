@@ -104,7 +104,7 @@
                             <a href="#">Organisation</a>
                             <ul>
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/OrganizationReport.php?type=proposal" target="_blank">Organisationskalender förslag(pdf-fil)</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/engagement.php?tableview=ORG_ENGAGEEMENT">Ansvar per person</a></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/views/engagement.php?tableview=ORG_ENGAGEMENT">Ansvar per person</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_UNITTREE">Organisationsträd</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_UNITLIST">Organisationslista</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?tableview=ORG_POS">Positioner</a></li>

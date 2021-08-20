@@ -16,9 +16,9 @@ POS_ENABLED
     
 "use strict";    
 
-function unitTableDef(tableViewId, parentTablePath, childTableTitle){
+function unitTableDef(tableViewId, childTableTitle){
     const listUri = 'app/web-api/listOrganizationUnit.php';
-    //var options = getPostData(tableViewId, )
+    //var postData = getPostData(tableViewId, )
     var tableName = "";
     if(tableViewId === TABLE_VIEW_UNITTREE)
         tableName = TABLE_NAME_UNITTREE;
@@ -27,15 +27,8 @@ function unitTableDef(tableViewId, parentTablePath, childTableTitle){
     else
         tableName = TABLE_NAME_UNIT;
     
-    var tablePath = tableName;
-    if(tableName === TABLE_NAME_UNITTREE && parentTablePath === TABLE_NAME_UNITTREE + "/" + TABLE_NAME_UNITTREE)
-        tablePath = TABLE_NAME_UNITTREE + "/" + TABLE_NAME_UNITTREE;
-    else
-        if(parentTablePath !== null){
-            tablePath = parentTablePath + "/" + tableName;
-        }
-            
     return {
+        showCloseButton: false,
         title: function(){
             if(childTableTitle !== null)
                 return childTableTitle;
@@ -58,32 +51,20 @@ function unitTableDef(tableViewId, parentTablePath, childTableTitle){
         }, 
         fields: {
             TablePath:{
-                list: true,
+                list: false,
                 edit: false,
                 create: false
             },
             Id: {
-                key: true,
-                list: false
+                key: false,
+                list: false,
+                edit: false,
+                create: false
             },
             ParentId:{
-            },
-            ParentTreeNode_FK:{
-                list: includedIn(tableViewId, TABLE_VIEW_UNITLIST),
-                edit: true, 
-                create: true,
-                title: 'Överordna verksamhet'
-//                ,
-//                options: function(data) {
-//                    var url =  '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php';
-// 
-//                    if(data.source !== 'list'){
-//                        data.clearCache();
-//                    } 
-//                    var options = getURLParameter(null, tablePath, data.source, OPTIONS);
-//
-//                    return post(url, options);
-//                }                
+                list: false,
+                edit: false,
+                create: false
             },
             SubUnitEnabled: {
                 title: '',
@@ -95,7 +76,6 @@ function unitTableDef(tableViewId, parentTablePath, childTableTitle){
                 list: includedIn(tableViewId, TABLE_VIEW_UNITTREE),
                 
                 display: function (data) {
-                    var childTableName = TABLE_NAME_UNITTREE;
                     var childTableTitle = 'Enhetstypen "' + data.record.Name + '" har följande roller';
                     var tooltip = "";
                     var imgFile = "";
@@ -123,11 +103,11 @@ function unitTableDef(tableViewId, parentTablePath, childTableTitle){
                                 imgFile =  "haschild.png";
                             }
                         }
-                        var childTableDef = unitTableDef(tableViewId, tablePath, childTableTitle);
-                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, listUri);
-                        var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
+                        var childTableDef = unitTableDef(tableViewId, childTableTitle);
+                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, TABLE_NAME_UNITTREE, ORG, listUri);
+                        var $imgClose = closeChildTable(data, tableViewId, tableName, ORG, listUri);
                         
-                        return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
+                        return getChildNavIcon(data, tableName, $imgChild, $imgClose);
                     }
                     return null;
                 }
@@ -146,7 +126,6 @@ function unitTableDef(tableViewId, parentTablePath, childTableTitle){
                     var imgFile = "";         
                     
                     if(data.record.PosEnabled === POS_ENABLED){
-                        var src;
                         if(data.record.HasPos === '0'){
                             imgFile = 'unit_empty.png';
                             tooltip = "Inga positioner";
@@ -169,7 +148,7 @@ function unitTableDef(tableViewId, parentTablePath, childTableTitle){
                             }
                         }
 
-                        var childTableDef = posTableDef(tableViewId, tablePath, data.record.Id, childTableTitle);
+                        var childTableDef = posTableDef(tableViewId,  childTableTitle);
                         var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, listUri);
                         var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
                         
@@ -177,6 +156,20 @@ function unitTableDef(tableViewId, parentTablePath, childTableTitle){
                     }
                     return null;
                 }
+            },
+            ParentTreeNode_FK:{
+                list: includedIn(tableViewId, TABLE_VIEW_UNITLIST),
+                edit: true, 
+                create: true,
+                title: 'Överordna verksamhet',
+                options: function(data) {
+                    if(data.source !== 'list'){
+                        data.clearCache();
+                    } 
+                    var parameters = getURLParameters(tableViewId, null, data.record.TablePath, data.source, OPTIONS);
+
+                    return '/' + SARON_URI + listUri + parameters;
+                }                
             },
             Prefix: {
                 width: '1%',
@@ -211,11 +204,12 @@ function unitTableDef(tableViewId, parentTablePath, childTableTitle){
                 width: '5%',
                 options: function (data){
                     var url = '/' + SARON_URI + 'app/web-api/listOrganizationUnitType.php';
-                    var parameters = getURLParameter(data.record.ParentId, tablePath, data.source, OPTIONS);
-
+                    var parameters = getURLParameters(tableViewId, -1, data.record.TablePath, data.source, OPTIONS);
+                    //var postData = getPostData(tableViewId, -1, tablePath, data.source, OPTIONS);
                     if(data.source !== 'list'){
                         data.clearCache();
                     } 
+                    //return {postData, "clientOnly": false, "url":url}; 
                     return url + parameters;
                 }
             },
@@ -245,8 +239,8 @@ function unitTableDef(tableViewId, parentTablePath, childTableTitle){
                     table = $(tableViewId);
 
                 var url =  '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php?selection=single_node';
-                var options = {record:{"Id": parentId}, "clientOnly": false, "url":url};
-                table.jtable('updateRecord', options);                                
+                var postData = {record:{"Id": parentId}, "clientOnly": false, "url":url};
+                table.jtable('updateRecord', postData);                                
             }  
                 
                     
@@ -303,8 +297,8 @@ function updateParentUnit(tableViewId, data){
     var id = data.record.Id;
     
     var url =  '/' + SARON_URI + 'app/web-api/listOrganizationUnit.php';
-    var options = {record:{"Id": id}, "clientOnly": false, "url":url};
-    $(tableViewId).jtable('updateRecord', options);                                    
+    var postData = {record:{"Id": id}, "clientOnly": false, "url":url};
+    $(tableViewId).jtable('updateRecord', postData);                                    
 }
 
 

@@ -14,6 +14,8 @@
 // From this file
 // People    
     Define("TABLE_VIEW_PEOPLE",  "people");
+    Define("TABLE_NAME_PEOPLE",  "table_people");
+
     Define("TABLE_VIEW_BAPTIST",  "baptist");
     Define("TABLE_VIEW_MEMBER",  "member");
     Define("TABLE_VIEW_KEYS",  "keys");
@@ -29,7 +31,7 @@
     Define("TABLE_VIEW_ROLE",  "ORG_ROLE");
     Define("TABLE_NAME_ROLE",  "table_role");
 
-    Define("TABLE_VIEW_ENGAGEMENT",  "ORG_ENGAGEEMENT");
+    Define("TABLE_VIEW_ENGAGEMENT",  "ORG_ENGAGEMENT");
     Define("TABLE_NAME_ENGAGEMENT",  "table_engagement");
 
     Define("TABLE_VIEW_POS",  "ORG_POS");

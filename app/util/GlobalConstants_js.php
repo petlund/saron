@@ -21,6 +21,8 @@ require_once SARON_ROOT . "app/util/GlobalConstants_php.php";
     
 // From this file
 // People    
+    echo "<script>const TABLE_VIEW_PEOPLE = '" .  "#" . TABLE_VIEW_PEOPLE . "';</script>";    
+    echo "<script>const TABLE_NAME_PEOPLE = '" . TABLE_NAME_PEOPLE . "';</script>";
     
 //Organisation
     echo "<script>const TABLE_VIEW_CHILD_SUFFIX = '" . TABLE_VIEW_CHILD_SUFFIX . "';</script>";
@@ -54,6 +56,7 @@ require_once SARON_ROOT . "app/util/GlobalConstants_php.php";
 
     echo "<script>const TABLE_VIEW_ORG_ROLE_STATUS = '" .  "#" . TABLE_VIEW_ORG_ROLE_STATUS . "';</script>";    
     echo "<script>const TABLE_NAME_ORG_ROLE_STATUS = '" . TABLE_NAME_ORG_ROLE_STATUS . "';</script>";
+
 
  
 

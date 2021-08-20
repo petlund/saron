@@ -35,7 +35,7 @@ class People extends SuperEntity{
     
     function selectDefault($rec){
         $tw = new PeopleViews();
-        $sqlSelect = $tw->getPeopleViewSql($this->tableview, $this->saronUser);
+        $sqlSelect = $tw->getPeopleViewSql($this->tableView, $this->saronUser);
 
         $gf = new PeopleFilter();
         $sqlWhere = "WHERE ";       
@@ -51,6 +51,8 @@ class People extends SuperEntity{
         
     }
     
+    
+    
     function selectPeopleOptions(){
 
         $SELECT_PERSSON = "(SELECT " . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . " FROM People as P inner join Org_Pos as Pos on P.Id = Pos.People_FK WHERE Pos.OrgRole_FK = Role.Id) ";
@@ -65,18 +67,15 @@ class People extends SuperEntity{
         
         
         $where = "";
-        if($this->filter === "true"){
-            $where = "WHERE " . getFilteredMemberStateSql("People", null, false, true, true);
-        }
-        else{
-            $where = "WHERE " . getFilteredMemberStateSql("People", null, false, false, false);            
-        }
+        $where = "WHERE " . getFilteredMemberStateSql("People", null, false, $this->tablePath);
         
         $from = "FROM People ";
         
         $result = $this->db->select($this->saronUser, $select, $from, $where, "ORDER BY DisplayText ", "", "Options");    
         return $result;
     }     
+    
+    
     
     function selectEmail(){
         $select = "select ";

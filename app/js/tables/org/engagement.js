@@ -17,7 +17,8 @@ RECORDS, RECORD, OPTIONS, SOURCE_LIST, SOURCE_CREATE, SOURCE_EDIT
 $(document).ready(function () {
 
     $(TABLE_VIEW_ENGAGEMENT).jtable(peopleEngagementTableDef(TABLE_VIEW_ENGAGEMENT));
-    $(TABLE_VIEW_ENGAGEMENT).jtable('load');
+    var postData = getPostData(TABLE_VIEW_ENGAGEMENT, null, TABLE_NAME_ENGAGEMENT, null, RECORDS);
+    $(TABLE_VIEW_ENGAGEMENT).jtable('load', postData);
     $(TABLE_VIEW_ENGAGEMENT).find('.jtable-toolbar-item-add-record').hide();
 });
 
@@ -34,9 +35,9 @@ function filterPeople(viewId){
 function peopleEngagementTableDef(tableViewId){
     const listUri = 'app/web-api/listEngagement.php';
     const tableName = TABLE_NAME_ENGAGEMENT;
-    var tablePath = tableName;
  
     return {
+        showCloseButton: false,
         title: 'Personer',
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
@@ -50,22 +51,25 @@ function peopleEngagementTableDef(tableViewId){
         },
         fields: {
             TablePath:{
-                list: true,
+                list: false,
                 edit: false,
                 create: false
             },            
             Id: {
                 key: true,
-                list: false
+                list: false,
+                edit: false,
+                create: false
             },
             Role:{
                 width: '1%',
                 sorting: false,
                 display: function(data){
-                    var childTableName = TABLE_NAME_UNITTREE;
+                    var childTableName = TABLE_NAME_POS;
                     var childTableTitle = data.record.Name + '" har nedanstående uppdrag';
                     var tooltip = "";
                     var imgFile = "";
+                    var childUri = 'app/web-api/listOrganizationPos.php';
 
                     if(data.record.Engagement ===  null){
                         tooltip = 'Inga uppdrag';
@@ -76,8 +80,8 @@ function peopleEngagementTableDef(tableViewId){
                         imgFile = "haspos.png";
                     }                    
 
-                    var childTableDef = engagementTableDef(tableViewId, data.record.Id, tablePath, childTableTitle);
-                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, listUri);
+                    var childTableDef = posTableDef(tableViewId, childTableTitle);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, childUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
 
                     return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
@@ -140,13 +144,11 @@ function peopleEngagementTableDef(tableViewId){
 
 
 
-function engagementTableDef(tableViewId, parentId, parentTablePath, childTableTitle){
+function engagementTableDef(tableViewId, childTableTitle){
     const tableName = TABLE_NAME_POS;
-    var tablePath = tableName;
-    if(parentTablePath !== null)
-        tablePath = parentTablePath + "/" + tableName;
- 
+    const uri = 'app/web-api/listOrganizationPos.php';
     return {
+        showCloseButton: false,
         title: function (){
             if(childTableTitle !== null)
                 return childTableTitle;
@@ -160,18 +162,18 @@ function engagementTableDef(tableViewId, parentId, parentTablePath, childTableTi
         multiSorting: true,
         defaultSorting: 'Name', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationPos.php' + getURLParameter(parentId, tablePath, null, RECORDS),
+            listAction:   '/' + SARON_URI + uri,
             createAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + SARON_URI + 'app/web-api/addPersonToOrganizationPos.php',
+                        url: '/' + SARON_URI + uri,
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
                         success: function (data) {
                             $dfd.resolve(data);
                             if(data.Result === 'OK'){
-                                updatePersonEngagementRecord(parentId);
+                                updatePersonEngagementRecord(data.record.ParentId);
                             }
                         },
                         error: function () {
@@ -190,7 +192,7 @@ function engagementTableDef(tableViewId, parentId, parentTablePath, childTableTi
                         success: function (data) {
                             $dfd.resolve(data);
                             if(data.Result === 'OK'){
-                                updatePersonEngagementRecord(parentId);
+                                updatePersonEngagementRecord(data.record.ParentId);
                             }
                         },
                         error: function () {
@@ -206,41 +208,34 @@ function engagementTableDef(tableViewId, parentId, parentTablePath, childTableTi
                 width: '25%',                
                 create: true,
                 key: true
-//                ,
-//                options: function (data){
-//                    if(data.source === 'list'){
-//                        var parameters = getURLParameter(parentId, tablePath, SOURCE_LIST, OPTIONS);
-//                        return '/' + SARON_URI + 'app/web-api/listOrganizationPos.php' + parameters;
-//                    }
-//                    else{
-//                        data.clearCache();
-//                        var parameters = getURLParameter(parentId, tablePath, null, OPTIONS);
-//                        return '/' + SARON_URI + 'app/web-api/listOrganizationPos.php' + parameters;
-//                    }
-//                }
+                ,
+                options: function (data){
+                    var parameters = getURLParameters(tableViewId, data.record.ParentId, data.record.TablePath, data.source, OPTIONS);
+                    if(data.source !== SOURCE_LIST)
+                        data.clearCache();
+
+                    return '/' + SARON_URI + 'app/web-api/listOrganizationPos.php' + parameters;
+                }
             },
+            TablePath:{
+                list: true,
+                edit: false,
+                create: false
+            },            
             ParentId:{
+                list: true,
+                edit: false,
+                create: false
                 
             },
             OrgPosStatus_FK: {
                 title: 'Status',
                 width: '10%',
-                defaultValue: 2
-//                ,
-//                options: function (data){
-//                    if(data.source === 'create'){
-//                        var parameters = getURLParameter(parentId, tablePath, SOURCE_CREATE, OPTIONS);
-//                        return '/' + SARON_URI + 'app/web-api/listOrganizationPosStatus.php' + parameters;
-//                    }
-//                    else if(data.source === 'edit'){
-//                        var parameters = getURLParameter(parentId, tablePath, SOURCE_EDIT, OPTIONS);
-//                        return '/' + SARON_URI + 'app/web-api/listOrganizationPosStatus.php' + parameters;
-//                    }
-//                    else{
-//                        var parameters = getURLParameter(parentId, tablePath, null, OPTIONS);
-//                        return '/' + SARON_URI + 'app/web-api/listOrganizationPosStatus.php' + parameters; 
-//                    }
-//                }
+                defaultValue: 2,
+                options: function (data){
+                    var parameters = getURLParameters(tableViewId, data.record.ParentId, data.record.TablePath, data.source, OPTIONS);
+                    return '/' + SARON_URI + 'app/web-api/listOrganizationPosStatus.php' + parameters; 
+                }
             },
             
             Comment:{

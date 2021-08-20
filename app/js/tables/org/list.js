@@ -15,7 +15,7 @@ RECORDS, RECORD, OPTIONS
 $(document).ready(function () {
     $(TABLE_VIEW_UNITLIST).jtable(unitTableDef(TABLE_VIEW_UNITLIST, null,  null)); //-1 => null parent === topnode
     var options = getPostData(TABLE_VIEW_UNITLIST, null, TABLE_NAME_UNITLIST, null, RECORDS);
-    $(TABLE_VIEW_UNITLIST).jtable('load');
+    $(TABLE_VIEW_UNITLIST).jtable('load', options);
     //$(TABLE_ID).find('.jtable-toolbar-item-add-record').hide();
 });
 

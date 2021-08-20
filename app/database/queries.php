@@ -168,7 +168,7 @@
     
     
     
-    function getFilteredMemberStateSql($tableAlias = "People", $fieldAlias, $continue, $filterCreate, $filterUpdate){
+    function getFilteredMemberStateSql($tableAlias = "People", $fieldAlias, $continue, $tablePath){
         
         $sql1 = "";
         if($filterCreate){

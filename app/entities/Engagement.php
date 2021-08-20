@@ -12,7 +12,6 @@ class Engagement extends SuperEntity{
     private $orgPosStatus_FK;
     private $orgTreeNode_FK;
     private $people_FK;
-    protected $tableview;
     protected $uppercaseSearchString;
     protected $filterType;
  
@@ -20,7 +19,6 @@ class Engagement extends SuperEntity{
         parent::__construct($db, $saronUser);
         $this->id = (int)filter_input(INPUT_GET, "Id", FILTER_SANITIZE_NUMBER_INT);
         
-        $this->tableview = (String)filter_input(INPUT_POST, "tableview", FILTER_SANITIZE_STRING);
         $this->filterType = (String)filter_input(INPUT_GET, "filterType", FILTER_SANITIZE_STRING);
 
         $this->nodeId = (int)filter_input(INPUT_GET, "NodeId", FILTER_SANITIZE_NUMBER_INT);
@@ -53,6 +51,7 @@ class Engagement extends SuperEntity{
         $select.= getMemberStateSql("p", "MemberState", true);
         $select.= DECRYPTED_ALIAS_EMAIL . ", ";
         $select.= getFieldSql(null, "Mobile", "MobileEncrypt", "", true, true);
+        $select.= $this->getTablePathSql();
         $select.= $subQuery1 . $subQuery2;        
         $select.= "CONCAT(Zip, ' ', City) AS Hosted, ";
         $select.= $this->saronUser->getRoleSql(false) . " ";

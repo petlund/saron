@@ -6,7 +6,7 @@ TABLE_NAME_UNIT
 */
 "use strict";
 
-const J_TABLE_ID = "#people";
+//const J_TABLE_ID = "#people";
 const HOME = 1;
 const OLD_HOME = 3;
 const PERSON = 2;
@@ -227,17 +227,17 @@ function includedIn (currentTableId, requiredTableId){
 
 
 
-function getURLParameter(parentId, tablePath, source, reultType){
+function getURLParameters(tableViewId, parentId, tablePath, source, resultType){
     var first = true;
     var parameter = "";
     if(parentId !== null){        
         if(first){
             parameter = "?";
             first = false;
-    }
+        }
         else
             parameter+= "&";
-    
+
         parameter+= 'ParentId=' + parentId;
     }
     
@@ -245,36 +245,62 @@ function getURLParameter(parentId, tablePath, source, reultType){
         if(first){
             parameter = "?";
             first = false;
-    }
+        }
         else
             parameter+= "&";
+        
+        var extTablePath = tablePath;        
+        if(source !== null)
+            extTablePath+=  "/" + source; 
+            
+        parameter+= 'TablePath=' + extTablePath;
+    }
     
-        parameter+= 'TablePath=' + tablePath;
-
-    if(source !== null){
-            parameter+=  "/"  + source;
-    }
-    }
-    if(reultType !== null){
+    
+    if(tableViewId !== null){
         if(first){
             parameter = "?";
             first = false;
+        }
+        else
+            parameter+= "&";
+        
+        parameter+= 'TableView=' + getTableView(tableViewId);
     }
-    else
+    
+    
+    if(source !== null){
+        if(first){
+            parameter = "?";
+            first = false;
+        }
+        else
+            parameter+= "&";
+    
+        parameter+= 'Source=' + source;
+    }
+    
+        
+    if(resultType !== null){
+        if(first){
+            parameter = "?";
+            first = false;
+        }
+        else
             parameter+= "&";
 
-        parameter+= 'ResultType=' + reultType;
-}
+        parameter+= 'ResultType=' + resultType;
+    }
     else
         parameter+= 'ResultType=' + RECORDS;
     
     return parameter;
-    }
+}
     
 
 
-    function getPostData(tableview, parentId, tablePath, source, resultType){
-    if(parentId === null){        
+    function getPostData(tableViewId, parentId, tablePath, source, resultType){
+        if(parentId === null){        
             parentId = -1;
         }
 
@@ -289,7 +315,7 @@ function getURLParameter(parentId, tablePath, source, reultType){
         if(resultType === null){
             resultType = RECORDS;
         }
-        var options = {record:{tableview:tableview, ParentId:parentId, TablePath:extTablePath, Source:source, ResultType:resultType}};
+        var options = {TableView:getTableView(tableViewId), ParentId:parentId, TablePath:extTablePath, Source:source, ResultType:resultType};
         console.log(options);
         return options;
     }
@@ -321,4 +347,9 @@ async function post(url, options, transport){
 
 function getRespons(data){
     return data;    
+}
+
+
+function getTableView(tableViewId){
+    return tableViewId.substring(1, tableViewId.length);
 }

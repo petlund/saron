@@ -34,7 +34,9 @@ function statusTableDef(tableViewId){
             },
             Id: {
                 key: true,
-                list: false
+                list: false,
+                edit: false,
+                create: false
             },
             Name: {
                 edit: false,

@@ -17,9 +17,10 @@ function openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, chil
         $tr.addClass(getClassNameOpenChild(data, childTableName ));
 
         $(tableViewId).jtable('openChildTable', $tr, childTableDef, function(placeholder){
-            var options = getPostData(tableViewId, data.record.parentId, childTableName, null, RECORDS);
+            var tablePath = getTablePath(data, childTableName);
+            var postData = getPostData(tableViewId, data.record.Id, tablePath, null, RECORDS);
             updateParentRow(data, tableViewId, childTableName, listParentRowUrl);        
-            placeholder.childTable.jtable('load', options, function(){
+            placeholder.childTable.jtable('load', postData, function(){
             });
         });
     });
@@ -63,6 +64,7 @@ function getTableById(data, tableViewId, childTableName){
 }
 
 
+
 function getImageCloseTag(data, childTableName, type){
     var src = '"/' + SARON_URI + SARON_IMAGES_URI + 'cross.png "title="Stäng"';
     var imageTag = _setImageClass(data, childTableName, src, type);
@@ -99,4 +101,13 @@ function getAllClassNameOpenChild(data){
     
 }
 
-
+function getTablePath(data, tableName){
+    var parentTablePath = data.record.TablePath;
+    if(tableName === TABLE_NAME_UNITTREE && parentTablePath === TABLE_NAME_UNITTREE + "/" + TABLE_NAME_UNITTREE)
+        return TABLE_NAME_UNITTREE + "/" + TABLE_NAME_UNITTREE;
+    else
+        if(parentTablePath !== null)
+            return parentTablePath + "/" + tableName;
+        else
+            return tableName;    
+}

@@ -117,8 +117,10 @@ class OrganizationPos extends SuperEntity{
                 case TABLE_NAME_UNITLIST . "/" . TABLE_NAME_POS:            
                     $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
                     break;
-                case TABLE_NAME_ENGAGEMENT . "/" . TABLE_NAME_POS:            
-                    return $this->selectPersonEngagement();            
+                case TABLE_NAME_ENGAGEMENT . "/" . TABLE_NAME_POS:    
+                    $where = "WHERE pCur.Id = ". $this->parentId . " "; 
+                    //return $this->selectPersonEngagement();            
+                    break;
                 default:
                     $where = "";
             }
@@ -131,23 +133,6 @@ class OrganizationPos extends SuperEntity{
         $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $rec);        
         return $result;
     }
-
-
-    
-    function selectPersonEngagement(){
-        $rec = RECORDS;
-
-        $select = "SELECT *, Pos.Id as Id, ";
-        $select.= "(Select count(*) from Org_Pos as CountPos where CountPos.People_FK = xref.People_FK2) as Cnt, ";
-        $select.= $this->saronUser->getRoleSql(false) . " ";
-        $from = "FROM Org_Pos as Pos ";
-        $from.= "inner join " . ORG_POS_XREF . " on xref.Id =Pos.Id ";
-        $where = "WHERE xref.People_FK2 = " . $this->parentId . " and OrgPosStatus_FK < 3 ";
-        
-        $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $rec);        
-        return $result;        
-    }
-
     
     
     function selectOptions(){

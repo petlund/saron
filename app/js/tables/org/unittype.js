@@ -12,20 +12,19 @@ RECORDS, RECORD, OPTIONS, SOURCE_LIST, SOURCE_CREATE, SOURCE_EDIT
 "use strict";
 
 $(document).ready(function () {
-    $(TABLE_VIEW_UNITTYPE).jtable(unitTypeTableDef(TABLE_VIEW_UNITTYPE, null, -1, null));
-    $(TABLE_VIEW_UNITTYPE).jtable('load');
+    $(TABLE_VIEW_UNITTYPE).jtable(unitTypeTableDef(TABLE_VIEW_UNITTYPE, null));
+    var options = getPostData(TABLE_VIEW_UNITTYPE, null, TABLE_NAME_UNITTYPE, null, RECORDS);
+    $(TABLE_VIEW_UNITTYPE).jtable('load', options);
 });
 
 
 
-function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitle){
+function unitTypeTableDef(tableViewId, childTableTitle){
     const listUri = 'app/web-api/listOrganizationUnitType.php';
     const tableName = TABLE_NAME_UNITTYPE;
-    var tablePath = tableName;
-    if(parentTablePath !== null)
-        tablePath = parentTablePath + "/" + tableName;
  
     return {
+        showCloseButton: false,
         title: function (){
             if(childTableTitle !== null)
                 return childTableTitle;
@@ -47,7 +46,7 @@ function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitl
         },
         fields:{
             TablePath:{
-                list: true,
+                list: false,
                 edit: false,
                 create: false
             },
@@ -67,10 +66,10 @@ function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitl
                     var childTableTitle = 'Enhetstypen "' + data.record.Name + '" används för nedanstående organisatoriska enheter';                            
                     var tooltip = "Enhetstypen används inom följande organisatoriska enheter";
                     var imgFile = "unit.png";
-                    
+                    var childUri = 'app/web-api/listOrganizationUnit.php';
                     if(data.record.UsedInUnit ===  "1"){
-                        var childTableDef = unitTableDef(tableViewId, tablePath, parentId, childTableTitle);
-                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, listUri);
+                        var childTableDef = unitTableDef(tableViewId, childTableTitle);
+                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, TABLE_NAME_UNIT, ORG, childUri);
                         var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
                         
                         return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
@@ -90,6 +89,7 @@ function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitl
                     var childTableTitle = 'Enhetstypen "' + data.record.Name + '" har följande roller';
                     var tooltip = "";
                     var imgFile = "";
+                    var childUri = 'app/web-api/listOrganizationPos.php';
 
                     if(data.record.PosEnabled ===  POS_ENABLED){
 
@@ -102,8 +102,8 @@ function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitl
                             tooltip = "Enhetstypen har roller";
                         }
                         
-                        var childTableDef = roleTableDef(tableViewId, parentTablePath, parentId, childTableTitle);
-                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, listUri);
+                        var childTableDef = roleTableDef(tableViewId, childTableTitle);
+                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, TABLE_NAME_ROLE, ORG, childUri);
                         var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
                         
                         return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
@@ -219,8 +219,8 @@ function unitTypeTableDef(tableViewId, parentTablePath, parentId, childTableTitl
 
 function updateUnitTypeRecord(tableViewId, data){
     var url = '/' + SARON_URI + 'app/web-api/listOrganizationUnitType.php';
-    var options = {record:{"Id": data.record.Id}, "clientOnly": false, "url":url};
-    $(tableViewId).jtable('updateRecord', options);
+    var postData = {record:{"Id": data.record.Id}, "clientOnly": false, "url":url};
+    $(tableViewId).jtable('updateRecord', postData);
 }
 
 

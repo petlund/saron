@@ -22,7 +22,7 @@ class SuperEntity {
     protected $jtPageSize;
     protected $jtStartIndex;
     protected $jtSorting;
-    protected $tableview;
+    protected $tableView;
     protected $tablePath;
     protected $parentId;
     protected $resultType;
@@ -42,18 +42,16 @@ class SuperEntity {
 
         
         // POST for table load and GET for Options
-        $this->selection = (String)filter_input(INPUT_GET, "selection", FILTER_SANITIZE_STRING);    
-        
-        $this->tableview = (String)filter_input(INPUT_POST, "tableview", FILTER_SANITIZE_STRING);    
-        if($this->tableview !== null){
-            $this->tableview = (String)filter_input(INPUT_GET, "tableview", FILTER_SANITIZE_STRING);    
+        $this->tableView = (String)filter_input(INPUT_POST, "TableView", FILTER_SANITIZE_STRING);    
+        if(strlen($this->tableView) === 0){
+            $this->tableView = (String)filter_input(INPUT_GET, "TableView", FILTER_SANITIZE_STRING);    
         }
         $this->tablePath = (String)filter_input(INPUT_POST, "TablePath", FILTER_SANITIZE_STRING);
-        if($this->tablePath !== null){
+        if(strlen($this->tablePath) === 0){
             $this->tablePath = (String)filter_input(INPUT_GET, "TablePath", FILTER_SANITIZE_STRING);
         }
         $this->source = (String)filter_input(INPUT_POST, "Source", FILTER_SANITIZE_STRING);
-        if($this->source !== null){
+        if(strlen($this->source) === 0){
             $this->source = (String)filter_input(INPUT_GET, "Source", FILTER_SANITIZE_STRING);
         }
         $this->parentId = (int)filter_input(INPUT_POST, "ParentId", FILTER_SANITIZE_NUMBER_INT);
@@ -64,9 +62,12 @@ class SuperEntity {
             }
         }
         $this->resultType = (String)filter_input(INPUT_POST, "ResultType", FILTER_SANITIZE_STRING);
-        if($this->resultType !== null){
-            $this->resultType = (String)filter_input(INPUT_POST, "ResultType", FILTER_SANITIZE_STRING);
+        if(strlen($this->resultType) === 0){
+            $this->resultType = (String)filter_input(INPUT_GET, "ResultType", FILTER_SANITIZE_STRING);
         }
+
+        $this->selection = (String)filter_input(INPUT_GET, "selection", FILTER_SANITIZE_STRING);    
+        
     }
 
     
@@ -86,7 +87,7 @@ class SuperEntity {
     
     protected function getSortSql(){
         $sqlOrderBy = "";
-        if($this->groupId === 2 and $this->tableview === "people"){
+        if($this->groupId === 2 and $this->tableView === TABLE_VIEW_PEOPLE){
             $sqlOrderBy = "ORDER BY Updated desc ";            
         }
         else if(Strlen($this->jtSorting)>0){

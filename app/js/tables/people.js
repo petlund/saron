@@ -1,4 +1,8 @@
-/* global DATE_FORMAT, J_TABLE_ID, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID */
+/* global DATE_FORMAT, J_TABLE_ID, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, 
+inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, 
+NO_HOME, NEW_HOME_ID, 
+TABLE_NAME_POEPLE, TABLE_VIEW_PEOPLE
+ */
 
 "use strict";
 $(document).ready(function () {
@@ -10,9 +14,9 @@ $(document).ready(function () {
     if(urlParams.has('Id'))
         Id = urlParams.get('Id');
         
-    $(J_TABLE_ID).jtable(peopleTableDef(J_TABLE_ID, Id));
-    $(J_TABLE_ID).jtable('load');
-    $(J_TABLE_ID).find('.jtable-toolbar-item-add-record').hide();
+    $(TABLE_VIEW_PEOPLE).jtable(peopleTableDef(TABLE_VIEW_PEOPLE, Id));
+    $(TABLE_VIEW_PEOPLE).jtable('load');
+    $(TABLE_VIEW_PEOPLE).find('.jtable-toolbar-item-add-record').hide();
 });
 
 
@@ -39,7 +43,7 @@ function peopleTableDef(placeHolder, Id) {
                             if(data.Result === 'OK'){
                                 $dfd.resolve(data);
                                 $("#groupId").val("2");
-                                var pData = {searchString: "", groupId: 2, tableview: "people"};
+                                var pData = {searchString: "", groupId: 2, tableViewId: TABLE_VIEW_PEOPLE};
 
                                 $(placeHolder).jtable('load', pData, function (){
                                     if(data.Record.HomeId > 0)
