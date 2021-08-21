@@ -13,7 +13,7 @@ class People extends SuperEntity{
 
     function __construct($db, $saronUser) {
         parent::__construct($db, $saronUser);
-        $this->Id = (String)filter_input(INPUT_GET, "Id", FILTER_SANITIZE_STRING);
+        $this->Id = (String)filter_input(INPUT_POST, "Id", FILTER_SANITIZE_STRING);
         $this->filter = (String)filter_input(INPUT_GET, "filter", FILTER_SANITIZE_STRING);
     }
     
@@ -33,18 +33,24 @@ class People extends SuperEntity{
 
 
     
-    function selectDefault($rec){
+    function selectDefault($idFromCreate = -1){
+        $Id = $this->getId($idFromCreate, $this->Id);
+
         $tw = new PeopleViews();
         $sqlSelect = $tw->getPeopleViewSql($this->tableView, $this->saronUser);
+        $sqlSelect.= ", ";
+        $sqlSelect.= $this->getTablePathSql(false);
 
-        $gf = new PeopleFilter();
         $sqlWhere = "WHERE ";       
-        if($this->Id > 0){
-            $sqlWhere.= "People.Id = " . $this->Id . " ";
-        }
-        else{
+        if($Id < 0){
+            $rec = RECORDS;
+            $gf = new PeopleFilter();
             $sqlWhere.= $gf->getPeopleFilterSql($this->groupId);
             $sqlWhere.= $gf->getSearchFilterSql($this->uppercaseSearchString);
+        }
+        else{
+            $rec = RECORD;
+            $sqlWhere.= "People.Id = " . $Id . " ";
         }
         $result =  $this->db->select($this->saronUser, $sqlSelect, SQL_FROM_PEOPLE_LEFT_JOIN_HOMES, $sqlWhere, $this->getSortSql(), $this->getPageSizeSql(), $rec);
         return $result;
@@ -54,7 +60,7 @@ class People extends SuperEntity{
     
     
     function selectPeopleOptions(){
-
+        
         $SELECT_PERSSON = "(SELECT " . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . " FROM People as P inner join Org_Pos as Pos on P.Id = Pos.People_FK WHERE Pos.OrgRole_FK = Role.Id) ";
         $SELECT_CONCAT = "concat(' ', Name , ' (', " . $SELECT_PERSSON . ", ')')";
         $SELECT_CONCAT_NULL = "concat(' ', Name , ' (-)')";

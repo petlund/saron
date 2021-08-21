@@ -17,10 +17,19 @@
     Define("TABLE_NAME_PEOPLE",  "table_people");
 
     Define("TABLE_VIEW_BAPTIST",  "baptist");
+    Define("TABLE_NAME_BAPTIST",  "table_baptist");
+
     Define("TABLE_VIEW_MEMBER",  "member");
+    Define("TABLE_NAME_MEMBER",  "table_member");
+
     Define("TABLE_VIEW_KEYS",  "keys");
+    Define("TABLE_NAME_KEYS",  "table_keys");
+
     Define("TABLE_VIEW_HOMES",  "homes"); 
+    Define("TABLE_NAME_HOMES",  "table_homes"); 
+
     Define("TABLE_VIEW_TOTAL",  "total");
+    Define("TABLE_NAME_TOTAL",  "table_total");
 
 
     

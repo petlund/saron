@@ -23,6 +23,21 @@ require_once SARON_ROOT . "app/util/GlobalConstants_php.php";
 // People    
     echo "<script>const TABLE_VIEW_PEOPLE = '" .  "#" . TABLE_VIEW_PEOPLE . "';</script>";    
     echo "<script>const TABLE_NAME_PEOPLE = '" . TABLE_NAME_PEOPLE . "';</script>";
+
+    echo "<script>const TABLE_VIEW_HOMES = '" .  "#" . TABLE_VIEW_HOMES . "';</script>";    
+    echo "<script>const TABLE_NAME_HOMES = '" . TABLE_NAME_HOMES . "';</script>";
+    
+    echo "<script>const TABLE_VIEW_MEMBER = '" .  "#" . TABLE_VIEW_MEMBER . "';</script>";    
+    echo "<script>const TABLE_NAME_MEMBER = '" . TABLE_NAME_MEMBER . "';</script>";
+    
+    echo "<script>const TABLE_VIEW_BAPTIST = '" .  "#" . TABLE_VIEW_BAPTIST . "';</script>";    
+    echo "<script>const TABLE_NAME_BAPTIST = '" . TABLE_NAME_BAPTIST . "';</script>";
+    
+    echo "<script>const TABLE_VIEW_KEYS = '" .  "#" . TABLE_VIEW_KEYS . "';</script>";    
+    echo "<script>const TABLE_NAME_KEYS = '" . TABLE_NAME_KEYS . "';</script>";
+    
+    echo "<script>const TABLE_VIEW_TOTAL = '" .  "#" . TABLE_VIEW_TOTAL . "';</script>";    
+    echo "<script>const TABLE_NAME_TOTAL = '" . TABLE_NAME_TOTAL . "';</script>";
     
 //Organisation
     echo "<script>const TABLE_VIEW_CHILD_SUFFIX = '" . TABLE_VIEW_CHILD_SUFFIX . "';</script>";

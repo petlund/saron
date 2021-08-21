@@ -1,7 +1,8 @@
 /* global DATE_FORMAT, J_TABLE_ID, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, 
 inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, 
 NO_HOME, NEW_HOME_ID, 
-TABLE_NAME_POEPLE, TABLE_VIEW_PEOPLE
+ORG, RECORD, RECORDS, OPTIONS,
+TABLE_NAME_PEOPLE, TABLE_VIEW_PEOPLE, TABLE_NAME_HOMES
  */
 
 "use strict";
@@ -14,16 +15,21 @@ $(document).ready(function () {
     if(urlParams.has('Id'))
         Id = urlParams.get('Id');
         
-    $(TABLE_VIEW_PEOPLE).jtable(peopleTableDef(TABLE_VIEW_PEOPLE, Id));
-    $(TABLE_VIEW_PEOPLE).jtable('load');
+    $(TABLE_VIEW_PEOPLE).jtable(peopleTableDef(TABLE_VIEW_PEOPLE, null));
+    var options = getPostData(TABLE_VIEW_PEOPLE, null, TABLE_NAME_PEOPLE, null, RECORDS);
+    $(TABLE_VIEW_PEOPLE).jtable('load', options);
     $(TABLE_VIEW_PEOPLE).find('.jtable-toolbar-item-add-record').hide();
 });
 
 
-function peopleTableDef(placeHolder, Id) {
+function peopleTableDef(tableViewId, tableTitle) {
+    var tableName = TABLE_NAME_HOMES;
+    var title = 'Personuppgifter';
+    if(tableTitle !== null)
+        title = tableTitle; 
     
     return {
-        title: 'Personuppgifter',
+        title: title,
         paging: true, //Enable paging
         pageList: 'minimal',
         sorting: true, //Enable sorting
@@ -31,7 +37,7 @@ function peopleTableDef(placeHolder, Id) {
         defaultSorting: 'LongHomeName ASC, DateOfBirth ASC', //Set default sorting   
         messages: {addNewRecord: 'Ny person'},
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php?tableview=people&Id=' + Id,
+            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php?tableview=people',
             createAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
@@ -45,9 +51,9 @@ function peopleTableDef(placeHolder, Id) {
                                 $("#groupId").val("2");
                                 var pData = {searchString: "", groupId: 2, tableViewId: TABLE_VIEW_PEOPLE};
 
-                                $(placeHolder).jtable('load', pData, function (){
+                                $(tableViewId).jtable('load', pData, function (){
                                     if(data.Record.HomeId > 0)
-                                        _openHomeChildTable(placeHolder, data);                                    
+                                        _openHomeChildTable(tableViewId, data);                                    
                                 });
                             }
                             else
@@ -76,11 +82,11 @@ function peopleTableDef(placeHolder, Id) {
                                 var $selectedRow = $("[data-record-key=" + data.Record.Id + "]"); 
                                 var moveToNewHome = (data.Record.HomeId > 0 && data.Record.OldHome_HomeId !== data.Record.HomeId);
                                 if(!(data.Record.HomeId > 0 && data.Record.OldHome_HomeId === data.Record.HomeId)){
-                                    isChildRowOpen = $(placeHolder).jtable('isChildRowOpen', $selectedRow),
-                                    $(placeHolder).jtable('closeChildTable', $selectedRow, function(){
+                                    isChildRowOpen = $(tableViewId).jtable('isChildRowOpen', $selectedRow),
+                                    $(tableViewId).jtable('closeChildTable', $selectedRow, function(){
                                         _updateHomeFields(data);
                                         if(data.Record.HomeId > 0 && (isChildRowOpen || moveToNewHome))
-                                            _openHomeChildTable(placeHolder, data);
+                                            _openHomeChildTable(tableViewId, data);
                                     });
                                 }
                                 else{ // no move to another home
@@ -98,12 +104,57 @@ function peopleTableDef(placeHolder, Id) {
             }
         },       
         fields: {
-            HomeDetails: childTableHome(placeHolder),
-            MemberShip: memberTableDef(placeHolder), 
-            Baptism: childTableBaptism(placeHolder), 
+            Homes:{
+                title: '',
+                width: '1%',
+                sorting: false,
+                edit: false,
+                create: false,
+                delete: false,            
+                display: function (data) {
+                    var childTableTitle = 'Hem för "' + data.record.LongName + ' ';
+                    var tooltip = 'title="Adressuppgifter"';
+                    var imgFile = "home.png";
+                    var listUri = 'app/web-api/listHomes.php';
+
+                    var childTableDef = homeTableDef(tableViewId, childTableTitle);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, tableName, ORG, listUri);
+                    var $imgClose = closeChildTable(data, tableViewId, tableName, ORG, listUri);
+
+                    return getChildNavIcon(data, tableName, $imgChild, $imgClose);
+
+                }
+            },
+            MemberShip:{
+                title: '',
+                width: '1%',
+                sorting: false,
+                edit: false,
+                create: false,
+                delete: false,            
+                display: function (data) {
+                    var childTableTitle = 'Medlemsuppgifter för "' + data.record.LongName + ' ';
+                    var tooltip = 'title="Medlemsuppgifter"';
+                    var imgFile = "member.png";
+                    var listUri = 'app/web-api/listHomes.php';
+
+                    var childTableDef = homeTableDef(tableViewId, childTableTitle);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, tableName, ORG, listUri);
+                    var $imgClose = closeChildTable(data, tableViewId, tableName, ORG, listUri);
+
+                    return getChildNavIcon(data, tableName, $imgChild, $imgClose);
+
+                }
+            },
+            Baptism: childTableBaptism(tableViewId), 
             Id: {
                 key: true,
                 list: false
+            },
+            TablePath:{
+                list: false,
+                edit: false,
+                create: false
             },
             HomeId: {
                 create: true,
@@ -138,7 +189,7 @@ function peopleTableDef(placeHolder, Id) {
                 title: 'Hem',
                 display: function (data){
                     data.record.OldHomeId = data.record.HomeId;
-                    return _setClassAndValueAltNull(data.record, "LongHomeName", NO_HOME, PERSON_AND_HOME);
+                    return _setClassAndValueAltNull(data, "LongHomeName", NO_HOME, PERSON_AND_HOME);
                 }
             },
             LastName: {
@@ -160,7 +211,7 @@ function peopleTableDef(placeHolder, Id) {
                 create: false,
                 edit: false,
                 display: function (data){
-                    return _setClassAndValue(data.record, "Name", PERSON);
+                    return _setClassAndValue(data, "Name", PERSON);
                 }                 
             },
             DateOfBirth: {
@@ -169,7 +220,7 @@ function peopleTableDef(placeHolder, Id) {
                 displayFormat: DATE_FORMAT,
                 type: 'date',
                 display: function (data){
-                    return _setClassAndValue(data.record, "DateOfBirth", PERSON);
+                    return _setClassAndValue(data, "DateOfBirth", PERSON);
                 }       
             },
             Gender: {
@@ -181,7 +232,7 @@ function peopleTableDef(placeHolder, Id) {
                 width: '13%',
                 title: 'Mail',
                 display: function (data){
-                    return _setMailClassAndValue(data.record, "Email", '', PERSON);
+                    return _setMailClassAndValue(data, "Email", '', PERSON);
                 }       
             },  
             Mobile: {
@@ -189,7 +240,7 @@ function peopleTableDef(placeHolder, Id) {
                 inputTitle: 'Mobil <BR> - Hemtelefonuppgifter matas in under "Adressuppgifter"',
                 width: '7%',
                 display: function (data){
-                    return _setClassAndValue(data.record, "Mobile", PERSON);
+                    return _setClassAndValue(data, "Mobile", PERSON);
                 }       
             },
             Phone: {
@@ -198,7 +249,7 @@ function peopleTableDef(placeHolder, Id) {
                 width: '7%',
                 create: false,
                 display: function (data){
-                    return _setClassAndValue(data.record, "Phone", HOME);
+                    return _setClassAndValue(data, "Phone", HOME);
                 }                  
             },
             DateOfMembershipStart: {
@@ -223,7 +274,7 @@ function peopleTableDef(placeHolder, Id) {
                 edit: false,
                 title: 'Medlemsnummer',
                 display: function (data){
-                    return _setClassAndValue(data.record, "MembershipNo", PERSON);
+                    return _setClassAndValue(data, "MembershipNo", PERSON);
                 },       
                 options: function (data){
                     if(clearMembershipNoOptionCache){
@@ -239,7 +290,7 @@ function peopleTableDef(placeHolder, Id) {
                 create: false,
                 width: '4%',
                 display: function (data){
-                    return _setClassAndValue(data.record, "MemberState", PERSON);
+                    return _setClassAndValue(data, "MemberState", PERSON);
                 },       
             },
             VisibleInCalendar: {
@@ -248,7 +299,7 @@ function peopleTableDef(placeHolder, Id) {
                 inputTitle: 'Synlig i adresskalendern',
                 width: '4%',             
                 display: function (data){
-                    return _setClassAndValue(data.record, "VisibleInCalendar", PERSON);
+                    return _setClassAndValue(data, "VisibleInCalendar", PERSON);
                 },       
                 options:_visibilityOptions()
             },
@@ -269,7 +320,7 @@ function peopleTableDef(placeHolder, Id) {
                 create: false,
                 edit: true,
                 display: function (data){
-                    return _setClassAndValue(data.record, "DateOfDeath", PERSON);
+                    return _setClassAndValue(data, "DateOfDeath", PERSON);
                 }       
             },
             Comment: {
@@ -277,7 +328,7 @@ function peopleTableDef(placeHolder, Id) {
                 type: 'textarea',
                 list: false,
                 display: function (data){
-                    return _setClassAndValue(data.record, "Comment", PERSON);
+                    return _setClassAndValue(data, "Comment", PERSON);
                 }       
             }
         },
@@ -289,7 +340,7 @@ function peopleTableDef(placeHolder, Id) {
         },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === 'edit'){ 
-                $(placeHolder).find('.jtable-toolbar-item-add-record').show();
+                $(tableViewId).find('.jtable-toolbar-item-add-record').show();
             }
         },        
         formCreated: function (event, data){
@@ -347,209 +398,10 @@ function filterPeople(viewId, reload){
 }
 
 
-// *********************************************************
-// SUBTABLE HOME
-// *********************************************************
-
-function childTableHome(placeHolder) {
-    return {
-        title: '',
-        width: '1%',
-        sorting: false,
-        edit: false,
-        create: false,
-        delete: false,
-        display: function (homeData) {
-            var src = '"/' + SARON_URI + SARON_IMAGES_URI + 'home.png" title="Adressuppgifter"';
-            var imgTag = _setImageClass(homeData.record, "Home", src, HOME);
-            var $imgHome = $(imgTag);
-
-            $imgHome.click(homeData, function (event){
-                var newHomeId = -1;
-                if(event.data.record.HomeId === "0") // zero is replaced by new index from backend
-                    newHomeId = localStorage.getItem(NEW_HOME_ID);
-                else
-                    newHomeId = event.data.record.HomeId;
-    
-                var $tr = $('.Name_P' + event.data.record.Id).closest('tr');
-                $(placeHolder).jtable('openChildTable', $tr, homeChildTableDef(placeHolder, event.data, newHomeId), function(data){
-                    data.childTable.jtable('load');
-                });
-            });
-            if(homeData.record.HomeId === null)
-                return null;
-            
-            if(homeData.record.HomeId >= 0){
-                return $imgHome;
-            }
-            else{
-                return null; 
-            }
-        }
-    };
-}
 
 
-function homeChildTableDef(placeHolder, homeData, newHomeId){
-    return {
-        title: _setClassAndValue(homeData.record, "LongHomeName", HOME),                            
-        showCloseButton: false,
-        actions: {
-            listAction: function(postData) {
-                return $.Deferred(function ($dfd) {
-                    $.ajax({
-                        url: '/' + SARON_URI + 'app/web-api/listHome.php?HomeId=' + newHomeId,
-                        type: 'POST',
-                        dataType: 'json',
-                        data: postData,
-                        success: function (data) {
-                            if(data.Result === 'OK'){
-
-                                $dfd.resolve(data);
-                                for(var field in data.Record){
-                                    _updateFields(data.Record, field, HOME);
-                                }
-                            }
-                            else
-                                $dfd.resolve(data);
-                        },
-                        error: function () {
-                            $dfd.reject();
-                        }
-                    });
-                });
-            },
-            updateAction: function(postData) {
-                return $.Deferred(function ($dfd) {
-                    $.ajax({
-                        url: '/' + SARON_URI + 'app/web-api/updateHome.php?HomeId=' + newHomeId,
-                        type: 'POST',
-                        dataType: 'json',
-                        data: postData,
-                        success: function (data) {
-                            if(data.Result === 'OK'){
-
-                                $dfd.resolve(data);
-                                for(var field in data.Record){
-                                    _updateFields(data.Record, field, HOME);
-                                }
-                            }
-                            else
-                                $dfd.resolve(data);
-                        },
-                        error: function () {
-                            $dfd.reject();
-                        }
-                    });
-                });
-            }
-        },
-        fields: homeFields(placeHolder, homeData),
-        rowInserted: function(event, homeData){
-            if (homeData.record.user_role !== 'edit'){
-                homeData.row.find('.jtable-edit-command-button').hide();
-                homeData.row.find('.jtable-delete-command-button').hide();
-            }
-        },        
-        formCreated: function (event, homeData){
-            homeData.row[0].style.backgroundColor = "yellow";
-            homeData.form.css('width',inputFormWidth);
-            homeData.form.find('input[name=FamilyName]').css('width',inputFormFieldWidth);
-            homeData.form.find('input[name=Phone]').css('width',inputFormFieldWidth);
-            homeData.form.find('input[name=Co]').css('width',inputFormFieldWidth);
-            homeData.form.find('input[name=Address]').css('width',inputFormFieldWidth);
-            homeData.form.find('input[name=City]').css('width',inputFormFieldWidth);
-            homeData.form.find('input[name=Country]').css('width',inputFormFieldWidth);
-
-            var dbox = document.getElementsByClassName('ui-dialog-title');            
-            for(var i=0; i<dbox.length; i++)
-                dbox[i].innerHTML='Uppdatera uppgifter för: ' + homeData.record.FamilyName;
-        },
-        formClosed: function (event, homeData){
-            clearMembershipNoOptionCache=true;
-            homeData.row[0].style.backgroundColor = '';
-        }
-    };
-}
 
 
-function homeFields(placeHolder, homeData) {
-    return {
-        CloseChild: fieldCloseChildTable(placeHolder, homeData.record.Id),
-        Id: {
-            key: true,
-            list: false,
-            defaultValue: homeData.record.Id
-        },
-        Residents:{
-            edit: false,
-            title: 'Boende på adressen',
-            width: '15%',
-            display: function(data){
-                return _setClassAndValue(data.record, "Residents", HOME);
-            }
-        },
-        FamilyName: {
-            list: false,
-            title: 'Familjenamn',
-            display: function (data) {
-                return _setClassAndValue(data.record, "FamilyName", HOME);
-            }          
-        },
-        Phone: {
-            title: 'Tel.',
-            inputTitle: 'Hemtelefon',
-            width: '9%',
-            display: function (data) {
-                return _setClassAndValue(data.record, "Phone", HOME);
-            }                       
-        },
-        Co: {
-            title: 'Co',
-            width: '15%',
-            display: function (data){
-                return _setClassAndValue(data.record, "Co", HOME);
-            }
-        },                                
-        Address: {
-            title: 'Gatuadress',
-            width: '20%',
-            display: function (data){
-                return _setClassAndValue(data.record, "Address", HOME);
-            }
-        },
-        Zip: {
-            title: 'PA',
-            width: '5%',
-            display: function (data){
-                return _setClassAndValue(data.record, "Zip", HOME);
-            }
-        },
-        City: {
-            title: 'Stad',
-            width: '15%',
-            display: function (data){
-                return _setClassAndValue(data.record, "City", HOME);
-            }
-        },
-        Country: {
-            title: 'Land',
-            width: '15%',
-            display: function (data){
-                return _setClassAndValue(data.record, "Country", HOME);
-            }
-        },
-        Letter: {
-            inputTitle: 'Församlingspost via brev',
-            title: 'Brev',
-            width: '4%',
-            display: function (data){
-                return _setClassAndValue(data.record, "Letter", HOME);
-            },
-            options: _letterOptions()
-        }
-    };
-}
 
 // *********************************************************
 // SUBTABLE MEMBERSHIP

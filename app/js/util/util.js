@@ -49,11 +49,11 @@ function _setClassAndValuePrefix(data, field, type, prefix){
 
 function _setClassAndValueAltNull(data, field, nullValue, type){
         if(type === PERSON_AND_HOME){
-            var classNames = field + ' ' + _getClassName_Id(data.record, field, PERSON) + ' ' + _getClassName_Id(data.record, field, HOME);
+            var classNames = field + ' ' + _getClassName_Id(data, field, PERSON) + ' ' + _getClassName_Id(data, field, HOME);
             return _styleSaronValue(classNames, data.record[field], nullValue);
         }
         else    
-            return _styleSaronValue(field + ' ' + _getClassName_Id(data.record, field, type), data.record[field], nullValue);    
+            return _styleSaronValue(field + ' ' + _getClassName_Id(data, field, type), data.record[field], nullValue);    
 }
 
 

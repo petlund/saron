@@ -162,11 +162,17 @@ class SuperEntity {
 
     
     
-    function getTablePathSql(){
-        if(strlen($this->tablePath) > 0){    
-            return "'" . $this->tablePath . "' AS TablePath, ";
+    function getTablePathSql($continiue = true){
+        if(strlen($this->tablePath) > 0){   
+            $sql = "'" . $this->tablePath . "' AS TablePath";
+            if($continiue){
+                $sql.= ", ";
+            }
+            else{
+                $sql.= " ";
+            }
         }
-        return "";
+        return $sql;
     }
     
     

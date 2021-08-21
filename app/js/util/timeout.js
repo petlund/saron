@@ -43,7 +43,7 @@ var timeout;
             if(data.includes('ERROR'))
                 window.location.replace('/' + SARON_URI + 'app/access/SaronLogin.php?logout=true');             
         })
-        .fail(function(data) {
+        .fail(function() {
         })
         .always(function() {
         });
@@ -91,24 +91,25 @@ var timeout;
         const on = "Loggar ut ";
         const off = "__________ ";
         var titles = document.getElementsByTagName("TITLE");
-        var title = titles[0];
-        var str = title.innerHTML;
-        if(startBlink)
-            if(!(str.startsWith(on) || str.startsWith(off)))
-                title.innerHTML = on + str;
-            else{
-                if(str.startsWith(on))
-                    title.innerHTML = off + str.slice(on.length, str.length);
+        if(titles.length>0){
+            var title = titles[0];
+            var str = title.innerHTML;
+            if(startBlink)
+                if(!(str.startsWith(on) || str.startsWith(off)))
+                    title.innerHTML = on + str;
+                else{
+                    if(str.startsWith(on))
+                        title.innerHTML = off + str.slice(on.length, str.length);
+                    if(str.startsWith(off))
+                        title.innerHTML = on + str.slice(off.length, str.length);
+                }
+            else
                 if(str.startsWith(off))
-                    title.innerHTML = on + str.slice(off.length, str.length);
+                    title.innerHTML = str.slice(off.length, str.length);
+                if(str.startsWith(on))
+                    title.innerHTML = str.slice(on.length, str.length);
             }
-        else
-            if(str.startsWith(off))
-                title.innerHTML = str.slice(off.length, str.length);
-            if(str.startsWith(on))
-                title.innerHTML = str.slice(on.length, str.length);
-
-    }
+        }
 
 
 

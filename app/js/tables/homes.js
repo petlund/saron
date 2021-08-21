@@ -1,13 +1,17 @@
-/* global SARON_URI, PERSON, inputFormWidth, inputFormFieldWidth */
+/* global SARON_URI, PERSON, inputFormWidth, inputFormFieldWidth,  
+TABLE_VIEW_HOMES, TABLE_NAME_HOMES,  
+RECORDS, RECORD, OPTIONS
+ */
 "use strict";
 
 
-const HOMES_TABLE_ID = '#homes';
+
 
 $(document).ready(function () {
-    $(HOMES_TABLE_ID).jtable(homeTableDef());
-    $(HOMES_TABLE_ID).jtable('load');
-    $(HOMES_TABLE_ID).find('.jtable-toolbar-item-add-record').hide();
+    $(TABLE_VIEW_HOMES).jtable(homeTableDef(TABLE_VIEW_HOMES, null, null));
+    var options = getPostData(TABLE_VIEW_HOMES, null, TABLE_NAME_HOMES, null, RECORDS);
+    $(TABLE_VIEW_HOMES).jtable('load', options);
+    $(TABLE_VIEW_HOMES).find('.jtable-toolbar-item-add-record').hide();
 });
 
 
@@ -24,9 +28,13 @@ function filterHomes(viewId, reload){
 }
 
 
-function homeTableDef(){
+function homeTableDef(tableViewId, childTableTitle){
+    var title = 'Hem';
+    if(childTableTitle !== null)
+        title = childTableTitle;
     return {
-        title: 'Hem',
+        
+        title: title,
         paging: true, //Enable paging
         pageList: 'minimal',
         sorting: true, //Enable sorting
@@ -39,56 +47,24 @@ function homeTableDef(){
             //deleteAction: 'delete.php'
         },
         fields: {
-            HomeId: {
+            Id: {
                 list: false,
                 key: true
+            },
+            ParentId: {
+                list: false
+            },
+            TablePath:{
+                list: false,
+                edit: false,
+                create: false
             },
             FamilyName: {
                 title: 'Hem (Familjenamn)',
                 width: '10%',
                 edit: true,
                 display: function (data){
-                    return _setClassAndValue(data.record, "FamilyName", PERSON);
-                }       
-            },
-            Co: {
-                title: 'Co',
-                width: '10%',
-                edit: true,
-                display: function (data){
-                    return _setClassAndValue(data.record, "Co", PERSON);
-                }       
-            },
-            Address: {
-                title: 'Adress',
-                width: '10%',
-                edit: true,
-                display: function (data){
-                    return _setClassAndValue(data.record, "Address", PERSON);
-                }       
-            },
-            Zip: {
-                title: 'PA',
-                width: '5%',
-                edit: true,
-                display: function (data){
-                    return _setClassAndValue(data.record, "Zip", PERSON);
-                }       
-            },
-            City: {
-                title: 'Stad',
-                width: '10%',
-                edit: true,
-                display: function (data){
-                    return _setClassAndValue(data.record, "City", PERSON);
-                }       
-            },
-            Country: {
-                title: 'Land',
-                width: '10%',
-                edit: true,
-                display: function (data){
-                    return _setClassAndValue(data.record, "Country", PERSON);
+                    return _setClassAndValue(data, "FamilyName", PERSON);
                 }       
             },
             Residents: {
@@ -96,7 +72,7 @@ function homeTableDef(){
                 width: '15%',
                 edit: false,
                 display: function (data){
-                    return _setClassAndValue(data.record, "Residents", PERSON);
+                    return _setClassAndValue(data, "Residents", PERSON);
                 }       
             },
             Phone: {
@@ -104,8 +80,48 @@ function homeTableDef(){
                 width: '10%',
                 edit: true,
                 display: function (data){
-                    return _setClassAndValue(data.record, "Phone", PERSON);
+                    return _setClassAndValue(data, "Phone", PERSON);
                 }                   
+            },
+            Co: {
+                title: 'Co',
+                width: '10%',
+                edit: true,
+                display: function (data){
+                    return _setClassAndValue(data, "Co", PERSON);
+                }       
+            },
+            Address: {
+                title: 'Adress',
+                width: '10%',
+                edit: true,
+                display: function (data){
+                    return _setClassAndValue(data, "Address", PERSON);
+                }       
+            },
+            Zip: {
+                title: 'PA',
+                width: '5%',
+                edit: true,
+                display: function (data){
+                    return _setClassAndValue(data, "Zip", PERSON);
+                }       
+            },
+            City: {
+                title: 'Stad',
+                width: '10%',
+                edit: true,
+                display: function (data){
+                    return _setClassAndValue(data, "City", PERSON);
+                }       
+            },
+            Country: {
+                title: 'Land',
+                width: '10%',
+                edit: true,
+                display: function (data){
+                    return _setClassAndValue(data, "Country", PERSON);
+                }       
             },
             Letter: {
                 title: 'Brevutskick',

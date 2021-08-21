@@ -1,6 +1,6 @@
 /* global 
 SARON_URI, SARON_IMAGES_URI,
-TABLE_NAME_UNIT, TABLE_NAME_UNITTYPE, TABLE_NAME_UNITLIST, TABLE_NAME_UNITTREE, TABLE_NAME_ROLE, TABLE_NAME_POS,
+TABLE_NAME_UNIT, TABLE_NAME_UNITTYPE, TABLE_NAME_UNITLIST, TABLE_NAME_UNITTREE, TABLE_NAME_ROLE, TABLE_NAME_POS,TABLE_NAME_HOMES,TABLE_NAME_PEOPLE,
 ORG,
 RECORDS
 */
@@ -97,6 +97,8 @@ function getAllClassNameOpenChild(data){
         className+= getClassNameOpenChild(data, TABLE_NAME_UNITTREE);
         className+= getClassNameOpenChild(data, TABLE_NAME_ROLE);
         className+= getClassNameOpenChild(data, TABLE_NAME_POS);
+        className+= getClassNameOpenChild(data, TABLE_NAME_PEOPLE);
+        className+= getClassNameOpenChild(data, TABLE_NAME_HOMES);
     return className;
     
 }

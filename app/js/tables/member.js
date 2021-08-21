@@ -1,19 +1,27 @@
-/* global DATE_FORMAT, SARON_URI, PERSON, inputFormWidth, inputFormFieldWidth */
+/* global DATE_FORMAT, SARON_URI, PERSON, inputFormWidth, inputFormFieldWidth,
+TABLE_VIEW_MEMBER, TABLE_NAME_MEMBER,
+RECORD, RECORDS,OPTIONS
+ */
 
 "use strict";
 
 $(document).ready(function () {
 
-    const J_TABLE_ID = '#member';
 
-    $(J_TABLE_ID).jtable(baptistTableDef(J_TABLE_ID));
-    $(J_TABLE_ID).jtable('load');
-    $(J_TABLE_ID).find('.jtable-toolbar-item-add-record').hide();
+    $(TABLE_VIEW_MEMBER).jtable(memberTableDef(TABLE_VIEW_MEMBER, null));
+    var options = getPostData(TABLE_VIEW_MEMBER, null, TABLE_NAME_MEMBER, null, RECORDS);
+    $(TABLE_VIEW_MEMBER).jtable('load', options);
+    $(TABLE_VIEW_MEMBER).find('.jtable-toolbar-item-add-record').hide();
 });  
 
-function memberTableDef(placeHolder){
+function memberTableDef(tableViewId, tableTitle){
+    var tableName = TABLE_NAME_MEMBER;
+    var title = 'Medlemsuppgifter';
+    if(tableTitle !== null)
+        title = tableTitle; 
+
     return {
-        title: 'Medlemsuppgifter',
+        title: title,
             paging: true, //Enable paging
             pageSize: 10, //Set page size (default: 10)
             pageList: 'minimal',
@@ -21,7 +29,7 @@ function memberTableDef(placeHolder){
             multiSorting: true,
             defaultSorting: 'FamilyName ASC, DateOfBirthr ASC', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php?tableview=member',
+            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php',
             updateAction: function(data) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({

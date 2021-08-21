@@ -4,6 +4,7 @@ require_once SARON_ROOT . 'app/entities/SuperEntity.php';
 require_once SARON_ROOT . 'app/entities/HomesFilter.php';
 
 class Homes extends SuperEntity{
+    protected $Id;
     protected $FamilyName;
     protected $Address;
     protected $Phone;
@@ -17,6 +18,7 @@ class Homes extends SuperEntity{
     function __construct($db, $saronUser) {
         parent::__construct($db, $saronUser);
         
+        $this->Id = (int)filter_input(INPUT_POST, "Id", FILTER_SANITIZE_NUMBER_INT);
         $this->FamilyName = (String)filter_input(INPUT_POST, "FamilyName", FILTER_SANITIZE_STRING);
         $this->Address = (String)filter_input(INPUT_POST, "Address", FILTER_SANITIZE_STRING);
         $this->Phone = (String)filter_input(INPUT_POST, "Phone", FILTER_SANITIZE_STRING);
@@ -55,23 +57,38 @@ class Homes extends SuperEntity{
             $this->deleteEmptyHomes(); // clean up
             return $this->selectHomesAsOptions();       
         default:
-            return $this->selectDefault(RECORDS);
+            return $this->selectDefault();
         }
     }
 
 
-    function selectDefault($rec){
+    function selectDefault($idFromCreate = -1){
+        $Id = $this->getId($idFromCreate, $this->Id);
+
         $filter = new HomesFilter();
-        $sqlSelect = SQL_STAR_HOMES . ", " . $this->saronUser->getRoleSql(true) . CONTACTS_ALIAS_RESIDENTS;
+        $sqlSelect = SQL_STAR_HOMES . ", People.HomeId, People.Id as ParentId, " . $this->saronUser->getRoleSql(true) . CONTACTS_ALIAS_RESIDENTS;
         $sqlWhere = "WHERE ";
-        if($rec === RECORDS){
-        $sqlWhere.= $filter->getHomesFilterSql($this->groupId);
-        $sqlWhere.= $filter->getSearchFilterSql($this->uppercaseSearchString);
+
+        if($Id < 0){            
+            $rec = RECORDS;
+            switch ($this->tablePath){
+                case TABLE_NAME_HOMES:            
+                    $sqlWhere.= $filter->getHomesFilterSql($this->groupId);
+                    $sqlWhere.= $filter->getSearchFilterSql($this->uppercaseSearchString);
+                    break;
+                case TABLE_NAME_PEOPLE . "/" . TABLE_NAME_HOMES:            
+                    $sqlWhere.= "People.Id = " . $this->parentId . " ";
+                    break;
+                default:
+                    $sqlWhere ="";
+            }
         }
         else {
-            $sqlWhere.= "Id = " . $this->HomeId . ";";
+            $rec = RECORD;
+            $sqlWhere.= "Homes.Id = " . $Id . " ";
         }
-        $result = $this->db->select($this->saronUser, $sqlSelect, "FROM Homes ", $sqlWhere, $this->getSortSql(), $this->getPageSizeSql(), $rec);
+        $from = "FROM Homes inner join People on People.HomeId = Homes.Id ";
+        $result = $this->db->select($this->saronUser, $sqlSelect, $from, $sqlWhere, $this->getSortSql(), $this->getPageSizeSql(), $rec);
         return $result;        
     }
 
