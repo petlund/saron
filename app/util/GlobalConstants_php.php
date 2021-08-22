@@ -31,6 +31,9 @@
     Define("TABLE_VIEW_TOTAL",  "total");
     Define("TABLE_NAME_TOTAL",  "table_total");
 
+    Define("TABLE_VIEW_BIRTHDAY",  "birthdays");
+    Define("TABLE_NAME_BIRTHDAY",  "table_birthdays");
+
 
     
     

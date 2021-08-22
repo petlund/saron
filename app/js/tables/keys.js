@@ -36,7 +36,7 @@ function keyTableDef(placeHolder){
                 create: false,
                 edit: false,
                 display: function (data){
-                    return _setClassAndValue(data.record, "Name", PERSON);
+                    return _setClassAndValue(data, "Name", PERSON);
                 }                 
             },
             DateOfBirth: {
@@ -46,7 +46,7 @@ function keyTableDef(placeHolder){
                 type: 'date',
                 displayFormat: DATE_FORMAT,
                 display: function (data){
-                    return _setClassAndValue(data.record, "DateOfBirth", PERSON);
+                    return _setClassAndValue(data, "DateOfBirth", PERSON);
                 }       
             },
             MemberState:{
@@ -62,7 +62,7 @@ function keyTableDef(placeHolder){
                 title: 'Kodad nyckel',
                 width: '5%',
                  display: function (data){
-                    return _setClassAndValue(data.record, "KeyToChurch", PERSON);
+                    return _setClassAndValue(data, "KeyToChurch", PERSON);
                 },                  
                options: _keyOptions()
             },
@@ -72,7 +72,7 @@ function keyTableDef(placeHolder){
                 title: 'Vanlig nyckel',
                 width: '5%',
                 display: function (data){
-                    return _setClassAndValue(data.record, "KeyToExp", PERSON);
+                    return _setClassAndValue(data, "KeyToExp", PERSON);
                 },                  
                 options: _keyOptions()
             },

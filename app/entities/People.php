@@ -38,15 +38,28 @@ class People extends SuperEntity{
 
         $tw = new PeopleViews();
         $sqlSelect = $tw->getPeopleViewSql($this->tableView, $this->saronUser);
-        $sqlSelect.= ", ";
-        $sqlSelect.= $this->getTablePathSql(false);
-
+        if(strlen($this->tablePath) >0){
+            $sqlSelect.= ", ";
+            $sqlSelect.= $this->getTablePathSql(false);
+        }
         $sqlWhere = "WHERE ";       
         if($Id < 0){
             $rec = RECORDS;
-            $gf = new PeopleFilter();
-            $sqlWhere.= $gf->getPeopleFilterSql($this->groupId);
-            $sqlWhere.= $gf->getSearchFilterSql($this->uppercaseSearchString);
+            switch ($this->tablePath){
+                case TABLE_NAME_PEOPLE . "/" . TABLE_NAME_HOMES:            
+                    $sqlWhere.= "People.Id = " . $this->parentId . " ";
+                    break;
+                case TABLE_NAME_PEOPLE . "/" . TABLE_NAME_BAPTIST:            
+                    $sqlWhere.= "People.Id = " . $this->parentId . " ";
+                    break;
+                case TABLE_NAME_PEOPLE . "/" . TABLE_NAME_MEMBER:            
+                    $sqlWhere.= "People.Id = " . $this->parentId . " ";
+                    break;
+                default:
+                    $gf = new PeopleFilter();
+                    $sqlWhere.= $gf->getPeopleFilterSql($this->groupId);
+                    $sqlWhere.= $gf->getSearchFilterSql($this->uppercaseSearchString);
+            }
         }
         else{
             $rec = RECORD;

@@ -32,8 +32,9 @@ function homeTableDef(tableViewId, childTableTitle){
     var title = 'Hem';
     if(childTableTitle !== null)
         title = childTableTitle;
+
     return {
-        
+        showCloseButton: false,        
         title: title,
         paging: true, //Enable paging
         pageList: 'minimal',
@@ -91,7 +92,7 @@ function homeTableDef(tableViewId, childTableTitle){
                     return _setClassAndValue(data, "Co", PERSON);
                 }       
             },
-            Address: {
+            Gatuaddress: {
                 title: 'Adress',
                 width: '10%',
                 edit: true,

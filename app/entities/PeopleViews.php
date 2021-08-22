@@ -6,17 +6,17 @@ class PeopleViews {
     
     function getPeopleViewSql($tableview, $saronUser){
         switch ($tableview){
-        case "people":
+        case TABLE_VIEW_POPLE:
             return $this->selectPeople() . ", " . $saronUser->getRoleSql(false);
-        case "birthdays":
+        case TABLE_VIEW_BIRTHDAY:
             return $this->selectBirthday();
-        case "member":
+        case TABLE_VIEW_MEMBER:
             return SQL_STAR_PEOPLE . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . DATES_AS_ALISAS_MEMBERSTATES . ", " . $saronUser->getRoleSql(false);
-        case "baptist":
+        case TABLE_VIEW_BAPTIST:
             return SQL_STAR_PEOPLE . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . DATES_AS_ALISAS_MEMBERSTATES .  ", " . $saronUser->getRoleSql(false);
-        case "keys":
+        case TABLE_VIEW_KEYS:
             return "Select People.Id as Id, KeyToExp, KeyToChurch, DateOfBirth, " . DECRYPTED_ALIAS_COMMENT_KEY . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . DATES_AS_ALISAS_MEMBERSTATES  . ", " . $saronUser->getRoleSql(false);
-        case "total":
+        case TABLE_VIEW_TOTAL:
             return $this->selectTotal() . ", " . $saronUser->getRoleSql(false);
         default:    
             return $this->selectPeople() . ", " . $saronUser->getRoleSql(false);

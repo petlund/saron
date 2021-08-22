@@ -2,7 +2,7 @@
 inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, 
 NO_HOME, NEW_HOME_ID, 
 ORG, RECORD, RECORDS, OPTIONS,
-TABLE_NAME_PEOPLE, TABLE_VIEW_PEOPLE, TABLE_NAME_HOMES
+TABLE_NAME_PEOPLE, TABLE_VIEW_PEOPLE, TABLE_NAME_HOMES, TABLE_NAME_BAPTIST, TABLE_NAME_MEMBER
  */
 
 "use strict";
@@ -29,6 +29,7 @@ function peopleTableDef(tableViewId, tableTitle) {
         title = tableTitle; 
     
     return {
+        showCloseButton: false,
         title: title,
         paging: true, //Enable paging
         pageList: 'minimal',
@@ -37,7 +38,7 @@ function peopleTableDef(tableViewId, tableTitle) {
         defaultSorting: 'LongHomeName ASC, DateOfBirth ASC', //Set default sorting   
         messages: {addNewRecord: 'Ny person'},
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php?tableview=people',
+            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php',
             createAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
@@ -112,16 +113,17 @@ function peopleTableDef(tableViewId, tableTitle) {
                 create: false,
                 delete: false,            
                 display: function (data) {
-                    var childTableTitle = 'Hem för "' + data.record.LongName + ' ';
+                    var childTableTitle = 'Hem för "' + data.record.Name + '"';
+                    var childTableName = TABLE_NAME_HOMES;
                     var tooltip = 'title="Adressuppgifter"';
                     var imgFile = "home.png";
                     var listUri = 'app/web-api/listHomes.php';
 
                     var childTableDef = homeTableDef(tableViewId, childTableTitle);
-                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, tableName, ORG, listUri);
-                    var $imgClose = closeChildTable(data, tableViewId, tableName, ORG, listUri);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, listUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
 
-                    return getChildNavIcon(data, tableName, $imgChild, $imgClose);
+                    return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
 
                 }
             },
@@ -133,20 +135,42 @@ function peopleTableDef(tableViewId, tableTitle) {
                 create: false,
                 delete: false,            
                 display: function (data) {
-                    var childTableTitle = 'Medlemsuppgifter för "' + data.record.LongName + ' ';
+                    var childTableTitle = 'Medlemsuppgifter för "' + data.record.Name + '"';
+                    var childTableName = TABLE_NAME_MEMBER;
                     var tooltip = 'title="Medlemsuppgifter"';
                     var imgFile = "member.png";
-                    var listUri = 'app/web-api/listHomes.php';
+                    var listUri = 'app/web-api/listPeople.php';
 
-                    var childTableDef = homeTableDef(tableViewId, childTableTitle);
-                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, tableName, ORG, listUri);
-                    var $imgClose = closeChildTable(data, tableViewId, tableName, ORG, listUri);
+                    var childTableDef = memberTableDef(tableViewId, childTableTitle);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, listUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
 
-                    return getChildNavIcon(data, tableName, $imgChild, $imgClose);
+                    return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
 
                 }
             },
-            Baptism: childTableBaptism(tableViewId), 
+            Baptism:{ 
+                title: '',
+                width: '1%',
+                sorting: false,
+                edit: false,
+                create: false,
+                delete: false,            
+                display: function (data) {
+                    var childTableTitle = 'Dopuppgifter för "' + data.record.Name + '"';
+                    var childTableName = TABLE_NAME_BAPTIST;
+                    var tooltip = 'title="Dopuppgifter"';
+                    var imgFile = "baptist.png";
+                    var listUri = 'app/web-api/listPeople.php';
+
+                    var childTableDef = baptistTableDef(tableViewId, childTableTitle);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, listUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
+
+                    return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
+
+                }
+            },
             Id: {
                 key: true,
                 list: false

@@ -182,7 +182,7 @@ class SaronUser{
                 . "AccessTicket='" . $ticket . "'"
                 . "AND " . NOW_LAST_ACTIVITY_DIFF . " < " . SESSION_EXPIRES . " "
                 . "AND " . NOW_TIME_STAMP_DIFF. " < " . COOCKIE_EXPIRES;        
-
+        
         $attributes = $this->db->sqlQuery($sql);
         
         if(count($attributes) === 0){

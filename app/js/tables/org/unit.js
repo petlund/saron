@@ -18,7 +18,7 @@ POS_ENABLED
 
 function unitTableDef(tableViewId, childTableTitle){
     const listUri = 'app/web-api/listOrganizationUnit.php';
-    //var postData = getPostData(tableViewId, )
+
     var tableName = "";
     if(tableViewId === TABLE_VIEW_UNITTREE)
         tableName = TABLE_NAME_UNITTREE;

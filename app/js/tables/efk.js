@@ -19,14 +19,14 @@ $(document).ready(function () {
                 width: '10%',
                 key: true,
                 display: function(data){
-                    return _setClassAndValue(data.record, "AgeInterval", HOME);                   
+                    return _setClassAndValue(data, "AgeInterval", HOME);                   
                 }
             },
             Amount: {
                 title: 'Antal medlemmar',
                 width: '10%',
                 display: function (data){
-                    return _setClassAndValue(data.record, "Amount", PERSON);
+                    return _setClassAndValue(data, "Amount", PERSON);
                 }       
             },
             Dummy: {

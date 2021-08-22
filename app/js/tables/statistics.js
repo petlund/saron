@@ -22,7 +22,7 @@ $(document).ready(function () {
                 key: true,
                 width: '10%',
                 display: function (data){
-                    return _setClassAndValue(data.record, "year", PERSON);
+                    return _setClassAndValue(data, "year", PERSON);
                 }       
             },
             number_of_members: {
@@ -31,7 +31,7 @@ $(document).ready(function () {
                 title: 'Medlemmar',
                 width: '10%',
                 display: function (data){
-                    return _setClassAndValue(data.record, "number_of_members", PERSON);
+                    return _setClassAndValue(data, "number_of_members", PERSON);
                 }       
             },
             number_of_new_members:  {
@@ -40,7 +40,7 @@ $(document).ready(function () {
                 title: 'Nya',
                 width: '10%',
                 display: function (data){
-                    return _setClassAndValue(data.record, "number_of_new_members", PERSON);
+                    return _setClassAndValue(data, "number_of_new_members", PERSON);
                 }       
             },
             number_of_finnished_members:  {
@@ -50,7 +50,7 @@ $(document).ready(function () {
                 format: 'number',
                 width: '10%',
                 display: function (data){
-                    return _setClassAndValue(data.record, "number_of_finnished_members", PERSON);
+                    return _setClassAndValue(data, "number_of_finnished_members", PERSON);
                 }       
             },
             number_of_dead:  {
@@ -59,7 +59,7 @@ $(document).ready(function () {
                 title: 'Avlidna',
                 width: '10%',
                 display: function (data){
-                    return _setClassAndValue(data.record, "number_of_dead", PERSON);
+                    return _setClassAndValue(data, "number_of_dead", PERSON);
                 }       
             },
             number_of_baptist_people:  {
@@ -68,7 +68,7 @@ $(document).ready(function () {
                 title: 'Döpta',
                 width: '10%',
                 display: function (data){
-                    return _setClassAndValue(data.record, "number_of_baptist_people", PERSON);
+                    return _setClassAndValue(data, "number_of_baptist_people", PERSON);
                 }       
             },
             avg_age:  {
@@ -77,7 +77,7 @@ $(document).ready(function () {
                 title: 'Medelålder',
                 width: '10%',
                 display: function (data){
-                    return _setClassAndValue(data.record, "avg_age", PERSON);
+                    return _setClassAndValue(data, "avg_age", PERSON);
                 }       
             },
             avg_membership_time:  {
@@ -86,7 +86,7 @@ $(document).ready(function () {
                 title: 'Medelålder',
                 width: '10%',
                 display: function (data){
-                    return _setClassAndValue(data.record, "avg_membership_time", PERSON);
+                    return _setClassAndValue(data, "avg_membership_time", PERSON);
                 }       
             },
             diff:  {
@@ -95,7 +95,7 @@ $(document).ready(function () {
                 title: 'Differens',
                 width: '10%',
                 display: function (data){
-                    return _setClassAndValue(data.record, "diff", PERSON);
+                    return _setClassAndValue(data, "diff", PERSON);
                 }       
             },
             Details: {
@@ -136,38 +136,38 @@ $(document).ready(function () {
                                     title: 'Datum',
                                     key: true,
                                     display: function (data){
-                                        return _setClassAndValue(data.record, "event_date", PERSON);
+                                        return _setClassAndValue(data, "event_date", PERSON);
                                     }       
                                 },
                                 LastName: {
                                     title: 'Efternamn',
                                     display: function (data){
-                                        return _setClassAndValue(data.record, "LastName", PERSON);
+                                        return _setClassAndValue(data, "LastName", PERSON);
                                     }       
                                 },
                                 FirstName: {
                                     title: 'Förnamn',
                                     display: function (data){
-                                        return _setClassAndValue(data.record, "FirstName", PERSON);
+                                        return _setClassAndValue(data, "FirstName", PERSON);
                                     }       
                                 },
                                 DateOfBirth: {
                                     title: 'Födelsedatum',
                                     display: function (data){
-                                        return _setClassAndValue(data.record, "DateOfBirth", PERSON);
+                                        return _setClassAndValue(data, "DateOfBirth", PERSON);
                                     }       
                                 },
                                 event_type: {
                                     title: 'Händelse',
                                     display: function (data){
-                                        return _setClassAndValue(data.record, "event_type", PERSON);
+                                        return _setClassAndValue(data, "event_type", PERSON);
                                     }       
                                 },
                                 Comment: {
                                     title: 'Notering',
                                     width: '50%',
                                     display: function (data){
-                                        return _setClassAndValue(data.record, "Comment", PERSON);
+                                        return _setClassAndValue(data, "Comment", PERSON);
                                     }       
                                 }
                             }

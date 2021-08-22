@@ -21,7 +21,8 @@ function memberTableDef(tableViewId, tableTitle){
         title = tableTitle; 
 
     return {
-        title: title,
+            showCloseButton: false,
+            title: title,
             paging: true, //Enable paging
             pageSize: 10, //Set page size (default: 10)
             pageList: 'minimal',
@@ -29,7 +30,7 @@ function memberTableDef(tableViewId, tableTitle){
             multiSorting: true,
             defaultSorting: 'FamilyName ASC, DateOfBirthr ASC', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php',
+            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php?X=Y',
             updateAction: function(data) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
@@ -64,7 +65,7 @@ function memberTableDef(tableViewId, tableTitle){
                 width: '15%',
                 edit: false,
                 display: function (data){
-                    return _setClassAndValue(data.record, "Name", PERSON);
+                    return _setClassAndValue(data, "Name", PERSON);
                 }       
             },
             DateOfBirth: { 
@@ -74,7 +75,7 @@ function memberTableDef(tableViewId, tableTitle){
                 type: 'date',
                 displayFormat: DATE_FORMAT,
                 display: function (data){
-                    return _setClassAndValue(data.record, "DateOfBirth", PERSON);
+                    return _setClassAndValue(data, "DateOfBirth", PERSON);
                 }       
             },
             PreviousCongregation: {
@@ -87,14 +88,14 @@ function memberTableDef(tableViewId, tableTitle){
                 displayFormat: DATE_FORMAT,
                 title: 'Start',
                 display: function (data){
-                    return _setClassAndValue(data.record, "DateOfMembershipStart", PERSON);
+                    return _setClassAndValue(data, "DateOfMembershipStart", PERSON);
                 }       
             },
             MembershipNo: {
                 width: '3%',
                 title: 'Nr.',
                 display: function (data){
-                    return _setClassAndValue(data.record, "MembershipNo", PERSON);
+                    return _setClassAndValue(data, "MembershipNo", PERSON);
                 },       
                 options: function(data){
                     if(clearMembershipNoOptionCache){
@@ -110,7 +111,7 @@ function memberTableDef(tableViewId, tableTitle){
                 displayFormat: DATE_FORMAT,
                 title: 'Avslut',
                 display: function (data){
-                    return _setClassAndValue(data.record, "DateOfMembershipEnd", PERSON);
+                    return _setClassAndValue(data, "DateOfMembershipEnd", PERSON);
                 }       
             },
             NextCongregation: {

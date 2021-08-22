@@ -1,4 +1,8 @@
-/* global DATE_FORMAT, PERSON, SARON_URI, inputFormWidth, inputFormFieldWidth */
+/* global DATE_FORMAT, PERSON, SARON_URI, 
+ inputFormWidth, inputFormFieldWidth, 
+ ORG, 
+TABLE_VIEW_BAPTIST, TABLE_NAME_BAPTIST
+ */
 "use strict";
 
 $(document).ready(function () {
@@ -10,9 +14,15 @@ $(document).ready(function () {
     $(J_TABLE_ID).find('.jtable-toolbar-item-add-record').hide();
 });  
     
-function baptistTableDef(placeHolder){
+function baptistTableDef(tableViewId, tableTitle){
+    var tableName = TABLE_NAME_BAPTIST;
+    var title = 'Dopuppgifter';
+    if(tableTitle !== null)
+        title = tableTitle; 
+
     return {
-        title: 'Dopuppgifter',
+            showCloseButton: false,
+            title: title,
             paging: true, //Enable paging
             pageSize: 10, //Set page size (default: 10)
             pageList: 'minimal',
@@ -52,7 +62,7 @@ function baptistTableDef(placeHolder){
                 width: '15%',
                 edit: false,
                 display: function (data){
-                    return _setClassAndValue(data.record, "Name", PERSON);
+                    return _setClassAndValue(data, "Name", PERSON);
                 }       
             },
             DateOfBirth: {
@@ -62,7 +72,7 @@ function baptistTableDef(placeHolder){
                 displayFormat: DATE_FORMAT,
                 edit: false,
                 display: function (data){
-                    return _setClassAndValue(data.record, "DateOfBirth", PERSON);
+                    return _setClassAndValue(data, "DateOfBirth", PERSON);
                 }       
             },
             CongregationOfBaptismThis: {
@@ -82,7 +92,7 @@ function baptistTableDef(placeHolder){
                 type: 'date',
                 title: 'Dopdatum',
                 display: function (data){
-                    return _setClassAndValue(data.record, "DateOfBaptism", PERSON);
+                    return _setClassAndValue(data, "DateOfBaptism", PERSON);
                 }       
             },
             Baptister: {

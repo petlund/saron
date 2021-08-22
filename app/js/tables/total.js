@@ -1,19 +1,27 @@
-/* global DATE_FORMAT, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID */
+/* global DATE_FORMAT, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID
+RECORD, RECORDS, OPTIONS,
+TABLE_NAME_TOTAL, TABLE_VIEW_TOTAL
+*/
 
 "use strict";
 
 $(document).ready(function () {
-    const J_TABLE_ID = '#total';
 
-    $(J_TABLE_ID).jtable(totalTableDef(J_TABLE_ID));
-    $(J_TABLE_ID).jtable('load');
-    $(J_TABLE_ID).find('.jtable-toolbar-item-add-record').hide();
+    $(TABLE_VIEW_TOTAL).jtable(totalTableDef(TABLE_VIEW_TOTAL, null));
+    var options = getPostData(TABLE_VIEW_TOTAL, null, TABLE_NAME_TOTAL, null, RECORDS);
+    $(TABLE_VIEW_TOTAL).jtable('load', options);
+    $(TABLE_VIEW_TOTAL).find('.jtable-toolbar-item-add-record').hide();
 
 });
 
-function totalTableDef(placeHolder){
+function totalTableDef(tableViewId, tableTitle){
+    var tableName = TABLE_NAME_HOMES;
+    var title = 'Översikt per person';
+    if(tableTitle !== null)
+        title = tableTitle; 
+    
     return{
-        title: 'Översikt per person',
+        title: title,
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
@@ -32,7 +40,7 @@ function totalTableDef(placeHolder){
             data.deleteConfirmMessage = message;
         },         
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php?tableview=total',            
+            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php',            
             deleteAction: '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=anonymization'
         },  
         fields: {
@@ -83,17 +91,6 @@ function totalTableDef(placeHolder){
     };
 }
     
-// //Re-load records when user click 'load records' button.
-//        $('#search_total').click(function (e) {
-//            e.preventDefault();            
-//            $('#total').jtable('load', {
-//                searchString: $('#searchString').val(),
-//                groupId: $('#groupId').val(),
-//                tableview: "total"
-//            });
-//        });
-//        //Load all records when page is first shown
-//        $('#search_total').click();
 
     var deleteButtons = document.getElementsByClassName('jtable-delete-command-button');
     for(var i=0; i<deleteButtons.length; i++){

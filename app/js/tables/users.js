@@ -30,7 +30,7 @@ $(document).ready(function () {
                 title: 'Mail',
                 width: '20%',
                 display: function (data){
-                    return _setMailClassAndValue(data.record, "user_email", PERSON);
+                    return _setMailClassAndValue(data, "user_email", PERSON);
                 },       
             },
             wp_otp: {
