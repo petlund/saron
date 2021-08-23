@@ -34,6 +34,17 @@
     Define("TABLE_VIEW_BIRTHDAY",  "birthdays");
     Define("TABLE_NAME_BIRTHDAY",  "table_birthdays");
 
+    Define("TABLE_VIEW_STATISTICS",  "STATISTICS");
+    Define("TABLE_NAME_STATISTICS",  "table_statistics");
+
+    Define("GRAPH_VIEW_STATISTICS",  "GRAPH_STATISTICS");
+    Define("GRAPH_NAME_STATISTICS",  "graph_statistics");
+
+    Define("TABLE_VIEW_EFK",  "EFK");
+    Define("TABLE_NAME_EFK",  "table_efk");
+
+    Define("TABLE_VIEW_STATISTICS_DETAIL",  "STATISTICS_DETAIL");
+    Define("TABLE_NAME_STATISTICS_DETAIL",  "table_statistics_detail");
 
     
     

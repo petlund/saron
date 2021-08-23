@@ -10,12 +10,14 @@ class Statistics extends SuperEntity{
     }
     
     function select(){
-        switch ($this->selection){
+        switch ($this->tablePath){
         case "demographicHistogram":
             return $this->selectDemographicHistogram();       
-        case "details":
+        case TABLE_NAME_STATISTICS:
+            return $this->selectDefault();
+        case TABLE_NAME_STATISTICS . "/" . TABLE_NAME_STATISTICS_DETAIL:
             return $this->selectStatisicsDetails();       
-        case "efk":
+        case TABLE_NAME_EFK:
             return $this->selectEFK();       
         default:
             return $this->selectDefault();
@@ -26,7 +28,7 @@ class Statistics extends SuperEntity{
     function selectDefault(){
         $this->updateStatistics();
 
-        $sqlSelect = "SELECT * , format(average_age, 1) as avg_age, format(average_membership_time, 1) as avg_membership_time, diff ";
+        $sqlSelect = "SELECT *, year as Id, format(average_age, 1) as avg_age, format(average_membership_time, 1) as avg_membership_time, diff ";
         $result = $this->db->select($this->saronUser, $sqlSelect, "From Statistics ", "", $this->getSortSql(),  $this->getPageSizeSql());    
         return $result;
     }

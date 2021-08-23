@@ -64,6 +64,7 @@ function memberTableDef(tableViewId, tableTitle){
                 title: 'Namn',
                 width: '15%',
                 edit: false,
+                list: includedIn (tableViewId, TABLE_VIEW_MEMBER),
                 display: function (data){
                     return _setClassAndValue(data, "Name", PERSON);
                 }       
@@ -73,6 +74,7 @@ function memberTableDef(tableViewId, tableTitle){
                 width: '7%',
                 edit: false,
                 type: 'date',
+                list: includedIn (tableViewId, TABLE_VIEW_MEMBER),
                 displayFormat: DATE_FORMAT,
                 display: function (data){
                     return _setClassAndValue(data, "DateOfBirth", PERSON);

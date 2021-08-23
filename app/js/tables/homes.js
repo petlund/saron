@@ -61,7 +61,7 @@ function homeTableDef(tableViewId, childTableTitle){
                 create: false
             },
             FamilyName: {
-                title: 'Hem (Familjenamn)',
+                title: 'Familjenamn',
                 width: '10%',
                 edit: true,
                 display: function (data){

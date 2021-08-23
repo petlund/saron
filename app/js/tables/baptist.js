@@ -1,17 +1,16 @@
 /* global DATE_FORMAT, PERSON, SARON_URI, 
  inputFormWidth, inputFormFieldWidth, 
- ORG, 
+ ORG, RECORD, RECORDS, OPTIONS,
 TABLE_VIEW_BAPTIST, TABLE_NAME_BAPTIST
  */
 "use strict";
 
 $(document).ready(function () {
 
-    const J_TABLE_ID = '#baptist';
-
-    $(J_TABLE_ID).jtable(baptistTableDef(J_TABLE_ID));
-    $(J_TABLE_ID).jtable('load');
-    $(J_TABLE_ID).find('.jtable-toolbar-item-add-record').hide();
+    $(TABLE_VIEW_BAPTIST).jtable(baptistTableDef(TABLE_VIEW_BAPTIST));
+    var options = getPostData(TABLE_VIEW_BAPTIST, null, TABLE_NAME_BAPTIST, null, RECORDS);
+    $(TABLE_VIEW_BAPTIST).jtable('load', options);
+    $(TABLE_VIEW_BAPTIST).find('.jtable-toolbar-item-add-record').hide();
 });  
     
 function baptistTableDef(tableViewId, tableTitle){
@@ -61,6 +60,7 @@ function baptistTableDef(tableViewId, tableTitle){
                 title: 'Namn',
                 width: '15%',
                 edit: false,
+                list: includedIn (tableViewId, TABLE_VIEW_BAPTIST),
                 display: function (data){
                     return _setClassAndValue(data, "Name", PERSON);
                 }       
@@ -69,6 +69,7 @@ function baptistTableDef(tableViewId, tableTitle){
                 title: 'Född',
                 width: '7%',
                 type: 'date',
+                list: includedIn (tableViewId, TABLE_VIEW_BAPTIST),
                 displayFormat: DATE_FORMAT,
                 edit: false,
                 display: function (data){

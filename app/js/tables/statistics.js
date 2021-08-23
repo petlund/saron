@@ -1,12 +1,26 @@
-/* global PERSON, CHILD_TABLE_PREFIX, SARON_URI, SARON_IMAGES_URI */
+/* global PERSON, CHILD_TABLE_PREFIX, SARON_URI, SARON_IMAGES_URI,
+TABLE_VIEW_STATISTICS, TABLE_NAME_STATISTICS, TABLE_NAME_STATISTICS_DETAIL, TABLE_NAME_PEOPLE,
+ORG, RECORDS, RECORD, OPTIONS
+
+ */
 "use strict";
 
-const TABLE_ID = '#STATISTICS';
 
 $(document).ready(function () {
+    $(TABLE_VIEW_STATISTICS).jtable(statisticTableDef(TABLE_VIEW_STATISTICS, null));    
+    var options = getPostData(TABLE_VIEW_STATISTICS, null, TABLE_NAME_STATISTICS, null, RECORDS);
+    $(TABLE_VIEW_STATISTICS).jtable('load',options);
+    $(TABLE_VIEW_STATISTICS).find('.jtable-toolbar-item-add-record').hide();
+});
 
-    $(TABLE_ID).jtable({
-        title: 'Medlemsstatistik',
+function statisticTableDef(tableViewId, tableTitle){
+    var tableName = TABLE_NAME_STATISTICS;
+    var title = 'Statistik';
+    if(tableTitle !== null)
+        title = tableTitle; 
+
+    return {
+        title: title,
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
@@ -17,9 +31,32 @@ $(document).ready(function () {
             listAction:   '/' + SARON_URI + 'app/web-api/listStatistics.php'
         },
         fields: {
-            year: {
-                title: 'År',
+            People: { 
+                title: 'Detaljer',
                 key: true,
+                sorting: false,
+                width: '10%',
+                display: function(data){
+                    var YEAR =data.record.year.substring(0, 4);
+                    var childTableTitle = 'Statistik för ' + YEAR;
+                    var childTableName = TABLE_NAME_STATISTICS_DETAIL;
+                    var tooltip = 'title="Detaljer"';
+                    var imgFile = "member.png";
+                    var listUri = 'app/web-api/listPeople.php';
+
+                    var childTableDef = detailTableDef(tableViewId, childTableTitle);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, listUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
+
+                    return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
+                }
+            },
+            Id:{
+                title: 'id'
+            },
+            year: {
+                key: true,
+                title: 'År',
                 width: '10%',
                 display: function (data){
                     return _setClassAndValue(data, "year", PERSON);
@@ -97,91 +134,89 @@ $(document).ready(function () {
                 display: function (data){
                     return _setClassAndValue(data, "diff", PERSON);
                 }       
-            },
-            Details: {
-                title: 'Detaljer',
-                key: true,
-                sorting: false,
-                width: '10%',
-                display: function(data){
-                    var $imgDetails = $('<img align="right" src="/' + SARON_URI + SARON_IMAGES_URI + 'member.png" title="Detaljer" />');
-                    var YEAR =data.record.year.substring(0, 4);
-                    $imgDetails.click(function () {
-                        $(TABLE_ID).jtable('openChildTable', $imgDetails.closest('tr'),{
-                            title: 'Medlemsförändringar under ' + YEAR,                            
-                            paging: true, //Enable paging
-                            pageSize: 10, //Set page size (default: 10)
-                            pageList: 'minimal',
-                            sorting: true, //Enable sorting
-                            multiSorting: true,
-                            defaultSorting: 'event_date desc, LastName ASC, FirstName ASC', //Set default sorting        
-                            //showCloseButton: false,
-                            actions: {
-                                listAction:   '/' + SARON_URI + 'app/web-api/listStatistics.php?year=' + YEAR + '&selection=details'
-                            },
-                            fields: {
-                                link:{
-                                    title: '',
-                                    width: '1%',
-                                    sorting: false,
-                                    display: function(data){
-                                        var imgLink = '<img class="Person" src="/' + SARON_URI + SARON_IMAGES_URI + 'haspos.png" title="Personuppgifter">';
-                                        var hrefLink = '<a href="/' + SARON_URI + 'app/views/people.php?tableview=people&Id=' + data.record.Id + '">' + imgLink + '</a>';
-                                        console.log(hrefLink);
-                                        var $img = $(hrefLink);
-                                        return $img;
-                                    }
-                                },
-                                event_date: {
-                                    title: 'Datum',
-                                    key: true,
-                                    display: function (data){
-                                        return _setClassAndValue(data, "event_date", PERSON);
-                                    }       
-                                },
-                                LastName: {
-                                    title: 'Efternamn',
-                                    display: function (data){
-                                        return _setClassAndValue(data, "LastName", PERSON);
-                                    }       
-                                },
-                                FirstName: {
-                                    title: 'Förnamn',
-                                    display: function (data){
-                                        return _setClassAndValue(data, "FirstName", PERSON);
-                                    }       
-                                },
-                                DateOfBirth: {
-                                    title: 'Födelsedatum',
-                                    display: function (data){
-                                        return _setClassAndValue(data, "DateOfBirth", PERSON);
-                                    }       
-                                },
-                                event_type: {
-                                    title: 'Händelse',
-                                    display: function (data){
-                                        return _setClassAndValue(data, "event_type", PERSON);
-                                    }       
-                                },
-                                Comment: {
-                                    title: 'Notering',
-                                    width: '50%',
-                                    display: function (data){
-                                        return _setClassAndValue(data, "Comment", PERSON);
-                                    }       
-                                }
-                            }
-                        }, 
-                        function (data) { //opened handler
-                            data.childTable.jtable('load');
-                        });                        
-                    });
-                    return $imgDetails;
-                }
             }
-            
         }
-    });
-    $('#STATISTICS').jtable('load');
-    $('#STATISTICS').find('.jtable-toolbar-item-add-record').hide();
-});
+    }
+}
+
+
+function detailTableDef(tableViewId, childTableTitle){
+    var tableName = TABLE_NAME_STATISTICS_DETAIL;
+    var title = 'Statistikdetaljer';
+    if(childTableTitle !== null)
+        title = childTableTitle;
+
+
+    return {
+        title: title,                            
+        paging: true, //Enable paging
+        pageSize: 10, //Set page size (default: 10)
+        pageList: 'minimal',
+        sorting: true, //Enable sorting
+        multiSorting: true,
+        defaultSorting: 'event_date desc, LastName ASC, FirstName ASC', //Set default sorting        
+        //showCloseButton: false,
+        actions: {
+            listAction:   '/' + SARON_URI + 'app/web-api/listStatistics.php'
+        },
+        fields: {
+            People:{
+                title: '',
+                width: '1%',
+                sorting: false,
+                display: function(data){
+                    var childTableTitle = 'Personuppgifter för "' + data.record.Name + '"';
+                    var childTableName = TABLE_NAME_PEOPLE;
+                    var tooltip = 'title="Personuppgifter"';
+                    var imgFile = "haspos.png";
+                    var listUri = 'app/web-api/listPeople.php';
+
+                    var childTableDef = peopleTableDef(tableViewId, childTableTitle);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, listUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
+
+                    return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
+                }
+            },
+            event_date: {
+                title: 'Datum',
+                key: true,
+                display: function (data){
+                    return _setClassAndValue(data, "event_date", PERSON);
+                }       
+            },
+            LastName: {
+                title: 'Efternamn',
+                display: function (data){
+                    return _setClassAndValue(data, "LastName", PERSON);
+                }       
+            },
+            FirstName: {
+                title: 'Förnamn',
+                display: function (data){
+                    return _setClassAndValue(data, "FirstName", PERSON);
+                }       
+            },
+            DateOfBirth: {
+                title: 'Födelsedatum',
+                display: function (data){
+                    return _setClassAndValue(data, "DateOfBirth", PERSON);
+                }       
+            },
+            event_type: {
+                title: 'Händelse',
+                display: function (data){
+                    return _setClassAndValue(data, "event_type", PERSON);
+                }       
+            },
+            Comment: {
+                title: 'Notering',
+                width: '50%',
+                display: function (data){
+                    return _setClassAndValue(data, "Comment", PERSON);
+                }       
+            }
+        }
+    };
+}
+

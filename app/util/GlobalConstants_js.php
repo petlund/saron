@@ -46,6 +46,18 @@ require_once SARON_ROOT . "app/util/GlobalConstants_php.php";
 
         "const TABLE_VIEW_TOTAL = '" .  "#" . TABLE_VIEW_TOTAL . "';" .    
         "const TABLE_NAME_TOTAL = '" . TABLE_NAME_TOTAL . "';" .
+            
+        "const TABLE_VIEW_EFK = '" .  "#" . TABLE_VIEW_EFK . "';" .    
+        "const TABLE_NAME_EFK = '" . TABLE_NAME_EFK . "';" .
+            
+        "const TABLE_VIEW_STATISTICS = '" .  "#" . TABLE_VIEW_STATISTICS . "';" .    
+        "const TABLE_NAME_STATISTICS = '" . TABLE_NAME_STATISTICS . "';" .
+            
+        "const GRAPH_VIEW_STATISTICS = '" .  "#" . GRAPH_VIEW_STATISTICS . "';" .    
+        "const GRAPH_NAME_STATISTICS = '" . GRAPH_NAME_STATISTICS . "';" .
+            
+        "const TABLE_VIEW_STATISTICS_DETAIL = '" .  "#" . TABLE_VIEW_STATISTICS_DETAIL . "';" .    
+        "const TABLE_NAME_STATISTICS_DETAIL = '" . TABLE_NAME_STATISTICS_DETAIL . "';" .
     "</script>";
 
     //Organisation

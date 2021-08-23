@@ -113,7 +113,7 @@ function peopleTableDef(tableViewId, tableTitle) {
                 create: false,
                 delete: false,            
                 display: function (data) {
-                    var childTableTitle = 'Hem för "' + data.record.Name + '"';
+                    var childTableTitle = 'Hem för ' + data.record.LongHomeName;
                     var childTableName = TABLE_NAME_HOMES;
                     var tooltip = 'title="Adressuppgifter"';
                     var imgFile = "home.png";
