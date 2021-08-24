@@ -1,19 +1,18 @@
 /* global DATE_FORMAT, 
 saron, 
-PERSON, inputFormWidth, inputFormFieldWidth */
+PERSON, inputFormWidth, inputFormFieldWidth 
+*/
 
 "use strict";
 
 $(document).ready(function () {
 
-    const J_TABLE_ID = '#keys';
-
-    $(J_TABLE_ID).jtable(keyTableDef(J_TABLE_ID));
-    $(J_TABLE_ID).jtable('load');
-    $(J_TABLE_ID).find('.jtable-toolbar-item-add-record').hide();
+    $(saron.table.keys.viewid).jtable(keyTableDef(saron.table.keys.viewid, null));
+    $(saron.table.keys.viewid).jtable('load');
+    $(saron.table.keys.viewid).find('.jtable-toolbar-item-add-record').hide();
 });  
 
-function keyTableDef(placeHolder){
+function keyTableDef(placeHolder, tablename){
     return {
         title: 'Nyckelinnehav',
         paging: true, //Enable paging
@@ -110,15 +109,4 @@ function keyTableDef(placeHolder){
         }
     };
 }
-        //Re-load records when user click 'load records' button.
-    $('#search_keys').click(function (e) {
-        e.preventDefault();
-        filterPeople('keys');
-    });
 
-    //Load all records when page is first shown
-    $('#search_keys').click();
-//    $('#KEYS').jtable('load');
-//    $('#KEYS').find('.jtable-toolbar-item-add-record').hide();
-//});
-    

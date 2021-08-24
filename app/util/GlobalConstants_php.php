@@ -43,8 +43,8 @@
     Define("TABLE_VIEW_EFK",  "EFK");
     Define("TABLE_NAME_EFK",  "table_efk");
 
-    Define("TABLE_VIEW_EFK",  "NEWS");
-    Define("TABLE_NAME_EFK",  "table_news");
+    Define("TABLE_VIEW_NEWS",  "NEWS");
+    Define("TABLE_NAME_NEWS",  "table_news");
 
     Define("TABLE_VIEW_USERS",  "USERS");
     Define("TABLE_NAME_USERS",  "table_users");
