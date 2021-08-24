@@ -1,7 +1,7 @@
-/* global SARON_URI, SESSION_EXPIRES, green */
+/* global saron, SESSION_EXPIRES, green */
 
 "use strict";
-const passiveTimeout = SESSION_EXPIRES; //timer time in seconds
+const passiveTimeout = saron.session.expires_time; //timer time in seconds
 const LAST_ACTIVITY_TIMESTAMP = 'lastActivityTimeStamp';
 const SERVER_NOW = 'serverNow';
 var timeout;
@@ -38,10 +38,10 @@ var timeout;
 
 
     function setUserLastActivityTime(){
-        var httpCall = $.get( '/' + SARON_URI + 'app/web-api/updateSaronUser.php', function() {})
+        var httpCall = $.get( '/' + saron.uri.saron + 'app/web-api/updateSaronUser.php', function() {})
         .done(function(data){
             if(data.includes('ERROR'))
-                window.location.replace('/' + SARON_URI + 'app/access/SaronLogin.php?logout=true');             
+                window.location.replace('/' + saron.uri.saron + 'app/access/SaronLogin.php?logout=true');             
         })
         .fail(function() {
         })
@@ -57,7 +57,7 @@ var timeout;
             timeout=true;
             deleteSaronUser();
             updateProgressbar(passiveTimeout);
-            window.location.replace('/' + SARON_URI + 'app/access/SaronLogin.php?logout=true'); 
+            window.location.replace('/' + saron.uri.saron + 'app/access/SaronLogin.php?logout=true'); 
         }
         else
             updateProgressbar(diff);
@@ -114,8 +114,8 @@ var timeout;
 
 
     function deleteSaronUser(){
-        var httpCall = $.get( '/' + SARON_URI + 'app/web-api/deleteSaronUser.php', function() {
-            window.location.replace('/' + SARON_URI + 'app/access/SaronLogin.php?logout=true'); 
+        var httpCall = $.get( '/' + saron.uri.saron + 'app/web-api/deleteSaronUser.php', function() {
+            window.location.replace('/' + saron.uri.saron + 'app/access/SaronLogin.php?logout=true'); 
         })
         .done(function(){
         })

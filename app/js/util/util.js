@@ -1,8 +1,7 @@
-/* global SARON_URI, FullNameOfCongregation, 
+/* global saron, 
 ORG_ROLE, ORG_LIST, ORG_UNIT_TYPE, ORG_TREE,
-SARON_IMAGES_URI,
-RECORDS,
-TABLE_NAME_UNIT
+saron,
+saron.table.unit.name
 */
 "use strict";
 
@@ -147,12 +146,12 @@ function _updateFields(data, field, type){
 
 
 function _membershipOptions(data){
-    return '/' + SARON_URI + 'app/web-api/listPerson.php?Id=' + data.record.Id + '&selection=nextMembershipNo';
+    return '/' + saron.uri.saron + 'app/web-api/listPerson.php?Id=' + data.record.Id + '&selection=nextMembershipNo';
 }
 
 
 function _baptistOptions(){
-    return {0:'Nej', 1: 'Ja, Ange församling nedan.', 2:'Ja, ' + FullNameOfCongregation + '.'};
+    return {0:'Nej', 1: 'Ja, Ange församling nedan.', 2:'Ja, ' + saron.name.full_name + '.'};
 }
 
 
@@ -198,7 +197,7 @@ function baptistFormAuto(data, selectedValue){
         inp[0].disabled=false;
     }
     else{
-        inp[0].value = FullNameOfCongregation; //see util/js.php
+        inp[0].value = saron.name.full_name; 
         inp[0].disabled=true;
     }
 }
@@ -292,7 +291,7 @@ function getURLParameters(tableViewId, parentId, tablePath, source, resultType){
         parameter+= 'ResultType=' + resultType;
     }
     else
-        parameter+= 'ResultType=' + RECORDS;
+        parameter+= 'ResultType=' + saron.responsetype.records;
     
     return parameter;
 }
@@ -313,7 +312,7 @@ function getURLParameters(tableViewId, parentId, tablePath, source, resultType){
         }
 
         if(resultType === null){
-            resultType = RECORDS;
+            resultType = saron.responsetype.records;
         }
         var options = {TableView:getTableView(tableViewId), ParentId:parentId, TablePath:extTablePath, Source:source, ResultType:resultType};
         console.log(options);
@@ -323,7 +322,7 @@ function getURLParameters(tableViewId, parentId, tablePath, source, resultType){
 
 
 function getImageTag(data, imgFile, title, childTableName, type){
-    var src = '"/' + SARON_URI + SARON_IMAGES_URI + imgFile + '" title="' + title + '"';
+    var src = '"/' + saron.uri.saron + saron.uri.images + imgFile + '" title="' + title + '"';
     var imageTag = _setImageClass(data, childTableName, src, type);
     return $(imageTag);
 }

@@ -5,7 +5,6 @@
 
 
     require_once "config.php";
-    require_once SARON_ROOT . "app/util/GlobalConstants_js.php";
     require_once SARON_ROOT . "app/access/SaronCookie.php";
     require_once SARON_ROOT . 'app/entities/SaronUser.php';
     require_once SARON_ROOT . "app/database/ping.php";
@@ -16,9 +15,14 @@
   <head> 
     <meta charset="UTF-8">
 <!--        <meta name="viewport" content="width=device-width, initial-scale=1.0">
--->    
-    <?php include ('app/util/js.php') ?>
+-->
+    <?php 
+    require_once SARON_ROOT . "app/util/GlobalConstants_js.php";
+
+    include ('app/util/js.php') ?>
+    
     <link rel="icon" href=<?php echo Favicon;?> type="png"/>        
+    <script><?php echo 'const saron = ' . $saronJSON.";";?></script> <!-- refer to app/util/GlobalConstants_js.php -->
 
     <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/jquery-3.3.1.js"></script>

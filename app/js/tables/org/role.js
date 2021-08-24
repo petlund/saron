@@ -1,28 +1,28 @@
 /* global DATE_FORMAT,
- SARON_URI, SARON_IMAGES_URI, 
+ saron.uri.saron, saron.uri.images, 
 inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, 
 ORG,
-TABLE_VIEW_ROLE, TABLE_NAME_ROLE, 
-TABLE_VIEW_UNITTYPE, TABLE_NAME_UNITTYPE,
-TABLE_VIEW_UNIT, TABLE_NAME_UNIT,
-TABLE_VIEW_UNITLIST, TABLE_NAME_UNITLIST,
-TABLE_VIEW_UNITTREE, TABLE_NAME_UNITTREE,
-RECORDS, RECORD, OPTIONS, SOURCE_LIST, SOURCE_CREATE, SOURCE_EDIT
+saron.table.role.viewid, saron.table.role.name, 
+saron.table.unittype.viewid, saron.table.unittype.name,
+saron.table.unit.viewid, saron.table.unit.name,
+saron.table.unitlist.viewid, saron.table.unitlist.name,
+saron.table.unittree.viewid, saron.table.unittree.name,
+saron.responsetype.records, RECORD, OPTIONS, saron.source.list, saron.source.create, saron.source.edit
 */
  
 "use strict";
 
 $(document).ready(function () {
-        $(TABLE_VIEW_ROLE).jtable(roleTableDef(TABLE_VIEW_ROLE, null, null));
-        var options = getPostData(TABLE_VIEW_ROLE, null, TABLE_NAME_ROLE, null, RECORDS);
-        $(TABLE_VIEW_ROLE).jtable('load', options);
+        $(saron.table.role.viewid).jtable(roleTableDef(saron.table.role.viewid, null, null));
+        var options = getPostData(saron.table.role.viewid, null, saron.table.role.name, null, saron.responsetype.records);
+        $(saron.table.role.viewid).jtable('load', options);
     }
 );
 
 
 
 function roleTableDef(tableViewId, childTableTitle){
-    const tableName = TABLE_NAME_ROLE;
+    const tableName = saron.table.role.name;
     const listUri = 'app/web-api/listOrganizationRole.php';
     return {
          showCloseButton: false,
@@ -40,10 +40,10 @@ function roleTableDef(tableViewId, childTableTitle){
         defaultSorting: 'Name', //Set default sorting        
         messages: {addNewRecord: 'Lägg till ny roll'},
         actions: {
-            listAction:   '/' + SARON_URI + listUri,
-            createAction: '/' + SARON_URI + 'app/web-api/createOrganizationRole.php',
-            updateAction: '/' + SARON_URI + 'app/web-api/updateOrganizationRole.php',  
-            deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationRole.php'
+            listAction:   '/' + saron.uri.saron + listUri,
+            createAction: '/' + saron.uri.saron + 'app/web-api/createOrganizationRole.php',
+            updateAction: '/' + saron.uri.saron + 'app/web-api/updateOrganizationRole.php',  
+            deleteAction: '/' + saron.uri.saron + 'app/web-api/deleteOrganizationRole.php'
         },
         fields: {
             TablePath:{
@@ -62,10 +62,10 @@ function roleTableDef(tableViewId, childTableTitle){
                 create: false,
                 title: "Används",
                 edit: false,
-                list: includedIn(tableViewId, TABLE_VIEW_ROLE),
+                list: includedIn(tableViewId, saron.table.role.viewid),
                 sorting: false,
                 display: function(data){
-                    var childTableName = TABLE_NAME_UNIT;
+                    var childTableName = saron.table.unit.name;
                     var childTableTitle = 'Rollen "' + data.record.Name + '" ingår i följande organisatoriska enheter';
                     var tooltip = "";
                     var imgFile = "";
@@ -92,10 +92,10 @@ function roleTableDef(tableViewId, childTableTitle){
                 create: false,
                 title: "Ingår i",
                 edit: false,
-                list: includedIn(tableViewId, TABLE_VIEW_ROLE),
+                list: includedIn(tableViewId, saron.table.role.viewid),
                 sorting: false,
                 display: function(data){
-                    var childTableName = TABLE_NAME_UNITTYPE;
+                    var childTableName = saron.table.unittype.name;
                     var childTableTitle = 'Rollen "' + data.record.Name + '" ingår i följande enhetstyper';
                     var tooltip = "";
                     var imgFile = "";
@@ -200,7 +200,7 @@ function roleTableDef(tableViewId, childTableTitle){
 
 
 function updateRoleRecord(tableViewId, data){
-    var url = '/' + SARON_URI + 'app/web-api/listOrganizationRole.php';
+    var url = '/' + saron.uri.saron + 'app/web-api/listOrganizationRole.php';
     var options = {record:{"Id": data.record.Id}, "clientOnly": false, "url":url};
     $(tableViewId).jtable('updateRecord', options);
 }

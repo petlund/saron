@@ -11,7 +11,7 @@ $(document).ready(function () {
             multiSorting: true,
             defaultSorting: 'AgeInterval ASC', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listStatistics.php?selection=efk'
+            listAction:   '/' + saron.uri.saron + 'app/web-api/listStatistics.php?selection=efk'
         },
         fields: {
             AgeInterval: {

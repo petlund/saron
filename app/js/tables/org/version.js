@@ -1,13 +1,13 @@
-/* global SARON_URI, DATE_FORMAT,
- TABLE_VIEW_ORGVERSION, TABLE_NAME_ORGVERSION
+/* global DATE_FORMAT,
+ saron
  */
 "use strict";
 
     
 $(document).ready(function () {
-    $(TABLE_VIEW_ORGVERSION).jtable(orgVersionTableDef());
-    $(TABLE_VIEW_ORGVERSION).jtable('load');
-    $(TABLE_VIEW_ORGVERSION).find('.jtable-toolbar-item-add-record').hide();
+    $(saron.table.orgversion.viewid).jtable(orgVersionTableDef());
+    $(saron.table.orgversion.viewid).jtable('load');
+    $(saron.table.orgversion.viewid).find('.jtable-toolbar-item-add-record').hide();
 });
 
 
@@ -22,9 +22,9 @@ function orgVersionTableDef(){
         defaultSorting: 'decision_date desc', //Set default sorting        
         messages: {addNewRecord: 'Skapa ny version av organisationen'},
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationVersion.php',
-            updateAction:   '/' + SARON_URI + 'app/web-api/updateOrganizationVersion.php',
-            createAction: '/' + SARON_URI + 'app/web-api/createOrganizationVersion.php',
+            listAction:   '/' + saron.uri.saron + 'app/web-api/listOrganizationVersion.php',
+            updateAction:   '/' + saron.uri.saron + 'app/web-api/updateOrganizationVersion.php',
+            createAction: '/' + saron.uri.saron + 'app/web-api/createOrganizationVersion.php',
         },
         fields: {
             TablePath:{
@@ -72,8 +72,8 @@ function orgVersionTableDef(){
         },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === 'edit' || data.serverResponse.user_role === 'org'){ 
-                $(TABLE_VIEW_ORGVERSION).find('.jtable-toolbar-item-add-record').show();
-                $(TABLE_VIEW_ORGVERSION).find('.jtable-edit-command-button').show();
+                $(saron.table.orgversion.viewid).find('.jtable-toolbar-item-add-record').show();
+                $(saron.table.orgversion.viewid).find('.jtable-edit-command-button').show();
             }
         },        
         formCreated: function (event, data){

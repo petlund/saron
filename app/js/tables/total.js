@@ -1,21 +1,22 @@
-/* global DATE_FORMAT, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID
-RECORD, RECORDS, OPTIONS,
-TABLE_NAME_TOTAL, TABLE_VIEW_TOTAL
+/* global saron, 
+DATE_FORMAT, PERSON, HOME, PERSON_AND_HOME, OLD_HOME,  
+inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID,
+saron.table.total.name, saron.table.total.viewid
 */
 
 "use strict";
 
 $(document).ready(function () {
 
-    $(TABLE_VIEW_TOTAL).jtable(totalTableDef(TABLE_VIEW_TOTAL, null));
-    var options = getPostData(TABLE_VIEW_TOTAL, null, TABLE_NAME_TOTAL, null, RECORDS);
-    $(TABLE_VIEW_TOTAL).jtable('load', options);
-    $(TABLE_VIEW_TOTAL).find('.jtable-toolbar-item-add-record').hide();
+    $(saron.table.total.viewid).jtable(totalTableDef(saron.table.total.viewid, null));
+    var options = getPostData(saron.table.total.viewid, null, saron.table.total.name, null, saron.responsetype.records);
+    $(saron.table.total.viewid).jtable('load', options);
+    $(saron.table.total.viewid).find('.jtable-toolbar-item-add-record').hide();
 
 });
 
 function totalTableDef(tableViewId, tableTitle){
-    var tableName = TABLE_NAME_HOMES;
+    var tableName = saron.table.total.name;
     var title = 'Översikt per person';
     if(tableTitle !== null)
         title = tableTitle; 
@@ -40,8 +41,8 @@ function totalTableDef(tableViewId, tableTitle){
             data.deleteConfirmMessage = message;
         },         
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php',            
-            deleteAction: '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=anonymization'
+            listAction:   '/' + saron.uri.saron + 'app/web-api/listPeople.php',            
+            deleteAction: '/' + saron.uri.saron + 'app/web-api/updatePerson.php?selection=anonymization'
         },  
         fields: {
             Id:{
@@ -53,9 +54,9 @@ function totalTableDef(tableViewId, tableTitle){
                 width: '5%',
                 sorting: false,
                 display: function (data) {
-                    var $imgPdf = $('<img src="/' + SARON_URI + 'app/images/pdf.png" title="Skapa personakt PDF" />');
+                    var $imgPdf = $('<img src="/' + saron.uri.saron + 'app/images/pdf.png" title="Skapa personakt PDF" />');
                     $imgPdf.click(function () {                        
-                        window.open('/' + SARON_URI + 'app/pdf/DossierReport.php?Id=' + data.record.Id, '_blank');
+                        window.open('/' + saron.uri.saron + 'app/pdf/DossierReport.php?Id=' + data.record.Id, '_blank');
                     });                
                 return $imgPdf;
                 }

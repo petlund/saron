@@ -1,8 +1,12 @@
+/* global PERSON,
+saron
+ 
+ */
 "use strict";
 
 $(document).ready(function () {
 
-    $('#USERS').jtable({
+    $(saron.table.users.viewid).jtable({
         title: 'Användare av Saron',
             paging: true, //Enable paging
             pageSize: 10, //Set page size (default: 10)
@@ -11,7 +15,7 @@ $(document).ready(function () {
             multiSorting: false,
             defaultSorting: 'AgeInterval ASC', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listUsers.php'
+            listAction:   '/' + saron.uri.saron + 'app/web-api/listUsers.php'
         },
         fields: {
             id: {
@@ -76,12 +80,12 @@ $(document).ready(function () {
         }
     });
  //Re-load records when user click 'load records' button.
-        $('#USERS').click(function (e) {
+        $(saron.table.users.viewid).click(function (e) {
             e.preventDefault();
-            $('#USERS').jtable('load');
+            $(saron.table.users.viewid).jtable('load');
         });
  
         //Load all records when page is first shown
-        $('#USERS').click();
+        $(saron.table.users.viewid).click();
 });
     

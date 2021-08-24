@@ -1,15 +1,15 @@
 /* global DATE_FORMAT, 
-SARON_URI, SARON_IMAGES_URI, 
+saron.uri.saron, saron.uri.images, 
 inputFormWidth, inputFormFieldWidth, 
-TABLE_VIEW_ORG_ROLE_STATUS, TABLE_NAME_ORG_ROLE_STATUS
+saron.table.org_role_status.viewid, saron.table.org_role_status.name
 */
 
 "use strict";
     
 $(document).ready(function () {
 
-    $(TABLE_VIEW_ORG_ROLE_STATUS).jtable(statusTableDef(TABLE_VIEW_ORG_ROLE_STATUS));
-    $(TABLE_VIEW_ORG_ROLE_STATUS).jtable('load');
+    $(saron.table.org_role_status.viewid).jtable(statusTableDef(saron.table.org_role_status.viewid));
+    $(saron.table.org_role_status.viewid).jtable('load');
     }
 );
 
@@ -23,8 +23,8 @@ function statusTableDef(tableViewId){
         multiSorting: true,
         defaultSorting: 'Name', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listOrganizationPosStatus.php',
-            updateAction: '/' + SARON_URI + 'app/web-api/updateOrganizationPosStatus.php',
+            listAction:   '/' + saron.uri.saron + 'app/web-api/listOrganizationPosStatus.php',
+            updateAction: '/' + saron.uri.saron + 'app/web-api/updateOrganizationPosStatus.php',
         },
         fields: {
             TablePath:{

@@ -1,30 +1,22 @@
 /* global DATE_FORMAT,
-SARON_URI,SARON_IMAGES_URI, 
 SUBUNIT_ENABLED, 
 ORG, POS_ENABLED, 
-TABLE_VIEW_ROLE, TABLE_NAME_ROLE, 
-TABLE_VIEW_UNITTYPE, TABLE_NAME_UNITTYPE,
-TABLE_VIEW_ROLE_UNITTYPE, TABLE_NAME_ROLE_UNITTYPE,
-TABLE_VIEW_UNIT, TABLE_NAME_UNIT,
-TABLE_VIEW_ORG, TABLE_NAME_ORG,
-TABLE_VIEW_UNITLIST, TABLE_NAME_UNITLIST,
-TABLE_VIEW_UNITTREE, TABLE_NAME_UNITTREE,
-TABLE_VIEW_POS, TABLE_NAME_POS,
-RECORDS, RECORD, OPTIONS, SOURCE_LIST, SOURCE_CREATE, SOURCE_EDIT
+saron, 
+RECORD, OPTIONS
  */
 
 "use strict";
 
 $(document).ready(function () {
-        $(TABLE_VIEW_POS).jtable(posTableDef(TABLE_VIEW_POS, null));
-        var postData = getPostData(TABLE_VIEW_POS, null, TABLE_NAME_POS, null, RECORDS);
-        $(TABLE_VIEW_POS).jtable('load', postData);
+        $(saron.table.pos.viewid).jtable(posTableDef(saron.table.pos.viewid, null));
+        var postData = getPostData(saron.table.pos.viewid, null, saron.table.pos.name, null, saron.responsetype.records);
+        $(saron.table.pos.viewid).jtable('load', postData);
     }
 );
 
 
 function posTableDef(tableViewId, tableTitle){
-    const tableName = TABLE_NAME_POS;
+    const tableName = saron.table.pos.name;
     const listUri = 'app/web-api/listOrganizationPos.php';
     
     return {
@@ -43,15 +35,15 @@ function posTableDef(tableViewId, tableTitle){
         defaultSorting: getDefaultPosSorting(tableViewId), //Set default sorting        
         messages: {addNewRecord: 'Lägg till en ny position.'},
         actions: {
-            listAction: '/' + SARON_URI + listUri,
+            listAction: '/' + saron.uri.saron + listUri,
             createAction: function(){
-                if(tableViewId === TABLE_VIEW_POS)
+                if(tableViewId === saron.table.pos.viewid)
                     return null;
                 else
-                    return '/' + SARON_URI + 'app/web-api/createOrganizationPos.php';
+                    return '/' + saron.uri.saron + 'app/web-api/createOrganizationPos.php';
                 },
-            updateAction: '/' + SARON_URI + 'app/web-api/updateOrganizationPos.php',
-            deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationPos.php'
+            updateAction: '/' + saron.uri.saron + 'app/web-api/updateOrganizationPos.php',
+            deleteAction: '/' + saron.uri.saron + 'app/web-api/deleteOrganizationPos.php'
         }, 
         fields: {
             TablePath:{
@@ -73,33 +65,33 @@ function posTableDef(tableViewId, tableTitle){
                 display: function (data) {
                     var src;
                     if(data.record.RoleType === '-1'){
-                        src = '"/' + SARON_URI + SARON_IMAGES_URI + 'orgpos.png" title="Rollen finns på fler ställen"';
+                        src = '"/' + saron.uri.saron + saron.uri.images + 'orgpos.png" title="Rollen finns på fler ställen"';
                     }
                     else{
                         switch (data.record.OrgPosStatus_FK){
                             case '1':
-                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haspos.png" title="Avstämd"';
+                                src = '"/' + saron.uri.saron + saron.uri.images + 'haspos.png" title="Avstämd"';
                                 break;
                             case '2':
-                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haspos_Y.png" title="Förslag"';
+                                src = '"/' + saron.uri.saron + saron.uri.images + 'haspos_Y.png" title="Förslag"';
                                 break;
                             case '4':
-                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'haspos_R.png" title="Vakant"';
+                                src = '"/' + saron.uri.saron + saron.uri.images + 'haspos_R.png" title="Vakant"';
                                 break;
                             case '6':
-                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'function.png" title="Funktionsansvar"';
+                                src = '"/' + saron.uri.saron + saron.uri.images + 'function.png" title="Funktionsansvar"';
                                 break;
                             default:                            
-                                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'pos.png" title="Tillsätts ej"';
+                                src = '"/' + saron.uri.saron + saron.uri.images + 'pos.png" title="Tillsätts ej"';
                         }
                     }
-                    var imgTag = _setImageClass(data, TABLE_NAME_ROLE, src, -1);
+                    var imgTag = _setImageClass(data, saron.table.role.name, src, -1);
                     var $imgRole = $(imgTag);
                     return $imgRole;
                 }                
             },
             SortOrder: {
-                list: !includedIn(tableViewId, TABLE_VIEW_POS),
+                list: !includedIn(tableViewId, saron.table.pos.viewid),
                 create: false,
                 width: '4%',
                 title: 'Sort',
@@ -109,16 +101,16 @@ function posTableDef(tableViewId, tableTitle){
             OrgTree_FK:{                
                 create: false,
                 edit: false,
-                list: includedIn(tableViewId, TABLE_VIEW_POS),
+                list: includedIn(tableViewId, saron.table.pos.viewid),
                 title: "Organisatorisk enhet",
                 options: function(data){
                     var optionUri = 'app/web-api/listOrganizationUnit.php';
-                    var parameters = getURLParameters(tableViewId, data.record.ParentId, data.record.TablePath, data.source, OPTIONS);
+                    var parameters = getURLParameters(tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);
                     
-                    if(data.source !== SOURCE_LIST)
+                    if(data.source !== saron.source.list)
                         data.clearCache();
 
-                    return '/' + SARON_URI + optionUri + parameters;
+                    return '/' + saron.uri.saron + optionUri + parameters;
                     }
             },            
             OrgRole_FK: {
@@ -126,13 +118,13 @@ function posTableDef(tableViewId, tableTitle){
                 title: 'Roll',
                 edit: true,
                 options: function(data){
-                    var parameters = getURLParameters(tableViewId, data.record.ParentId, data.record.TablePath, data.source, OPTIONS);
+                    var parameters = getURLParameters(tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);
                     var optionUri = 'app/web-api/listOrganizationRole.php';
                     
                     if(data.source !== 'list')
                         data.clearCache();
 
-                    return '/' + SARON_URI + optionUri + parameters;
+                    return '/' + saron.uri.saron + optionUri + parameters;
                     }
             },
             OrgPosStatus_FK: {
@@ -140,10 +132,10 @@ function posTableDef(tableViewId, tableTitle){
                 title: 'Status',
                 defaultValue: '4',
                 options: function(data){                    
-                    var parameters = getURLParameters(tableViewId, data.record.ParentId, data.record.TablePath, data.source, OPTIONS);
+                    var parameters = getURLParameters(tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);
                     var optionUri = 'app/web-api/listOrganizationPosStatus.php';
                     
-                    return '/' + SARON_URI + optionUri + parameters;
+                    return '/' + saron.uri.saron + optionUri + parameters;
                 }
             },
             Comment:{
@@ -163,7 +155,7 @@ function posTableDef(tableViewId, tableTitle){
                         data.clearCache();
                         filter = filterDef;
                     }
-                    return '/' + SARON_URI + 'app/web-api/listPeople.php?selection=options' + filter;
+                    return '/' + saron.uri.saron + 'app/web-api/listPeople.php?selection=options' + filter;
                 }
             },
             Function_FK: {
@@ -172,10 +164,10 @@ function posTableDef(tableViewId, tableTitle){
                 edit: true,
                 list: false,
                 options: function(data){                    
-                    var parameters = getURLParameters(tableViewId, data.record.ParentId, data.record.TablePath, data.source, OPTIONS);
+                    var parameters = getURLParameters(tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);
                     var optionUri = 'app/web-api/listOrganizationUnit.php';
                     
-                    return '/' + SARON_URI + optionUri + parameters;
+                    return '/' + saron.uri.saron + optionUri + parameters;
                 }
             },
             Responsible: {
@@ -264,19 +256,19 @@ function posTableDef(tableViewId, tableTitle){
 //    if(data.record.PosEnabled === POS_ENABLED){
 //        var src;
 //        if(data.record.HasPos === '0')
-//            src = '"/' + SARON_URI + SARON_IMAGES_URI + 'unit_empty.png" title="Inga positioner"';
+//            src = '"/' + saron.uri.saron + saron.uri.images + 'unit_empty.png" title="Inga positioner"';
 //        else{
 //            if(data.record.statusProposal !== "0" && data.record.statusVacant !== "0")
-//                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'unit_YR.png" title="' + data.record.statusProposal + ' Förslag och ' + data.record.statusVacant + ' vakans(er) på position(er)"';
+//                src = '"/' + saron.uri.saron + saron.uri.images + 'unit_YR.png" title="' + data.record.statusProposal + ' Förslag och ' + data.record.statusVacant + ' vakans(er) på position(er)"';
 //            else if(data.record.statusProposal === "0" && data.record.statusVacant !== "0")
-//                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'unit_R.png" title="' + data.record.statusVacant + ' Vakans(er) på position(er)"';
+//                src = '"/' + saron.uri.saron + saron.uri.images + 'unit_R.png" title="' + data.record.statusVacant + ' Vakans(er) på position(er)"';
 //            else if(data.record.statusProposal !== "0" && data.record.statusVacant === "0")
-//                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'unit_Y.png" title="' + data.record.statusProposal + ' Förslag på position(er)"';
+//                src = '"/' + saron.uri.saron + saron.uri.images + 'unit_Y.png" title="' + data.record.statusProposal + ' Förslag på position(er)"';
 //            else
-//                src = '"/' + SARON_URI + SARON_IMAGES_URI + 'unit.png" title="Bemannade positioner"';
+//                src = '"/' + saron.uri.saron + saron.uri.images + 'unit.png" title="Bemannade positioner"';
 //        }
 //
-//        var imgTag = _setImageClass(data, TABLE_NAME_POS, src, ORG);
+//        var imgTag = _setImageClass(data, saron.table.pos.name, src, ORG);
 //        var $imgRole = $(imgTag);
 //
 //        $imgRole.click(data, function (event){
@@ -296,7 +288,7 @@ function posTableDef(tableViewId, tableTitle){
 
 function getDefaultPosSorting(tableViewId){
     switch(tableViewId) {
-        case TABLE_VIEW_POS:
+        case saron.table.pos.viewid:
             return "OrgTree_FK, SortOrder";
         default:
             return "SortOrder";

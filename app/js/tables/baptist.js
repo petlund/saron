@@ -1,20 +1,20 @@
-/* global DATE_FORMAT, PERSON, SARON_URI, 
+/* global DATE_FORMAT, PERSON, saron, 
  inputFormWidth, inputFormFieldWidth, 
- ORG, RECORD, RECORDS, OPTIONS,
-TABLE_VIEW_BAPTIST, TABLE_NAME_BAPTIST
+ ORG, RECORD, saron.responsetype.records, OPTIONS,
+saron.table.baptist.viewid, saron.table.baptist.name
  */
 "use strict";
 
 $(document).ready(function () {
 
-    $(TABLE_VIEW_BAPTIST).jtable(baptistTableDef(TABLE_VIEW_BAPTIST));
-    var options = getPostData(TABLE_VIEW_BAPTIST, null, TABLE_NAME_BAPTIST, null, RECORDS);
-    $(TABLE_VIEW_BAPTIST).jtable('load', options);
-    $(TABLE_VIEW_BAPTIST).find('.jtable-toolbar-item-add-record').hide();
+    $(saron.table.baptist.viewid).jtable(baptistTableDef(saron.table.baptist.viewid));
+    var options = getPostData(saron.table.baptist.viewid, null, saron.table.baptist.name, null, saron.responsetype.records);
+    $(saron.table.baptist.viewid).jtable('load', options);
+    $(saron.table.baptist.viewid).find('.jtable-toolbar-item-add-record').hide();
 });  
     
 function baptistTableDef(tableViewId, tableTitle){
-    var tableName = TABLE_NAME_BAPTIST;
+    var tableName = saron.table.baptist.name;
     var title = 'Dopuppgifter';
     if(tableTitle !== null)
         title = tableTitle; 
@@ -29,11 +29,11 @@ function baptistTableDef(tableViewId, tableTitle){
             multiSorting: true,
             defaultSorting: 'FamilyName ASC, DateOfBirthr ASC', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php?tableview=baptist', 
+            listAction:   '/' + saron.uri.saron + 'app/web-api/listPeople.php', 
             updateAction: function(data) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=baptist',
+                        url: '/' + saron.uri.saron + 'app/web-api/updatePerson.php?selection=baptist',
                         type: 'POST',
                         dataType: 'json',
                         data: data,
@@ -60,7 +60,7 @@ function baptistTableDef(tableViewId, tableTitle){
                 title: 'Namn',
                 width: '15%',
                 edit: false,
-                list: includedIn (tableViewId, TABLE_VIEW_BAPTIST),
+                list: includedIn (tableViewId, saron.table.baptist.viewid),
                 display: function (data){
                     return _setClassAndValue(data, "Name", PERSON);
                 }       
@@ -69,7 +69,7 @@ function baptistTableDef(tableViewId, tableTitle){
                 title: 'Född',
                 width: '7%',
                 type: 'date',
-                list: includedIn (tableViewId, TABLE_VIEW_BAPTIST),
+                list: includedIn (tableViewId, saron.table.baptist.viewid),
                 displayFormat: DATE_FORMAT,
                 edit: false,
                 display: function (data){

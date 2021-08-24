@@ -1,8 +1,8 @@
-/* global DATE_FORMAT, J_TABLE_ID, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, 
-inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, 
+/* global DATE_FORMAT, J_TABLE_ID, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, 
+inputFormWidth, inputFormFieldWidth, 
 NO_HOME, NEW_HOME_ID, 
-ORG, RECORD, RECORDS, OPTIONS,
-TABLE_NAME_PEOPLE, TABLE_VIEW_PEOPLE, TABLE_NAME_HOMES, TABLE_NAME_BAPTIST, TABLE_NAME_MEMBER
+ORG, RECORD, OPTIONS,
+saron
  */
 
 "use strict";
@@ -15,15 +15,15 @@ $(document).ready(function () {
     if(urlParams.has('Id'))
         Id = urlParams.get('Id');
         
-    $(TABLE_VIEW_PEOPLE).jtable(peopleTableDef(TABLE_VIEW_PEOPLE, null));
-    var options = getPostData(TABLE_VIEW_PEOPLE, null, TABLE_NAME_PEOPLE, null, RECORDS);
-    $(TABLE_VIEW_PEOPLE).jtable('load', options);
-    $(TABLE_VIEW_PEOPLE).find('.jtable-toolbar-item-add-record').hide();
+    $(saron.table.people.viewid).jtable(peopleTableDef(saron.table.people.viewid, null));
+    var options = getPostData(saron.table.people.viewid, null, saron.table.people.name, null, saron.responsetype.records);
+    $(saron.table.people.viewid).jtable('load', options);
+    $(saron.table.people.viewid).find('.jtable-toolbar-item-add-record').hide();
 });
 
 
 function peopleTableDef(tableViewId, tableTitle) {
-    var tableName = TABLE_NAME_HOMES;
+    var tableName = saron.table.homes.name;
     var title = 'Personuppgifter';
     if(tableTitle !== null)
         title = tableTitle; 
@@ -38,11 +38,11 @@ function peopleTableDef(tableViewId, tableTitle) {
         defaultSorting: 'LongHomeName ASC, DateOfBirth ASC', //Set default sorting   
         messages: {addNewRecord: 'Ny person'},
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php',
+            listAction:   '/' + saron.uri.saron + 'app/web-api/listPeople.php',
             createAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + SARON_URI + 'app/web-api/createPerson.php',
+                        url: '/' + saron.uri.saron + 'app/web-api/createPerson.php',
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
@@ -50,7 +50,7 @@ function peopleTableDef(tableViewId, tableTitle) {
                             if(data.Result === 'OK'){
                                 $dfd.resolve(data);
                                 $("#groupId").val("2");
-                                var pData = {searchString: "", groupId: 2, tableViewId: TABLE_VIEW_PEOPLE};
+                                var pData = {searchString: "", groupId: 2, tableViewId: saron.table.people.viewid};
 
                                 $(tableViewId).jtable('load', pData, function (){
                                     if(data.Record.HomeId > 0)
@@ -69,7 +69,7 @@ function peopleTableDef(tableViewId, tableTitle) {
             updateAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=person&nocache=' + Math.random(),
+                        url: '/' + saron.uri.saron + 'app/web-api/updatePerson.php?selection=person&nocache=' + Math.random(),
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
@@ -114,7 +114,7 @@ function peopleTableDef(tableViewId, tableTitle) {
                 delete: false,            
                 display: function (data) {
                     var childTableTitle = 'Hem för ' + data.record.LongHomeName;
-                    var childTableName = TABLE_NAME_HOMES;
+                    var childTableName = saron.table.homes.name;
                     var tooltip = 'title="Adressuppgifter"';
                     var imgFile = "home.png";
                     var listUri = 'app/web-api/listHomes.php';
@@ -136,7 +136,7 @@ function peopleTableDef(tableViewId, tableTitle) {
                 delete: false,            
                 display: function (data) {
                     var childTableTitle = 'Medlemsuppgifter för "' + data.record.Name + '"';
-                    var childTableName = TABLE_NAME_MEMBER;
+                    var childTableName = saron.table.member.name;
                     var tooltip = 'title="Medlemsuppgifter"';
                     var imgFile = "member.png";
                     var listUri = 'app/web-api/listPeople.php';
@@ -158,7 +158,7 @@ function peopleTableDef(tableViewId, tableTitle) {
                 delete: false,            
                 display: function (data) {
                     var childTableTitle = 'Dopuppgifter för "' + data.record.Name + '"';
-                    var childTableName = TABLE_NAME_BAPTIST;
+                    var childTableName = saron.table.baptist.name;
                     var tooltip = 'title="Dopuppgifter"';
                     var imgFile = "baptist.png";
                     var listUri = 'app/web-api/listPeople.php';
@@ -188,7 +188,7 @@ function peopleTableDef(tableViewId, tableTitle) {
                 options: function(data){
                     if(data.source !== 'list')
                         data.clearCache();
-                    return '/' + SARON_URI + 'app/web-api/listHomes.php?selection=options';
+                    return '/' + saron.uri.saron + 'app/web-api/listHomes.php?selection=options';
                 }
             },
             OldHomeId: { // for requests
@@ -305,7 +305,7 @@ function peopleTableDef(tableViewId, tableTitle) {
                         data.clearCache();
                         clearMembershipNoOptionCache=false;
                     }
-                    return '/' + SARON_URI + 'app/web-api/listPerson.php?Id=null' + '&selection=nextMembershipNo';
+                    return '/' + saron.uri.saron + 'app/web-api/listPerson.php?Id=null' + '&selection=nextMembershipNo';
                 }
             },
             MemberState: {
@@ -431,295 +431,295 @@ function filterPeople(viewId, reload){
 // SUBTABLE MEMBERSHIP
 // *********************************************************
 
-function childTableMembership(placeHolder){
-    return {
-        title: '',
-        width: '1%',
-        sorting: false,
-        edit: false,
-        create: false,
-        delete: false,
-        display: function (memberData) {                    
-            var $imgMember = $('<img src="/' + SARON_URI + SARON_IMAGES_URI + 'member.png" title="Medlemsuppgifter" />');
-            $imgMember.click(function () {
-                $(placeHolder).jtable('openChildTable', $imgMember.closest('tr'),{
-                    title: _setClassAndValuePrefix(memberData.record, "Name", PERSON, "Medlemsuppgifter för: "),
-                    showCloseButton: false,
-                    actions: {
-                        listAction: '/' + SARON_URI + 'app/web-api/listPerson.php?Id=' + memberData.record.Id,                                           
-                        updateAction: function(postData) {
-                            return $.Deferred(function ($dfd) {
-                                $.ajax({
-                                    url: '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=membership&Id=' + memberData.record.Id,
-                                    type: 'POST',
-                                    dataType: 'json',
-                                    data: postData,
-                                    success: function (data) {
-                                        if(data.Result !== 'ERROR'){                                                
-                                            $dfd.resolve(data);
-                                            _updateFields(data.Record, "MemberState", PERSON);                                                
-                                            _updateFields(data.Record, "VisibleInCalendar", PERSON);                                                
-                                            _updateFields(data.Record, "DateOfMembershipStart", PERSON);                                                
-                                            _updateFields(data.Record, "DateOfMembershipEnd", PERSON);                                                
-                                            _updateFields(data.Record, "Residents", HOME);                                                
-                                        }
-                                        else
-                                            $dfd.resolve(data);
-                                    },
-                                    error: function () {
-                                        $dfd.reject();
-                                    }
-                                });
-                            });
-                        }
-                    },
-                    fields: {
-                        CloseChild: fieldCloseChildTable(placeHolder, memberData.record.Id),
-                        Id: {
-                            key: true,
-                            list: false,
-                            defaultValue: memberData.record.Id
-                        },
-                        PreviousCongregation: {
-                            title: 'Kommit från församling',
-                            width: '20%',
-                            display: function (memberData){
-                                return _setClassAndValue(memberData.record, "PreviousCongregation", PERSON);
-                            }
-                        },
-                        DateOfMembershipStart: {
-                            width: '7%',     
-                            displayFormat: DATE_FORMAT,
-                            type: 'date',
-                            title: 'Start',
-                            display: function (memberData){
-                                return _setClassAndValue(memberData.record, "DateOfMembershipStart", PERSON);
-                            }
-                        },
-                        MembershipNo: {
-                            title: 'Nr.',
-                            width: '3%',
-                            display: function (memberData){
-                                return _setClassAndValue(memberData.record, "MembershipNo", PERSON);
-                            }, 
-                            options: function(memberData){
-                                if(clearMembershipNoOptionCache){
-                                    memberData.clearCache();
-                                    clearMembershipNoOptionCache=false;
-                                }
-                                return '/' + SARON_URI + 'app/web-api/listPerson.php?Id=' + memberData.record.Id + '&selection=nextMembershipNo';
-                            }
-                        },
-                        DateOfMembershipEnd: {
-                            width: '7%',
-                            type: 'date',
-                            displayFormat: DATE_FORMAT,
-                            title: 'Avslut',
-                            display: function (memberData){
-                                return _setClassAndValue(memberData.record, "DateOfMembershipEnd", PERSON);
-                            } 
-                        },
-                        NextCongregation: {
-                            width: '20%',
-                            title: 'Flyttat till församling',
-                            display: function (meberData){
-                                return _setClassAndValue(meberData.record, "NextCongregation", PERSON);
-                            } 
-                        },
-                        VisibleInCalendar: {
-                            edit: 'true',
-                            list: true,
-                            title: 'Kalender',
-                            inputTitle: 'Synlig i adresskalendern',
-                            width: '4%',
-                            inputClass: function(memberData){
-                                return _setClassAndValue(memberData.record, "VisibleInCalendar", PERSON);
-                            },
-                            options: _visibilityOptions()
-                        }, 
-                        Comment: {
-                            type: 'textarea',
-                            width: '40%',
-                            title: 'Not',
-                            display: function (memberData){
-                                return _setClassAndValue(memberData.record, "Comment", PERSON);
-                            }       
-                        }
-                    },
-                    rowInserted: function(event, memberData){
-                        if (memberData.record.user_role !== 'edit'){
-                            memberData.row.find('.jtable-edit-command-button').hide();
-                            memberData.row.find('.jtable-delete-command-button').hide();
-                        }
-                    },        
-                    formCreated: function (event, memberData){
-                        memberData.row[0].style.backgroundColor = "yellow";
-                        memberData.form.css('width',inputFormWidth);
-                        memberData.form.find('input[name=PreviousCongregation]').css('width',inputFormFieldWidth);
-                        memberData.form.find('input[name=NextCongregation]').css('width',inputFormFieldWidth);
-                        memberData.form.find('textarea[name=Comment]').css('width',inputFormFieldWidth);                                
-
-                        var dbox = document.getElementsByClassName('ui-dialog-title');            
-                        for(var i=0; i<dbox.length; i++)
-                            dbox[i].innerHTML='Uppdatera uppgifter för: ' + memberData.record.FirstName + ' ' + memberData.record.LastName;
-                    },
-                    formClosed: function (event, memberData){
-                        clearMembershipNoOptionCache=true;
-                        memberData.row[0].style.backgroundColor = '';
-                    }                        
-                },
-                function (memberData) { //opened handler
-                    memberData.childTable.jtable('load');
-                });
-            });
-            //Return Membership image to show on the person row
-            return $imgMember;
-        }
-    };
-}
-
-// *********************************************************
-// SUBTABLE BAPTISM
-// *********************************************************
-
-function childTableBaptism(placeHolder){
-    return {
-        title: '',
-        width: '1%',
-        sorting: false,
-        edit: false,
-        create: false, 
-        delete: false,
-        display: function (baptistData) {
-            var $imgBaptist = $('<img src="/' + SARON_URI + SARON_IMAGES_URI + 'baptist.png" title="Dopuppgifter" />');
-            
-            $imgBaptist.click(function () {
-                    $(placeHolder).jtable('openChildTable', $imgBaptist.closest('tr'),{
-                    title: _setClassAndValuePrefix(baptistData.record, "Name", PERSON, "Dopuppgifter för: "),
-                    showCloseButton: false,                                    
-                    actions: {
-                        listAction: '/' + SARON_URI + 'app/web-api/listPerson.php?Id=' + baptistData.record.Id,                                           
-                        updateAction: function(postData) {
-                            return $.Deferred(function ($dfd) {
-                                $.ajax({
-                                    url: '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=baptism&Id=' + baptistData.record.Id,
-                                    type: 'POST',
-                                    dataType: 'json',
-                                    data: postData,
-                                    success: function (data) {
-                                        if(data.Result !== 'ERROR'){
-
-                                            $dfd.resolve(data);
-                                            _updateFields(data.Record, "DateOfBaptism", PERSON);                                                
-                                        }
-                                        else
-                                            $dfd.resolve(data);
-                                    },
-                                    error: function () {
-                                        $dfd.reject();
-                                    }
-                                });
-                            });
-                        }
-                    },
-                    fields: {
-                        CloseChild: fieldCloseChildTable(placeHolder, baptistData.record.Id),
-                        Id: {
-                            key: true,
-                            list: false,
-                            defaultValue: baptistData.record.Id
-                        },
-                        CongregationOfBaptismThis: {
-                            list: false,
-                            title: 'Döpt',
-                            options: _baptistOptions()
-                        },
-                        CongregationOfBaptism: {
-                            edit: true,
-                            create: false,
-                            width: '20%',
-                            title: 'Dopförsamling',
-                            display: function (baptisData){
-                                return _setClassAndValue(baptisData.record, "CongregationOfBaptism", PERSON);
-                            } 
-                        },
-                        DateOfBaptism: {
-                            title: 'Dopdatum',
-                            width: '7%',
-                            type: 'date',
-                            displayFormat: DATE_FORMAT,
-                            display: function (baptistData){
-                                return _setClassAndValue(baptistData.record, "DateOfBaptism", PERSON);
-                            } 
-                        },
-                        Baptister: {
-                            width: '20%',
-                            title: 'Dopförrättare'
-                        },
-
-                        Comment: {
-                            type: 'textarea',
-                            width: '35%',
-                            title: 'Not',
-                            display: function (baptisData){
-                                return _setClassAndValue(baptisData.record, "Comment", PERSON);
-                            } 
-                        }
-                    },
-                    rowInserted: function(event, baptisData){
-                        if (baptisData.record.user_role !== 'edit'){
-                            baptisData.row.find('.jtable-edit-command-button').hide();
-                            baptisData.row.find('.jtable-delete-command-button').hide();
-                        }
-                    },        
-                    formCreated: function (event, baptisData){
-                        baptisData.row[0].style.backgroundColor = "yellow";
-                        baptisData.form.css('width',inputFormWidth);
-                        baptisData.form.find('input[name=Baptister]').css('width',inputFormFieldWidth);
-                        baptisData.form.find('input[name=CongregationOfBaptism]').css('width',inputFormFieldWidth);
-                        baptisData.form.find('textarea[name=Comment]').css('width',inputFormFieldWidth);
-                        baptisData.form.find('select[name=CongregationOfBaptismThis]').change(function () {
-                            baptistFormAuto(baptisData, this.value);
-                        });
-
-                        var dbox = document.getElementsByClassName('ui-dialog-title');            
-                        for(var i=0; i<dbox.length; i++)
-                            dbox[i].innerHTML='Uppdatera uppgifter för: ' + baptisData.record.FirstName + ' ' + baptisData.record.LastName;
-                    },
-                    formClosed: function (event, baptisData){
-                        baptisData.row[0].style.backgroundColor = '';
-                        clearMembershipNoOptionCache=true;
-
-                    }                        
-                },
-                function (baptisData) { //opened handler
-                    baptisData.childTable.jtable('load');
-                });
-            });
-            return $imgBaptist;
-        }
-    };
-}
-
-function fieldCloseChildTable(placeHolder, Id){
-    return {
-        title: '',
-        width: '1%',
-        sorting: false,
-        edit: false,
-        create: false,
-        delete: false,
-        display: function() {
-            var $imgClose = $('<img src="/' + SARON_URI + SARON_IMAGES_URI + 'cross.png" title="Stäng" />');
-            $imgClose.click(function () {
-                //closeChildTable(Id);
-                var $selectedRow = $("[data-record-key=" + Id + "]"); 
-                $(placeHolder).jtable('closeChildTable', $selectedRow);  
-            });                
-            return $imgClose;
-       }
-    };
-}
+//function childTableMembership(placeHolder){
+//    return {
+//        title: '',
+//        width: '1%',
+//        sorting: false,
+//        edit: false,
+//        create: false,
+//        delete: false,
+//        display: function (memberData) {                    
+//            var $imgMember = $('<img src="/' + saron.uri.saron + saron.uri.images + 'member.png" title="Medlemsuppgifter" />');
+//            $imgMember.click(function () {
+//                $(placeHolder).jtable('openChildTable', $imgMember.closest('tr'),{
+//                    title: _setClassAndValuePrefix(memberData.record, "Name", PERSON, "Medlemsuppgifter för: "),
+//                    showCloseButton: false,
+//                    actions: {
+//                        listAction: '/' + saron.uri.saron + 'app/web-api/listPerson.php?Id=' + memberData.record.Id,                                           
+//                        updateAction: function(postData) {
+//                            return $.Deferred(function ($dfd) {
+//                                $.ajax({
+//                                    url: '/' + saron.uri.saron + 'app/web-api/updatePerson.php?selection=membership&Id=' + memberData.record.Id,
+//                                    type: 'POST',
+//                                    dataType: 'json',
+//                                    data: postData,
+//                                    success: function (data) {
+//                                        if(data.Result !== 'ERROR'){                                                
+//                                            $dfd.resolve(data);
+//                                            _updateFields(data.Record, "MemberState", PERSON);                                                
+//                                            _updateFields(data.Record, "VisibleInCalendar", PERSON);                                                
+//                                            _updateFields(data.Record, "DateOfMembershipStart", PERSON);                                                
+//                                            _updateFields(data.Record, "DateOfMembershipEnd", PERSON);                                                
+//                                            _updateFields(data.Record, "Residents", HOME);                                                
+//                                        }
+//                                        else
+//                                            $dfd.resolve(data);
+//                                    },
+//                                    error: function () {
+//                                        $dfd.reject();
+//                                    }
+//                                });
+//                            });
+//                        }
+//                    },
+//                    fields: {
+//                        CloseChild: fieldCloseChildTable(placeHolder, memberData.record.Id),
+//                        Id: {
+//                            key: true,
+//                            list: false,
+//                            defaultValue: memberData.record.Id
+//                        },
+//                        PreviousCongregation: {
+//                            title: 'Kommit från församling',
+//                            width: '20%',
+//                            display: function (memberData){
+//                                return _setClassAndValue(memberData.record, "PreviousCongregation", PERSON);
+//                            }
+//                        },
+//                        DateOfMembershipStart: {
+//                            width: '7%',     
+//                            displayFormat: DATE_FORMAT,
+//                            type: 'date',
+//                            title: 'Start',
+//                            display: function (memberData){
+//                                return _setClassAndValue(memberData.record, "DateOfMembershipStart", PERSON);
+//                            }
+//                        },
+//                        MembershipNo: {
+//                            title: 'Nr.',
+//                            width: '3%',
+//                            display: function (memberData){
+//                                return _setClassAndValue(memberData.record, "MembershipNo", PERSON);
+//                            }, 
+//                            options: function(memberData){
+//                                if(clearMembershipNoOptionCache){
+//                                    memberData.clearCache();
+//                                    clearMembershipNoOptionCache=false;
+//                                }
+//                                return '/' + saron.uri.saron + 'app/web-api/listPerson.php?Id=' + memberData.record.Id + '&selection=nextMembershipNo';
+//                            }
+//                        },
+//                        DateOfMembershipEnd: {
+//                            width: '7%',
+//                            type: 'date',
+//                            displayFormat: DATE_FORMAT,
+//                            title: 'Avslut',
+//                            display: function (memberData){
+//                                return _setClassAndValue(memberData.record, "DateOfMembershipEnd", PERSON);
+//                            } 
+//                        },
+//                        NextCongregation: {
+//                            width: '20%',
+//                            title: 'Flyttat till församling',
+//                            display: function (meberData){
+//                                return _setClassAndValue(meberData.record, "NextCongregation", PERSON);
+//                            } 
+//                        },
+//                        VisibleInCalendar: {
+//                            edit: 'true',
+//                            list: true,
+//                            title: 'Kalender',
+//                            inputTitle: 'Synlig i adresskalendern',
+//                            width: '4%',
+//                            inputClass: function(memberData){
+//                                return _setClassAndValue(memberData.record, "VisibleInCalendar", PERSON);
+//                            },
+//                            options: _visibilityOptions()
+//                        }, 
+//                        Comment: {
+//                            type: 'textarea',
+//                            width: '40%',
+//                            title: 'Not',
+//                            display: function (memberData){
+//                                return _setClassAndValue(memberData.record, "Comment", PERSON);
+//                            }       
+//                        }
+//                    },
+//                    rowInserted: function(event, memberData){
+//                        if (memberData.record.user_role !== 'edit'){
+//                            memberData.row.find('.jtable-edit-command-button').hide();
+//                            memberData.row.find('.jtable-delete-command-button').hide();
+//                        }
+//                    },        
+//                    formCreated: function (event, memberData){
+//                        memberData.row[0].style.backgroundColor = "yellow";
+//                        memberData.form.css('width',inputFormWidth);
+//                        memberData.form.find('input[name=PreviousCongregation]').css('width',inputFormFieldWidth);
+//                        memberData.form.find('input[name=NextCongregation]').css('width',inputFormFieldWidth);
+//                        memberData.form.find('textarea[name=Comment]').css('width',inputFormFieldWidth);                                
+//
+//                        var dbox = document.getElementsByClassName('ui-dialog-title');            
+//                        for(var i=0; i<dbox.length; i++)
+//                            dbox[i].innerHTML='Uppdatera uppgifter för: ' + memberData.record.FirstName + ' ' + memberData.record.LastName;
+//                    },
+//                    formClosed: function (event, memberData){
+//                        clearMembershipNoOptionCache=true;
+//                        memberData.row[0].style.backgroundColor = '';
+//                    }                        
+//                },
+//                function (memberData) { //opened handler
+//                    memberData.childTable.jtable('load');
+//                });
+//            });
+//            //Return Membership image to show on the person row
+//            return $imgMember;
+//        }
+//    };
+//}
+//
+//// *********************************************************
+//// SUBTABLE BAPTISM
+//// *********************************************************
+//
+//function childTableBaptism(placeHolder){
+//    return {
+//        title: '',
+//        width: '1%',
+//        sorting: false,
+//        edit: false,
+//        create: false, 
+//        delete: false,
+//        display: function (baptistData) {
+//            var $imgBaptist = $('<img src="/' + saron.uri.saron + saron.uri.images + 'baptist.png" title="Dopuppgifter" />');
+//            
+//            $imgBaptist.click(function () {
+//                    $(placeHolder).jtable('openChildTable', $imgBaptist.closest('tr'),{
+//                    title: _setClassAndValuePrefix(baptistData.record, "Name", PERSON, "Dopuppgifter för: "),
+//                    showCloseButton: false,                                    
+//                    actions: {
+//                        listAction: '/' + saron.uri.saron + 'app/web-api/listPerson.php?Id=' + baptistData.record.Id,                                           
+//                        updateAction: function(postData) {
+//                            return $.Deferred(function ($dfd) {
+//                                $.ajax({
+//                                    url: '/' + saron.uri.saron + 'app/web-api/updatePerson.php?selection=baptism&Id=' + baptistData.record.Id,
+//                                    type: 'POST',
+//                                    dataType: 'json',
+//                                    data: postData,
+//                                    success: function (data) {
+//                                        if(data.Result !== 'ERROR'){
+//
+//                                            $dfd.resolve(data);
+//                                            _updateFields(data.Record, "DateOfBaptism", PERSON);                                                
+//                                        }
+//                                        else
+//                                            $dfd.resolve(data);
+//                                    },
+//                                    error: function () {
+//                                        $dfd.reject();
+//                                    }
+//                                });
+//                            });
+//                        }
+//                    },
+//                    fields: {
+//                        CloseChild: fieldCloseChildTable(placeHolder, baptistData.record.Id),
+//                        Id: {
+//                            key: true,
+//                            list: false,
+//                            defaultValue: baptistData.record.Id
+//                        },
+//                        CongregationOfBaptismThis: {
+//                            list: false,
+//                            title: 'Döpt',
+//                            options: _baptistOptions()
+//                        },
+//                        CongregationOfBaptism: {
+//                            edit: true,
+//                            create: false,
+//                            width: '20%',
+//                            title: 'Dopförsamling',
+//                            display: function (baptisData){
+//                                return _setClassAndValue(baptisData.record, "CongregationOfBaptism", PERSON);
+//                            } 
+//                        },
+//                        DateOfBaptism: {
+//                            title: 'Dopdatum',
+//                            width: '7%',
+//                            type: 'date',
+//                            displayFormat: DATE_FORMAT,
+//                            display: function (baptistData){
+//                                return _setClassAndValue(baptistData.record, "DateOfBaptism", PERSON);
+//                            } 
+//                        },
+//                        Baptister: {
+//                            width: '20%',
+//                            title: 'Dopförrättare'
+//                        },
+//
+//                        Comment: {
+//                            type: 'textarea',
+//                            width: '35%',
+//                            title: 'Not',
+//                            display: function (baptisData){
+//                                return _setClassAndValue(baptisData.record, "Comment", PERSON);
+//                            } 
+//                        }
+//                    },
+//                    rowInserted: function(event, baptisData){
+//                        if (baptisData.record.user_role !== 'edit'){
+//                            baptisData.row.find('.jtable-edit-command-button').hide();
+//                            baptisData.row.find('.jtable-delete-command-button').hide();
+//                        }
+//                    },        
+//                    formCreated: function (event, baptisData){
+//                        baptisData.row[0].style.backgroundColor = "yellow";
+//                        baptisData.form.css('width',inputFormWidth);
+//                        baptisData.form.find('input[name=Baptister]').css('width',inputFormFieldWidth);
+//                        baptisData.form.find('input[name=CongregationOfBaptism]').css('width',inputFormFieldWidth);
+//                        baptisData.form.find('textarea[name=Comment]').css('width',inputFormFieldWidth);
+//                        baptisData.form.find('select[name=CongregationOfBaptismThis]').change(function () {
+//                            baptistFormAuto(baptisData, this.value);
+//                        });
+//
+//                        var dbox = document.getElementsByClassName('ui-dialog-title');            
+//                        for(var i=0; i<dbox.length; i++)
+//                            dbox[i].innerHTML='Uppdatera uppgifter för: ' + baptisData.record.FirstName + ' ' + baptisData.record.LastName;
+//                    },
+//                    formClosed: function (event, baptisData){
+//                        baptisData.row[0].style.backgroundColor = '';
+//                        clearMembershipNoOptionCache=true;
+//
+//                    }                        
+//                },
+//                function (baptisData) { //opened handler
+//                    baptisData.childTable.jtable('load');
+//                });
+//            });
+//            return $imgBaptist;
+//        }
+//    };
+//}
+//
+//function fieldCloseChildTable(placeHolder, Id){
+//    return {
+//        title: '',
+//        width: '1%',
+//        sorting: false,
+//        edit: false,
+//        create: false,
+//        delete: false,
+//        display: function() {
+//            var $imgClose = $('<img src="/' + saron.uri.saron + saron.uri.images + 'cross.png" title="Stäng" />');
+//            $imgClose.click(function () {
+//                //closeChildTable(Id);
+//                var $selectedRow = $("[data-record-key=" + Id + "]"); 
+//                $(placeHolder).jtable('closeChildTable', $selectedRow);  
+//            });                
+//            return $imgClose;
+//       }
+//    };
+//}
 
 
 

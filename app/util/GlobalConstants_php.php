@@ -43,14 +43,18 @@
     Define("TABLE_VIEW_EFK",  "EFK");
     Define("TABLE_NAME_EFK",  "table_efk");
 
+    Define("TABLE_VIEW_EFK",  "NEWS");
+    Define("TABLE_NAME_EFK",  "table_news");
+
+    Define("TABLE_VIEW_USERS",  "USERS");
+    Define("TABLE_NAME_USERS",  "table_users");
+
     Define("TABLE_VIEW_STATISTICS_DETAIL",  "STATISTICS_DETAIL");
     Define("TABLE_NAME_STATISTICS_DETAIL",  "table_statistics_detail");
 
     
     
 //Organisation
-    Define("TABLE_VIEW_CHILD_SUFFIX",  "_CHILD");
-
     Define("TABLE_VIEW_ROLE",  "ORG_ROLE");
     Define("TABLE_NAME_ROLE",  "table_role");
 

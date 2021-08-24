@@ -1,6 +1,6 @@
-/* global DATE_FORMAT, SARON_URI, PERSON, inputFormWidth, inputFormFieldWidth,
-TABLE_VIEW_MEMBER, TABLE_NAME_MEMBER,
-RECORD, RECORDS,OPTIONS
+/* global DATE_FORMAT, saron.uri.saron, PERSON, inputFormWidth, inputFormFieldWidth,
+saron.table.member.viewid, saron.table.member.name,
+RECORD, saron.responsetype.records,OPTIONS
  */
 
 "use strict";
@@ -8,14 +8,14 @@ RECORD, RECORDS,OPTIONS
 $(document).ready(function () {
 
 
-    $(TABLE_VIEW_MEMBER).jtable(memberTableDef(TABLE_VIEW_MEMBER, null));
-    var options = getPostData(TABLE_VIEW_MEMBER, null, TABLE_NAME_MEMBER, null, RECORDS);
-    $(TABLE_VIEW_MEMBER).jtable('load', options);
-    $(TABLE_VIEW_MEMBER).find('.jtable-toolbar-item-add-record').hide();
+    $(saron.table.member.viewid).jtable(memberTableDef(saron.table.member.viewid, null));
+    var options = getPostData(saron.table.member.viewid, null, saron.table.member.name, null, saron.responsetype.records);
+    $(saron.table.member.viewid).jtable('load', options);
+    $(saron.table.member.viewid).find('.jtable-toolbar-item-add-record').hide();
 });  
 
 function memberTableDef(tableViewId, tableTitle){
-    var tableName = TABLE_NAME_MEMBER;
+    var tableName = saron.table.member.name;
     var title = 'Medlemsuppgifter';
     if(tableTitle !== null)
         title = tableTitle; 
@@ -30,11 +30,11 @@ function memberTableDef(tableViewId, tableTitle){
             multiSorting: true,
             defaultSorting: 'FamilyName ASC, DateOfBirthr ASC', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php?X=Y',
+            listAction:   '/' + saron.uri.saron + 'app/web-api/listPeople.php?X=Y',
             updateAction: function(data) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=membership',
+                        url: '/' + saron.uri.saron + 'app/web-api/updatePerson.php?selection=membership',
                         type: 'POST',
                         dataType: 'json',
                         data: data,
@@ -64,7 +64,7 @@ function memberTableDef(tableViewId, tableTitle){
                 title: 'Namn',
                 width: '15%',
                 edit: false,
-                list: includedIn (tableViewId, TABLE_VIEW_MEMBER),
+                list: includedIn (tableViewId, saron.table.member.viewid),
                 display: function (data){
                     return _setClassAndValue(data, "Name", PERSON);
                 }       
@@ -74,7 +74,7 @@ function memberTableDef(tableViewId, tableTitle){
                 width: '7%',
                 edit: false,
                 type: 'date',
-                list: includedIn (tableViewId, TABLE_VIEW_MEMBER),
+                list: includedIn (tableViewId, saron.table.member.viewid),
                 displayFormat: DATE_FORMAT,
                 display: function (data){
                     return _setClassAndValue(data, "DateOfBirth", PERSON);
@@ -104,7 +104,7 @@ function memberTableDef(tableViewId, tableTitle){
                         data.clearCache();
                         clearMembershipNoOptionCache=false;
                     }
-                    return '/' + SARON_URI + 'app/web-api/listPerson.php?Id=' + data.record.Id + '&selection=nextMembershipNo';
+                    return '/' + saron.uri.saron + 'app/web-api/listPerson.php?Id=' + data.record.Id + '&selection=nextMembershipNo';
                 }
             },
             DateOfMembershipEnd: {

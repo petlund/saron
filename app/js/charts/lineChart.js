@@ -1,6 +1,6 @@
 function createMembersStatisticsChart() { 
     $.ajax({
-        url: '/' + SARON_URI + 'app/web-api/listStatistics.php'
+        url: '/' + saron.uri.saron + 'app/web-api/listStatistics.php'
     }).then(function(data) {
         var chartData = JSON.parse(data);      
         var chartsMeta = '{' +

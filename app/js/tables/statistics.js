@@ -1,20 +1,21 @@
-/* global PERSON, CHILD_TABLE_PREFIX, SARON_URI, SARON_IMAGES_URI,
-TABLE_VIEW_STATISTICS, TABLE_NAME_STATISTICS, TABLE_NAME_STATISTICS_DETAIL, TABLE_NAME_PEOPLE,
-ORG, RECORDS, RECORD, OPTIONS
+/* global PERSON, CHILD_TABLE_PREFIX, 
+saron,
+ORG, 
+RECORD, OPTIONS
 
  */
 "use strict";
 
 
 $(document).ready(function () {
-    $(TABLE_VIEW_STATISTICS).jtable(statisticTableDef(TABLE_VIEW_STATISTICS, null));    
-    var options = getPostData(TABLE_VIEW_STATISTICS, null, TABLE_NAME_STATISTICS, null, RECORDS);
-    $(TABLE_VIEW_STATISTICS).jtable('load',options);
-    $(TABLE_VIEW_STATISTICS).find('.jtable-toolbar-item-add-record').hide();
+    $(saron.table.statistics.viewid).jtable(statisticTableDef(saron.table.statistics.viewid, null));    
+    var options = getPostData(saron.table.statistics.viewid, null, saron.table.statistics.name, null, saron.responsetype.records);
+    $(saron.table.statistics.viewid).jtable('load',options);
+    $(saron.table.statistics.viewid).find('.jtable-toolbar-item-add-record').hide();
 });
 
 function statisticTableDef(tableViewId, tableTitle){
-    var tableName = TABLE_NAME_STATISTICS;
+    var tableName = saron.table.statistics.name;
     var title = 'Statistik';
     if(tableTitle !== null)
         title = tableTitle; 
@@ -28,7 +29,7 @@ function statisticTableDef(tableViewId, tableTitle){
         multiSorting: true,
         defaultSorting: 'year desc', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listStatistics.php'
+            listAction:   '/' + saron.uri.saron + 'app/web-api/listStatistics.php'
         },
         fields: {
             People: { 
@@ -39,7 +40,7 @@ function statisticTableDef(tableViewId, tableTitle){
                 display: function(data){
                     var YEAR =data.record.year.substring(0, 4);
                     var childTableTitle = 'Statistik för ' + YEAR;
-                    var childTableName = TABLE_NAME_STATISTICS_DETAIL;
+                    var childTableName = saron.table.statistics_detail.name;
                     var tooltip = 'title="Detaljer"';
                     var imgFile = "member.png";
                     var listUri = 'app/web-api/listPeople.php';
@@ -141,7 +142,7 @@ function statisticTableDef(tableViewId, tableTitle){
 
 
 function detailTableDef(tableViewId, childTableTitle){
-    var tableName = TABLE_NAME_STATISTICS_DETAIL;
+    var tableName = saron.table.statistics_detail.name;
     var title = 'Statistikdetaljer';
     if(childTableTitle !== null)
         title = childTableTitle;
@@ -157,7 +158,7 @@ function detailTableDef(tableViewId, childTableTitle){
         defaultSorting: 'event_date desc, LastName ASC, FirstName ASC', //Set default sorting        
         //showCloseButton: false,
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listStatistics.php'
+            listAction:   '/' + saron.uri.saron + 'app/web-api/listStatistics.php'
         },
         fields: {
             People:{
@@ -166,7 +167,7 @@ function detailTableDef(tableViewId, childTableTitle){
                 sorting: false,
                 display: function(data){
                     var childTableTitle = 'Personuppgifter för "' + data.record.Name + '"';
-                    var childTableName = TABLE_NAME_PEOPLE;
+                    var childTableName = saron.table.people.name;
                     var tooltip = 'title="Personuppgifter"';
                     var imgFile = "haspos.png";
                     var listUri = 'app/web-api/listPeople.php';

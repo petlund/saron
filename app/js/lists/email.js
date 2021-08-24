@@ -1,4 +1,4 @@
-/* global SARON_URI, DATE_FORMAT */
+/* global saron.uri.saron, DATE_FORMAT */
 "use strict";
 
 $(document).ready(function () {
@@ -8,7 +8,7 @@ $(document).ready(function () {
 
     
     
-    $.get( '/' + SARON_URI + 'app/web-api/listPeople.php?selection=email', function(text) {
+    $.get( '/' + saron.uri.saron + 'app/web-api/listPeople.php?selection=email', function(text) {
         var data = JSON.parse(text);
         var cnt = data.TotalRecordCount;
         var head = '<div class="saronSmallText">Mailadresser att kopiera och klistra in i adressfält för hemlig kopia. (' + cnt + ' st.)</div><br>';

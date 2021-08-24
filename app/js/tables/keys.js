@@ -1,4 +1,6 @@
-/* global DATE_FORMAT, SARON_URI, PERSON, inputFormWidth, inputFormFieldWidth */
+/* global DATE_FORMAT, 
+saron, 
+PERSON, inputFormWidth, inputFormFieldWidth */
 
 "use strict";
 
@@ -21,8 +23,8 @@ function keyTableDef(placeHolder){
         multiSorting: true,
         defaultSorting: 'news_date desc', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listPeople.php',
-            updateAction:   '/' + SARON_URI + 'app/web-api/updatePerson.php?selection=keyHolding'
+            listAction:   '/' + saron.uri.saron + 'app/web-api/listPeople.php',
+            updateAction:   '/' + saron.uri.saron + 'app/web-api/updatePerson.php?selection=keyHolding'
         },
         fields: {
             Id: {

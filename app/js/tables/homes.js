@@ -1,6 +1,6 @@
-/* global SARON_URI, PERSON, inputFormWidth, inputFormFieldWidth,  
-TABLE_VIEW_HOMES, TABLE_NAME_HOMES,  
-RECORDS, RECORD, OPTIONS
+/* global saron.uri.saron, PERSON, inputFormWidth, inputFormFieldWidth,  
+saron.table.homes.viewid, saron.table.homes.name,  
+saron.responsetype.records, RECORD, OPTIONS
  */
 "use strict";
 
@@ -8,10 +8,10 @@ RECORDS, RECORD, OPTIONS
 
 
 $(document).ready(function () {
-    $(TABLE_VIEW_HOMES).jtable(homeTableDef(TABLE_VIEW_HOMES, null, null));
-    var options = getPostData(TABLE_VIEW_HOMES, null, TABLE_NAME_HOMES, null, RECORDS);
-    $(TABLE_VIEW_HOMES).jtable('load', options);
-    $(TABLE_VIEW_HOMES).find('.jtable-toolbar-item-add-record').hide();
+    $(saron.table.homes.viewid).jtable(homeTableDef(saron.table.homes.viewid, null, null));
+    var options = getPostData(saron.table.homes.viewid, null, saron.table.homes.name, null, saron.responsetype.records);
+    $(saron.table.homes.viewid).jtable('load', options);
+    $(saron.table.homes.viewid).find('.jtable-toolbar-item-add-record').hide();
 });
 
 
@@ -42,9 +42,9 @@ function homeTableDef(tableViewId, childTableTitle){
         multiSorting: true,
         defaultSorting: "FamilyName ASC",
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listHomes.php',
+            listAction:   '/' + saron.uri.saron + 'app/web-api/listHomes.php',
             //createAction: 'create.php',
-            updateAction: '/' + SARON_URI + 'app/web-api/updateHomes.php'
+            updateAction: '/' + saron.uri.saron + 'app/web-api/updateHomes.php'
             //deleteAction: 'delete.php'
         },
         fields: {

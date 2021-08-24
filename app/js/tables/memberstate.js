@@ -1,4 +1,4 @@
-/* global SARON_URI, DATE_FORMAT, NEWS */
+/* global saron.uri.saron, DATE_FORMAT, NEWS */
 "use strict";
 
 var TABLE_MEMBER_STATE = '#MEMBER_STATE';
@@ -24,9 +24,9 @@ function memberstateTableDef(){
         multiSorting: true,
         defaultSorting: 'news_date desc', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listMemberState.php?ts=',
-            //createAction:   '/' + SARON_URI + 'app/web-api/createMemberState.php',
-            updateAction:   '/' + SARON_URI + 'app/web-api/updateMemberState.php'
+            listAction:   '/' + saron.uri.saron + 'app/web-api/listMemberState.php?ts=',
+            //createAction:   '/' + saron.uri.saron + 'app/web-api/createMemberState.php',
+            updateAction:   '/' + saron.uri.saron + 'app/web-api/updateMemberState.php'
         },
         fields: {
             Id: {

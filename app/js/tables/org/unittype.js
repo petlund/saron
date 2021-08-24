@@ -1,27 +1,25 @@
-/* global DATE_FORMAT, SARON_URI, J_TABLE_ID, 
- PERSON, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, 
+/* global DATE_FORMAT, 
+ PERSON, HOME, PERSON_AND_HOME, OLD_HOME,  
  inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID,
 ORG, 
  POS_ENABLED, POS_DISABLED,
  SUBUNIT_ENABLED, SUBUNIT_DISABLED,
-TABLE_VIEW_ROLE, TABLE_NAME_ROLE, 
-TABLE_VIEW_UNITTYPE, TABLE_NAME_UNITTYPE,
-TABLE_VIEW_UNIT, TABLE_NAME_UNIT,
-RECORDS, RECORD, OPTIONS, SOURCE_LIST, SOURCE_CREATE, SOURCE_EDIT
+saron,
+RECORD, OPTIONS
 */
 "use strict";
 
 $(document).ready(function () {
-    $(TABLE_VIEW_UNITTYPE).jtable(unitTypeTableDef(TABLE_VIEW_UNITTYPE, null));
-    var options = getPostData(TABLE_VIEW_UNITTYPE, null, TABLE_NAME_UNITTYPE, null, RECORDS);
-    $(TABLE_VIEW_UNITTYPE).jtable('load', options);
+    $(saron.table.unittype.viewid).jtable(unitTypeTableDef(saron.table.unittype.viewid, null));
+    var options = getPostData(saron.table.unittype.viewid, null, saron.table.unittype.name, null, saron.responsetype.records);
+    $(saron.table.unittype.viewid).jtable('load', options);
 });
 
 
 
 function unitTypeTableDef(tableViewId, childTableTitle){
     const listUri = 'app/web-api/listOrganizationUnitType.php';
-    const tableName = TABLE_NAME_UNITTYPE;
+    const tableName = saron.table.unittype.name;
  
     return {
         showCloseButton: false,
@@ -39,10 +37,10 @@ function unitTypeTableDef(tableViewId, childTableTitle){
         defaultSorting: 'Name', //Set default sorting        
         messages: {addNewRecord: 'Lägg till en ny typ av organisatorisk enhet.'},
         actions: {
-            listAction:   '/' + SARON_URI + listUri,
-            createAction: '/' + SARON_URI + 'app/web-api/createOrganizationUnitType.php',
-            updateAction: '/' + SARON_URI + 'app/web-api/updateOrganizationUnitType.php',
-            deleteAction: '/' + SARON_URI + 'app/web-api/deleteOrganizationUnitType.php'
+            listAction:   '/' + saron.uri.saron + listUri,
+            createAction: '/' + saron.uri.saron + 'app/web-api/createOrganizationUnitType.php',
+            updateAction: '/' + saron.uri.saron + 'app/web-api/updateOrganizationUnitType.php',
+            deleteAction: '/' + saron.uri.saron + 'app/web-api/deleteOrganizationUnitType.php'
         },
         fields:{
             TablePath:{
@@ -60,16 +58,16 @@ function unitTypeTableDef(tableViewId, childTableTitle){
                 edit: false,
                 sorting: false,
                 create: false,
-                list: includedIn(tableViewId, TABLE_VIEW_UNITTYPE),
+                list: includedIn(tableViewId, saron.table.unittype.viewid),
                 display: function(data){
-                    var childTableName = TABLE_NAME_UNIT;
+                    var childTableName = saron.table.unit.name;
                     var childTableTitle = 'Enhetstypen "' + data.record.Name + '" används för nedanstående organisatoriska enheter';                            
                     var tooltip = "Enhetstypen används inom följande organisatoriska enheter";
                     var imgFile = "unit.png";
                     var childUri = 'app/web-api/listOrganizationUnit.php';
                     if(data.record.UsedInUnit ===  "1"){
                         var childTableDef = unitTableDef(tableViewId, childTableTitle);
-                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, TABLE_NAME_UNIT, ORG, childUri);
+                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, saron.table.unit.name, ORG, childUri);
                         var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
                         
                         return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
@@ -83,9 +81,9 @@ function unitTypeTableDef(tableViewId, childTableTitle){
                 create: false,
                 sorting: false,
                 edit: false,   
-                list: includedIn(tableViewId, TABLE_VIEW_UNITTYPE),
+                list: includedIn(tableViewId, saron.table.unittype.viewid),
                 display: function(data){
-                    var childTableName = TABLE_NAME_ROLE;
+                    var childTableName = saron.table.role.name;
                     var childTableTitle = 'Enhetstypen "' + data.record.Name + '" har följande roller';
                     var tooltip = "";
                     var imgFile = "";

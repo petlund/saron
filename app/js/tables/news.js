@@ -1,10 +1,12 @@
-/* global SARON_URI, DATE_FORMAT, NEWS */
+/* global saron, 
+DATE_FORMAT
+ */
 "use strict";
     
 $(document).ready(function () {
-    $('#NEWS').jtable(newsTableDef());
-    $('#NEWS').jtable('load');
-    $('#NEWS').find('.jtable-toolbar-item-add-record').hide();
+    $(saron.table.news.viewid).jtable(newsTableDef());
+    $(saron.table.news.viewid).jtable('load');
+    $(saron.table.news.viewid).find('.jtable-toolbar-item-add-record').hide();
 });
 
 
@@ -18,10 +20,10 @@ function newsTableDef(){
         multiSorting: true,
         defaultSorting: 'news_date desc', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + 'app/web-api/listNews.php',
-            createAction:   '/' + SARON_URI + 'app/web-api/createNews.php',
-            updateAction:   '/' + SARON_URI + 'app/web-api/updateNews.php',
-            deleteAction: '/' + SARON_URI + 'app/web-api/deleteNews.php'
+            listAction:   '/' + saron.uri.saron + 'app/web-api/listNews.php',
+            createAction:   '/' + saron.uri.saron + 'app/web-api/createNews.php',
+            updateAction:   '/' + saron.uri.saron + 'app/web-api/updateNews.php',
+            deleteAction: '/' + saron.uri.saron + 'app/web-api/deleteNews.php'
         },
         fields: {
             id: {
@@ -70,7 +72,7 @@ function newsTableDef(){
         },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === 'edit' || data.serverResponse.user_role === 'org'){ 
-                $('#NEWS').find('.jtable-toolbar-item-add-record').show();
+                $(saron.table.news.viewid).find('.jtable-toolbar-item-add-record').show();
             }
         },        
         formCreated: function (event, data){

@@ -1,25 +1,17 @@
-/* global J_TABLE_ID, PERSON, DATE_FORMAT, HOME, PERSON_AND_HOME, OLD_HOME, SARON_URI, SARON_IMAGES_URI, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID,
+/* global J_TABLE_ID, PERSON, DATE_FORMAT, HOME, PERSON_AND_HOME, OLD_HOME, saron.uri.saron, saron.uri.images, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID,
 ORG, POS_ENABLED, 
-TABLE_VIEW_ROLE, TABLE_NAME_ROLE, 
-TABLE_VIEW_UNITTYPE, TABLE_NAME_UNITTYPE,
-TABLE_VIEW_ROLE_UNITTYPE, TABLE_NAME_ROLE_UNITTYPE,
-TABLE_VIEW_UNIT, TABLE_NAME_UNIT,
-TABLE_VIEW_ORG, TABLE_NAME_ORG,
-TABLE_VIEW_UNITLIST, TABLE_NAME_UNITLIST,
-TABLE_VIEW_UNITTREE, TABLE_NAME_UNITTREE,
-TABLE_VIEW_ENGAGEMENT, TABLE_NAME_ENGAGEMENT,
-TABLE_VIEW_POS, TABLE_NAME_POS,
-RECORDS, RECORD, OPTIONS, SOURCE_LIST, SOURCE_CREATE, SOURCE_EDIT
+saron,
+RECORD, OPTIONS
 */
  
 "use strict";
     
 $(document).ready(function () {
 
-    $(TABLE_VIEW_ENGAGEMENT).jtable(peopleEngagementTableDef(TABLE_VIEW_ENGAGEMENT));
-    var postData = getPostData(TABLE_VIEW_ENGAGEMENT, null, TABLE_NAME_ENGAGEMENT, null, RECORDS);
-    $(TABLE_VIEW_ENGAGEMENT).jtable('load', postData);
-    $(TABLE_VIEW_ENGAGEMENT).find('.jtable-toolbar-item-add-record').hide();
+    $(saron.table.engagement.viewid).jtable(peopleEngagementTableDef(saron.table.engagement.viewid));
+    var postData = getPostData(saron.table.engagement.viewid, null, saron.table.engagement.name, null, saron.responsetype.records);
+    $(saron.table.engagement.viewid).jtable('load', postData);
+    $(saron.table.engagement.viewid).find('.jtable-toolbar-item-add-record').hide();
 });
 
 
@@ -34,7 +26,7 @@ function filterPeople(viewId){
 
 function peopleEngagementTableDef(tableViewId){
     const listUri = 'app/web-api/listEngagement.php';
-    const tableName = TABLE_NAME_ENGAGEMENT;
+    const tableName = saron.table.engagement.name;
  
     return {
         showCloseButton: false,
@@ -47,7 +39,7 @@ function peopleEngagementTableDef(tableViewId){
         defaultSorting: 'Name', //Set default sorting        
         messages: {addNewRecord: 'Tilldela personen ett vakant uppdrag'},
         actions: {
-            listAction:   '/' + SARON_URI + listUri,
+            listAction:   '/' + saron.uri.saron + listUri,
         },
         fields: {
             TablePath:{
@@ -65,7 +57,7 @@ function peopleEngagementTableDef(tableViewId){
                 width: '1%',
                 sorting: false,
                 display: function(data){
-                    var childTableName = TABLE_NAME_POS;
+                    var childTableName = saron.table.pos.name;
                     var childTableTitle = data.record.Name + '" har nedanstående uppdrag';
                     var tooltip = "";
                     var imgFile = "";
@@ -145,7 +137,7 @@ function peopleEngagementTableDef(tableViewId){
 
 
 function engagementTableDef(tableViewId, childTableTitle){
-    const tableName = TABLE_NAME_POS;
+    const tableName = saron.table.pos.name;
     const uri = 'app/web-api/listOrganizationPos.php';
     return {
         showCloseButton: false,
@@ -162,11 +154,11 @@ function engagementTableDef(tableViewId, childTableTitle){
         multiSorting: true,
         defaultSorting: 'Name', //Set default sorting        
         actions: {
-            listAction:   '/' + SARON_URI + uri,
+            listAction:   '/' + saron.uri.saron + uri,
             createAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + SARON_URI + uri,
+                        url: '/' + saron.uri.saron + uri,
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
@@ -185,7 +177,7 @@ function engagementTableDef(tableViewId, childTableTitle){
             updateAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + SARON_URI + 'app/web-api/updateOrganizationPos.php?Source=EngagementView&People_FK=' + Id,
+                        url: '/' + saron.uri.saron + 'app/web-api/updateOrganizationPos.php?Source=EngagementView&People_FK=' + Id,
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
@@ -210,11 +202,11 @@ function engagementTableDef(tableViewId, childTableTitle){
                 key: true
                 ,
                 options: function (data){
-                    var parameters = getURLParameters(tableViewId, data.record.ParentId, data.record.TablePath, data.source, OPTIONS);
-                    if(data.source !== SOURCE_LIST)
+                    var parameters = getURLParameters(tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);
+                    if(data.source !== saron.source.list)
                         data.clearCache();
 
-                    return '/' + SARON_URI + 'app/web-api/listOrganizationPos.php' + parameters;
+                    return '/' + saron.uri.saron + 'app/web-api/listOrganizationPos.php' + parameters;
                 }
             },
             TablePath:{
@@ -233,8 +225,8 @@ function engagementTableDef(tableViewId, childTableTitle){
                 width: '10%',
                 defaultValue: 2,
                 options: function (data){
-                    var parameters = getURLParameters(tableViewId, data.record.ParentId, data.record.TablePath, data.source, OPTIONS);
-                    return '/' + SARON_URI + 'app/web-api/listOrganizationPosStatus.php' + parameters; 
+                    var parameters = getURLParameters(tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);
+                    return '/' + saron.uri.saron + 'app/web-api/listOrganizationPosStatus.php' + parameters; 
                 }
             },
             
@@ -291,19 +283,19 @@ function engagementTableDef(tableViewId, childTableTitle){
 
 
 function updatePersonEngagementRecord(Id){
-    var url = '/' + SARON_URI + 'app/web-api/listEngagement.php?Id=' + Id;
+    var url = '/' + saron.uri.saron + 'app/web-api/listEngagement.php?Id=' + Id;
     var options = {record:{"Id": Id}, "clientOnly": false, "url":url};
-    $(TABLE_VIEW_ENGAGEMENT).jtable('updateRecord', options);
+    $(saron.table.engagement.viewid).jtable('updateRecord', options);
 }
   
 
 
 function updateChildRecord(PersonName, Id,  Cnt){
     var $selectedRow = $("[data-record-key=" + Id + "]"); 
-    $(TABLE_VIEW_ENGAGEMENT).jtable('closeChildTable', $selectedRow, function(){
+    $(saron.table.engagement.viewid).jtable('closeChildTable', $selectedRow, function(){
         var $selectedRow = $("[data-record-key=" + Id + "]"); 
         if(Cnt > 1){
-            $(TABLE_VIEW_ENGAGEMENT).jtable('openChildTable', $selectedRow, engagementTableDef(PEOPLE_ENG, PersonName, Id, Cnt), function(data){
+            $(saron.table.engagement.viewid).jtable('openChildTable', $selectedRow, engagementTableDef(PEOPLE_ENG, PersonName, Id, Cnt), function(data){
                 data.childTable.jtable('load');            
             });
         }
