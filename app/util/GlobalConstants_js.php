@@ -4,8 +4,9 @@ require_once SARON_ROOT . "app/util/GlobalConstants_php.php";
 
 // From config.php
 // System
-
-$saron = new stdClass();
+if (!isset($saron)){
+    $saron = new stdClass();
+}
 $saron->uri->wp = WP_URI;
 $saron->uri->saron = SARON_URI;
 $saron->uri->images = SARON_IMAGES_URI;

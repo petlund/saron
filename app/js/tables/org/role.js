@@ -81,8 +81,8 @@ function roleTableDef(tableViewId, childTableTitle){
                     }
 
                     var childTableDef = unitTableDef(tableViewId, childTableTitle);
-                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, childUri);
-                    var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
 
                     return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                 }               
@@ -111,8 +111,8 @@ function roleTableDef(tableViewId, childTableTitle){
                     }
 
                     var childTableDef = unitTypeTableDef(tableViewId, childTableTitle);
-                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, childUri);
-                    var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
 
                     return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                 }

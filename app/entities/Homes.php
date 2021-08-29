@@ -64,7 +64,7 @@ class Homes extends SuperEntity{
 
     function selectDefault($idFromCreate = -1){
         $Id = $this->getId($idFromCreate, $this->Id);
-
+            
         $filter = new HomesFilter();
         $sqlSelect = SQL_STAR_HOMES . ", People.HomeId, People.Id as ParentId, " . $this->saronUser->getRoleSql(true) . CONTACTS_ALIAS_RESIDENTS;
         $sqlWhere = "WHERE ";
@@ -77,6 +77,9 @@ class Homes extends SuperEntity{
                     $sqlWhere.= $filter->getSearchFilterSql($this->uppercaseSearchString);
                     break;
                 case TABLE_NAME_PEOPLE . "/" . TABLE_NAME_HOMES:            
+                    $sqlWhere.= "People.Id = " . $this->parentId . " ";
+                    break;
+                case TABLE_NAME_STATISTICS . "/" . TABLE_NAME_STATISTICS_DETAIL . "/" . TABLE_NAME_PEOPLE . "/" . TABLE_NAME_HOMES:            
                     $sqlWhere.= "People.Id = " . $this->parentId . " ";
                     break;
                 default:

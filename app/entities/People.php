@@ -44,7 +44,7 @@ class People extends SuperEntity{
         }
         $sqlWhere = "WHERE ";       
         if($Id < 0){
-            $rec = RECORDS;
+            $rec = RECORDS;     
             switch ($this->tablePath){
                 case TABLE_NAME_PEOPLE . "/" . TABLE_NAME_HOMES:            
                     $sqlWhere.= "People.Id = " . $this->parentId . " ";
@@ -53,6 +53,18 @@ class People extends SuperEntity{
                     $sqlWhere.= "People.Id = " . $this->parentId . " ";
                     break;
                 case TABLE_NAME_PEOPLE . "/" . TABLE_NAME_MEMBER:            
+                    $sqlWhere.= "People.Id = " . $this->parentId . " ";
+                    break;
+                case TABLE_NAME_PEOPLE . "/" . TABLE_NAME_KEYS:            
+                    $sqlWhere.= "People.Id = " . $this->parentId . " ";
+                    break;
+                case TABLE_NAME_STATISTICS . "/" . TABLE_NAME_STATISTICS_DETAIL . "/" . TABLE_NAME_PEOPLE:            
+                    $sqlWhere.= "People.Id = " . $this->parentId . " ";
+                    break;
+                case TABLE_NAME_STATISTICS . "/" . TABLE_NAME_STATISTICS_DETAIL . "/" . TABLE_NAME_PEOPLE . "/" . TABLE_NAME_MEMBER:            
+                    $sqlWhere.= "People.Id = " . $this->parentId . " ";
+                    break;
+                case TABLE_NAME_STATISTICS . "/" . TABLE_NAME_STATISTICS_DETAIL . "/" . TABLE_NAME_PEOPLE . "/" . TABLE_NAME_BAPTIST:            
                     $sqlWhere.= "People.Id = " . $this->parentId . " ";
                     break;
                 default:

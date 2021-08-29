@@ -1,6 +1,6 @@
 /* global PERSON, CHILD_TABLE_PREFIX, 
 saron,
-ORG, 
+ORG, TABLE, 
 RECORD, OPTIONS
 
  */
@@ -15,6 +15,7 @@ $(document).ready(function () {
 });
 
 function statisticTableDef(tableViewId, tableTitle){
+    var listUri = 'app/web-api/listStatistics.php';
     var tableName = saron.table.statistics.name;
     var title = 'Statistik';
     if(tableTitle !== null)
@@ -29,31 +30,33 @@ function statisticTableDef(tableViewId, tableTitle){
         multiSorting: true,
         defaultSorting: 'year desc', //Set default sorting        
         actions: {
-            listAction:   '/' + saron.uri.saron + 'app/web-api/listStatistics.php'
+            listAction:   '/' + saron.uri.saron + listUri,
         },
         fields: {
-            People: { 
-                title: 'Detaljer',
-                key: true,
+            Id:{
+                list: true,
+                edit: false,
+                create: false,
                 sorting: false,
-                width: '10%',
+                width: '1%',
                 display: function(data){
                     var YEAR =data.record.year.substring(0, 4);
                     var childTableTitle = 'Statistik för ' + YEAR;
                     var childTableName = saron.table.statistics_detail.name;
-                    var tooltip = 'title="Detaljer"';
+                    var tooltip = 'Detaljer';
                     var imgFile = "member.png";
-                    var listUri = 'app/web-api/listPeople.php';
 
                     var childTableDef = detailTableDef(tableViewId, childTableTitle);
-                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, listUri);
-                    var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, listUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
 
                     return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                 }
             },
-            Id:{
-                title: 'id'
+            TablePath:{
+                list: false,
+                edit: false,
+                create: false
             },
             year: {
                 key: true,
@@ -142,6 +145,7 @@ function statisticTableDef(tableViewId, tableTitle){
 
 
 function detailTableDef(tableViewId, childTableTitle){
+    var listUri = 'app/web-api/listStatistics.php';
     var tableName = saron.table.statistics_detail.name;
     var title = 'Statistikdetaljer';
     if(childTableTitle !== null)
@@ -158,23 +162,23 @@ function detailTableDef(tableViewId, childTableTitle){
         defaultSorting: 'event_date desc, LastName ASC, FirstName ASC', //Set default sorting        
         //showCloseButton: false,
         actions: {
-            listAction:   '/' + saron.uri.saron + 'app/web-api/listStatistics.php'
+            listAction:   '/' + saron.uri.saron + listUri
         },
         fields: {
-            People:{
+            Id:{
                 title: '',
                 width: '1%',
+                key: true,
                 sorting: false,
                 display: function(data){
-                    var childTableTitle = 'Personuppgifter för "' + data.record.Name + '"';
+                    var childTableTitle = 'Personuppgifter för "' + data.record.LastName + ' '  + data.record.FirstName + ' ' + data.record.DateOfBirth;
                     var childTableName = saron.table.people.name;
                     var tooltip = 'title="Personuppgifter"';
                     var imgFile = "haspos.png";
-                    var listUri = 'app/web-api/listPeople.php';
 
                     var childTableDef = peopleTableDef(tableViewId, childTableTitle);
-                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, listUri);
-                    var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, listUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
 
                     return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                 }

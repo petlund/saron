@@ -1,9 +1,10 @@
 /* global 
 saron,
-ORG
+ORG, TABLE
 */
 
 "use strict";
+
 const is_open = "_is_open_";
 
 function openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, type, listParentRowUrl){
@@ -28,14 +29,14 @@ function openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, chil
 
 
 
-function closeChildTable(data, tableViewId, childTableName, type, listParentRowUrl){
+function closeChildTable(data, tableViewId, childTableName, type, listParentRowUri){
     var $imgClose = getImageCloseTag(data, childTableName, type);
     $imgClose.click(data, function(event) {
         var $tr = $imgClose.closest('tr'); 
         $tr.removeClass(getAllClassNameOpenChild(data));
         var table = getTableById(data, tableViewId, childTableName);        
         table.jtable('closeChildTable', $tr, function(){  
-            updateParentRow(event.data, tableViewId, childTableName, listParentRowUrl);        
+            updateParentRow(event.data, tableViewId, childTableName, listParentRowUri);        
         });
     });    
     return $imgClose;
@@ -43,8 +44,9 @@ function closeChildTable(data, tableViewId, childTableName, type, listParentRowU
 
 
 
-function updateParentRow(parentData, tableViewId, childTableName, listParentRowUrl){
-    var url = '/' + saron.uri.saron + listParentRowUrl;
+function updateParentRow(parentData, tableViewId, childTableName, listParentRowUri){
+    //updateParentTable(parentData, tableViewId, listParentRowUri);
+    var url = '/' + saron.uri.saron + listParentRowUri;
     var options = {record:{Id: parentData.record.Id}, clientOnly: false, url:url};
     var table = getTableById(parentData, tableViewId, childTableName);
     table.jtable('updateRecord', options);    
@@ -52,9 +54,28 @@ function updateParentRow(parentData, tableViewId, childTableName, listParentRowU
 
 
 
+function updateParentTable(data, tableViewId, listParentRowUri){
+    var parentId = data.record.Id;
+    if(parentId > 0){
+        var table = getParentTableById(tableViewId, parentId);
+        if(table.length === 0) 
+            table = $(tableViewId, parentId);
+
+        var url =  '/' + saron.uri.saron + listParentRowUri;
+        var postData = {record:{"Id": parentId}, "clientOnly": false, "url":url};
+        table.jtable('updateRecord', postData);                                
+    }  
+}
+
+
+function getParentTableById(tableViewId, parentId){
+    return $(tableViewId).jtable('getRowByKey', parentId).closest('div.jtable-child-table-container');
+}
+
+
 function getTableById(data, tableViewId, childTableName){
-//    var table = $(".Id_" + data.record.Id).closest('div.jtable-child-table-container');
-    var table = $("." + _getClassName_Id(data, childTableName, ORG)).closest('div.jtable-child-table-container');
+    var classNameId = "." + _getClassName_Id(data, childTableName, TABLE);
+    var table = $(classNameId).closest('div.jtable-child-table-container');
     if(table.length === 0) 
         table = $(tableViewId);
 
@@ -99,6 +120,7 @@ function getAllClassNameOpenChild(data){
         className+= getClassNameOpenChild(data, saron.table.member.name);
         className+= getClassNameOpenChild(data, saron.table.baptist.name);
         className+= getClassNameOpenChild(data, saron.table.homes.name);
+        className+= getClassNameOpenChild(data, saron.table.keys.name);
         className+= getClassNameOpenChild(data, saron.table.statistics.name);
         className+= getClassNameOpenChild(data, saron.table.statistics_detail.name);
     return className;

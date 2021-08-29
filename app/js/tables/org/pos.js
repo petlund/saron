@@ -239,7 +239,7 @@ function posTableDef(tableViewId, tableTitle){
             }
         },        
         formCreated: function (event, data){
-            $('#jtable-edit-form').append('<input type="hidden" name="OrgTree_FK" value="' + parentId + '" />');
+            $('#jtable-edit-form').append('<input type="hidden" name="OrgTree_FK" value="' + data.record.ParentTreeNode_FK + '" />');
             if(data.formType === 'edit')
                 data.row[0].style.backgroundColor = "yellow";
 
@@ -268,7 +268,7 @@ function posTableDef(tableViewId, tableTitle){
 //                src = '"/' + saron.uri.saron + saron.uri.images + 'unit.png" title="Bemannade positioner"';
 //        }
 //
-//        var imgTag = _setImageClass(data, saron.table.pos.name, src, ORG);
+//        var imgTag = _setImageClass(data, saron.table.pos.name, src, TABLE);
 //        var $imgRole = $(imgTag);
 //
 //        $imgRole.click(data, function (event){

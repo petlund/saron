@@ -67,8 +67,8 @@ function unitTypeTableDef(tableViewId, childTableTitle){
                     var childUri = 'app/web-api/listOrganizationUnit.php';
                     if(data.record.UsedInUnit ===  "1"){
                         var childTableDef = unitTableDef(tableViewId, childTableTitle);
-                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, saron.table.unit.name, ORG, childUri);
-                        var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
+                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, saron.table.unit.name, TABLE, childUri);
+                        var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
                         
                         return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                     }
@@ -101,8 +101,8 @@ function unitTypeTableDef(tableViewId, childTableTitle){
                         }
                         
                         var childTableDef = roleTableDef(tableViewId, childTableTitle);
-                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, childUri);
-                        var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
+                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
+                        var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
                         
                         return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                     }

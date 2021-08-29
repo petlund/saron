@@ -12,9 +12,13 @@ $(document).ready(function () {
     $(saron.table.keys.viewid).find('.jtable-toolbar-item-add-record').hide();
 });  
 
-function keyTableDef(placeHolder, tablename){
+function keyTableDef(tableViewId, tableTitle){
+    var title = 'Nyckelinnehav'; 
+    if(tableTitle !== null)
+        title = tableTitle; 
+    
     return {
-        title: 'Nyckelinnehav',
+        title: title,
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
@@ -33,7 +37,7 @@ function keyTableDef(placeHolder, tablename){
             Name: {
                 title: 'Namn',
                 width: '10%',
-                list: true,
+                list: includedIn(tableViewId, saron.table.keys.viewid),
                 create: false,
                 edit: false,
                 display: function (data){
@@ -42,6 +46,7 @@ function keyTableDef(placeHolder, tablename){
             },
             DateOfBirth: {
                 title: 'Född',
+                list: includedIn(tableViewId, saron.table.keys.viewid),
                 edit: false,
                 width: '5%',
                 type: 'date',
@@ -53,7 +58,7 @@ function keyTableDef(placeHolder, tablename){
             MemberState:{
                 edit: false,
                 create: false,
-                list: true,
+                list: includedIn(tableViewId, saron.table.keys.viewid),
                 title: 'Status',
                 width: '5%',                
             },

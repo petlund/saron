@@ -1,7 +1,7 @@
 /* global DATE_FORMAT,
 saron, 
 SUBUNIT_ENABLED, 
-ORG,
+ORG, TABLE,
 RECORD, OPTIONS,
 POS_ENABLED
  */
@@ -96,8 +96,8 @@ function unitTableDef(tableViewId, childTableTitle){
                             }
                         }
                         var childTableDef = unitTableDef(tableViewId, childTableTitle);
-                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, tableName, ORG, listUri);
-                        var $imgClose = closeChildTable(data, tableViewId, tableName, ORG, listUri);
+                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, tableName, TABLE, listUri);
+                        var $imgClose = closeChildTable(data, tableViewId, tableName, TABLE, listUri);
                         
                         return getChildNavIcon(data, tableName, $imgChild, $imgClose);
                     }
@@ -141,8 +141,8 @@ function unitTableDef(tableViewId, childTableTitle){
                         }
 
                         var childTableDef = posTableDef(tableViewId,  childTableTitle);
-                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, listUri);
-                        var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
+                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, listUri);
+                        var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
                         
                         return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                     }
@@ -221,20 +221,7 @@ function unitTableDef(tableViewId, childTableTitle){
             }
         },
         recordUpdated: function (event, data){
-            var table;
-            var parentId = data.record.ParentId;
-
-            
-            if(parentId > 0){
-                table = $(".Id_" + parentId).closest('div.jtable-child-table-container');
-                if(table.length === 0) 
-                    table = $(tableViewId);
-
-                var url =  '/' + saron.uri.saron + 'app/web-api/listOrganizationUnit.php?selection=single_node';
-                var postData = {record:{"Id": parentId}, "clientOnly": false, "url":url};
-                table.jtable('updateRecord', postData);                                
-            }  
-                
+            updateParentTable(data, tableViewId, listUri);
                     
             if(data.record.HasSubUnit !== '0' || data.record.HasPos !== '0')
                 data.row.find('.jtable-delete-command-button').hide();

@@ -1,7 +1,7 @@
 /* global DATE_FORMAT, J_TABLE_ID, PERSON, HOME, PERSON_AND_HOME, OLD_HOME, 
 inputFormWidth, inputFormFieldWidth, 
 NO_HOME, NEW_HOME_ID, 
-ORG, RECORD, OPTIONS,
+TABLE, ORG, RECORD, OPTIONS,
 saron
  */
 
@@ -115,13 +115,13 @@ function peopleTableDef(tableViewId, tableTitle) {
                 display: function (data) {
                     var childTableTitle = 'Hem för ' + data.record.LongHomeName;
                     var childTableName = saron.table.homes.name;
-                    var tooltip = 'title="Adressuppgifter"';
+                    var tooltip = 'Adressuppgifter';
                     var imgFile = "home.png";
                     var listUri = 'app/web-api/listHomes.php';
 
                     var childTableDef = homeTableDef(tableViewId, childTableTitle);
-                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, listUri);
-                    var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, listUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
 
                     return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
 
@@ -137,13 +137,13 @@ function peopleTableDef(tableViewId, tableTitle) {
                 display: function (data) {
                     var childTableTitle = 'Medlemsuppgifter för "' + data.record.Name + '"';
                     var childTableName = saron.table.member.name;
-                    var tooltip = 'title="Medlemsuppgifter"';
+                    var tooltip = 'Medlemsuppgifter';
                     var imgFile = "member.png";
                     var listUri = 'app/web-api/listPeople.php';
 
                     var childTableDef = memberTableDef(tableViewId, childTableTitle);
-                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, listUri);
-                    var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, listUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
 
                     return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
 
@@ -159,16 +159,41 @@ function peopleTableDef(tableViewId, tableTitle) {
                 display: function (data) {
                     var childTableTitle = 'Dopuppgifter för "' + data.record.Name + '"';
                     var childTableName = saron.table.baptist.name;
-                    var tooltip = 'title="Dopuppgifter"';
+                    var tooltip = 'Dopuppgifter';
                     var imgFile = "baptist.png";
                     var listUri = 'app/web-api/listPeople.php';
 
                     var childTableDef = baptistTableDef(tableViewId, childTableTitle);
-                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, ORG, listUri);
-                    var $imgClose = closeChildTable(data, tableViewId, childTableName, ORG, listUri);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, listUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
 
                     return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
 
+                }
+            },
+            Key:{ 
+                title: '',
+                width: '1%',
+                sorting: false,
+                edit: false,
+                create: false,
+                delete: false,            
+                display: function (data) {
+                    var childTableTitle = 'Nyckelinnehav för "' + data.record.Name + '"';
+                    var childTableName = saron.table.keys.name;
+                    var tooltip = 'NyckelInnehav';
+                    var imgFile = "no_key.png";
+                    if(data.record.KeyToChurch + data.record.KeyToExp > 0)
+                        imgFile = "key.png";
+                    
+                    var listUri = 'app/web-api/listPeople.php';
+
+                    var childTableDef = keyTableDef(tableViewId, childTableTitle);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, listUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
+
+                    return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
+ 
                 }
             },
             Id: {

@@ -12,6 +12,7 @@ const PERSON = 2;
 const PERSON_AND_HOME = 4;
 const NEWS = 5;
 const ORG = 10;
+const TABLE = 100;
 const NEW_HOME_ID = 'newHomeId';
 const OLD_HOME_PREFIX = "OldHome_";
 const NO_HOME = "Inget hem";
@@ -100,7 +101,7 @@ function _styleSaronValue(clazz, val, altValue){
     if(clazz === null)
         return val;
     
-    return '<p class="' + clazz + '">' + val + '</p>';
+    return '<div class="' + clazz + '">' + val + '</p>';
 }
 
 
@@ -118,6 +119,8 @@ function _getId(data, type){
         return 'N' + data.record.Id;
     else if(type === ORG)
         return 'Org_' + data.record.Id;
+    else if(type === TABLE)
+        return '_' + data.record.Id;
     else 
         return data.record.Id;
 }

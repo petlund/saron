@@ -25,39 +25,60 @@ class Statistics extends SuperEntity{
     }    
     
 
-    function selectDefault(){
+    function selectDefault($idFromCreate = -1){
         $this->updateStatistics();
-
-        $sqlSelect = "SELECT *, year as Id, format(average_age, 1) as avg_age, format(average_membership_time, 1) as avg_membership_time, diff ";
-        $result = $this->db->select($this->saronUser, $sqlSelect, "From Statistics ", "", $this->getSortSql(),  $this->getPageSizeSql());    
+        
+        $Id = $this->getId($idFromCreate, $this->Id);
+        $where = "";       
+        
+        if($Id < 0){
+            $rec = RECORDS;
+        }
+        else{
+            $rec = RECORD;
+            $where = "where year " . $this->parentId . " ";
+        }
+         
+        $sqlSelect = "SELECT *, year as Id, format(average_age, 1) as avg_age, format(average_membership_time, 1) as avg_membership_time, diff, " . $this->getTablePathSql(false);
+        $result = $this->db->select($this->saronUser, $sqlSelect, "From Statistics ", $where, $this->getSortSql(),  $this->getPageSizeSql());    
         return $result;
     }
 
-    function selectStatisicsDetails(){
-        $curYear = (int)filter_input(INPUT_GET, "year", FILTER_SANITIZE_NUMBER_INT);
+    function selectStatisicsDetails($idFromCreate = -1){
+        $Id = $this->getId($idFromCreate, $this->Id);
 
-        $sqlSelect="SELECT p.Id, " . DECRYPTED_ALIAS_LASTNAME . ", " . DECRYPTED_ALIAS_FIRSTNAME . ", " . DECRYPTED_ALIAS_COMMENT . ", DateOfBirth, ";
+        $curYear = $this->parentId;
+
+        if($Id < 0){
+            $rec = RECORDS;
+        }
+        else{
+            $rec = RECORD;
+            $where = "AND Id =" . $Id. " ";
+        }
+
+        $sqlSelect="SELECT p.Id, " . DECRYPTED_ALIAS_LASTNAME . ", " . DECRYPTED_ALIAS_FIRSTNAME . ", " . DECRYPTED_ALIAS_COMMENT . ", DateOfBirth, " . $this->getTablePathSql(true);
         $sql =$sqlSelect;  
         $sql.="DateOfMembershipStart as 'event_date', 
             'Ny' as event_type, 1 as 'Diff' 
             FROM `People` as p  
-            WHERE extract(YEAR from DateOfMembershipStart)=" . $curYear;
+            WHERE extract(YEAR from DateOfMembershipStart)=" . $curYear . " " . $where;
         $sql.=" UNION ";
         $sql.=$sqlSelect;  
         $sql.="DateOfMembershipEnd as 'event_date', 
             'Avslutad' as event_type, -1 as 'Diff' 
             FROM `People` as p  
-            WHERE DateOfDeath is null and DateOfMembershipStart is not null and extract(YEAR from DateOfMembershipEnd)=" . $curYear;   
+            WHERE DateOfDeath is null and DateOfMembershipStart is not null and extract(YEAR from DateOfMembershipEnd)=" . $curYear . " " . $where;   
         $sql.=" UNION ";
         $sql.=$sqlSelect;  
         $sql.="DateOfBaptism as 'event_date', 'Döpt' as event_type, 0 as 'Diff' 
             FROM `People` as p  
-            WHERE CongregationOfBaptismThis=2 and extract(YEAR from DateOfBaptism)=" . $curYear; 
+            WHERE CongregationOfBaptismThis=2 and extract(YEAR from DateOfBaptism)=" . $curYear . " " . $where; 
         $sql.=" UNION ";
         $sql.=$sqlSelect;  
         $sql.="DateOfDeath as 'event_date', 'Avliden' as event_type, -1 as 'Diff' 
             FROM `People` as p  
-            WHERE extract(YEAR from DateOfDeath)=" . $curYear . " ";  
+            WHERE extract(YEAR from DateOfDeath)=" . $curYear . " " . $where;  
         $sql.= $this->getSortSql();
         $sql.= $this->getPageSizeSql();
 
@@ -68,7 +89,7 @@ class Statistics extends SuperEntity{
         $sqlCount .= "(SELECT count(*) FROM `People` as p3 WHERE p3.CongregationOfBaptismThis=2 and extract(YEAR from p3.DateOfBaptism)=" . $curYear . ") "; 
         $sqlCount .= "as c;";
 
-        $result = $this->db->selectSeparate($this->saronUser, $sql, $sqlCount);    
+        $result = $this->db->selectSeparate($this->saronUser, $sql, $sqlCount, $rec);    
         return $result;
         
     }
