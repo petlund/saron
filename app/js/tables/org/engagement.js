@@ -15,14 +15,6 @@ $(document).ready(function () {
 });
 
 
-function filterPeople(viewId){
-    $('#' + viewId).jtable('load', {
-        searchString: $('#searchString').val(),
-        groupId: $('#groupId').val(),
-        tableview: viewId
-    });
-}
-
 
 function peopleEngagementTableDef(tableViewId){
     const listUri = 'app/web-api/listEngagement.php';

@@ -61,12 +61,8 @@ class Person extends People{
         $this->Baptister = (String)filter_input(INPUT_POST, "Baptister", FILTER_SANITIZE_STRING);
         $this->CongregationOfBaptism = (String)filter_input(INPUT_POST, "CongregationOfBaptism", FILTER_SANITIZE_STRING);
         $this->CongregationOfBaptismThis = (int)filter_input(INPUT_POST, "CongregationOfBaptismThis", FILTER_SANITIZE_NUMBER_INT);
-        $this->PreviousCongregation = (String)filter_input(INPUT_POST, "PreviousCongregation", FILTER_SANITIZE_STRING);
-        
-        $this->DateOfMembershipStart = (String)filter_input(INPUT_POST, "DateOfMembershipStart_create", FILTER_SANITIZE_STRING);        
-        if(strlen($this->DateOfMembershipStart) === 0){
-            $this->DateOfMembershipStart = (String)filter_input(INPUT_POST, "DateOfMembershipStart", FILTER_SANITIZE_STRING);
-        }
+        $this->PreviousCongregation = (String)filter_input(INPUT_POST, "PreviousCongregation", FILTER_SANITIZE_STRING);        
+        $this->DateOfMembershipStart = (String)filter_input(INPUT_POST, "DateOfMembershipStart", FILTER_SANITIZE_STRING);
         $this->MembershipNo = (int)filter_input(INPUT_POST, "MembershipNo", FILTER_SANITIZE_NUMBER_INT);
         $this->VisibleInCalendar = (int)filter_input(INPUT_POST, "VisibleInCalendar", FILTER_SANITIZE_NUMBER_INT);    
         $this->DateOfMembershipEnd = (String)filter_input(INPUT_POST, "DateOfMembershipEnd", FILTER_SANITIZE_STRING);
@@ -277,33 +273,59 @@ class Person extends People{
 
     
     function update(){
-        switch ($this->selection){
-        case "person":
+        switch ($this->tablePath){
+        case TABLE_NAME_PEOPLE:
             $checkResult = $this->checkPersonData();
             if($checkResult!==true){
                 return $checkResult;
             }
-            return $this->updatePersonData();       
-        case "membership":
+            return $this->updatePersonData();
+            
+        case TABLE_NAME_MEMBER:
             $checkResult = $this->checkMembershipData();
             if($checkResult!==true){
                 return $checkResult;
             }
             return $this->updateMembershipData();       
-        case "baptism":
+            
+        case TABLE_NAME_PEOPLE . "/" . TABLE_NAME_MEMBER:
+            $checkResult = $this->checkMembershipData();
+            if($checkResult!==true){
+                return $checkResult;
+            }
+            return $this->updateMembershipData();       
+            
+        case TABLE_NAME_BAPTIST:
             $checkResult=$this->checkBaptistData();
             if($checkResult!==true){
                 return $checkResult;
             }
-            return $this->updateBaptistData();       
-        case "keyHolding":
-            $result = $this->checkKeyHoldingData();
-            if($result !== true){
-                return $result;
+            return $this->updateBaptistData();
+            
+        case TABLE_NAME_PEOPLE . "/" . TABLE_NAME_BAPTIST:
+            $checkResult=$this->checkBaptistData();
+            if($checkResult!==true){
+                return $checkResult;
+            }
+            return $this->updateBaptistData();
+            
+        case TABLE_NAME_KEYS:
+            $checkResult = $this->checkKeyHoldingData();
+            if($checkResult !== true){
+                return $checkResult;
             }                
-            return $this->updateKeyHoldning();       
-        case "anonymization":
+            return $this->updateKeyHoldning();
+            
+        case TABLE_NAME_PEOPLE . "/" . TABLE_NAME_KEYS:
+            $checkResult = $this->checkKeyHoldingData();
+            if($checkResult !== true){
+                return $checkResult;
+            }                
+            return $this->updateKeyHoldning();
+            
+        case TABLE_NAME_TOTAL:
             return $this->anonymization();       
+
         default:
             $error = array();
             $error["Result"] = "ERROR";

@@ -13,12 +13,14 @@ $(document).ready(function () {
 });  
 
 function keyTableDef(tableViewId, tableTitle){
+    var tableName = saron.table.keys.name; 
     var title = 'Nyckelinnehav'; 
     if(tableTitle !== null)
         title = tableTitle; 
     
     return {
         title: title,
+        showCloseButton: false,        
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
@@ -33,6 +35,10 @@ function keyTableDef(tableViewId, tableTitle){
             Id: {
                 key: true,
                 list: false
+            },
+            TablePath:{
+                defaultValue: tableName,
+                type: 'hidden'
             },
             Name: {
                 title: 'Namn',

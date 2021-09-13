@@ -1,6 +1,6 @@
-/* global DATE_FORMAT, saron.uri.saron, PERSON, inputFormWidth, inputFormFieldWidth,
-saron.table.member.viewid, saron.table.member.name,
-RECORD, saron.responsetype.records,OPTIONS
+/* global DATE_FORMAT,PERSON, inputFormWidth, inputFormFieldWidth,
+saron,
+RECORD, OPTIONS
  */
 
 "use strict";
@@ -41,10 +41,7 @@ function memberTableDef(tableViewId, tableTitle){
                         success: function (data) {
                             $dfd.resolve(data);
                             if(data.Result === 'OK'){
-                                _updateFields(data.Record, "MemberState", PERSON);                                                
-                                _updateFields(data.Record, "VisibleInCalendar", PERSON);                                                
-                                _updateFields(data.Record, "DateOfMembershipStart", PERSON);                                                
-                                _updateFields(data.Record, "DateOfMembershipEnd", PERSON);                                                
+                                            
                             }
                         },
                         error: function () {
@@ -53,12 +50,15 @@ function memberTableDef(tableViewId, tableTitle){
                     });
                 });
             }
-            //deleteAction: 'delete.php'
         },
         fields: {
             Id: {
                 key: true,
                 list: false
+            },
+            TablePath:{
+                defaultValue: tableName,
+                type: 'hidden'
             },
             Name: {
                 title: 'Namn',
@@ -143,7 +143,13 @@ function memberTableDef(tableViewId, tableTitle){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
-        },        
+        },       
+        recordUpdated(data, event){
+            _updateFields(event, "MemberState", PERSON);                                                
+            _updateFields(event, "VisibleInCalendar", PERSON);                                                
+            _updateFields(event, "DateOfMembershipStart", PERSON);                                                
+            _updateFields(event, "DateOfMembershipEnd", PERSON);                
+        },
         formCreated: function (event, data){
             data.row[0].style.backgroundColor = "yellow";
             data.form.css('width',inputFormWidth);

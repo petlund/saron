@@ -1,6 +1,6 @@
-/* global saron.uri.saron, PERSON, inputFormWidth, inputFormFieldWidth,  
-saron.table.homes.viewid, saron.table.homes.name,  
-saron.responsetype.records, RECORD, OPTIONS
+/* global PERSON, inputFormWidth, inputFormFieldWidth,  
+saron, 
+RECORD, OPTIONS
  */
 "use strict";
 
@@ -29,6 +29,7 @@ function filterHomes(viewId, reload){
 
 
 function homeTableDef(tableViewId, childTableTitle){
+    var tableName = saron.table.homes.name;
     var title = 'Hem';
     if(childTableTitle !== null)
         title = childTableTitle;
@@ -43,9 +44,7 @@ function homeTableDef(tableViewId, childTableTitle){
         defaultSorting: "FamilyName ASC",
         actions: {
             listAction:   '/' + saron.uri.saron + 'app/web-api/listHomes.php',
-            //createAction: 'create.php',
-            updateAction: '/' + saron.uri.saron + 'app/web-api/updateHomes.php'
-            //deleteAction: 'delete.php'
+            updateAction: '/' + saron.uri.saron + 'app/web-api/updateHome.php'
         },
         fields: {
             Id: {
@@ -56,9 +55,8 @@ function homeTableDef(tableViewId, childTableTitle){
                 list: false
             },
             TablePath:{
-                list: false,
-                edit: false,
-                create: false
+                defaultValue: tableName,
+                type: 'hidden'
             },
             FamilyName: {
                 title: 'Familjenamn',

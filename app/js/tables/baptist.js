@@ -30,31 +30,17 @@ function baptistTableDef(tableViewId, tableTitle){
             defaultSorting: 'FamilyName ASC, DateOfBirthr ASC', //Set default sorting        
         actions: {
             listAction:   '/' + saron.uri.saron + 'app/web-api/listPeople.php', 
-            updateAction: function(data) {
-                return $.Deferred(function ($dfd) {
-                    $.ajax({
-                        url: '/' + saron.uri.saron + 'app/web-api/updatePerson.php?selection=baptist',
-                        type: 'POST',
-                        dataType: 'json',
-                        data: data,
-                        success: function (data){
-                            $dfd.resolve(data);
-                            if(data.Result === 'OK'){
-                                _updateFields(data.Record, "DateOfBaptism", PERSON);                                                
-                            }
-                        },
-                        error: function () {
-                            $dfd.reject();
-                        }
-                    });
-                });
-            }
+            updateAction: '/' + saron.uri.saron + 'app/web-api/updatePerson.php'
         },
         
         fields: { 
             Id: {
                 key: true,
                 list: false
+            },
+            TablePath:{
+                defaultValue: tableName,
+                type: 'hidden'
             },
             Name: {
                 title: 'Namn',

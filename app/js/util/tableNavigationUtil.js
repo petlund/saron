@@ -11,20 +11,25 @@ function openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, chil
     var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
 
     $imgChild.click(data, function (event){
-        var $tr = $imgChild.closest('tr');
-        $tr.removeClass(getAllClassNameOpenChild(data));
-        $tr.addClass(getClassNameOpenChild(data, childTableName ));
-
-        $(tableViewId).jtable('openChildTable', $tr, childTableDef, function(placeholder){
-            var tablePath = getTablePath(data, childTableName);
-            var postData = getPostData(tableViewId, data.record.Id, tablePath, null, saron.responsetype.records);
-            updateParentRow(data, tableViewId, childTableName, listParentRowUrl);        
-            placeholder.childTable.jtable('load', postData, function(){
-            });
-        });
+        _openChild(data, $imgChild, tableViewId, childTableDef, childTableName, listParentRowUrl)
     });
     return $imgChild;
     
+}
+
+
+function _openChild(data, $imgChild, tableViewId, childTableDef, childTableName, listParentRowUrl){
+    var $tr = $imgChild.closest('tr');
+    $tr.removeClass(getAllClassNameOpenChild(data));
+    $tr.addClass(getClassNameOpenChild(data, childTableName ));
+
+    $(tableViewId).jtable('openChildTable', $tr, childTableDef, function(placeholder){
+        var tablePath = getTablePath(data, childTableName);
+        var postData = getPostData(tableViewId, data.record.Id, tablePath, null, saron.responsetype.records);
+        updateParentRow(data, tableViewId, childTableName, listParentRowUrl);        
+        placeholder.childTable.jtable('load', postData, function(){
+        });
+    });    
 }
 
 
