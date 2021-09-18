@@ -46,7 +46,7 @@ class Home extends Homes{
         $sqlSet.= "Zip = " . $this->getSqlString($this->Zip) . ", ";
         $sqlSet.= "Letter = " . $this->Letter . ", ";
         $sqlSet.= "Country = " . $this->getSqlString($this->Country) . " ";     
-        $sqlWhere = "WHERE Id=" . $this->HomeId . ";";
+        $sqlWhere = "WHERE Id=" . $this->Id . ";";
         $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
         
         return $this->select(RECORD);
@@ -62,6 +62,7 @@ class Home extends Homes{
         $result = $this->db->select($this->saronUser, $sqlSelect, "FROM Homes ", "WHERE Id = " . $this->HomeId, "", "", $rec);
         return $result;        
     }
+    
     
     function getHomeSelectSql($tableAlias, $homeId, $continue){
         $sql = getLongHomeNameSql($tableAlias, "LongHomeName", true);

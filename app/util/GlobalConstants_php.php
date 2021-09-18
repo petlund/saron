@@ -65,6 +65,7 @@
     Define("TABLE_NAME_POS",  "table_pos");
 
     Define("TABLE_NAME_UNIT", "table_unit");
+    Define("TABLE_VIEW_UNIT", "ORG_UNIT");
 
     Define("TABLE_VIEW_UNITLIST",  "ORG_UNITLIST");
     Define("TABLE_NAME_UNITLIST", "table_unitlist");
