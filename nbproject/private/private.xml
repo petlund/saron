@@ -3,16 +3,15 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/about/organisation.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/organization.unit.js</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/scribble</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/db.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/Engagement.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/engagement.js</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/organization.role.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/views/people.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/util/GlobalConstants_js.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/util/viewId.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/util/GlobalConstants_php.php</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/menu.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/util/searchId.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/util/util.js</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationUnit.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationRole.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/PeopleFilter.php</file>
         </group>
     </open-files>
 </project-private>

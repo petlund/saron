@@ -71,9 +71,68 @@ RECORD, OPTIONS
                     title: 'Status',               
                     width: '5%'
                 },
-                Contact:{
-                    title: 'Kontaktuppgifter',
-                    width: '50%'               
+                Email: {
+                    width: '13%',
+                    title: 'Mail',
+                    display: function (data){
+                        return _setMailClassAndValue(data, "Email", '', PERSON);
+                    }       
+                },  
+                Phone: {
+                    title: 'Telefon',
+                    width: '10%',
+                    edit: true,
+                    display: function (data){
+                        return _setClassAndValue(data, "Phone", PERSON);
+                    }                   
+                },
+                Mobile: {
+                    title: 'Mobil',
+                    inputTitle: 'Mobil <BR> - Hemtelefonuppgifter matas in under "Adressuppgifter"',
+                    width: '7%',
+                    display: function (data){
+                        return _setClassAndValue(data, "Mobile", PERSON);
+                    }       
+                },
+                Co: {
+                    title: 'Co',
+                    width: '10%',
+                    edit: true,
+                    display: function (data){
+                        return _setClassAndValue(data, "Co", PERSON);
+                    }       
+                },
+                Address: {
+                    title: 'Adress',
+                    width: '10%',
+                    edit: true,
+                    display: function (data){
+                        return _setClassAndValue(data, "Address", PERSON);
+                    }       
+                },
+                Zip: {
+                    title: 'PA',
+                    width: '5%',
+                    edit: true,
+                    display: function (data){
+                        return _setClassAndValue(data, "Zip", PERSON);
+                    }       
+                },
+                City: {
+                    title: 'Stad',
+                    width: '10%',
+                    edit: true,
+                    display: function (data){
+                        return _setClassAndValue(data, "City", PERSON);
+                    }       
+                },
+                Country: {
+                    title: 'Land',
+                    width: '10%',
+                    edit: true,
+                    display: function (data){
+                        return _setClassAndValue(data, "Country", PERSON);
+                    }       
                 }
             }
         };

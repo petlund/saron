@@ -21,8 +21,6 @@ require_once SARON_ROOT . "menu.php";
         <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "keys.js");?>"></script>     
         <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "birthdays.js");?>"></script>     
         <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "total.js");?>"></script>     
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("FileSaver/", "FileSaver.js");?>"></script>     
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("util/", "toExcel.js");?>"></script>     
         
         <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/jquery.jtable.js"></script>
         <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/localization/jquery.jtable.se.js"></script>        
