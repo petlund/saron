@@ -49,11 +49,12 @@ function peopleTableDef(tableViewId, tableTitle) {
                         success: function (data) {
                             if(data.Result === 'OK'){
                                 $dfd.resolve(data);
-                                $("#groupId").val("2");
-                                $("#searchString").val("");
-                                var options = {searchString: "", groupId: 2, TableView: getTableView(saron.table.people.viewid)};
+                                var groupId = 12;
+                                $("#groupId").val(groupId);
+                                $("#searchString").val(data.Record.LastName);
+                                var options = {searchString: data.Record.LastName, groupId:groupId, TableView: getTableView(saron.table.people.viewid), TableName: saron.table.people.name};
 
-                                $(tableViewId).jtable('reload', options, function (){
+                                $(tableViewId).jtable('load', options, function (){
 //                                    if(data.Record.HomeId > 0)
 //                                        _openHomeChildTable(tableViewId, data);                                    
                                 });

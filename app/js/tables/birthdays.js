@@ -11,7 +11,7 @@ RECORD, OPTIONS
         $(saron.table.birthday.viewid).find('.jtable-toolbar-item-add-record').hide();
     });
     
-    
+
     function birthdayTableDef(tableViewId, tableTitle){
         var tableName = saron.table.birthday.name;
         var title = 'Födelsedagar';
@@ -20,12 +20,12 @@ RECORD, OPTIONS
     
         return {
             title: title,
-                paging: true, //Enable paging
-                pageSize: 10, //Set page size (default: 10)
-                pageList: 'minimal',
-                sorting: true, //Enable sorting
-                multiSorting: true,
-                defaultSorting: 'NextBirthday ASC', //Set default sorting        
+            paging: true, //Enable paging
+            pageSize: 10, //Set page size (default: 10)
+            pageList: 'minimal',
+            sorting: true, //Enable sorting
+            multiSorting: true,
+            defaultSorting: 'NextBirthday ASC', //Set default sorting        
             actions: {
                 listAction:   '/' + saron.uri.saron + 'app/web-api/listPeople.php'
             },
@@ -34,7 +34,6 @@ RECORD, OPTIONS
                     title: 'id',
                     list: false,
                     key: true
-
                 },
                 Name: {
                     title: 'Namn',

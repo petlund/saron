@@ -4,9 +4,6 @@ RECORD, OPTIONS
  */
 "use strict";
 
-
-
-
 $(document).ready(function () {
     $(saron.table.homes.viewid).jtable(homeTableDef(saron.table.homes.viewid, null, null));
     var options = getPostData(saron.table.homes.viewid, null, saron.table.homes.name, null, saron.responsetype.records);
@@ -20,11 +17,9 @@ function filterHomes(viewId, reload){
     if(reload)
         $('#searchString').val('');
 
-    $('#' + viewId).jtable('load', {
-        searchString: $('#searchString').val(),
-        groupId: $('#groupId').val(),
-        tableview: viewId
-    });
+    var options = {searchString: $('#searchString').val(), groupId: $('#groupId').val(), tableview: viewId};
+            
+    $('#' + viewId).jtable('load', options);
 }
 
 
@@ -52,7 +47,12 @@ function homeTableDef(tableViewId, childTableTitle){
                 key: true
             },
             ParentId: {
-                list: false
+                list: false,
+                create: false,
+                edit: false,
+                defaultValue: -1,
+                tiile: 'Parent',
+                type: 'hidden'
             },
             TablePath:{
                 defaultValue: tableName,
