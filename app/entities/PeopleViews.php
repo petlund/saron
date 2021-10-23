@@ -35,15 +35,7 @@ class PeopleViews {
 
 
     function selectBirthday(){
-        $sql = SQL_STAR_PEOPLE . ", ";
-        $sql.= "concat(";
-        $sql.= "IF(" . FORMATTED_EMAILADDRESS . " like '', '', " . FORMATTED_EMAILADDRESS . "), ";
-        $sql.= "IF(" . DECRYPTED_MOBILE . " is null, '', concat(" . DECRYPTED_MOBILE . ", ', ')), ";
-        $sql.= "IF(" . DECRYPTED_PHONE . " is null, '', concat(" . DECRYPTED_PHONE . ", ', ')), ";
-        $sql.= "IF(" . DECRYPTED_ADDRESS . " is null, ' ', concat(" . DECRYPTED_ADDRESS . ", ', ')), "; 
-        $sql.= "IF(" . Zip. " is null, ' ', concat(" . Zip . ", ', ')), ";
-        $sql.= "IF(" . City . " is null, ' ', " . City . ")"; 
-        $sql.= ") as Contact, ";
+        $sql = SQL_ALL_FIELDS . ", ";
         $sql.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . DATES_AS_ALISAS_MEMBERSTATES . ", ";
         $sql.= "extract(YEAR FROM NOW()) - extract(YEAR FROM DateOfBirth) as Age, ";
         $sql.= "STR_TO_DATE(Concat(extract(year from now()), '-',extract(Month from DateOfBirth),'-',extract(Day from DateOfBirth)),'%Y-%m-%d') as NextBirthday ";
