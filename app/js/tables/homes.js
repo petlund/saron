@@ -90,8 +90,8 @@ function homeTableDef(tableViewId, childTableTitle){
                     return _setClassAndValue(data, "Co", PERSON);
                 }       
             },
-            Gatuaddress: {
-                title: 'Adress',
+            Address: {
+                title: 'Gatuadress',
                 width: '10%',
                 edit: true,
                 display: function (data){
