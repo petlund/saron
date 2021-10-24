@@ -20,7 +20,8 @@ function totalTableDef(tableViewId, tableTitle){
     var title = 'Översikt per person';
     if(tableTitle !== null)
         title = tableTitle; 
-    
+    var parameters = getURLParameters(tableViewId, null, tableName, null, saron.responsetype.records);
+
     return{
         title: title,
         paging: true, //Enable paging
@@ -36,18 +37,22 @@ function totalTableDef(tableViewId, tableTitle){
             message+='om att lagra dopuppgifter i pärmverket ';
             message+='för dopuppgifter behöver du göra en utskrift för underskrift ';
             message+='innan anonymisering!';
-            message+='<br>Medlemskapet avslutas vid anonymisering.';
+            message+='<br>Eventuellt medlemskap avslutas vid anonymisering.';
             message+='<br><B>KAN INTE ÅNGRAS.</B>';
             data.deleteConfirmMessage = message;
         },         
         actions: {
             listAction:   '/' + saron.uri.saron + 'app/web-api/listPeople.php',            
-            deleteAction: '/' + saron.uri.saron + 'app/web-api/updatePerson.php?selection=anonymization'
+            deleteAction: '/' + saron.uri.saron + 'app/web-api/updatePerson.php?selection=anonymization&TablePath=' + tableName
         },  
         fields: {
             Id:{
                 key: true,
                 list: false
+            },
+            TablePath:{
+                type: 'hidden',
+                defaultValue: tableName
             },
             PDF: {
                 title: 'Pdf',

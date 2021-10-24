@@ -6,7 +6,7 @@ class PeopleViews {
     
     function getPeopleViewSql($tableview, $saronUser){
         switch ($tableview){
-        case TABLE_VIEW_POPLE:
+        case TABLE_VIEW_PEOPLE:
             return $this->selectPeople() . ", " . $saronUser->getRoleSql(false);
         case TABLE_VIEW_BIRTHDAY:
             return $this->selectBirthday();

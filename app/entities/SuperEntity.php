@@ -16,6 +16,7 @@ require_once SARON_ROOT . "app/util/GlobalConstants_php.php";
 
 
 class SuperEntity {
+    protected $Id;
     protected $db;
     protected $saronUser;
     protected $groupId;
@@ -88,7 +89,13 @@ class SuperEntity {
     
     protected function getSortSql(){
         $sqlOrderBy = "";
-        if($this->groupId === 2 and ($this->tableView === TABLE_VIEW_PEOPLE or $this->tableView === TABLE_VIEW_MEMBER or $this->tableView === TABLE_VIEW_BAPTIST or $this->tableView === TABLE_VIEW_KEYS)){
+        if($this->groupId === 2 and 
+                ($this->tableView === TABLE_VIEW_PEOPLE or 
+                $this->tableView === TABLE_VIEW_MEMBER or 
+                $this->tableView === TABLE_VIEW_BAPTIST or 
+                $this->tableView === TABLE_VIEW_KEYS or
+                $this->tableView === TABLE_VIEW_TOTAL)
+            ){
             $sqlOrderBy = "ORDER BY Updated desc ";            
         }
         else if(Strlen($this->jtSorting)>0){
@@ -164,6 +171,7 @@ class SuperEntity {
     
     
     function getTablePathSql($continiue = true){
+        $sql = "";
         if(strlen($this->tablePath) > 0){   
             $sql = "'" . $this->tablePath . "' AS TablePath";
             if($continiue){
