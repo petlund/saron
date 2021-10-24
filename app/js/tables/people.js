@@ -52,7 +52,7 @@ function peopleTableDef(tableViewId, tableTitle) {
                                 var groupId = 12;
                                 $("#groupId").val(groupId);
                                 $("#searchString").val(data.Record.LastName);
-                                var options = {searchString: data.Record.LastName, groupId:groupId, TableView: getTableView(saron.table.people.viewid), TableName: saron.table.people.name};
+                                var options = {searchString: data.Record.LastName, groupId:groupId, TableView: getTableView(saron.table.people.viewid), TablePath: tableName};
 
                                 $(tableViewId).jtable('load', options, function (){
 //                                    if(data.Record.HomeId > 0)

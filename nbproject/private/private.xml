@@ -3,14 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/views/people.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/util/GlobalConstants_js.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/util/viewId.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/util/GlobalConstants_php.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/menu.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/util/searchId.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/util/util.js</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationUnit.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/homes.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/util/timeout.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/People.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/queries.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/efk.js</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/PeopleFilter.php</file>
         </group>
     </open-files>

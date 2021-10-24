@@ -226,8 +226,9 @@ class Person extends People{
         $sqlSelect.= DATES_AS_ALISAS_MEMBERSTATES . ", ";
         $sqlSelect.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
         $sqlSelect.= $home->getHomeSelectSql(ALIAS_CUR_HOMES, $this->HomeId, true);
-        $sqlSelect.= $home->getHomeSelectSql(ALIAS_OLD_HOMES, $this->OldHomeId, false);
-                  
+        $sqlSelect.= $home->getHomeSelectSql(ALIAS_OLD_HOMES, $this->OldHomeId, true);
+        $sqlSelect.= $this->getTablePathSql(false);                  
+        
         $sqlFrom ="FROM People left outer join Homes on People.HomeId=Homes.Id ";
         $sqlFrom.="left outer join Homes as " . ALIAS_OLD_HOMES . " on " .  ALIAS_OLD_HOMES . ".Id = " . $this->OldHomeId . " ";
         
