@@ -7,13 +7,13 @@ require_once SARON_ROOT . 'app/entities/PeopleFilter.php';
 
 class People extends SuperEntity{
 
-    protected $Id;
+    protected $id;
     protected $uppercaseSearchString;
     protected $filter;
 
     function __construct($db, $saronUser) {
         parent::__construct($db, $saronUser);
-        $this->Id = (String)filter_input(INPUT_POST, "Id", FILTER_SANITIZE_STRING);
+        $this->id = (String)filter_input(INPUT_POST, "Id", FILTER_SANITIZE_STRING);
         $this->filter = (String)filter_input(INPUT_GET, "filter", FILTER_SANITIZE_STRING);
     }
     
@@ -34,7 +34,7 @@ class People extends SuperEntity{
 
     
     function selectDefault($idFromCreate = -1){
-        $Id = $this->getId($idFromCreate, $this->Id);
+        $id = $this->getId($idFromCreate, $this->id);
 
         $tw = new PeopleViews();
         $sqlSelect = $tw->getPeopleViewSql($this->tableView, $this->saronUser);
@@ -43,7 +43,7 @@ class People extends SuperEntity{
             $sqlSelect.= $this->getTablePathSql(false);
         }
         $sqlWhere = "WHERE ";       
-        if($Id < 0){
+        if($id < 0){
             $rec = RECORDS;     
             switch ($this->tablePath){
                 case TABLE_NAME_PEOPLE . "/" . TABLE_NAME_HOMES:            
@@ -75,7 +75,7 @@ class People extends SuperEntity{
         }
         else{
             $rec = RECORD;
-            $sqlWhere.= "People.Id = " . $Id . " ";
+            $sqlWhere.= "People.Id = " . $id . " ";
         }
         $result =  $this->db->select($this->saronUser, $sqlSelect, SQL_FROM_PEOPLE_LEFT_JOIN_HOMES, $sqlWhere, $this->getSortSql(), $this->getPageSizeSql(), $rec);
         return $result;

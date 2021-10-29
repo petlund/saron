@@ -4,7 +4,6 @@ require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
 class OrganizationPosStatus extends SuperEntity{
     
-    private $id;
     private $name;
     private $description;
     
@@ -12,7 +11,6 @@ class OrganizationPosStatus extends SuperEntity{
         parent::__construct($db, $saronUser);
         
         $this->statusfilter = (String)filter_input(INPUT_GET, "statusfilter", FILTER_SANITIZE_STRING);
-        $this->id = (int)filter_input(INPUT_POST, "Id", FILTER_SANITIZE_NUMBER_INT);
         $this->name = (String)filter_input(INPUT_POST, "Name", FILTER_SANITIZE_STRING);
         $this->description = (String)filter_input(INPUT_POST, "Description", FILTER_SANITIZE_STRING);
     }

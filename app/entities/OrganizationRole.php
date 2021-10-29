@@ -5,7 +5,6 @@ require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
 class OrganizationRole extends SuperEntity{
     
-    private $id;
     private $name;
     private $description;
     private $orgTreeNode_FK;
@@ -14,7 +13,6 @@ class OrganizationRole extends SuperEntity{
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
         
-        $this->id = (int)filter_input(INPUT_POST, "Id", FILTER_SANITIZE_NUMBER_INT);
         $this->roleType = (int)filter_input(INPUT_POST, "RoleType", FILTER_SANITIZE_NUMBER_INT);
         $this->orgTreeNode_FK = (int)filter_input(INPUT_POST, "Org_Tree_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->orgUnitType_FK = (int)filter_input(INPUT_POST, "OrgUnitType_FK", FILTER_SANITIZE_NUMBER_INT);

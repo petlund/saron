@@ -4,14 +4,12 @@ require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
 class News extends SuperEntity{
     
-    private $id;
     private $severity;
     private $information;
             
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
         
-        $this->id = (int)filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT);
         $this->severity = (int)filter_input(INPUT_POST, "severity", FILTER_SANITIZE_NUMBER_INT);
         $this->information = (String)filter_input(INPUT_POST, "information", FILTER_SANITIZE_STRING);
     }

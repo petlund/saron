@@ -4,7 +4,6 @@ require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
 class MemberState extends SuperEntity{
     
-    private $id;
     private $description;
     private $filterUpdate;
     private $filterCreate;
@@ -12,11 +11,9 @@ class MemberState extends SuperEntity{
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
         
-        $this->id = (int)filter_input(INPUT_POST, "Id", FILTER_SANITIZE_NUMBER_INT);
         $this->description = (String)filter_input(INPUT_POST, "Description", FILTER_SANITIZE_STRING);
         $this->filterUpdate = (int)filter_input(INPUT_POST, "FilterUpdate", FILTER_SANITIZE_NUMBER_INT);
         $this->filterCreate = (int)filter_input(INPUT_POST, "FilterCreate", FILTER_SANITIZE_NUMBER_INT);
-        
     }
     
     

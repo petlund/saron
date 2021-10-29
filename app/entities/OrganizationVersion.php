@@ -4,14 +4,12 @@ require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
 class OrganizationVersion extends SuperEntity{
     
-    private $id;
     private $decision_date;
     private $information;
             
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
         
-        $this->id = (int)filter_input(INPUT_POST, "id", FILTER_SANITIZE_NUMBER_INT);
         $this->information = (String)filter_input(INPUT_POST, "information", FILTER_SANITIZE_STRING);
         $this->decision_date = (String)filter_input(INPUT_POST, "decision_date", FILTER_SANITIZE_STRING);
     }

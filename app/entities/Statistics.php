@@ -28,10 +28,10 @@ class Statistics extends SuperEntity{
     function selectDefault($idFromCreate = -1){
         $this->updateStatistics();
         
-        $Id = $this->getId($idFromCreate, $this->Id);
+        $id = $this->getId($idFromCreate, $this->id);
         $where = "";       
         
-        if($Id < 0){
+        if($id < 0){
             $rec = RECORDS;
         }
         else{
@@ -45,16 +45,16 @@ class Statistics extends SuperEntity{
     }
 
     function selectStatisicsDetails($idFromCreate = -1){
-        $Id = $this->getId($idFromCreate, $this->Id);
+        $id = $this->getId($idFromCreate, $this->id);
 
         $curYear = $this->parentId;
 
-        if($Id < 0){
+        if($id < 0){
             $rec = RECORDS;
         }
         else{
             $rec = RECORD;
-            $where = "AND Id =" . $Id. " ";
+            $where = "AND Id =" . $id. " ";
         }
 
         $sqlSelect="SELECT p.Id, " . DECRYPTED_ALIAS_LASTNAME . ", " . DECRYPTED_ALIAS_FIRSTNAME . ", " . DECRYPTED_ALIAS_COMMENT . ", DateOfBirth, " . $this->getTablePathSql(true);
@@ -156,7 +156,7 @@ class Statistics extends SuperEntity{
     function selectDemographicHistogram(){
 
         $sqlSelect = "SELECT Gender, count(*) as amount, ";
-        $sqlFrom.= "FROM People ";
+        $sqlFrom = "FROM People ";
         $sqlGroupOrder = "group by ageGroup, Gender order by ageGroup";
 
         // Members age

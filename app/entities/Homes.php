@@ -4,7 +4,6 @@ require_once SARON_ROOT . 'app/entities/SuperEntity.php';
 require_once SARON_ROOT . 'app/entities/HomesFilter.php';
 
 class Homes extends SuperEntity{
-    protected $Id;
     protected $FamilyName;
     protected $Address;
     protected $Phone;
@@ -18,7 +17,6 @@ class Homes extends SuperEntity{
     function __construct($db, $saronUser) {
         parent::__construct($db, $saronUser);
         
-        $this->Id = (int)filter_input(INPUT_POST, "Id", FILTER_SANITIZE_NUMBER_INT);
         $this->FamilyName = (String)filter_input(INPUT_POST, "FamilyName", FILTER_SANITIZE_STRING);
         $this->Address = (String)filter_input(INPUT_POST, "Address", FILTER_SANITIZE_STRING);
         $this->Phone = (String)filter_input(INPUT_POST, "Phone", FILTER_SANITIZE_STRING);
@@ -63,13 +61,13 @@ class Homes extends SuperEntity{
 
 
     function selectDefault($idFromCreate = -1){
-        $Id = $this->getId($idFromCreate, $this->Id);
+        $id = $this->getId($idFromCreate, $this->id);
             
         $filter = new HomesFilter();
         $sqlSelect = SQL_STAR_HOMES . ", People.HomeId, People.Id as ParentId, " . $this->saronUser->getRoleSql(true) . CONTACTS_ALIAS_RESIDENTS;
         $sqlWhere = "WHERE ";
 
-        if($Id < 0){            
+        if($id < 0){            
             $rec = RECORDS;
             switch ($this->tablePath){
                 case TABLE_NAME_HOMES:            
@@ -88,7 +86,7 @@ class Homes extends SuperEntity{
         }
         else {
             $rec = RECORD;
-            $sqlWhere.= "Homes.Id = " . $Id . " ";
+            $sqlWhere.= "Homes.Id = " . $id . " ";
         }
         $from = "FROM Homes inner join People on People.HomeId = Homes.Id ";
         $result = $this->db->select($this->saronUser, $sqlSelect, $from, $sqlWhere, $this->getSortSql(), $this->getPageSizeSql(), $rec);

@@ -4,7 +4,6 @@ require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
 class OrganizationStructure extends SuperEntity{
     
-    private $Id;
     private $name;
     private $prefix;
     private $description;
@@ -19,7 +18,6 @@ class OrganizationStructure extends SuperEntity{
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
         
-        $this->Id = (int)filter_input(INPUT_POST, "Id", FILTER_SANITIZE_NUMBER_INT);
         $this->prefix = (String)filter_input(INPUT_POST, "Prefix", FILTER_SANITIZE_STRING);
         $this->name = (String)filter_input(INPUT_POST, "Name", FILTER_SANITIZE_STRING);
         $this->description = (String)filter_input(INPUT_POST, "Description", FILTER_SANITIZE_STRING);
@@ -57,7 +55,7 @@ class OrganizationStructure extends SuperEntity{
         $where = "";    
         
         If($this->filter === 'yes'){
-            $where = "WHERE NOT (Typ.SubUnitEnabled = 0 OR Tree.Id IN (" . $this->selectSubNodesSql($this->Id) . ")) ";
+            $where = "WHERE NOT (Typ.SubUnitEnabled = 0 OR Tree.Id IN (" . $this->selectSubNodesSql($this->id) . ")) ";
         }        
 
         $result = $this->db->select($this->saronUser, $select , $from, $where, "Order by DisplayText ", "", "Options");    
@@ -68,7 +66,7 @@ class OrganizationStructure extends SuperEntity{
     
     
     function selectDefault($idFromCreate = -1){
-        $id = $this->getId($idFromCreate, $this->Id);
+        $id = $this->getId($idFromCreate, $this->id);
         $rec = RECORDS;
         //filter all nodes witch not have childs and all child below curret node
         
@@ -125,7 +123,7 @@ class OrganizationStructure extends SuperEntity{
         }
         else{
             $select.= $this->setParentAlias("ParentTreeNode_FK");
-            $where = "WHERE Tree.Id = " . $this->Id . " ";
+            $where = "WHERE Tree.Id = " . $this->id . " ";
             $rec = RECORD;
         }
 
@@ -188,7 +186,7 @@ class OrganizationStructure extends SuperEntity{
         }
         $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
         
-        $this->Id = $this->db->insert($sqlInsert, "Org_Tree", "Id");
+        $this->id = $this->db->insert($sqlInsert, "Org_Tree", "Id");
         return $this->select();
     }
     
@@ -210,13 +208,13 @@ class OrganizationStructure extends SuperEntity{
         }
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater='" . $this->saronUser->WP_ID . "' ";
-        $where = "WHERE id=" . $this->Id;
+        $where = "WHERE id=" . $this->id;
         $this->db->update($update, $set, $where);
         return $this->select();
     }
 
     function delete(){
-        return $this->db->delete("delete from Org_Tree where Id=" . $this->Id);
+        return $this->db->delete("delete from Org_Tree where Id=" . $this->id);
     }
 }
 

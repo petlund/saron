@@ -80,9 +80,9 @@ class db {
     
     
     
-    public function fieldValueExist($value, $Id, $field, $table){
+    public function fieldValueExist($value, $id, $field, $table){
         $sql = "select count(*) as c from " . $table . " where "; 
-        $sql.= "UPPER(" . $field . ") like UPPER('" . $value . "') AND Id <> " . $Id . " ";
+        $sql.= "UPPER(" . $field . ") like UPPER('" . $value . "') AND Id <> " . $id . " ";
         
         if(!$listResult = $this->connection->query($sql)){
             $this->php_dev_error_log("Exception in exist function", $sql);
@@ -101,14 +101,14 @@ class db {
     }
     
     
-    public function exist($FirstName, $LastName, $DateOfBirth, $Id=-1){
+    public function exist($FirstName, $LastName, $DateOfBirth, $id=-1){
         $sql = "select count(*) as c from People where "; 
         $sql.= "UPPER(CONVERT(BINARY " . DECRYPTED_FIRSTNAME . " USING utf8)) like '" . $FirstName . "' and ";
         $sql.= "UPPER(CONVERT(BINARY " . DECRYPTED_LASTNAME . " USING utf8)) like '" . $LastName . "' and ";
         $sql.= "DateOfBirth like '" . $DateOfBirth . "'";
         
-        if($Id>0){
-            $sql.= " and ID <> '" . $Id . "'";            
+        if($id>0){
+            $sql.= " and ID <> '" . $id . "'";            
         }
         
         if(!$listResult = $this->connection->query($sql)){

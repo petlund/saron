@@ -1,17 +1,24 @@
+/* global saron
+ * 
+ */
+
 "use strict";
+const tableName = saron.table.efk.name;
+const tableId = saron.table.efk.viewid;
 
 $(document).ready(function () {
 
-    $('#EFK').jtable({
+    $(tableId).jtable({
         title: 'EFK Statistik ' + previousYear(),
             paging: false, //Enable paging
             pageSize: 10, //Set page size (default: 10)
             pageList: 'minimal',
             sorting: true, //Enable sorting
             multiSorting: true,
-            defaultSorting: 'AgeInterval ASC', //Set default sorting        
+            defaultSorting: 'AgeInterval ASC', //Set default sorting     
+
         actions: {
-            listAction:   '/' + saron.uri.saron + 'app/web-api/listStatistics.php?selection=efk'
+            listAction:   '/' + saron.uri.saron + 'app/web-api/listStatistics.php?TablePath=' + tableName
         },
         fields: {
             AgeInterval: {
@@ -37,13 +44,13 @@ $(document).ready(function () {
         }
     });
  //Re-load records when user click 'load records' button.
-        $('#EFK').click(function (e) {
+        $(tableId).click(function (e) {
             e.preventDefault();
-            $('#EFK').jtable('load');
+            $(tableId).jtable('load');
         });
  
         //Load all records when page is first shown
-        $('#EFK').click();
+        $(tableId).click();
 });
     
 function previousYear (){

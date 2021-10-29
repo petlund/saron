@@ -17,7 +17,7 @@
         exit();                                                
     }
    
-    $Id = (int)filter_input(INPUT_GET, "Id", FILTER_SANITIZE_NUMBER_INT);
+    $id = (int)filter_input(INPUT_GET, "Id", FILTER_SANITIZE_NUMBER_INT);
 
     $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
     $pdf->SetCreator(PDF_CREATOR);
@@ -53,7 +53,7 @@
         $pdf->setLanguageArray($l);
     }
 
-    $name = createDossier($pdf, $Id);
+    $name = createDossier($pdf, $id);
     $pdf->Output('Registerutdrag - '. $name . ' ' . date('Y-m-d', time()).'.pdf');
     $pdf->close();
 
@@ -65,11 +65,11 @@
 
 
 
-function createDossier(TCPDF $pdf, $Id){
+function createDossier(TCPDF $pdf, $id){
     $FONT_FAMILY = 'times';
         
     $db = new db();
-    $listResult = $db->sqlQuery(getSQL($Id));
+    $listResult = $db->sqlQuery(getSQL($id));
     
     if(!$listResult){
         exit();
@@ -204,16 +204,16 @@ function createDossier(TCPDF $pdf, $Id){
         $pdf->MultiCell($leftColWidth, 5, "", 0, 'L', 0, 0, '', '', true, 0, false, true, 10, 'T'); 
         $pdf->MultiCell($rightColWidt, 5, $aRow['FirstName'] . ' ' . $aRow['LastName'], 0, 'L', 0, 1, '', '', true, 0, false, true, 10, 'T');             
     }
-    if($Id === 0){
+    if($id === 0){
         return 'Alla';
     }
     return $name;
 }
 
-function getSQL($Id){
+function getSQL($id){
     $sql = SQL_ALL_FIELDS . " FROM People left outer join Homes on People.homeid=Homes.Id ";
-    if ($Id>0){
-        $sql .= "where People.Id= " . $Id;
+    if ($id>0){
+        $sql .= "where People.Id= " . $id;
     }
     else{
         $sql .= "where DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' "; 

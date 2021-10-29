@@ -116,13 +116,21 @@ function posTableDef(tableViewId, tableTitle){
             OrgRole_FK: {
                 width: '10%',
                 title: 'Roll',
-                edit: true,
                 options: function(data){
-                    var parameters = getURLParameters(tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);
+                    var parameters = ""; 
                     var optionUri = 'app/web-api/listOrganizationRole.php';
                     
-                    if(data.source !== 'list')
+                    if(data.source === 'list'){
+                        parameters = getURLParameters(tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);
+                    }
+                    if(data.source === 'edit'){
                         data.clearCache();
+                        parameters = getURLParameters(tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);                        
+                    }
+                    if(data.source === 'create'){
+                        data.clearCache();
+                        
+                    }
 
                     return '/' + saron.uri.saron + optionUri + parameters;
                     }

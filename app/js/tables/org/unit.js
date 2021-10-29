@@ -158,7 +158,7 @@ function unitTableDef(tableViewId, childTableTitle){
                     if(data.source !== 'list'){
                         data.clearCache();
                     } 
-                    var parameters = getURLParameters(tableViewId, null, data.record.TablePath, data.source, saron.responsetype.options);
+                    var parameters = ""; // getURLParameters(tableViewId, null, data.record.TablePath, data.source, saron.responsetype.options);
 
                     return '/' + saron.uri.saron + listUri + parameters;
                 }                
@@ -221,7 +221,7 @@ function unitTableDef(tableViewId, childTableTitle){
             }
         },
         recordUpdated: function (event, data){
-            updateParentTable(data, tableViewId, listUri);
+            //updateParentTable(data, tableViewId, listUri);
                     
             if(data.record.HasSubUnit !== '0' || data.record.HasPos !== '0')
                 data.row.find('.jtable-delete-command-button').hide();

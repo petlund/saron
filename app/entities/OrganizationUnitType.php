@@ -4,7 +4,6 @@ require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
 class OrganizationUnitType extends SuperEntity{
     
-    private $id;
     private $name;
     private $description;
     private $subUnitEnabled;
@@ -13,7 +12,6 @@ class OrganizationUnitType extends SuperEntity{
     
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
-        $this->id = (int)filter_input(INPUT_POST, "Id", FILTER_SANITIZE_NUMBER_INT);
         $this->name = (String)filter_input(INPUT_POST, "Name", FILTER_SANITIZE_STRING);
         $this->description = (String)filter_input(INPUT_POST, "Description", FILTER_SANITIZE_STRING);
         $this->subUnitEnabled = (int)filter_input(INPUT_POST, "SubUnitEnabled", FILTER_SANITIZE_NUMBER_INT);

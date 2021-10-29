@@ -46,7 +46,7 @@ class Home extends Homes{
         $sqlSet.= "Zip = " . $this->getSqlString($this->Zip) . ", ";
         $sqlSet.= "Letter = " . $this->Letter . ", ";
         $sqlSet.= "Country = " . $this->getSqlString($this->Country) . " ";     
-        $sqlWhere = "WHERE Id=" . $this->Id . ";";
+        $sqlWhere = "WHERE Id=" . $this->id . ";";
         $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
         
         return $this->select(RECORD);
