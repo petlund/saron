@@ -56,10 +56,10 @@ class OrganizationPosStatus extends SuperEntity{
         $where = "";
         
         switch ($this->tablePath){
-            case TABLE_NAME_ENGAGEMENT . "/" . TABLE_NAME_POS . "/" . SOURCE_EDIT:            
+            case "/" . SOURCE_EDIT:            
                 $where.= "WHERE Id not in (5, 6) "; // Tillsätts ej, funktionsorganisation
                 break;
-            case TABLE_NAME_ENGAGEMENT . "/" . TABLE_NAME_POS . "/" . SOURCE_CREATE:            
+            case "/" . SOURCE_CREATE:            
                 $where.= "WHERE Id < 4 "; // Tillsätts ej
                 break;
             default:

@@ -2,7 +2,7 @@
 require_once SARON_ROOT . 'app/entities/SuperEntity.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
-class OrganizationStructure extends SuperEntity{
+class OrganizationUnit extends SuperEntity{
     
     private $name;
     private $prefix;
@@ -13,7 +13,6 @@ class OrganizationStructure extends SuperEntity{
     private $orgUnitType_FK;
     private $orgRole_FK;
     private $selectionId;
-    private $x;
     
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
@@ -53,7 +52,17 @@ class OrganizationStructure extends SuperEntity{
         $select.= "SELECT Tree.Id as Value, Concat(Tree.Name, ' (', Typ.Name, ')')  as DisplayText ";
         $from = "FROM Org_Tree as Tree inner join Org_UnitType as Typ on Typ.Id= Tree.OrgUnitType_FK ";
         $where = "";    
-        
+
+        switch ($this->source){
+        case SOURCE_LIST:
+            break;
+        case SOURCE_EDIT:
+            $where = "WHERE Tree.Id <> " . $this->id . " ";    
+            break;
+        default:
+            $where = "";    
+            break;
+        }
         If($this->filter === 'yes'){
             $where = "WHERE NOT (Typ.SubUnitEnabled = 0 OR Tree.Id IN (" . $this->selectSubNodesSql($this->id) . ")) ";
         }        
@@ -171,7 +180,7 @@ class OrganizationStructure extends SuperEntity{
     }
     
     function insert(){
-        $sqlInsert = "INSERT INTO Org_Tree (Prefix, Name, Description, OrgUnitType_FK, ParentTreeNode_FK, Updater) ";
+        $sqlInsert = "INSERT INTO Org_Tree (Prefix, Name, Description, OrgUnitType_FK, ParentTreeNode_FK, UpdaterName, Updater) ";
         $sqlInsert.= "VALUES (";
         $sqlInsert.= "'" . $this->prefix  . "', ";
         $sqlInsert.= "'" . $this->name  . "', ";
@@ -184,6 +193,7 @@ class OrganizationStructure extends SuperEntity{
         else{
             $sqlInsert.= "null, ";                                
         }
+        $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "', ";
         $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
         
         $this->id = $this->db->insert($sqlInsert, "Org_Tree", "Id");

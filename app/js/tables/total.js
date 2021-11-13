@@ -20,7 +20,7 @@ function totalTableDef(tableViewId, tableTitle){
     var title = 'Översikt per person';
     if(tableTitle !== null)
         title = tableTitle; 
-    var parameters = getURLParameters(tableViewId, null, tableName, null, saron.responsetype.records);
+    var parameters = getURLParameters(null, tableViewId, null, tableName, null, saron.responsetype.records);
 
     return{
         title: title,

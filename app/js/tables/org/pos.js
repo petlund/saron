@@ -11,6 +11,7 @@ $(document).ready(function () {
         $(saron.table.pos.viewid).jtable(posTableDef(saron.table.pos.viewid, null));
         var postData = getPostData(saron.table.pos.viewid, null, saron.table.pos.name, null, saron.responsetype.records);
         $(saron.table.pos.viewid).jtable('load', postData);
+        $(saron.table.pos.viewid).find('.jtable-toolbar-item-add-record').hide();
     }
 );
 
@@ -36,20 +37,17 @@ function posTableDef(tableViewId, tableTitle){
         messages: {addNewRecord: 'Lägg till en ny position.'},
         actions: {
             listAction: '/' + saron.uri.saron + listUri,
-            createAction: function(){
-                if(tableViewId === saron.table.pos.viewid)
-                    return null;
-                else
-                    return '/' + saron.uri.saron + 'app/web-api/createOrganizationPos.php';
-                },
+            createAction: '/' + saron.uri.saron + 'app/web-api/createOrganizationPos.php',
             updateAction: '/' + saron.uri.saron + 'app/web-api/updateOrganizationPos.php',
             deleteAction: '/' + saron.uri.saron + 'app/web-api/deleteOrganizationPos.php'
         }, 
         fields: {
             TablePath:{
-                list: false,
-                edit: false,
-                create: false,
+//                list: false,
+//                edit: false,
+//                create: false,
+                defaultValue: tableName,
+                type: 'hidden'
             },
             Id: {
                 key: true,
@@ -103,9 +101,10 @@ function posTableDef(tableViewId, tableTitle){
                 edit: false,
                 list: includedIn(tableViewId, saron.table.pos.viewid),
                 title: "Organisatorisk enhet",
+                dependsOn: 'Id',
                 options: function(data){
                     var optionUri = 'app/web-api/listOrganizationUnit.php';
-                    var parameters = getURLParameters(tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);
+                    var parameters = getURLParameters(null, tableViewId, -1, null, data.source, saron.responsetype.options);
                     
                     if(data.source !== saron.source.list)
                         data.clearCache();
@@ -117,31 +116,43 @@ function posTableDef(tableViewId, tableTitle){
                 width: '10%',
                 title: 'Roll',
                 options: function(data){
-                    var parameters = ""; 
                     var optionUri = 'app/web-api/listOrganizationRole.php';
                     
+                    var parameters = ""; 
                     if(data.source === 'list'){
-                        parameters = getURLParameters(tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);
+                        parameters = getURLParameters(null, tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);
                     }
                     if(data.source === 'edit'){
                         data.clearCache();
-                        parameters = getURLParameters(tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);                        
+                        parameters = getURLParameters(null, tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);                        
                     }
                     if(data.source === 'create'){
-                        data.clearCache();
-                        
+                        data.clearCache();                        
+                        parameters = getURLParameters(null, tableViewId, null, "", data.source, saron.responsetype.options);                        
                     }
 
                     return '/' + saron.uri.saron + optionUri + parameters;
-                    }
+                }
             },
             OrgPosStatus_FK: {
                 width: '5%',
                 title: 'Status',
                 defaultValue: '4',
                 options: function(data){                    
-                    var parameters = getURLParameters(tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);
                     var optionUri = 'app/web-api/listOrganizationPosStatus.php';
+                    
+                    var parameters = "";
+                    if(data.source === 'list'){
+                        parameters = getURLParameters(null, tableViewId, null, "", data.source, saron.responsetype.options);
+                    }
+                    if(data.source === 'edit'){
+                        data.clearCache();
+                        parameters = getURLParameters(null, tableViewId, data.record.Id, "", data.source, saron.responsetype.options);                        
+                    }
+                    if(data.source === 'create'){
+                        data.clearCache();                        
+                        parameters = getURLParameters(null, tableViewId, Id, "", data.source, saron.responsetype.options);                        
+                    }
                     
                     return '/' + saron.uri.saron + optionUri + parameters;
                 }
@@ -172,8 +183,20 @@ function posTableDef(tableViewId, tableTitle){
                 edit: true,
                 list: false,
                 options: function(data){                    
-                    var parameters = getURLParameters(tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);
                     var optionUri = 'app/web-api/listOrganizationUnit.php';
+
+                    var parameters = "";
+                    if(data.source === 'list'){
+                        parameters = getURLParameters(null, tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);
+                    }
+                    if(data.source === 'edit'){
+                        data.clearCache();
+                        parameters = getURLParameters(null, tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);                        
+                    }
+                    if(data.source === 'create'){
+                        data.clearCache();                        
+                        parameters = getURLParameters(null, tableViewId, null, "", data.source, saron.responsetype.options);                        
+                    }
                     
                     return '/' + saron.uri.saron + optionUri + parameters;
                 }
@@ -225,13 +248,16 @@ function posTableDef(tableViewId, tableTitle){
             }
         },
         recordAdded: function(event, data){
-            updateParentUnit(tableViewId, data);            
+            if(saron.table.pos.viewid !== tableViewId)
+                updateParentUnit(tableViewId, data);            
         },
         recordUpdated: function(event, data){
-            updateParentUnit(tableViewId, data);            
+            if(saron.table.pos.viewid !== tableViewId)
+                updateParentUnit(tableViewId, data);            
         },
         recordDeleted: function(event, data){
-            updateParentUnit(tableViewId, data);            
+            if(saron.table.pos.viewid !== tableViewId)
+                updateParentUnit(tableViewId, data);            
         },
         rowInserted: function(event, data){
             data.row.addClass("Id_" + data.record.Id); 
@@ -242,12 +268,15 @@ function posTableDef(tableViewId, tableTitle){
             addDialogDeleteListener(data);
         },        
         recordsLoaded: function(event, data) {
-            if(data.serverResponse.user_role === 'edit' || data.serverResponse.user_role === 'org'){ 
-                $(tableViewId).find('.jtable-toolbar-item-add-record').show();
+            if(data.records.length > 0){
+                var showCreateButton = (data.serverResponse.user_role === 'edit' || data.serverResponse.user_role === 'org') && data.records[0].TablePath !== tableName; 
+                if(showCreateButton){ 
+                    $(tableViewId).find('.jtable-toolbar-item-add-record').show();
+                }
             }
         },        
         formCreated: function (event, data){
-            $('#jtable-edit-form').append('<input type="hidden" name="OrgTree_FK" value="' + data.record.ParentTreeNode_FK + '" />');
+//            $('#jtable-edit-form').append('<input type="hidden" name="OrgTree_FK" value="' + data.record.ParentTreeNode_FK + '" />');
             if(data.formType === 'edit')
                 data.row[0].style.backgroundColor = "yellow";
 
@@ -259,39 +288,6 @@ function posTableDef(tableViewId, tableTitle){
         }
     };
 }
-
-//function getAggregatedPosIcon(tableViewId, tablePath, parentId, childTableTitle, data){
-//    if(data.record.PosEnabled === POS_ENABLED){
-//        var src;
-//        if(data.record.HasPos === '0')
-//            src = '"/' + saron.uri.saron + saron.uri.images + 'unit_empty.png" title="Inga positioner"';
-//        else{
-//            if(data.record.statusProposal !== "0" && data.record.statusVacant !== "0")
-//                src = '"/' + saron.uri.saron + saron.uri.images + 'unit_YR.png" title="' + data.record.statusProposal + ' Förslag och ' + data.record.statusVacant + ' vakans(er) på position(er)"';
-//            else if(data.record.statusProposal === "0" && data.record.statusVacant !== "0")
-//                src = '"/' + saron.uri.saron + saron.uri.images + 'unit_R.png" title="' + data.record.statusVacant + ' Vakans(er) på position(er)"';
-//            else if(data.record.statusProposal !== "0" && data.record.statusVacant === "0")
-//                src = '"/' + saron.uri.saron + saron.uri.images + 'unit_Y.png" title="' + data.record.statusProposal + ' Förslag på position(er)"';
-//            else
-//                src = '"/' + saron.uri.saron + saron.uri.images + 'unit.png" title="Bemannade positioner"';
-//        }
-//
-//        var imgTag = _setImageClass(data, saron.table.pos.name, src, TABLE);
-//        var $imgRole = $(imgTag);
-//
-//        $imgRole.click(data, function (event){
-//            var $tr = $imgRole.closest('tr');
-//            $(tableViewId).jtable('openChildTable', $tr, posTableDef(tableViewId, tablePath, parentId, childTableTitle), function(data){
-//                data.childTable.jtable('load');
-//            });
-//        });
-//        return $imgRole;
-//        }
-//    else{
-//        return null;
-//    }
-// }
-//
 
 
 function getDefaultPosSorting(tableViewId){

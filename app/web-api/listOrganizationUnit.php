@@ -13,7 +13,7 @@ require_once SARON_ROOT . 'app/entities/OrganizationUnit.php';
         $db = new db(); 
         $saronUser = new SaronUser($db);
         $saronUser->hasValidSaronSession(REQUIRE_VIEWER_ROLE, REQUIRE_ORG_VIEWER_ROLE);
-        $org = new OrganizationStructure($db, $saronUser);
+        $org = new OrganizationUnit($db, $saronUser);
         $result = $org->select();    
         echo $result;        
     }

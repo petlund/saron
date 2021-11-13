@@ -194,7 +194,7 @@ function engagementTableDef(tableViewId, childTableTitle){
                 key: true
                 ,
                 options: function (data){
-                    var parameters = getURLParameters(tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);
+                    var parameters = getURLParameters(null, tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);
                     if(data.source !== saron.source.list)
                         data.clearCache();
 
@@ -217,7 +217,7 @@ function engagementTableDef(tableViewId, childTableTitle){
                 width: '10%',
                 defaultValue: 2,
                 options: function (data){
-                    var parameters = getURLParameters(tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);
+                    var parameters = getURLParameters(null, tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);
                     return '/' + saron.uri.saron + 'app/web-api/listOrganizationPosStatus.php' + parameters; 
                 }
             },

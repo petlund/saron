@@ -43,7 +43,7 @@ class OrganizationPos extends SuperEntity{
                 throw new Exception(json_encode($error));
             }
             if($this->orgPosStatus_FK > 2 and $this->people_FK !== 0 ){
-                if(str_contains("engagement", $this->tablePath)){
+                if(str_contains($this->tablePath, "engagement")){
                     $this->people_FK = 0; 
                 }
                 else{

@@ -240,9 +240,20 @@ function includedIn (currentTableId, requiredTableId){
 
 
 
-function getURLParameters(tableViewId, parentId, tablePath, source, resultType){
+function getURLParameters(id, tableViewId, parentId, source, resultType){
     var first = true;
     var parameter = "";
+    if(id !== null){        
+        if(first){
+            parameter = "?";
+            first = false;
+        }
+        else
+            parameter+= "&";
+
+        parameter+= 'Id=' + id;
+    }
+    
     if(parentId !== null){        
         if(first){
             parameter = "?";
@@ -253,22 +264,6 @@ function getURLParameters(tableViewId, parentId, tablePath, source, resultType){
 
         parameter+= 'ParentId=' + parentId;
     }
-    
-    if(tablePath !== null){
-        if(first){
-            parameter = "?";
-            first = false;
-        }
-        else
-            parameter+= "&";
-        
-        var extTablePath = tablePath;        
-        if(source !== null)
-            extTablePath+=  "/" + source; 
-            
-        parameter+= 'TablePath=' + extTablePath;
-    }
-    
     
     if(tableViewId !== null){
         if(first){
@@ -306,29 +301,24 @@ function getURLParameters(tableViewId, parentId, tablePath, source, resultType){
     }
     else
         parameter+= 'ResultType=' + saron.responsetype.records;
-    
+            
+    console.log(parameter);
+
     return parameter;
 }
     
 
 
-    function getPostData(tableViewId, parentId, tablePath, source, resultType){
+    function getPostData(tableViewId, parentId, source, resultType){
         if(parentId === null){        
             parentId = -1;
         }
 
-        if(tablePath !== null){
-            var extTablePath = tablePath;
-            if(source !== null)
-                extTablePath+= '/' + source;
-            else
-                source="";
-        }
 
         if(resultType === null){
             resultType = saron.responsetype.records;
         }
-        var options = {TableView:getTableView(tableViewId), ParentId:parentId, TablePath:extTablePath, Source:source, ResultType:resultType};
+        var options = {TableView:getTableView(tableViewId), ParentId:parentId, Source:source, ResultType:resultType};
         console.log(options);
         return options;
     }

@@ -7,17 +7,21 @@ saron.table.baptist.viewid, saron.table.baptist.name
 
 $(document).ready(function () {
 
-    $(saron.table.baptist.viewid).jtable(baptistTableDef(saron.table.baptist.viewid));
-    var options = getPostData(saron.table.baptist.viewid, null, saron.table.baptist.name, null, saron.responsetype.records);
+    $(saron.table.baptist.viewid).jtable(baptistTableDef(saron.table.baptist.viewid, null));
+    var options = getPostData(saron.table.baptist.viewid, null, "Q", null, saron.responsetype.records);
     $(saron.table.baptist.viewid).jtable('load', options);
     $(saron.table.baptist.viewid).find('.jtable-toolbar-item-add-record').hide();
 });  
     
-function baptistTableDef(tableViewId, tableTitle){
+function baptistTableDef(tableViewId, tablePath, tableTitle){
     var tableName = saron.table.baptist.name;
     var title = 'Dopuppgifter';
     if(tableTitle !== null)
         title = tableTitle; 
+//    if(tablePath === null)
+//        tablePath = saron.table.baptist.name;
+//    else
+        tablePath += saron.table.baptist.name;
 
     return {
             showCloseButton: false,

@@ -8,7 +8,7 @@ POS_ENABLED
     
 "use strict";    
 
-function unitTableDef(tableViewId, childTableTitle){
+function unitTableDef(tableViewId, tablePath, childTableTitle){
     const listUri = 'app/web-api/listOrganizationUnit.php';
 
     var tableName = "";
@@ -18,6 +18,8 @@ function unitTableDef(tableViewId, childTableTitle){
         tableName = saron.table.unitlist.name;
     else
         tableName = saron.table.unit.name;
+    
+    tablePath += tableName;
     
     return {
         showCloseButton: false,
@@ -43,20 +45,16 @@ function unitTableDef(tableViewId, childTableTitle){
         }, 
         fields: {
             TablePath:{
-                list: false,
-                edit: false,
-                create: false
+                type: 'hidden'
             },
             Id: {
-                key: true,
-                list: false,
-                edit: false,
-                create: false
+                key: true, 
+                list: false
             },
             ParentId:{
                 list: false,
                 edit: false,
-                create: false
+                create: false    
             },
             SubUnitEnabled: {
                 title: '',
@@ -152,13 +150,21 @@ function unitTableDef(tableViewId, childTableTitle){
             ParentTreeNode_FK:{
                 list: includedIn(tableViewId, saron.table.unitlist.viewid),
                 edit: true, 
-                create: true,
+                create: !includedIn(tableViewId, saron.table.unittree.viewid),
                 title: 'Överordna verksamhet',
                 options: function(data) {
-                    if(data.source !== 'list'){
+                    var parameters = ""; 
+                    if(data.source === 'list'){
+                        parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);
+                    }
+                    if(data.source === 'edit'){
+                        parameters = getURLParameters(data.record.Id, tableViewId, null, tablePath, data.source, saron.responsetype.options);                        
                         data.clearCache();
-                    } 
-                    var parameters = ""; // getURLParameters(tableViewId, null, data.record.TablePath, data.source, saron.responsetype.options);
+                    }
+                    if(data.source === 'create'){
+                        parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);                        
+                        data.clearCache();                        
+                    }
 
                     return '/' + saron.uri.saron + listUri + parameters;
                 }                
@@ -195,13 +201,20 @@ function unitTableDef(tableViewId, childTableTitle){
                 inputTitle: 'Typ av enhet (Kan inte ändras. Vill du ändra behöver du skapa en ny organisatorisk enhet).',
                 width: '5%',
                 options: function (data){
-                    var url = '/' + saron.uri.saron + 'app/web-api/listOrganizationUnitType.php';
-                    var parameters = getURLParameters(tableViewId, -1, data.record.TablePath, data.source, saron.responsetype.options);
-                    //var postData = getPostData(tableViewId, -1, tablePath, data.source, saron.responsetype.options);
-                    if(data.source !== 'list'){
+                    var parameters = ""; 
+                    if(data.source === 'list'){
+                        parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);
+                    }
+                    if(data.source === 'edit'){
+                        parameters = getURLParameters(data.record.Id, tableViewId, null, tablePath, data.source, saron.responsetype.options);                        
                         data.clearCache();
-                    } 
-                    //return {postData, "clientOnly": false, "url":url}; 
+                    }
+                    if(data.source === 'create'){
+                        parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);                        
+                        data.clearCache();                        
+                    }
+                    var url = '/' + saron.uri.saron + 'app/web-api/listOrganizationUnitType.php';
+
                     return url + parameters;
                 }
             },

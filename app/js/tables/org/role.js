@@ -1,5 +1,5 @@
 /* global DATE_FORMAT,
- saron.uri.saron, saron.uri.images, 
+ saron, 
 inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, 
 ORG,
 saron.table.role.viewid, saron.table.role.name, 
