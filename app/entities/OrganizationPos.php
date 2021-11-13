@@ -103,6 +103,10 @@ class OrganizationPos extends SuperEntity{
                 case TABLE_NAME_UNITTREE . "/" . TABLE_NAME_POS:            
                     $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
                     break;
+                case TABLE_NAME_PEOPLE . "/" . TABLE_NAME_POS:            
+                    $where = "WHERE pCur.Id = ". $this->parentId . " "; 
+ //                    $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
+                    break;
                 case TABLE_NAME_UNITTREE . "/" . TABLE_NAME_UNITTREE . "/" . TABLE_NAME_POS:            
                     $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
                     break;

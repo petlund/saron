@@ -7,7 +7,7 @@ class PeopleViews {
     function getPeopleViewSql($tableview, $saronUser){
         switch ($tableview){
         case TABLE_VIEW_PEOPLE:
-            return $this->selectPeople() . ", " . $saronUser->getRoleSql(false);
+            return $this->selectPeople() . ", " . $this->selectEngagement() . ', ' . $saronUser->getRoleSql(false);
         case TABLE_VIEW_BIRTHDAY:
             return $this->selectBirthday();
         case TABLE_VIEW_MEMBER:
@@ -21,6 +21,10 @@ class PeopleViews {
         default:    
             return $this->selectPeople() . ", " . $saronUser->getRoleSql(false);
         }
+    }
+    
+    function selectEngagement(){
+        return "(Select count(*) from ORG_POS where People_FK = People.Id) as Engagement";
     }
     
     

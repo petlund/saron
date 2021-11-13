@@ -219,11 +219,11 @@ function addDialogDeleteListener(data){
 }
 
 
-function filterPeople(viewId, reloaded){
+function filterPeople(viewId, reloaded, tableName){
     if(reloaded)
         $('#searchString').val('');
 
-    var options = {searchString: $('#searchString').val(), groupId: $('#groupId').val(), TableView: viewId};
+    var options = {searchString: $('#searchString').val(), groupId: $('#groupId').val(), TableView: viewId, TablePath: tableName};
 
     $('#' + viewId).jtable('load', options);
 }

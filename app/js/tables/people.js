@@ -15,14 +15,15 @@ $(document).ready(function () {
     if(urlParams.has('Id'))
         Id = urlParams.get('Id');
         
-    $(saron.table.people.viewid).jtable(peopleTableDef(saron.table.people.viewid, null));
+    $(saron.table.people.viewid).jtable(peopleTableDef(saron.table.people.viewid, saron.table.people.name, null));
     var options = getPostData(null, saron.table.people.viewid, null, saron.table.people.name, 'list', saron.responsetype.records);
     $(saron.table.people.viewid).jtable('load', options);
     $(saron.table.people.viewid).find('.jtable-toolbar-item-add-record').hide();
 });
 
 
-function peopleTableDef(tableViewId, tableTitle) {
+function peopleTableDef(tableViewId, tablePath, tableTitle) {
+    var listUri = 'app/web-api/listPeople.php';
     var tableName = saron.table.people.name;
     var title = 'Personuppgifter';
     if(tableTitle !== null)
@@ -38,7 +39,7 @@ function peopleTableDef(tableViewId, tableTitle) {
         defaultSorting: 'LongHomeName ASC, DateOfBirth ASC', //Set default sorting   
         messages: {addNewRecord: 'Ny person'},
         actions: {
-            listAction:   '/' + saron.uri.saron + 'app/web-api/listPeople.php',
+            listAction:   '/' + saron.uri.saron + listUri,
             createAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
@@ -117,11 +118,12 @@ function peopleTableDef(tableViewId, tableTitle) {
                 display: function (data) {
                     var childTableTitle = 'Hem för ' + data.record.LongHomeName;
                     var childTableName = saron.table.homes.name;
+                    var childTablePath = tablePath + "/" + childTableName;
                     var tooltip = 'Adressuppgifter';
                     var imgFile = "home.png";
                     var listUri = 'app/web-api/listHomes.php';
 
-                    var childTableDef = homeTableDef(tableViewId, childTableTitle);
+                    var childTableDef = homeTableDef(tableViewId, childTablePath, childTableTitle);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, listUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
 
@@ -139,11 +141,12 @@ function peopleTableDef(tableViewId, tableTitle) {
                 display: function (data) {
                     var childTableTitle = 'Medlemsuppgifter för "' + data.record.Name + '"';
                     var childTableName = saron.table.member.name;
+                    var childTablePath = tablePath + "/" + childTableName;
                     var tooltip = 'Medlemsuppgifter';
                     var imgFile = "member.png";
                     var listUri = 'app/web-api/listPeople.php';
 
-                    var childTableDef = memberTableDef(tableViewId, childTableTitle);
+                    var childTableDef = memberTableDef(tableViewId, childTablePath, childTableTitle);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, listUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
 
@@ -161,11 +164,12 @@ function peopleTableDef(tableViewId, tableTitle) {
                 display: function (data) {
                     var childTableTitle = 'Dopuppgifter för "' + data.record.Name + '"';
                     var childTableName = saron.table.baptist.name;
+                    var childTablePath = tablePath + "/" + childTableName;
                     var tooltip = 'Dopuppgifter';
                     var imgFile = "baptist.png";
                     var listUri = 'app/web-api/listPeople.php';
 
-                    var childTableDef = baptistTableDef(tableViewId, childTableTitle);
+                    var childTableDef = baptistTableDef(tableViewId, childTablePath, childTableTitle);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, listUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
 
@@ -183,6 +187,7 @@ function peopleTableDef(tableViewId, tableTitle) {
                 display: function (data) {
                     var childTableTitle = 'Nyckelinnehav för "' + data.record.Name + '"';
                     var childTableName = saron.table.keys.name;
+                    var childTablePath = tablePath + "/" + childTableName;
                     var tooltip = 'NyckelInnehav';
                     var imgFile = "no_key.png";
                     if(data.record.KeyToChurch + data.record.KeyToExp > 0)
@@ -190,12 +195,39 @@ function peopleTableDef(tableViewId, tableTitle) {
                     
                     var listUri = 'app/web-api/listPeople.php';
 
-                    var childTableDef = keyTableDef(tableViewId, childTableTitle);
+                    var childTableDef = keyTableDef(tableViewId, childTablePath, childTableTitle);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, listUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
 
                     return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
  
+                }
+            },            
+            Role:{
+                width: '1%',
+                sorting: false,
+                display: function(data){
+                    var childTableName = saron.table.pos.name;
+                    var childTableTitle = data.record.Name + '" har nedanstående uppdrag';
+                    var childTablePath = tablePath + "/" + childTableName;
+                    var tooltip = "";
+                    var imgFile = "";
+                    var childUri = 'app/web-api/listOrganizationPos.php';
+
+                    if(data.record.Engagement ===  '0'){
+                        tooltip = 'Inga uppdrag';
+                        imgFile = "pos.png";
+                    }
+                    else{
+                        tooltip = 'Förtroendeuppdrag';
+                        imgFile = "haspos.png";
+                    }                    
+
+                    var childTableDef = posTableDef(tableViewId, childTablePath, childTableTitle);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
+
+                    return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                 }
             },
             Id: {

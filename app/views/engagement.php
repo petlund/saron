@@ -21,7 +21,7 @@ header("Cache-Control: no-cache, must-revalidate");
             <tr class='saronSmallText saronFilter'>
                 <td class="saronFilter">
                     Söksträng:
-                    <input type="text" name="searchString" id="searchString" oninput="filterPeople('<?php include('../util/viewId.php');?>');"/>
+                    <input type="text" name="searchString" id="searchString" oninput="filterPeople('<?php include('../util/viewId.php'); ECHO '\', false, \'' . TABLE_NAME_ENGAGEMENT;?>');"/>
                 </TD>
         </table>
         <div id="<?php include('../util/viewId.php');?>"></div>

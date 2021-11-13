@@ -1,5 +1,6 @@
-/* global J_TABLE_ID, PERSON, DATE_FORMAT, HOME, PERSON_AND_HOME, OLD_HOME, saron.uri.saron, saron.uri.images, inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID,
-ORG, POS_ENABLED, 
+/* global J_TABLE_ID, PERSON, DATE_FORMAT, HOME, PERSON_AND_HOME, OLD_HOME, 
+inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID,
+ORG, TABLE, POS_ENABLED, 
 saron,
 RECORD, OPTIONS
 */
@@ -8,7 +9,7 @@ RECORD, OPTIONS
     
 $(document).ready(function () {
 
-    $(saron.table.engagement.viewid).jtable(peopleEngagementTableDef(saron.table.engagement.viewid));
+    $(saron.table.engagement.viewid).jtable(peopleEngagementTableDef(saron.table.engagement.viewid, saron.table.engagement.name));
     var postData = getPostData(null, saron.table.engagement.viewid, null, saron.table.engagement.name, 'list', saron.responsetype.records);
     $(saron.table.engagement.viewid).jtable('load', postData);
     $(saron.table.engagement.viewid).find('.jtable-toolbar-item-add-record').hide();
@@ -16,7 +17,7 @@ $(document).ready(function () {
 
 
 
-function peopleEngagementTableDef(tableViewId){
+function peopleEngagementTableDef(tableViewId, tablePath){
     const listUri = 'app/web-api/listEngagement.php';
     const tableName = saron.table.engagement.name;
  
@@ -50,6 +51,7 @@ function peopleEngagementTableDef(tableViewId){
                 sorting: false,
                 display: function(data){
                     var childTableName = saron.table.pos.name;
+                    var childTablePath = tablePath + "/" + childTableName;
                     var childTableTitle = data.record.Name + '" har nedanstående uppdrag';
                     var tooltip = "";
                     var imgFile = "";
@@ -64,7 +66,7 @@ function peopleEngagementTableDef(tableViewId){
                         imgFile = "haspos.png";
                     }                    
 
-                    var childTableDef = posTableDef(tableViewId, childTableTitle);
+                    var childTableDef = posTableDef(tableViewId, childTablePath, childTableTitle);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
 

@@ -20,6 +20,7 @@ require_once SARON_ROOT . "menu.php";
         <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "baptist.js");?>"></script>     
         <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "keys.js");?>"></script>     
         <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "birthdays.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "pos.js");?>"></script>     
         <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "total.js");?>"></script>     
         
         <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/jquery.jtable.js"></script>
@@ -28,7 +29,7 @@ require_once SARON_ROOT . "menu.php";
             <tr class="saronFilter">
                 <td  class="saronFilter">
                     <form class="forms" id="mainfilter">Grupp:
-                        <select id="groupId" name="groupId" onchange="filterPeople('<?php include('../util/viewId.php');?>', true);" >
+                        <select id="groupId" name="groupId" onchange="filterPeople('<?php include('../util/viewId.php'); ECHO '\', false, \'' . TABLE_NAME_PEOPLE;?>');" >
                         <option selected="selected" value="0">Medlemmar</option>
                         <option value="1">Dopregister</option>
                         <option value="2">Senast ändrade personer</option>
@@ -52,7 +53,7 @@ require_once SARON_ROOT . "menu.php";
                 </td>
                 <td  class="saronFilter">
                     Söksträng:
-                    <input type="text" name="searchString" id="searchString" oninput="filterPeople('<?php include('../util/viewId.php');?>');"/>
+                    <input type="text" name="searchString" id="searchString" oninput="filterPeople('<?php include('../util/viewId.php'); ECHO '\', false, \'' . TABLE_NAME_PEOPLE;?>');"/>
                 </td>
             </tr>
         </table>
