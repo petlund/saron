@@ -11,7 +11,7 @@ RECORD, OPTIONS
 
 $(document).ready(function () {
     $(saron.table.unittype.viewid).jtable(unitTypeTableDef(saron.table.unittype.viewid, null));
-    var options = getPostData(saron.table.unittype.viewid, null, saron.table.unittype.name, null, saron.responsetype.records);
+    var options = getPostData(null, saron.table.unittype.viewid, null, saron.table.unittype.name, 'list', saron.responsetype.records);
     $(saron.table.unittype.viewid).jtable('load', options);
 });
 

@@ -1,5 +1,5 @@
 /* global DATE_FORMAT, 
-saron.uri.saron, saron.uri.images, 
+saron, 
 inputFormWidth, inputFormFieldWidth, 
 saron.table.org_role_status.viewid, saron.table.org_role_status.name
 */

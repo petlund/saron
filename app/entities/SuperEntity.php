@@ -63,9 +63,6 @@ class SuperEntity {
         $this->parentId = (int)filter_input(INPUT_POST, "ParentId", FILTER_SANITIZE_NUMBER_INT);
         if($this->parentId === 0){
             $this->parentId = (int)filter_input(INPUT_GET, "ParentId", FILTER_SANITIZE_NUMBER_INT);
-            if($this->parentId === 0){
-                $this->parentId=-1;
-            }
         }
         $this->resultType = (String)filter_input(INPUT_POST, "ResultType", FILTER_SANITIZE_STRING);
         if(strlen($this->resultType) === 0){

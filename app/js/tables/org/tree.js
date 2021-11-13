@@ -9,7 +9,7 @@ RECORD, OPTIONS
     
 $(document).ready(function () {
     $(saron.table.unittree.viewid).jtable(unitTableDef(saron.table.unittree.viewid, saron.table.unittree.name, null));
-    var options = getPostData(saron.table.unittree.viewid, null, saron.table.unittree.name, null, saron.responsetype.records);
+    var options = getPostData(null, saron.table.unittree.viewid, null, saron.table.unittree.name, 'list', saron.responsetype.records);
     $(saron.table.unittree.viewid).jtable('load', options);
 });
 

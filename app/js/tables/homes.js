@@ -6,7 +6,7 @@ RECORD, OPTIONS
 
 $(document).ready(function () {
     $(saron.table.homes.viewid).jtable(homeTableDef(saron.table.homes.viewid, null, null));
-    var options = getPostData(saron.table.homes.viewid, null, saron.table.homes.name, null, saron.responsetype.records);
+    var options = getPostData(null, saron.table.homes.viewid, null, saron.table.homes.name, 'list', saron.responsetype.records);
     $(saron.table.homes.viewid).jtable('load', options);
     $(saron.table.homes.viewid).find('.jtable-toolbar-item-add-record').hide();
 });

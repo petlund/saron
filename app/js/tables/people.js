@@ -16,7 +16,7 @@ $(document).ready(function () {
         Id = urlParams.get('Id');
         
     $(saron.table.people.viewid).jtable(peopleTableDef(saron.table.people.viewid, null));
-    var options = getPostData(saron.table.people.viewid, null, saron.table.people.name, null, saron.responsetype.records);
+    var options = getPostData(null, saron.table.people.viewid, null, saron.table.people.name, 'list', saron.responsetype.records);
     $(saron.table.people.viewid).jtable('load', options);
     $(saron.table.people.viewid).find('.jtable-toolbar-item-add-record').hide();
 });
@@ -449,7 +449,7 @@ function _openHomeChildTable(tableViewId, data){
     var rowRef = "[data-record-key=" + data.record.Id + "]";
     var $selectedRow = $(rowRef);
     var childTableTitle = 'Hem för ' + data.record.LongHomeName;
-    var options = getPostData(tableViewId, data.record.Id, saron.table.people.name, null, saron.responsetype.record);
+    var options = getPostData(null, tableViewId, data.record.Id, saron.table.people.name, 'list', saron.responsetype.record);
 
     $(tableViewId).jtable('openChildTable', $selectedRow, homeTableDef(tableViewId, childTableTitle), function(data){
         data.childTable.jtable('load', options);

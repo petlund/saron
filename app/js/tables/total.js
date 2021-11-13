@@ -9,7 +9,7 @@ saron.table.total.name, saron.table.total.viewid
 $(document).ready(function () {
 
     $(saron.table.total.viewid).jtable(totalTableDef(saron.table.total.viewid, null));
-    var options = getPostData(saron.table.total.viewid, null, saron.table.total.name, null, saron.responsetype.records);
+    var options = getPostData(null, saron.table.total.viewid, null, saron.table.total.name, 'list', saron.responsetype.records);
     $(saron.table.total.viewid).jtable('load', options);
     $(saron.table.total.viewid).find('.jtable-toolbar-item-add-record').hide();
 

@@ -3,12 +3,12 @@
  ORG, RECORD, saron.responsetype.records, OPTIONS,
 saron.table.baptist.viewid, saron.table.baptist.name
  */
-"use strict";
+"use strict"; 
 
 $(document).ready(function () {
 
     $(saron.table.baptist.viewid).jtable(baptistTableDef(saron.table.baptist.viewid, null));
-    var options = getPostData(saron.table.baptist.viewid, null, "Q", null, saron.responsetype.records);
+    var options = getPostData(null, saron.table.baptist.viewid, null, "list", null, saron.responsetype.records);
     $(saron.table.baptist.viewid).jtable('load', options);
     $(saron.table.baptist.viewid).find('.jtable-toolbar-item-add-record').hide();
 });  

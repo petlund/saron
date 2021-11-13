@@ -6,7 +6,7 @@ RECORD, OPTIONS
 
     $(document).ready(function () {
         $(saron.table.birthday.viewid).jtable(birthdayTableDef(saron.table.birthday.viewid, null));
-        var options = getPostData(saron.table.birthday.viewid, null, saron.table.birthday.name, null, saron.responsetype.records);
+        var options = getPostData(null, saron.table.birthday.viewid, null, saron.table.birthday.name, 'list', saron.responsetype.records);
         $(saron.table.birthday.viewid).jtable('load', options);
         $(saron.table.birthday.viewid).find('.jtable-toolbar-item-add-record').hide();
     });

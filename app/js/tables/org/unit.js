@@ -19,8 +19,6 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
     else
         tableName = saron.table.unit.name;
     
-    tablePath += tableName;
-    
     return {
         showCloseButton: false,
         title: function(){
@@ -44,9 +42,6 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
             deleteAction: '/' + saron.uri.saron + 'app/web-api/deleteOrganizationUnit.php'
         }, 
         fields: {
-            TablePath:{
-                type: 'hidden'
-            },
             Id: {
                 key: true, 
                 list: false
@@ -67,6 +62,8 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
                 
                 display: function (data) {
                     var childTableTitle = 'Enhetstypen "' + data.record.Name + '" har följande roller';
+                    var childTableName  = ""; // no adding of tablePath on requrssion 
+                    var childTablePath = tablePath + "/" + childTableName;
                     var tooltip = "";
                     var imgFile = "";
 
@@ -93,7 +90,7 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
                                 imgFile =  "haschild.png";
                             }
                         }
-                        var childTableDef = unitTableDef(tableViewId, childTableTitle);
+                        var childTableDef = unitTableDef(tableViewId, childTablePath, childTableTitle);
                         var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, tableName, TABLE, listUri);
                         var $imgClose = closeChildTable(data, tableViewId, tableName, TABLE, listUri);
                         
@@ -111,6 +108,7 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
                 delete: false,
                 display: function(data){
                     var childTableName = saron.table.pos.name;
+                    var childTablePath = tablePath + "/" + childTableName;
                     var childTableTitle = data.record.Name + " har följande positioner";
                     var tooltip = "";
                     var imgFile = "";         
@@ -138,7 +136,7 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
                             }
                         }
 
-                        var childTableDef = posTableDef(tableViewId,  childTableTitle);
+                        var childTableDef = posTableDef(tableViewId, childTablePath, childTableTitle);
                         var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, listUri);
                         var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
                         

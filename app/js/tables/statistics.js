@@ -9,7 +9,7 @@ RECORD, OPTIONS
 
 $(document).ready(function () {
     $(saron.table.statistics.viewid).jtable(statisticTableDef(saron.table.statistics.viewid, null));    
-    var options = getPostData(saron.table.statistics.viewid, null, saron.table.statistics.name, null, saron.responsetype.records);
+    var options = getPostData(null, saron.table.statistics.viewid, null, saron.table.statistics.name, 'list', saron.responsetype.records);
     $(saron.table.statistics.viewid).jtable('load',options);
     $(saron.table.statistics.viewid).find('.jtable-toolbar-item-add-record').hide();
 });

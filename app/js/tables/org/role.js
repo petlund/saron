@@ -14,7 +14,7 @@ saron.responsetype.records, RECORD, OPTIONS, saron.source.list, saron.source.cre
 
 $(document).ready(function () {
         $(saron.table.role.viewid).jtable(roleTableDef(saron.table.role.viewid, null, null));
-        var options = getPostData(saron.table.role.viewid, null, saron.table.role.name, null, saron.responsetype.records);
+        var options = getPostData(null, saron.table.role.viewid, null, saron.table.role.name, 'list', saron.responsetype.records);
         $(saron.table.role.viewid).jtable('load', options);
     }
 );

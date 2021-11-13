@@ -240,9 +240,19 @@ function includedIn (currentTableId, requiredTableId){
 
 
 
-function getURLParameters(id, tableViewId, parentId, source, resultType){
+function getURLParameters(id, tableViewId, parentId, tablePath, source, resultType){
     var first = true;
     var parameter = "";
+
+    if(parentId === null){        
+        parentId = -1;
+    }
+
+    if(id === null){        
+        id = -1;
+    }
+
+
     if(id !== null){        
         if(first){
             parameter = "?";
@@ -263,6 +273,17 @@ function getURLParameters(id, tableViewId, parentId, source, resultType){
             parameter+= "&";
 
         parameter+= 'ParentId=' + parentId;
+    }
+    
+    if(tablePath !== null){        
+        if(first){
+            parameter = "?";
+            first = false;
+        }
+        else
+            parameter+= "&";
+
+        parameter+= 'TablePath=' + tablePath;
     }
     
     if(tableViewId !== null){
@@ -309,16 +330,20 @@ function getURLParameters(id, tableViewId, parentId, source, resultType){
     
 
 
-    function getPostData(tableViewId, parentId, source, resultType){
+    function getPostData(id, tableViewId, parentId, tablePath, source, resultType){
         if(parentId === null){        
             parentId = -1;
+        }
+
+        if(id === null){        
+            id = -1;
         }
 
 
         if(resultType === null){
             resultType = saron.responsetype.records;
         }
-        var options = {TableView:getTableView(tableViewId), ParentId:parentId, Source:source, ResultType:resultType};
+        var options = {Id:id, TableView:getTableView(tableViewId), ParentId:parentId, TablePath:tablePath, Source:source, ResultType:resultType};
         console.log(options);
         return options;
     }

@@ -25,7 +25,7 @@ function _openChild(data, $imgChild, tableViewId, childTableDef, childTableName,
 
     $(tableViewId).jtable('openChildTable', $tr, childTableDef, function(placeholder){
         var tablePath = getTablePath(data, childTableName);
-        var postData = getPostData(tableViewId, data.record.Id, tablePath, null, saron.responsetype.records);
+        var postData = getPostData(null, tableViewId, data.record.Id, tablePath, 'list', saron.responsetype.records);
         updateParentRow(data, tableViewId, childTableName, listParentRowUrl);        
         placeholder.childTable.jtable('load', postData, function(){
         });

@@ -9,7 +9,7 @@ $(document).ready(function () {
 
 
     $(saron.table.member.viewid).jtable(memberTableDef(saron.table.member.viewid, null));
-    var options = getPostData(saron.table.member.viewid, null, saron.table.member.name, null, saron.responsetype.records);
+    var options = getPostData(null, saron.table.member.viewid, null, saron.table.member.name, 'list', saron.responsetype.records);
     $(saron.table.member.viewid).jtable('load', options);
     $(saron.table.member.viewid).find('.jtable-toolbar-item-add-record').hide();
 });  

@@ -8,15 +8,15 @@ RECORD, OPTIONS
 "use strict";
 
 $(document).ready(function () {
-        $(saron.table.pos.viewid).jtable(posTableDef(saron.table.pos.viewid, null));
-        var postData = getPostData(saron.table.pos.viewid, null, saron.table.pos.name, null, saron.responsetype.records);
+        $(saron.table.pos.viewid).jtable(posTableDef(saron.table.pos.viewid, saron.table.pos.name, null));
+        var postData = getPostData(null, saron.table.pos.viewid, null, saron.table.pos.name, 'list', saron.responsetype.records);
         $(saron.table.pos.viewid).jtable('load', postData);
         $(saron.table.pos.viewid).find('.jtable-toolbar-item-add-record').hide();
     }
 );
 
 
-function posTableDef(tableViewId, tableTitle){
+function posTableDef(tableViewId, tablePath, tableTitle){
     const tableName = saron.table.pos.name;
     const listUri = 'app/web-api/listOrganizationPos.php';
     
@@ -42,13 +42,6 @@ function posTableDef(tableViewId, tableTitle){
             deleteAction: '/' + saron.uri.saron + 'app/web-api/deleteOrganizationPos.php'
         }, 
         fields: {
-            TablePath:{
-//                list: false,
-//                edit: false,
-//                create: false,
-                defaultValue: tableName,
-                type: 'hidden'
-            },
             Id: {
                 key: true,
                 list: false,
@@ -120,15 +113,15 @@ function posTableDef(tableViewId, tableTitle){
                     
                     var parameters = ""; 
                     if(data.source === 'list'){
-                        parameters = getURLParameters(null, tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);
+                        parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);
                     }
                     if(data.source === 'edit'){
                         data.clearCache();
-                        parameters = getURLParameters(null, tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);                        
+                        parameters = getURLParameters(null, tableViewId, data.record.ParentId, tablePath, data.source, saron.responsetype.options);                        
                     }
                     if(data.source === 'create'){
                         data.clearCache();                        
-                        parameters = getURLParameters(null, tableViewId, null, "", data.source, saron.responsetype.options);                        
+                        parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);                        
                     }
 
                     return '/' + saron.uri.saron + optionUri + parameters;
@@ -143,15 +136,15 @@ function posTableDef(tableViewId, tableTitle){
                     
                     var parameters = "";
                     if(data.source === 'list'){
-                        parameters = getURLParameters(null, tableViewId, null, "", data.source, saron.responsetype.options);
+                        parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);
                     }
                     if(data.source === 'edit'){
                         data.clearCache();
-                        parameters = getURLParameters(null, tableViewId, data.record.Id, "", data.source, saron.responsetype.options);                        
+                        parameters = getURLParameters(data.record.Id, tableViewId, data.record.ParentId, tablePath, data.source, saron.responsetype.options);                        
                     }
                     if(data.source === 'create'){
                         data.clearCache();                        
-                        parameters = getURLParameters(null, tableViewId, Id, "", data.source, saron.responsetype.options);                        
+                        parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);                        
                     }
                     
                     return '/' + saron.uri.saron + optionUri + parameters;
@@ -187,15 +180,15 @@ function posTableDef(tableViewId, tableTitle){
 
                     var parameters = "";
                     if(data.source === 'list'){
-                        parameters = getURLParameters(null, tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);
+                        parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);
                     }
                     if(data.source === 'edit'){
                         data.clearCache();
-                        parameters = getURLParameters(null, tableViewId, data.record.ParentId, data.record.TablePath, data.source, saron.responsetype.options);                        
+                        parameters = getURLParameters(null, tableViewId, data.record.ParentId, tablePath, data.source, saron.responsetype.options);                        
                     }
                     if(data.source === 'create'){
                         data.clearCache();                        
-                        parameters = getURLParameters(null, tableViewId, null, "", data.source, saron.responsetype.options);                        
+                        parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);                        
                     }
                     
                     return '/' + saron.uri.saron + optionUri + parameters;
