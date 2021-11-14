@@ -200,6 +200,8 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
                 }
             },            
             Role:{
+                edit: false,
+                create: false,
                 width: '1%',
                 sorting: false,
                 display: function(data){
@@ -220,6 +222,10 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
                     }                    
 
                     var childTableDef = posTableDef(tableViewId, childTablePath, childTableTitle);
+                    //No changes from this view
+                    delete childTableDef.actions.createAction;
+                    delete childTableDef.actions.deleteAction;
+                    delete childTableDef.actions.updateAction;
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
 
