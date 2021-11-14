@@ -1,13 +1,8 @@
 /* global DATE_FORMAT,
  saron, 
 inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, 
-ORG,
-saron.table.role.viewid, saron.table.role.name, 
-saron.table.unittype.viewid, saron.table.unittype.name,
-saron.table.unit.viewid, saron.table.unit.name,
-saron.table.unitlist.viewid, saron.table.unitlist.name,
-saron.table.unittree.viewid, saron.table.unittree.name,
-saron.responsetype.records, RECORD, OPTIONS, saron.source.list, saron.source.create, saron.source.edit
+ORG, TABLE,
+saron
 */
  
 "use strict";
@@ -21,7 +16,7 @@ $(document).ready(function () {
 
 
 
-function roleTableDef(tableViewId, childTableTitle){
+function roleTableDef(tableViewId, tablePath, childTableTitle){
     const tableName = saron.table.role.name;
     const listUri = 'app/web-api/listOrganizationRole.php';
     return {
@@ -66,6 +61,7 @@ function roleTableDef(tableViewId, childTableTitle){
                 sorting: false,
                 display: function(data){
                     var childTableName = saron.table.unit.name;
+                    var childTablePath = tablePath + "/" + childTableName;
                     var childTableTitle = 'Rollen "' + data.record.Name + '" ingår i följande organisatoriska enheter';
                     var tooltip = "";
                     var imgFile = "";
@@ -80,7 +76,7 @@ function roleTableDef(tableViewId, childTableTitle){
                         tooltip = "Organisatoriska enheter";
                     }
 
-                    var childTableDef = unitTableDef(tableViewId, childTableTitle);
+                    var childTableDef = unitTableDef(tableViewId, childTablePath, childTableTitle);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
 
@@ -96,6 +92,7 @@ function roleTableDef(tableViewId, childTableTitle){
                 sorting: false,
                 display: function(data){
                     var childTableName = saron.table.unittype.name;
+                    var childTablePath = tablePath + "/" + childTableName;
                     var childTableTitle = 'Rollen "' + data.record.Name + '" ingår i följande enhetstyper';
                     var tooltip = "";
                     var imgFile = "";
@@ -110,7 +107,7 @@ function roleTableDef(tableViewId, childTableTitle){
                         tooltip = "Organisatoriska enhetstyper";
                     }
 
-                    var childTableDef = unitTypeTableDef(tableViewId, childTableTitle);
+                    var childTableDef = unitTypeTableDef(tableViewId, childTablePath, childTableTitle);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
 

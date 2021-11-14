@@ -10,11 +10,7 @@ $(document).ready(function () {
     localStorage.setItem(NEW_HOME_ID, -1);
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    
-    var Id = -1; 
-    if(urlParams.has('Id'))
-        Id = urlParams.get('Id');
-        
+
     $(saron.table.people.viewid).jtable(peopleTableDef(saron.table.people.viewid, saron.table.people.name, null));
     var options = getPostData(null, saron.table.people.viewid, null, saron.table.people.name, 'list', saron.responsetype.records);
     $(saron.table.people.viewid).jtable('load', options);

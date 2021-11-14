@@ -1,7 +1,7 @@
 /* global DATE_FORMAT, 
  PERSON, HOME, PERSON_AND_HOME, OLD_HOME,  
  inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID,
-ORG, 
+ORG, TABLE, 
  POS_ENABLED, POS_DISABLED,
  SUBUNIT_ENABLED, SUBUNIT_DISABLED,
 saron,
@@ -10,14 +10,14 @@ RECORD, OPTIONS
 "use strict";
 
 $(document).ready(function () {
-    $(saron.table.unittype.viewid).jtable(unitTypeTableDef(saron.table.unittype.viewid, null));
+    $(saron.table.unittype.viewid).jtable(unitTypeTableDef(saron.table.unittype.viewid, saron.table.unittype.name, null));
     var options = getPostData(null, saron.table.unittype.viewid, null, saron.table.unittype.name, 'list', saron.responsetype.records);
     $(saron.table.unittype.viewid).jtable('load', options);
 });
 
 
 
-function unitTypeTableDef(tableViewId, childTableTitle){
+function unitTypeTableDef(tableViewId, tablePath, childTableTitle){
     const listUri = 'app/web-api/listOrganizationUnitType.php';
     const tableName = saron.table.unittype.name;
  
@@ -61,12 +61,13 @@ function unitTypeTableDef(tableViewId, childTableTitle){
                 list: includedIn(tableViewId, saron.table.unittype.viewid),
                 display: function(data){
                     var childTableName = saron.table.unit.name;
+                    var childTablePath = tablePath + "/" + childTableName;
                     var childTableTitle = 'Enhetstypen "' + data.record.Name + '" används för nedanstående organisatoriska enheter';                            
                     var tooltip = "Enhetstypen används inom följande organisatoriska enheter";
                     var imgFile = "unit.png";
                     var childUri = 'app/web-api/listOrganizationUnit.php';
                     if(data.record.UsedInUnit ===  "1"){
-                        var childTableDef = unitTableDef(tableViewId, childTableTitle);
+                        var childTableDef = unitTableDef(tableViewId, childTablePath, childTableTitle);
                         var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, saron.table.unit.name, TABLE, childUri);
                         var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
                         
@@ -84,6 +85,7 @@ function unitTypeTableDef(tableViewId, childTableTitle){
                 list: includedIn(tableViewId, saron.table.unittype.viewid),
                 display: function(data){
                     var childTableName = saron.table.role.name;
+                    var childTablePath = tablePath + "/" + childTableName;
                     var childTableTitle = 'Enhetstypen "' + data.record.Name + '" har följande roller';
                     var tooltip = "";
                     var imgFile = "";
@@ -100,7 +102,7 @@ function unitTypeTableDef(tableViewId, childTableTitle){
                             tooltip = "Enhetstypen har roller";
                         }
                         
-                        var childTableDef = roleTableDef(tableViewId, childTableTitle);
+                        var childTableDef = roleTableDef(tableViewId, childTablePath, childTableTitle);
                         var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
                         var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
                         
