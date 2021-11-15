@@ -240,13 +240,13 @@ class Person extends People{
 
         switch($this->source){
 
-            case 'edit':
+            case SOURCE_EDIT:
                 $sql.= "Union "; 
                 $sql.= "select MembershipNo as Value, Concat(MembershipNo, ' [Nuvarande]') as DisplayText, 2 as ind From People Where MembershipNo>0 and Id = " . $this->id . " ";
                 $sql.= "Union "; 
                 $sql.= "select if(max(MembershipNo) is null, 0, max(MembershipNo)) + 1 as Value, CONCAT(if(max(MembershipNo) is null, 0, max(MembershipNo)) + 1, ' [Första lediga]') as DisplayText, 3 as ind ";
                 break;
-            case 'create':
+            case SOURCE_CREATE:
                 $sql.= "Union "; 
                 $sql.= "select if(max(MembershipNo) is null, 0, max(MembershipNo)) + 1 as Value, CONCAT(if(max(MembershipNo) is null, 0, max(MembershipNo)) + 1, ' [Första lediga]') as DisplayText, 3 as ind ";
                 break;
