@@ -13,7 +13,6 @@ class People extends SuperEntity{
 
     function __construct($db, $saronUser) {
         parent::__construct($db, $saronUser);
-        $this->id = (String)filter_input(INPUT_POST, "Id", FILTER_SANITIZE_STRING);
         $this->filter = (String)filter_input(INPUT_GET, "filter", FILTER_SANITIZE_STRING);
     }
     

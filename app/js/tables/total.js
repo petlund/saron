@@ -9,7 +9,7 @@ saron.table.total.name, saron.table.total.viewid
 $(document).ready(function () {
 
     $(saron.table.total.viewid).jtable(totalTableDef(saron.table.total.viewid, null));
-    var options = getPostData(null, saron.table.total.viewid, null, saron.table.total.name, 'list', saron.responsetype.records);
+    var options = getPostData(null, saron.table.total.viewid, null, saron.table.total.name, saron.source.list, saron.responsetype.records);
     $(saron.table.total.viewid).jtable('load', options);
     $(saron.table.total.viewid).find('.jtable-toolbar-item-add-record').hide();
 
@@ -88,7 +88,7 @@ function totalTableDef(tableViewId, tableTitle){
             }
         },
         rowInserted: function(event, data){
-            if (data.record.user_role !== 'edit'){
+            if (data.record.user_role !== saron.formtype.edit){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }

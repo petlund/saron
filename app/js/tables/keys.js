@@ -96,18 +96,18 @@ function keyTableDef(tableViewId, tableTitle){
             }
         },
         rowInserted: function(event, data){
-            if (data.record.user_role !== 'edit')
+            if (data.record.user_role !== saron.userrole.editor)
                 data.row.find('.jtable-edit-command-button').hide();
             else
                 data.row.find('.jtable-delete-command-button').hide();
         },        
         recordsLoaded: function(event, data) {
-            if(data.serverResponse.user_role === 'edit'){ 
+            if(data.serverResponse.user_role === saron.userrole.editor){ 
                 $('#KEYS').find('.jtable-toolbar-item-add-record').show();
             }
         },        
         formCreated: function (event, data){
-            if(data.formType === 'edit'){
+            if(data.formType === saron.formtype.edit){
                 data.row[0].style.backgroundColor = "yellow";
 
                 data.form.css('width',inputFormWidth);
@@ -115,7 +115,7 @@ function keyTableDef(tableViewId, tableTitle){
             }
         },
         formClosed: function (event, data){
-            if(data.formType === 'edit')
+            if(data.formType === saron.formtype.edit)
                 data.row[0].style.backgroundColor = '';
         }
     };

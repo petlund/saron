@@ -84,6 +84,7 @@ class OrganizationPos extends SuperEntity{
         $select.= "IF(Pos.OrgPosStatus_FK = 6, (Select T.Name From Org_Tree as T Where T.Id = Pos.Function_FK), IF(People_FK > 0," . getPersonSql("pCur", null, false) . ", (Select R.Name From Org_Role as R Where R.Id = -People_FK))) as Responsible, ";
         $select.= "IF(Pos.PrevOrgPosStatus_FK = 6, (Select T.Name From Org_Tree as T Where T.Id = Pos.PrevFunction_FK), IF(PrevPeople_FK > 0," . getPersonSql("pPrev", null, false) . ", (Select R.Name From Org_Role as R Where R.Id = -PrevPeople_FK))) as PrevResponsible, ";
         $select.= "Role.Name as RoleName, ";
+        $select.= $this->parentId . " as ParentId, ";
         $select.= getMemberStateSql("pCur", "MemberState", true);
         $select.= getFieldSql("pCur", "Email", "EmailEncrypt", "", true, true);
         $select.= getFieldSql("pCur", "Mobile", "MobileEncrypt", "", true, true);
@@ -103,7 +104,7 @@ class OrganizationPos extends SuperEntity{
                 case TABLE_NAME_UNITTREE . "/" . TABLE_NAME_POS:            
                     $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
                     break;
-                case TABLE_NAME_PEOPLE . "/" . TABLE_NAME_POS:            
+                case TABLE_NAME_PEOPLE . "/" . TABLE_NAME_ENGAGEMENTS:            
                     $where = "WHERE pCur.Id = ". $this->parentId . " "; 
  //                    $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
                     break;
@@ -119,7 +120,7 @@ class OrganizationPos extends SuperEntity{
                 case TABLE_NAME_UNITLIST . "/" . TABLE_NAME_POS:            
                     $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
                     break;
-                case TABLE_NAME_ENGAGEMENT . "/" . TABLE_NAME_POS:    
+                case TABLE_NAME_ENGAGEMENT . "/" . TABLE_NAME_ENGAGEMENTS:    
                     $where = "WHERE pCur.Id = ". $this->parentId . " "; 
                     //return $this->selectPersonEngagement();            
                     break;
@@ -145,13 +146,13 @@ class OrganizationPos extends SuperEntity{
 
         $order = "Order by DisplayText ";
         
-        switch ($this->tablePath){
-            case TABLE_NAME_ENGAGEMENT . "/" . TABLE_NAME_POS . "/" . SOURCE_LIST:            
+        switch ($this->source){
+            case SOURCE_EDIT:            
                 $select.= "SELECT Pos.Id as Value, Concat(Role.Name, ' (', Tree.Name, ". EMBEDDED_SELECT_SUPERPOS . ", ')') as DisplayText ";
                 $where = "WHERE People_FK = " . $this->parentId . " "; 
                 $sql = $select . $from . $where . $order;
                 break;
-            case TABLE_NAME_ENGAGEMENT . "/" . TABLE_NAME_POS . "/" . SOURCE_CREATE:            
+            case SOURCE_CREATE:            
                 $select.= "SELECT Pos.Id as Value, Concat(Role.Name, ' (', Tree.Name, ". EMBEDDED_SELECT_SUPERPOS . ", ')') as DisplayText ";
                 $where = "WHERE Pos.OrgPosStatus_FK = 4 and People_FK = 0 or People_FK is null ";
                 $sql = $select . $from . $where . $order;

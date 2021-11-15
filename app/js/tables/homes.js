@@ -6,7 +6,7 @@ RECORD, OPTIONS
 
 $(document).ready(function () {
     $(saron.table.homes.viewid).jtable(homeTableDef(saron.table.homes.viewid, null, null));
-    var options = getPostData(null, saron.table.homes.viewid, null, saron.table.homes.name, 'list', saron.responsetype.records);
+    var options = getPostData(null, saron.table.homes.viewid, null, saron.table.homes.name, saron.source.list, saron.responsetype.records);
     $(saron.table.homes.viewid).jtable('load', options);
     $(saron.table.homes.viewid).find('.jtable-toolbar-item-add-record').hide();
 });
@@ -131,7 +131,7 @@ function homeTableDef(tableViewId, childTableTitle){
             }
         },
         rowInserted: function(event, data){
-            if (data.record.user_role !== 'edit'){
+            if (data.record.user_role !== saron.userrole.editor){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }

@@ -9,7 +9,7 @@ RECORD, OPTIONS
 
 $(document).ready(function () {
         $(saron.table.pos.viewid).jtable(posTableDef(saron.table.pos.viewid, saron.table.pos.name, null));
-        var postData = getPostData(null, saron.table.pos.viewid, null, saron.table.pos.name, 'list', saron.responsetype.records);
+        var postData = getPostData(null, saron.table.pos.viewid, null, saron.table.pos.name, saron.source.list, saron.responsetype.records);
         $(saron.table.pos.viewid).jtable('load', postData);
         $(saron.table.pos.viewid).find('.jtable-toolbar-item-add-record').hide();
     }
@@ -112,14 +112,14 @@ function posTableDef(tableViewId, tablePath, tableTitle){
                     var optionUri = 'app/web-api/listOrganizationRole.php';
                     
                     var parameters = ""; 
-                    if(data.source === 'list'){
+                    if(data.source === saron.source.list){
                         parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);
                     }
-                    if(data.source === 'edit'){
+                    if(data.source === saron.source.edit){
                         data.clearCache();
                         parameters = getURLParameters(null, tableViewId, data.record.ParentId, tablePath, data.source, saron.responsetype.options);                        
                     }
-                    if(data.source === 'create'){
+                    if(data.source === saron.source.create){
                         data.clearCache();                        
                         parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);                        
                     }
@@ -135,14 +135,14 @@ function posTableDef(tableViewId, tablePath, tableTitle){
                     var optionUri = 'app/web-api/listOrganizationPosStatus.php';
                     
                     var parameters = "";
-                    if(data.source === 'list'){
+                    if(data.source === saron.source.list){
                         parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);
                     }
-                    if(data.source === 'edit'){
+                    if(data.source === saron.source.edit){
                         data.clearCache();
                         parameters = getURLParameters(data.record.Id, tableViewId, data.record.ParentId, tablePath, data.source, saron.responsetype.options);                        
                     }
-                    if(data.source === 'create'){
+                    if(data.source === saron.source.create){
                         data.clearCache();                        
                         parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);                        
                     }
@@ -163,7 +163,7 @@ function posTableDef(tableViewId, tablePath, tableTitle){
                 options: function(data){
                     var filterDef = "&filter=true";
                     var filter = "";
-                    if(data.source !== 'list'){
+                    if(data.source !== saron.source.list){
                         data.clearCache();
                         filter = filterDef;
                     }
@@ -179,14 +179,14 @@ function posTableDef(tableViewId, tablePath, tableTitle){
                     var optionUri = 'app/web-api/listOrganizationUnit.php';
 
                     var parameters = "";
-                    if(data.source === 'list'){
+                    if(data.source === saron.source.list){
                         parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);
                     }
-                    if(data.source === 'edit'){
+                    if(data.source === saron.source.edit){
                         data.clearCache();
                         parameters = getURLParameters(null, tableViewId, data.record.ParentId, tablePath, data.source, saron.responsetype.options);                        
                     }
-                    if(data.source === 'create'){
+                    if(data.source === saron.source.create){
                         data.clearCache();                        
                         parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);                        
                     }
@@ -254,7 +254,7 @@ function posTableDef(tableViewId, tablePath, tableTitle){
         },
         rowInserted: function(event, data){
             data.row.addClass("Id_" + data.record.Id); 
-            if (data.record.user_role !== 'edit' && data.record.user_role !== 'org'){
+            if (data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org'){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
@@ -262,7 +262,7 @@ function posTableDef(tableViewId, tablePath, tableTitle){
         },        
         recordsLoaded: function(event, data) {
             if(data.records.length > 0){
-                var showCreateButton = (data.serverResponse.user_role === 'edit' || data.serverResponse.user_role === 'org') && data.records[0].TablePath !== tableName; 
+                var showCreateButton = (data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org') && data.records[0].TablePath !== tableName; 
                 if(showCreateButton){ 
                     $(tableViewId).find('.jtable-toolbar-item-add-record').show();
                 }
@@ -270,13 +270,13 @@ function posTableDef(tableViewId, tablePath, tableTitle){
         },        
         formCreated: function (event, data){
 //            $('#jtable-edit-form').append('<input type="hidden" name="OrgTree_FK" value="' + data.record.ParentTreeNode_FK + '" />');
-            if(data.formType === 'edit')
+            if(data.formType === saron.formtype.edit)
                 data.row[0].style.backgroundColor = "yellow";
 
             data.form.css('width','600px');
         },
         formClosed: function (event, data){
-            if(data.formType === 'edit')
+            if(data.formType === saron.formtype.edit)
                 data.row[0].style.backgroundColor = '';
         }
     };

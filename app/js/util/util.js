@@ -1,7 +1,6 @@
 /* global saron, 
 ORG_ROLE, ORG_LIST, ORG_UNIT_TYPE, ORG_TREE,
 saron,
-saron.table.unit.name
 */
 "use strict";
 
@@ -27,8 +26,6 @@ const POS_DISABLED = "1";
 const SUBUNIT_ENABLED = "2";
 const SUBUNIT_DISABLED = "1";
 
-var clearMembershipNoOptionCache = true;
-    
 function _setClassAndValue(data, field, type){
     if(field === "VisibleInCalendar")
         return _styleSaronValue(field + ' ' + _getClassName_Id(data, field, type), _getVisibilityOption(data.record[field]), '');  
@@ -347,6 +344,25 @@ function getURLParameters(id, tableViewId, parentId, tablePath, source, resultTy
         console.log(options);
         return options;
     }
+
+
+
+function getOptionsUrlParameters(data, tableViewId, tablePath){
+    var parameters = "";
+    
+    if(data.source === saron.source.list){
+        parameters = getURLParameters(null, tableViewId, data.record.ParentId, tablePath, data.source, saron.responsetype.options);
+    }
+    if(data.source === saron.source.edit){
+        parameters = getURLParameters(data.record.Id, tableViewId, data.record.ParentId, tablePath, data.source, saron.responsetype.options);                        
+        data.clearCache();
+    }
+    if(data.source === saron.source.create){
+        parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);                        
+        data.clearCache();                        
+    }    
+    return parameters;
+}
 
 
 

@@ -69,7 +69,6 @@ class SuperEntity {
             $this->resultType = (String)filter_input(INPUT_GET, "ResultType", FILTER_SANITIZE_STRING);
         }
 
-        $this->selection = (String)filter_input(INPUT_GET, "selection", FILTER_SANITIZE_STRING);    
         
     }
 

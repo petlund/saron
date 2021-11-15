@@ -11,6 +11,15 @@ $saron->uri->wp = WP_URI;
 $saron->uri->saron = SARON_URI;
 $saron->uri->images = SARON_IMAGES_URI;
 
+$saron->userrole = (object)array();
+$saron->userrole->viewer = SARON_ROLE_VIEWER;
+$saron->userrole->editor = SARON_ROLE_EDITOR;
+$saron->userrole->org_editor = SARON_ROLE_ORG;
+
+$saron->formtype = (object)array();
+$saron->formtype->edit = 'edit';
+$saron->formtype->create = 'create';
+
 $saron->name = (object)array();
 $saron->name->full_name = FullNameOfCongregation;
 
@@ -84,6 +93,7 @@ $saron->table->role->name = TABLE_NAME_ROLE ;
 $saron->table->engagement = (object)array();
 $saron->table->engagement->viewid = "#" . TABLE_VIEW_ENGAGEMENT ;
 $saron->table->engagement->name = TABLE_NAME_ENGAGEMENT ;
+$saron->table->engagements->name = TABLE_NAME_ENGAGEMENTS ;
 
 $saron->table->pos = (object)array();
 $saron->table->pos->viewid = "#" . TABLE_VIEW_POS ;

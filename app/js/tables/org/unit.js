@@ -152,14 +152,14 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
                 title: 'Överordna verksamhet',
                 options: function(data) {
                     var parameters = ""; 
-                    if(data.source === 'list'){
+                    if(data.source === saron.source.list){
                         parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);
                     }
-                    if(data.source === 'edit'){
+                    if(data.source === saron.formtype.edit){
                         parameters = getURLParameters(data.record.Id, tableViewId, null, tablePath, data.source, saron.responsetype.options);                        
                         data.clearCache();
                     }
-                    if(data.source === 'create'){
+                    if(data.source === saron.source.create){
                         parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);                        
                         data.clearCache();                        
                     }
@@ -200,14 +200,14 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
                 width: '5%',
                 options: function (data){
                     var parameters = ""; 
-                    if(data.source === 'list'){
+                    if(data.source === saron.source.list){
                         parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);
                     }
-                    if(data.source === 'edit'){
+                    if(data.source === saron.formtype.edit){
                         parameters = getURLParameters(data.record.Id, tableViewId, null, tablePath, data.source, saron.responsetype.options);                        
                         data.clearCache();
                     }
-                    if(data.source === 'create'){
+                    if(data.source === saron.source.create){
                         parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);                        
                         data.clearCache();                        
                     }
@@ -245,7 +245,7 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
         },  
         rowInserted: function(event, data){
             data.row.addClass("Id_" + data.record.Id); 
-            if (data.record.user_role !== 'edit' && data.record.user_role !== 'org'){
+            if (data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org'){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
@@ -257,12 +257,12 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
             addDialogDeleteListener(data);
         },        
         recordsLoaded: function(event, data) {
-            if(data.serverResponse.user_role === 'edit' || data.serverResponse.user_role === 'org'){ 
+            if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
                 $(tableViewId).find('.jtable-toolbar-item-add-record').show();
             }
         },        
         formCreated: function (event, data){
-            if(data.formType === 'edit'){
+            if(data.formType === saron.formtype.edit){
                 data.row[0].style.backgroundColor = "yellow";
                 data.form.find('select[name=ParentTreeNode_FK]')[0].disabled=false;
                 data.form.find('select[name=OrgUnitType_FK]')[0].disabled=true;                
@@ -276,7 +276,7 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
             data.form.find('input[name=Description]').css('width','580px');
         },
         formClosed: function (event, data){
-            if(data.formType === 'edit')
+            if(data.formType === saron.formtype.edit)
                 data.row[0].style.backgroundColor = '';
         }
     };

@@ -11,7 +11,7 @@ RECORD, OPTIONS
 
 $(document).ready(function () {
     $(saron.table.unittype.viewid).jtable(unitTypeTableDef(saron.table.unittype.viewid, saron.table.unittype.name, null));
-    var options = getPostData(null, saron.table.unittype.viewid, null, saron.table.unittype.name, 'list', saron.responsetype.records);
+    var options = getPostData(null, saron.table.unittype.viewid, null, saron.table.unittype.name, saron.source.list, saron.responsetype.records);
     $(saron.table.unittype.viewid).jtable('load', options);
 });
 
@@ -163,7 +163,7 @@ function unitTypeTableDef(tableViewId, tablePath, childTableTitle){
             }
         },
         rowInserted: function(event, data){
-            if (data.record.user_role !== 'edit' && data.record.user_role !== 'org'){
+            if (data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org'){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
@@ -174,7 +174,7 @@ function unitTypeTableDef(tableViewId, tablePath, childTableTitle){
                         
         },        
         rowUpdated: function(event, data){
-            if (data.record.user_role !== 'edit' && data.record.user_role !== 'org'){
+            if (data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org'){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
@@ -185,12 +185,12 @@ function unitTypeTableDef(tableViewId, tablePath, childTableTitle){
                     data.row.find('.jtable-delete-command-button').show();
         },        
         recordsLoaded: function(event, data) {
-            if(data.serverResponse.user_role === 'edit' || data.serverResponse.user_role === 'org'){ 
+            if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
                 $(tableViewId).find('.jtable-toolbar-item-add-record').show();
             }
         },        
         formCreated: function (event, data){
-            if(data.formType === 'edit')
+            if(data.formType === saron.formtype.edit)
                 data.row[0].style.backgroundColor = "yellow";
 
             if(data.formType !== "create"){
@@ -209,7 +209,7 @@ function unitTypeTableDef(tableViewId, tablePath, childTableTitle){
             data.form.find('input[name=Description]').css('width','580px');
         },
         formClosed: function (event, data){
-            if(data.formType === 'edit')
+            if(data.formType === saron.formtype.edit)
                 data.row[0].style.backgroundColor = '';
         }
     };    

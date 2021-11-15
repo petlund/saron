@@ -12,7 +12,7 @@ $(document).ready(function () {
     const urlParams = new URLSearchParams(queryString);
 
     $(saron.table.people.viewid).jtable(peopleTableDef(saron.table.people.viewid, saron.table.people.name, null));
-    var options = getPostData(null, saron.table.people.viewid, null, saron.table.people.name, 'list', saron.responsetype.records);
+    var options = getPostData(null, saron.table.people.viewid, null, saron.table.people.name, saron.source.list, saron.responsetype.records);
     $(saron.table.people.viewid).jtable('load', options);
     $(saron.table.people.viewid).find('.jtable-toolbar-item-add-record').hide();
 });
@@ -199,13 +199,13 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
  
                 }
             },            
-            Role:{
+            Engagements:{
                 edit: false,
                 create: false,
                 width: '1%',
                 sorting: false,
                 display: function(data){
-                    var childTableName = saron.table.pos.name;
+                    var childTableName = saron.table.engagements.name;
                     var childTableTitle = data.record.Name + '" har nedanstående uppdrag';
                     var childTablePath = tablePath + "/" + childTableName;
                     var tooltip = "";
@@ -221,11 +221,7 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
                         imgFile = "haspos.png";
                     }                    
 
-                    var childTableDef = posTableDef(tableViewId, childTablePath, childTableTitle);
-                    //No changes from this view
-                    delete childTableDef.actions.createAction;
-                    delete childTableDef.actions.deleteAction;
-                    delete childTableDef.actions.updateAction;
+                    var childTableDef = engagementTableDef(tableViewId, childTablePath, childTableTitle);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
 
@@ -246,7 +242,7 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
                 list: false,
                 title: 'Välj hem',
                 options: function(data){
-                    if(data.source !== 'list')
+                    if(data.source !== saron.source.list)
                         data.clearCache();
                     return '/' + saron.uri.saron + 'app/web-api/listHomes.php?selection=options';
                 }
@@ -345,18 +341,16 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
                 title: 'Medlemskap start',
             }, 
             MembershipNo: {
-                list: false,
+                list: false, 
                 edit: false,
+                create: true, 
                 title: 'Medlemsnummer',
                 display: function (data){
                     return _setClassAndValue(data, "MembershipNo", PERSON);
                 },       
                 options: function (data){
-                    if(clearMembershipNoOptionCache){
-                        data.clearCache();
-                        clearMembershipNoOptionCache=false;
-                    }
-                    return '/' + saron.uri.saron + 'app/web-api/listPerson.php?Id=null' + '&selection=nextMembershipNo';
+                    var parameters = getOptionsUrlParameters(data, tableViewId, tablePath)
+                    return '/' + saron.uri.saron + 'app/web-api/listPerson.php' + parameters;
                 }
             },
             MemberState: {
@@ -408,20 +402,20 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
             }
         },
         rowInserted: function(event, data){
-            if (data.record.user_role !== 'edit'){
+            if (data.record.user_role !== saron.userrole.editor){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
         },        
         recordsLoaded: function(event, data) {
-            if(data.serverResponse.user_role === 'edit'){ 
+            if(data.serverResponse.user_role === saron.userrole.editor){ 
                 $(tableViewId).find('.jtable-toolbar-item-add-record').show();
             }
         },        
         formCreated: function (event, data){
             var headLine;
             //$.datepicker.formatDate("yyyy-MM-dd");
-            if(data.formType === 'edit'){
+            if(data.formType === saron.formtype.edit){
                 if(data.record.HomeId === "0"){
                     data.record.HomeId = localStorage.getItem(NEW_HOME_ID);
                     $('#Edit-HomeId').val(data.record.HomeId).change();
@@ -451,8 +445,7 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
             
         },
         formClosed: function (event, data){
-            clearMembershipNoOptionCache=true;
-            if(data.formType === 'edit')
+            if(data.formType === saron.formtype.edit)
                 data.row[0].style.backgroundColor = '';
         }
     };
@@ -483,7 +476,7 @@ function _openHomeChildTable(tableViewId, data){
     var rowRef = "[data-record-key=" + data.record.Id + "]";
     var $selectedRow = $(rowRef);
     var childTableTitle = 'Hem för ' + data.record.LongHomeName;
-    var options = getPostData(null, tableViewId, data.record.Id, saron.table.people.name, 'list', saron.responsetype.record);
+    var options = getPostData(null, tableViewId, data.record.Id, saron.table.people.name, saron.source.list, saron.responsetype.record);
 
     $(tableViewId).jtable('openChildTable', $selectedRow, homeTableDef(tableViewId, childTableTitle), function(data){
         data.childTable.jtable('load', options);

@@ -102,7 +102,7 @@ function baptistTableDef(tableViewId, tablePath, tableTitle){
             }
         },
         rowInserted: function(event, data){
-            if (data.record.user_role !== 'edit'){
+            if (data.record.user_role !== saron.userrole.editor){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }

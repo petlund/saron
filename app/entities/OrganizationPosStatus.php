@@ -55,11 +55,11 @@ class OrganizationPosStatus extends SuperEntity{
         $order = "Order by DisplayText ";
         $where = "";
         
-        switch ($this->tablePath){
-            case "/" . SOURCE_EDIT:            
+        switch ($this->source){
+            case SOURCE_EDIT:            
                 $where.= "WHERE Id not in (5, 6) "; // Tillsätts ej, funktionsorganisation
                 break;
-            case "/" . SOURCE_CREATE:            
+            case SOURCE_CREATE:            
                 $where.= "WHERE Id < 4 "; // Tillsätts ej
                 break;
             default:

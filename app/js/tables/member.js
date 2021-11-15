@@ -8,13 +8,13 @@ RECORD, OPTIONS
 $(document).ready(function () {
 
 
-    $(saron.table.member.viewid).jtable(memberTableDef(saron.table.member.viewid, null));
-    var options = getPostData(null, saron.table.member.viewid, null, saron.table.member.name, 'list', saron.responsetype.records);
+    $(saron.table.member.viewid).jtable(memberTableDef(saron.table.member.viewid, saron.table.member.name, null));
+    var options = getPostData(null, saron.table.member.viewid, null, saron.table.member.name, saron.source.list, saron.responsetype.records);
     $(saron.table.member.viewid).jtable('load', options);
     $(saron.table.member.viewid).find('.jtable-toolbar-item-add-record').hide();
 });  
 
-function memberTableDef(tableViewId, tableTitle){
+function memberTableDef(tableViewId, tablePath, tableTitle){
     var tableName = saron.table.member.name;
     var title = 'Medlemsuppgifter';
     if(tableTitle !== null)
@@ -56,10 +56,6 @@ function memberTableDef(tableViewId, tableTitle){
                 key: true,
                 list: false
             },
-            TablePath:{
-                defaultValue: tableName,
-                type: 'hidden'
-            },
             Name: {
                 title: 'Namn',
                 width: '15%',
@@ -99,12 +95,9 @@ function memberTableDef(tableViewId, tableTitle){
                 display: function (data){
                     return _setClassAndValue(data, "MembershipNo", PERSON);
                 },       
-                options: function(data){
-                    if(clearMembershipNoOptionCache){
-                        data.clearCache();
-                        clearMembershipNoOptionCache=false;
-                    }
-                    return '/' + saron.uri.saron + 'app/web-api/listPerson.php?Id=' + data.record.Id + '&selection=nextMembershipNo';
+                options: function (data){
+                    var parameters = getOptionsUrlParameters(data, tableViewId, tablePath)
+                    return '/' + saron.uri.saron + 'app/web-api/listPerson.php' + parameters;
                 }
             },
             DateOfMembershipEnd: {
@@ -139,7 +132,7 @@ function memberTableDef(tableViewId, tableTitle){
             }
         },
         rowInserted: function(event, data){
-            if (data.record.user_role !== 'edit'){
+            if (data.record.user_role !== saron.userrole.editor){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }

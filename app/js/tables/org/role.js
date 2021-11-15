@@ -9,7 +9,7 @@ saron
 
 $(document).ready(function () {
         $(saron.table.role.viewid).jtable(roleTableDef(saron.table.role.viewid, null, null));
-        var options = getPostData(null, saron.table.role.viewid, null, saron.table.role.name, 'list', saron.responsetype.records);
+        var options = getPostData(null, saron.table.role.viewid, null, saron.table.role.name, saron.source.list, saron.responsetype.records);
         $(saron.table.role.viewid).jtable('load', options);
     }
 );
@@ -153,7 +153,7 @@ function roleTableDef(tableViewId, tablePath, childTableTitle){
             }
         },
         recordUpdated(event, data){
-            if (data.record.user_role !== 'edit' && data.record.user_role !== 'org'){
+            if (data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org'){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
@@ -165,7 +165,7 @@ function roleTableDef(tableViewId, tablePath, childTableTitle){
             
         },
         rowInserted: function(event, data){
-            if (data.record.user_role !== 'edit' && data.record.user_role !== 'org'){
+            if (data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org'){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
@@ -176,19 +176,19 @@ function roleTableDef(tableViewId, tablePath, childTableTitle){
             
         },        
         recordsLoaded: function(event, data) {
-            if(data.serverResponse.user_role === 'edit' || data.serverResponse.user_role === 'org'){ 
+            if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
                 $(tableViewId).find('.jtable-toolbar-item-add-record').show();
             }
         },        
         formCreated: function (event, data){
-            if(data.formType === 'edit')
+            if(data.formType === saron.formtype.edit)
                 data.row[0].style.backgroundColor = "yellow";
 
             data.form.css('width','600px');
             data.form.find('input[name=Description]').css('width','580px');
         },
         formClosed: function (event, data){
-            if(data.formType === 'edit')
+            if(data.formType === saron.formtype.edit)
                 data.row[0].style.backgroundColor = '';
         }
     };

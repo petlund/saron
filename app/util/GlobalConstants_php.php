@@ -60,6 +60,7 @@
 
     Define("TABLE_VIEW_ENGAGEMENT",  "ORG_ENGAGEMENT");
     Define("TABLE_NAME_ENGAGEMENT",  "table_engagement");
+    Define("TABLE_NAME_ENGAGEMENTS",  "table_engagements");
 
     Define("TABLE_VIEW_POS",  "ORG_POS");
     Define("TABLE_NAME_POS",  "table_pos");

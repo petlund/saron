@@ -65,26 +65,26 @@ function orgVersionTableDef(){
             }
         },
         rowInserted: function(event, data){
-            if (data.record.user_role !== 'edit' && data.record.user_role !== 'org'){
+            if (data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org'){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
         },        
         recordsLoaded: function(event, data) {
-            if(data.serverResponse.user_role === 'edit' || data.serverResponse.user_role === 'org'){ 
+            if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
                 $(saron.table.orgversion.viewid).find('.jtable-toolbar-item-add-record').show();
                 $(saron.table.orgversion.viewid).find('.jtable-edit-command-button').show();
             }
         },        
         formCreated: function (event, data){
-            if(data.formType === 'edit')
+            if(data.formType === saron.formtype.edit)
                 data.row[0].style.backgroundColor = "yellow";
 
             data.form.css('width','600px');
             data.form.find('input[name=information]').css('width','580px');
             
             var title = "Ange beslutstillfälle<div class='saronRedSmallText'>Alla förslag till förändringar införs - Kan inte ångras!</div>";
-            if(data.formType === 'edit')
+            if(data.formType === saron.formtype.edit)
                 title = "Uppdatera information om beslutstillfälle."
             
             var dbox = document.getElementsByClassName('ui-dialog-title');            
@@ -93,7 +93,7 @@ function orgVersionTableDef(){
             }
         },
         formClosed: function (event, data){
-            if(data.formType === 'edit')
+            if(data.formType === saron.formtype.edit)
                 data.row[0].style.backgroundColor = '';
         }
     };
