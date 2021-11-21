@@ -43,7 +43,7 @@ class OrganizationPos extends SuperEntity{
                 throw new Exception(json_encode($error));
             }
             if($this->orgPosStatus_FK > 2 and $this->people_FK !== 0 ){
-                if(str_contains($this->tablePath, "engagement")){
+                if(str_contains($this->tablePath, TABLE_NAME_ENGAGEMENTS)){
                     $this->people_FK = 0; 
                 }
                 else{
@@ -198,7 +198,7 @@ class OrganizationPos extends SuperEntity{
         }
         $set.= "Comment='" . $this->comment . "', ";
         $set.= "OrgPosStatus_FK='" . $this->orgPosStatus_FK . "', ";
-        $set.= "People_FK=" . $this->people_FK . ", ";
+        $set.= "People_FK=" . $this->ParentId . ", ";
         $set.= "Function_FK=" . $this->function_FK . ", ";
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater=" . $this->saronUser->WP_ID . " ";

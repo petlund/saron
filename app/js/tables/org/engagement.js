@@ -30,7 +30,6 @@ function peopleEngagementTableDef(tableViewId, tablePath){
         sorting: true, //Enable sorting
         multiSorting: true,
         defaultSorting: 'Name', //Set default sorting        
-        messages: {addNewRecord: 'Tilldela personen ett vakant uppdrag'},
         actions: {
             listAction:   '/' + saron.uri.saron + listUri,
         },
@@ -146,19 +145,20 @@ function engagementTableDef(tableViewId, tablePath, childTableTitle){
         sorting: true, //Enable sorting
         multiSorting: true,
         defaultSorting: 'Name', //Set default sorting        
+        messages: {addNewRecord: 'Tilldela personen ett vakant uppdrag'},
         actions: {
             listAction:   '/' + saron.uri.saron + uri,
             createAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + saron.uri.saron + uri,
+                        url: '/' + saron.uri.saron + 'app/web-api/addPersonToOrganizationPos.php',
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
                         success: function (data) {
                             $dfd.resolve(data);
                             if(data.Result === 'OK'){
-                                updatePersonEngagementRecord(data.record.ParentId);
+                                updatePersonEngagementRecord(data.Record.ParentId);
                             }
                         },
                         error: function () {
@@ -170,7 +170,7 @@ function engagementTableDef(tableViewId, tablePath, childTableTitle){
             updateAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + saron.uri.saron + 'app/web-api/updateOrganizationPos.php?Source=EngagementView&People_FK=' + Id,
+                        url: '/' + saron.uri.saron + 'app/web-api/updateOrganizationPos.php',
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
@@ -199,10 +199,7 @@ function engagementTableDef(tableViewId, tablePath, childTableTitle){
                 }
             },
             ParentId:{
-                list: false,
-                edit: false,
-                create: false
-                
+                type: 'hidden'                
             },
             OrgPosStatus_FK: {
                 title: 'Status',
@@ -215,7 +212,8 @@ function engagementTableDef(tableViewId, tablePath, childTableTitle){
             },
             
             Comment:{
-                title: 'Kommentar'
+                title: 'Kommentar kopplat till uppdraget',
+                inputTitle: 'Kommentar kopplat till uppdraget ej person'
             },
             UpdaterName: {
                 edit: false,

@@ -24,7 +24,7 @@ class PeopleViews {
     }
     
     function selectEngagement(){
-        return "(Select count(*) from ORG_POS where People_FK = People.Id) as Engagement";
+        return "(Select count(*) from Org_Pos where People_FK = People.Id) as Engagement";
     }
     
     

@@ -121,6 +121,8 @@ function getAllClassNameOpenChild(data){
         className+= getClassNameOpenChild(data, saron.table.unittree.name);
         className+= getClassNameOpenChild(data, saron.table.role.name);
         className+= getClassNameOpenChild(data, saron.table.pos.name);
+        className+= getClassNameOpenChild(data, saron.table.engagement.name);
+        className+= getClassNameOpenChild(data, saron.table.engagements.name);
         className+= getClassNameOpenChild(data, saron.table.people.name);
         className+= getClassNameOpenChild(data, saron.table.member.name);
         className+= getClassNameOpenChild(data, saron.table.baptist.name);
