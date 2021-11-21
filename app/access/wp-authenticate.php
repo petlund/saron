@@ -187,7 +187,7 @@ require_once SARON_ROOT . "app/database/db.php";
         if(isOrgEditor($wpUser) ){
             return SARON_ROLE_ORG;
         }
-        if(isOrgEditor($wpUser) ){
+        if(isViewer($wpUser) ){
             return SARON_ROLE_VIEWER;                
         }
         return null;
@@ -202,7 +202,7 @@ require_once SARON_ROOT . "app/database/db.php";
         if(isOrgEditor($wpUser) ){
             return SARON_DISPLAY_NAME_ORG;
         }
-        if(isOrgEditor($wpUser) ){
+        if(isViewer($wpUser) ){
             return SARON_DISPLAY_NAME_VIEWER;                
         }
         return null;
