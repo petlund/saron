@@ -237,7 +237,7 @@ function includedIn (currentTableId, requiredTableId){
 
 
 
-function getURLParameters(id, tableViewId, parentId, tablePath, source, resultType){
+function getURLParameters(id, tableViewId, parentId, tablePath, source, resultType, url){
     var first = true;
     var parameter = "";
 
@@ -320,14 +320,14 @@ function getURLParameters(id, tableViewId, parentId, tablePath, source, resultTy
     else
         parameter+= 'ResultType=' + saron.responsetype.records;
             
-    console.log(parameter);
+//    console.log(url + " => " + parameter);
 
     return parameter;
 }
     
 
 
-    function getPostData(id, tableViewId, parentId, tablePath, source, resultType){
+    function getPostData(id, tableViewId, parentId, tablePath, source, resultType, url){
         if(parentId === null){        
             parentId = -1;
         }
@@ -341,24 +341,24 @@ function getURLParameters(id, tableViewId, parentId, tablePath, source, resultTy
             resultType = saron.responsetype.records;
         }
         var options = {Id:id, TableView:getTableView(tableViewId), ParentId:parentId, TablePath:tablePath, Source:source, ResultType:resultType};
-        console.log(options);
+//        console.log(url + " => " + options);
         return options;
     }
 
 
 
-function getOptionsUrlParameters(data, tableViewId, tablePath){
+function getOptionsUrlParameters(data, tableViewId, tablePath, url){
     var parameters = "";
     
     if(data.source === saron.source.list){
-        parameters = getURLParameters(null, tableViewId, data.record.ParentId, tablePath, data.source, saron.responsetype.options);
+        parameters = getURLParameters(null, tableViewId, data.record.ParentId, tablePath, data.source, saron.responsetype.options, url);
     }
     if(data.source === saron.source.edit){
-        parameters = getURLParameters(data.record.Id, tableViewId, data.record.ParentId, tablePath, data.source, saron.responsetype.options);                        
+        parameters = getURLParameters(data.record.Id, tableViewId, data.record.ParentId, tablePath, data.source, saron.responsetype.options, url);                        
         data.clearCache();
     }
     if(data.source === saron.source.create){
-        parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);                        
+        parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options, url);                        
         data.clearCache();                        
     }    
     return parameters;

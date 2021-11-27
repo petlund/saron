@@ -6,11 +6,11 @@ RECORD, OPTIONS
 */
  
 "use strict";
-    
+const engagementListUri = 'app/web-api/listEngagement.php';    
 $(document).ready(function () {
 
     $(saron.table.engagement.viewid).jtable(peopleEngagementTableDef(saron.table.engagement.viewid, saron.table.engagement.name));
-    var postData = getPostData(null, saron.table.engagement.viewid, null, saron.table.engagement.name, saron.source.list, saron.responsetype.records);
+    var postData = getPostData(null, saron.table.engagement.viewid, null, saron.table.engagement.name, saron.source.list, saron.responsetype.records, engagementListUri);
     $(saron.table.engagement.viewid).jtable('load', postData);
     $(saron.table.engagement.viewid).find('.jtable-toolbar-item-add-record').hide();
 });
@@ -18,7 +18,6 @@ $(document).ready(function () {
 
 
 function peopleEngagementTableDef(tableViewId, tablePath){
-    const listUri = 'app/web-api/listEngagement.php';
     const tableName = saron.table.engagement.name;
  
     return {
@@ -31,7 +30,7 @@ function peopleEngagementTableDef(tableViewId, tablePath){
         multiSorting: true,
         defaultSorting: 'Name', //Set default sorting        
         actions: {
-            listAction:   '/' + saron.uri.saron + listUri,
+            listAction:   '/' + saron.uri.saron + engagementListUri,
         },
         fields: {
             TablePath:{
@@ -67,7 +66,7 @@ function peopleEngagementTableDef(tableViewId, tablePath){
 
                     var childTableDef = engagementTableDef(tableViewId, childTablePath, childTableTitle);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
-                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, engagementListUri);
 
                     return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                 }
@@ -194,8 +193,9 @@ function engagementTableDef(tableViewId, tablePath, childTableTitle){
                 create: true,
                 key: true,
                 options: function (data){
-                    var parameters = getOptionsUrlParameters(data, tableViewId, tablePath);
-                    return '/' + saron.uri.saron + 'app/web-api/listOrganizationPos.php' + parameters;
+                    var uri = 'app/web-api/listOrganizationPos.php';
+                    var parameters = getOptionsUrlParameters(data, tableViewId, tablePath, uri);
+                    return  '/' + saron.uri.saron + uri + parameters;
                 }
             },
             ParentId:{
@@ -206,8 +206,9 @@ function engagementTableDef(tableViewId, tablePath, childTableTitle){
                 width: '10%',
                 defaultValue: 2,
                 options: function (data){
-                    var parameters = getOptionsUrlParameters(data, tableViewId, tablePath)
-                    return '/' + saron.uri.saron + 'app/web-api/listOrganizationPosStatus.php' + parameters;
+                    var uri = 'app/web-api/listOrganizationPosStatus.php'
+                    var parameters = getOptionsUrlParameters(data, tableViewId, tablePath, uri);
+                    return  '/' + saron.uri.saron + uri + parameters;
                 }
             },
             

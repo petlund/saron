@@ -4,11 +4,12 @@
 saron.table.baptist.viewid, saron.table.baptist.name
  */
 "use strict"; 
+const baptistListUri = 'app/web-api/listPeople.php';
 
 $(document).ready(function () {
 
     $(saron.table.baptist.viewid).jtable(baptistTableDef(saron.table.baptist.viewid, null));
-    var options = getPostData(null, saron.table.baptist.viewid, null, "list", null, saron.responsetype.records);
+    var options = getPostData(null, saron.table.baptist.viewid, null, "list", null, saron.responsetype.records, baptistListUri);
     $(saron.table.baptist.viewid).jtable('load', options);
     $(saron.table.baptist.viewid).find('.jtable-toolbar-item-add-record').hide();
 });  
@@ -33,7 +34,7 @@ function baptistTableDef(tableViewId, tablePath, tableTitle){
             multiSorting: true,
             defaultSorting: 'FamilyName ASC, DateOfBirthr ASC', //Set default sorting        
         actions: {
-            listAction:   '/' + saron.uri.saron + 'app/web-api/listPeople.php', 
+            listAction:   '/' + saron.uri.saron + baptistListUri, 
             updateAction: '/' + saron.uri.saron + 'app/web-api/updatePerson.php'
         },
         

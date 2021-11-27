@@ -6,10 +6,11 @@ saron
 */
  
 "use strict";
+const roleListUri = 'app/web-api/listOrganizationRole.php';
 
 $(document).ready(function () {
         $(saron.table.role.viewid).jtable(roleTableDef(saron.table.role.viewid, null, null));
-        var options = getPostData(null, saron.table.role.viewid, null, saron.table.role.name, saron.source.list, saron.responsetype.records);
+        var options = getPostData(null, saron.table.role.viewid, null, saron.table.role.name, saron.source.list, saron.responsetype.records, roleListUri);
         $(saron.table.role.viewid).jtable('load', options);
     }
 );
@@ -18,7 +19,6 @@ $(document).ready(function () {
 
 function roleTableDef(tableViewId, tablePath, childTableTitle){
     const tableName = saron.table.role.name;
-    const listUri = 'app/web-api/listOrganizationRole.php';
     return {
          showCloseButton: false,
         title: function (){
@@ -34,8 +34,8 @@ function roleTableDef(tableViewId, tablePath, childTableTitle){
         multiSorting: true,
         defaultSorting: 'Name', //Set default sorting        
         messages: {addNewRecord: 'Lägg till ny roll'},
-        actions: {
-            listAction:   '/' + saron.uri.saron + listUri,
+        actions: {            
+            listAction: '/' + saron.uri.saron + roleListUri,
             createAction: '/' + saron.uri.saron + 'app/web-api/createOrganizationRole.php',
             updateAction: '/' + saron.uri.saron + 'app/web-api/updateOrganizationRole.php',  
             deleteAction: '/' + saron.uri.saron + 'app/web-api/deleteOrganizationRole.php'
@@ -78,7 +78,7 @@ function roleTableDef(tableViewId, tablePath, childTableTitle){
 
                     var childTableDef = unitTableDef(tableViewId, childTablePath, childTableTitle);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
-                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, );
 
                     return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                 }               
@@ -109,7 +109,7 @@ function roleTableDef(tableViewId, tablePath, childTableTitle){
 
                     var childTableDef = unitTypeTableDef(tableViewId, childTablePath, childTableTitle);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
-                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, );
 
                     return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                 }

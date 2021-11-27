@@ -8,17 +8,17 @@ saron,
 RECORD, OPTIONS
 */
 "use strict";
+const unitTypeListUri = 'app/web-api/listOrganizationUnitType.php';
 
 $(document).ready(function () {
     $(saron.table.unittype.viewid).jtable(unitTypeTableDef(saron.table.unittype.viewid, saron.table.unittype.name, null));
-    var options = getPostData(null, saron.table.unittype.viewid, null, saron.table.unittype.name, saron.source.list, saron.responsetype.records);
+    var options = getPostData(null, saron.table.unittype.viewid, null, saron.table.unittype.name, saron.source.list, saron.responsetype.records, unitTypeListUri);
     $(saron.table.unittype.viewid).jtable('load', options);
 });
 
 
 
 function unitTypeTableDef(tableViewId, tablePath, childTableTitle){
-    const listUri = 'app/web-api/listOrganizationUnitType.php';
     const tableName = saron.table.unittype.name;
  
     return {
@@ -37,7 +37,7 @@ function unitTypeTableDef(tableViewId, tablePath, childTableTitle){
         defaultSorting: 'Name', //Set default sorting        
         messages: {addNewRecord: 'Lägg till en ny typ av organisatorisk enhet.'},
         actions: {
-            listAction:   '/' + saron.uri.saron + listUri,
+            listAction:   '/' + saron.uri.saron + unitTypeListUri,
             createAction: '/' + saron.uri.saron + 'app/web-api/createOrganizationUnitType.php',
             updateAction: '/' + saron.uri.saron + 'app/web-api/updateOrganizationUnitType.php',
             deleteAction: '/' + saron.uri.saron + 'app/web-api/deleteOrganizationUnitType.php'
@@ -69,7 +69,7 @@ function unitTypeTableDef(tableViewId, tablePath, childTableTitle){
                     if(data.record.UsedInUnit ===  "1"){
                         var childTableDef = unitTableDef(tableViewId, childTablePath, childTableTitle);
                         var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, saron.table.unit.name, TABLE, childUri);
-                        var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
+                        var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, unitTypeListUri);
                         
                         return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                     }
@@ -104,7 +104,7 @@ function unitTypeTableDef(tableViewId, tablePath, childTableTitle){
                         
                         var childTableDef = roleTableDef(tableViewId, childTablePath, childTableTitle);
                         var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
-                        var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
+                        var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, unitTypeListUri);
                         
                         return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                     }

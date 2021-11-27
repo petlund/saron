@@ -5,11 +5,11 @@ RECORD, OPTIONS
 
 "use strict";
 
+const memberListUri = 'app/web-api/listPeople.php';
 $(document).ready(function () {
 
-
     $(saron.table.member.viewid).jtable(memberTableDef(saron.table.member.viewid, saron.table.member.name, null));
-    var options = getPostData(null, saron.table.member.viewid, null, saron.table.member.name, saron.source.list, saron.responsetype.records);
+    var options = getPostData(null, saron.table.member.viewid, null, saron.table.member.name, saron.source.list, saron.responsetype.records, memberListUri);
     $(saron.table.member.viewid).jtable('load', options);
     $(saron.table.member.viewid).find('.jtable-toolbar-item-add-record').hide();
 });  
@@ -30,7 +30,7 @@ function memberTableDef(tableViewId, tablePath, tableTitle){
             multiSorting: true,
             defaultSorting: 'FamilyName ASC, DateOfBirthr ASC', //Set default sorting        
         actions: {
-            listAction:   '/' + saron.uri.saron + 'app/web-api/listPeople.php?X=Y',
+            listAction:   '/' + saron.uri.saron + memberListUri,
             updateAction: function(data) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
@@ -96,8 +96,9 @@ function memberTableDef(tableViewId, tablePath, tableTitle){
                     return _setClassAndValue(data, "MembershipNo", PERSON);
                 },       
                 options: function (data){
-                    var parameters = getOptionsUrlParameters(data, tableViewId, tablePath)
-                    return '/' + saron.uri.saron + 'app/web-api/listPerson.php' + parameters;
+                    var uri =  'app/web-api/listPerson.php';
+                    var parameters = getOptionsUrlParameters(data, tableViewId, tablePath, uri);
+                    return '/' + saron.uri.saron + uri + parameters;
                 }
             },
             DateOfMembershipEnd: {

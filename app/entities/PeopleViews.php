@@ -7,7 +7,7 @@ class PeopleViews {
     function getPeopleViewSql($tableview, $saronUser){
         switch ($tableview){
         case TABLE_VIEW_PEOPLE:
-            return $this->selectPeople() . ", " . $this->selectEngagement() . ', ' . $saronUser->getRoleSql(false);
+            return $this->selectPeople() . ", " . $this->selectNoOfEngagements() . ', ' . $saronUser->getRoleSql(false);
         case TABLE_VIEW_BIRTHDAY:
             return $this->selectBirthday();
         case TABLE_VIEW_MEMBER:
@@ -23,7 +23,7 @@ class PeopleViews {
         }
     }
     
-    function selectEngagement(){
+    function selectNoOfEngagements(){
         return "(Select count(*) from Org_Pos where People_FK = People.Id) as Engagement";
     }
     
@@ -84,9 +84,20 @@ class PeopleViews {
         $selectOther.= "'<B>Kommentar (Nyckel): </B>', if(CommentKeyEncrypt is null, ''," . DECRYPTED_COMMENT_KEY . "), '<BR>', ";
         $selectOther.= "'<B>Synlig i adresskalender: </B>', if(VisibleInCalendar=2,'Ja','Nej'), '<BR>', ";
         $selectOther.= "'<B>Kön: </B>', IF(Gender=0,'-', IF(Gender=1,'Man','Kvinna')) ";
-        $selectOther.= ") as Other ";   
+        $selectOther.= ") as Other, ";   
+
+        $selectEngagement = "(Select GROUP_CONCAT(Role.Name,', ', Pos.Comment, ' (', Tree.Name , ". EMBEDDED_SELECT_SUPERPOS . ", ') ',IF(Stat.Id > 1,Concat(' <b style=\"background:yellow;\">[', Stat.Name, ']</b>'),'') SEPARATOR '<br>') as EngagementList "; 
+
+        $selectEngagement = "concat (";
+        $selectEngagement.= "'<B>Brevutskick: </B>', if(Letter=1,'Ja','Nej'), '<BR>', ";
+        $selectEngagement.= "'<B>Kodad nyckel: </B>', if(KeyToChurch=0,'Nej','Ja'), '<BR>', ";
+        $selectEngagement.= "'<B>Vanlig nyckel: </B>', if(KeyToExp=0,'Nej', 'Ja'), '<BR>', ";
+        $selectEngagement.= "'<B>Kommentar (Nyckel): </B>', if(CommentKeyEncrypt is null, ''," . DECRYPTED_COMMENT_KEY . "), '<BR>', ";
+        $selectEngagement.= "'<B>Synlig i adresskalender: </B>', if(VisibleInCalendar=2,'Ja','Nej'), '<BR>', ";
+        $selectEngagement.= "'<B>Kön: </B>', IF(Gender=0,'-', IF(Gender=1,'Man','Kvinna')) ";
+        $selectEngagement.= ") as Engagement ";   
            //
-        return $selectPerson . $selectMember . $selectBaptist . $selectAddress  . $selectOther;    
+        return $selectPerson . $selectMember . $selectBaptist . $selectAddress  . $selectOther. $this->selectNoOfEngagements();    
     }
     
 }

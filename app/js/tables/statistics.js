@@ -5,17 +5,17 @@ RECORD, OPTIONS
 
  */
 "use strict";
+const statisticsListUri = 'app/web-api/listStatistics.php';
 
 
 $(document).ready(function () {
     $(saron.table.statistics.viewid).jtable(statisticTableDef(saron.table.statistics.viewid, null));    
-    var options = getPostData(null, saron.table.statistics.viewid, null, saron.table.statistics.name, saron.source.list, saron.responsetype.records);
+    var options = getPostData(null, saron.table.statistics.viewid, null, saron.table.statistics.name, saron.source.list, saron.responsetype.records, statisticsListUri);
     $(saron.table.statistics.viewid).jtable('load',options);
     $(saron.table.statistics.viewid).find('.jtable-toolbar-item-add-record').hide();
 });
 
 function statisticTableDef(tableViewId, tableTitle){
-    var listUri = 'app/web-api/listStatistics.php';
     var tableName = saron.table.statistics.name;
     var title = 'Statistik';
     if(tableTitle !== null)
@@ -30,7 +30,7 @@ function statisticTableDef(tableViewId, tableTitle){
         multiSorting: true,
         defaultSorting: 'year desc', //Set default sorting        
         actions: {
-            listAction:   '/' + saron.uri.saron + listUri,
+            listAction:   '/' + saron.uri.saron + statisticsListUri,
         },
         fields: {
             Id:{
@@ -47,8 +47,8 @@ function statisticTableDef(tableViewId, tableTitle){
                     var imgFile = "member.png";
 
                     var childTableDef = detailTableDef(tableViewId, childTableTitle);
-                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, listUri);
-                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, statisticsListUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, statisticsListUri);
 
                     return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                 }

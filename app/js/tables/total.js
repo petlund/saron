@@ -5,11 +5,11 @@ saron.table.total.name, saron.table.total.viewid
 */
 
 "use strict";
-
+const totalListUri = 'app/web-api/listPeople.php';
 $(document).ready(function () {
 
     $(saron.table.total.viewid).jtable(totalTableDef(saron.table.total.viewid, null));
-    var options = getPostData(null, saron.table.total.viewid, null, saron.table.total.name, saron.source.list, saron.responsetype.records);
+    var options = getPostData(null, saron.table.total.viewid, null, saron.table.total.name, saron.source.list, saron.responsetype.records, totalListUri);
     $(saron.table.total.viewid).jtable('load', options);
     $(saron.table.total.viewid).find('.jtable-toolbar-item-add-record').hide();
 
@@ -20,7 +20,6 @@ function totalTableDef(tableViewId, tableTitle){
     var title = 'Översikt per person';
     if(tableTitle !== null)
         title = tableTitle; 
-    var parameters = getURLParameters(null, tableViewId, null, tableName, null, saron.responsetype.records);
 
     return{
         title: title,
@@ -42,7 +41,7 @@ function totalTableDef(tableViewId, tableTitle){
             data.deleteConfirmMessage = message;
         },         
         actions: {
-            listAction:   '/' + saron.uri.saron + 'app/web-api/listPeople.php',            
+            listAction:   '/' + saron.uri.saron + totalListUri,            
             deleteAction: '/' + saron.uri.saron + 'app/web-api/updatePerson.php?selection=anonymization&TablePath=' + tableName
         },  
         fields: {
@@ -85,6 +84,16 @@ function totalTableDef(tableViewId, tableTitle){
             Other: {
                 title: 'Övriga uppgifter',
                 width: '15%'
+            },
+            Engagement: {
+                title: 'Förtroendeuppdrag',
+                width: '15%',
+                display: function(data){
+                    if(data.record.Engagement > 0)
+                        return "Personen har " + data.record.Engagement + " uppdrag kopplat till sig.";
+
+                    return null;
+                }
             }
         },
         rowInserted: function(event, data){

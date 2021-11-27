@@ -2,24 +2,26 @@
 inputFormWidth, inputFormFieldWidth, 
 NO_HOME, NEW_HOME_ID, 
 TABLE, ORG, RECORD, OPTIONS,
-saron
+saron,
+homesListUri
  */
 
 "use strict";
+const peopleListUri = 'app/web-api/listPeople.php';
+
 $(document).ready(function () {
     localStorage.setItem(NEW_HOME_ID, -1);
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
 
     $(saron.table.people.viewid).jtable(peopleTableDef(saron.table.people.viewid, saron.table.people.name, null));
-    var options = getPostData(null, saron.table.people.viewid, null, saron.table.people.name, saron.source.list, saron.responsetype.records);
+    var options = getPostData(null, saron.table.people.viewid, null, saron.table.people.name, saron.source.list, saron.responsetype.records, peopleListUri);
     $(saron.table.people.viewid).jtable('load', options);
     $(saron.table.people.viewid).find('.jtable-toolbar-item-add-record').hide();
 });
 
 
 function peopleTableDef(tableViewId, tablePath, tableTitle) {
-    var listUri = 'app/web-api/listPeople.php';
     var tableName = saron.table.people.name;
     var title = 'Personuppgifter';
     if(tableTitle !== null)
@@ -35,7 +37,7 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
         defaultSorting: 'LongHomeName ASC, DateOfBirth ASC', //Set default sorting   
         messages: {addNewRecord: 'Ny person'},
         actions: {
-            listAction:   '/' + saron.uri.saron + listUri,
+            listAction:   '/' + saron.uri.saron + peopleListUri,
             createAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
@@ -223,7 +225,7 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
 
                     var childTableDef = engagementTableDef(tableViewId, childTablePath, childTableTitle);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
-                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, );
 
                     return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                 }
@@ -349,8 +351,9 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
                     return _setClassAndValue(data, "MembershipNo", PERSON);
                 },       
                 options: function (data){
-                    var parameters = getOptionsUrlParameters(data, tableViewId, tablePath)
-                    return '/' + saron.uri.saron + 'app/web-api/listPerson.php' + parameters;
+                    var url = '/' + saron.uri.saron + 'app/web-api/listPerson.php';
+                    var parameters = getOptionsUrlParameters(data, tableViewId, tablePath, url);
+                    return url + parameters;
                 }
             },
             MemberState: {
@@ -476,7 +479,7 @@ function _openHomeChildTable(tableViewId, data){
     var rowRef = "[data-record-key=" + data.record.Id + "]";
     var $selectedRow = $(rowRef);
     var childTableTitle = 'Hem för ' + data.record.LongHomeName;
-    var options = getPostData(null, tableViewId, data.record.Id, saron.table.people.name, saron.source.list, saron.responsetype.record);
+    var options = getPostData(null, tableViewId, data.record.Id, saron.table.people.name, saron.source.list, saron.responsetype.record, homesListUri);
 
     $(tableViewId).jtable('openChildTable', $selectedRow, homeTableDef(tableViewId, childTableTitle), function(data){
         data.childTable.jtable('load', options);

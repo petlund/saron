@@ -7,9 +7,9 @@ POS_ENABLED
  */
     
 "use strict";    
+const unitListUri = 'app/web-api/listOrganizationUnit.php';
 
 function unitTableDef(tableViewId, tablePath, childTableTitle){
-    const listUri = 'app/web-api/listOrganizationUnit.php';
 
     var tableName = "";
     if(tableViewId === saron.table.unittree.viewid)
@@ -36,7 +36,7 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
         defaultSorting: getDefaultUnitSorting(tableViewId), //Set default sorting        
         messages: {addNewRecord: 'Lägg till en ny organisatorisk enhet.'},
         actions: {
-            listAction:   '/' + saron.uri.saron + listUri,
+            listAction:   '/' + saron.uri.saron + unitListUri,
             createAction: '/' + saron.uri.saron + 'app/web-api/createOrganizationUnit.php',
             updateAction: '/' + saron.uri.saron + 'app/web-api/updateOrganizationUnit.php',
             deleteAction: '/' + saron.uri.saron + 'app/web-api/deleteOrganizationUnit.php'
@@ -91,8 +91,8 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
                             }
                         }
                         var childTableDef = unitTableDef(tableViewId, childTablePath, childTableTitle);
-                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, tableName, TABLE, listUri);
-                        var $imgClose = closeChildTable(data, tableViewId, tableName, TABLE, listUri);
+                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, tableName, TABLE, unitListUri);
+                        var $imgClose = closeChildTable(data, tableViewId, tableName, TABLE, unitListUri);
                         
                         return getChildNavIcon(data, tableName, $imgChild, $imgClose);
                     }
@@ -137,8 +137,8 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
                         }
 
                         var childTableDef = posTableDef(tableViewId, childTablePath, childTableTitle);
-                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, listUri);
-                        var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
+                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, unitListUri);
+                        var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, unitListUri);
                         
                         return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                     }
@@ -151,20 +151,11 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
                 create: !includedIn(tableViewId, saron.table.unittree.viewid),
                 title: 'Överordna verksamhet',
                 options: function(data) {
-                    var parameters = ""; 
-                    if(data.source === saron.source.list){
-                        parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);
-                    }
-                    if(data.source === saron.formtype.edit){
-                        parameters = getURLParameters(data.record.Id, tableViewId, null, tablePath, data.source, saron.responsetype.options);                        
-                        data.clearCache();
-                    }
-                    if(data.source === saron.source.create){
-                        parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);                        
-                        data.clearCache();                        
-                    }
-
-                    return '/' + saron.uri.saron + listUri + parameters;
+                    if(includedIn(tableViewId, saron.table.unitlist.viewid))
+                        data.record.ParentId=null; //using cache
+                    
+                    var parameters = getOptionsUrlParameters(data, tableViewId, tablePath, unitListUri);                    
+                    return '/' + saron.uri.saron + unitListUri + parameters;
                 }                
             },
             Prefix: {
@@ -199,21 +190,12 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
                 inputTitle: 'Typ av enhet (Kan inte ändras. Vill du ändra behöver du skapa en ny organisatorisk enhet).',
                 width: '5%',
                 options: function (data){
-                    var parameters = ""; 
-                    if(data.source === saron.source.list){
-                        parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);
-                    }
-                    if(data.source === saron.formtype.edit){
-                        parameters = getURLParameters(data.record.Id, tableViewId, null, tablePath, data.source, saron.responsetype.options);                        
-                        data.clearCache();
-                    }
-                    if(data.source === saron.source.create){
-                        parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options);                        
-                        data.clearCache();                        
-                    }
-                    var url = '/' + saron.uri.saron + 'app/web-api/listOrganizationUnitType.php';
-
-                    return url + parameters;
+                    if(includedIn(tableViewId, saron.table.unitlist.viewid))
+                        data.record.ParentId=null; //using cache
+                    
+                    var uri = 'app/web-api/listOrganizationUnitType.php';
+                    var parameters = getOptionsUrlParameters(data, tableViewId, tablePath, uri);                    
+                    return '/' + saron.uri.saron + uri + parameters;
                 }
             },
             UpdaterName: {
