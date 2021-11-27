@@ -267,14 +267,8 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
 
 function getDefaultUnitSorting(currentTableId){
     switch(currentTableId) {
-        case saron.table.unitlist.viewid:
-            return "Name";
         case saron.table.unittree.viewid:
             return "Prefix, Name";
-        case saron.table.role.viewid:
-            return "Name";
-        case saron.table.role.viewid_UNITTYPE:
-            return "Name";
         default:
             return "Name";
     }

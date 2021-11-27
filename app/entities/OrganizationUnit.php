@@ -182,7 +182,12 @@ class OrganizationUnit extends SuperEntity{
     function insert(){
         $sqlInsert = "INSERT INTO Org_Tree (Prefix, Name, Description, OrgUnitType_FK, ParentTreeNode_FK, UpdaterName, Updater) ";
         $sqlInsert.= "VALUES (";
-        $sqlInsert.= "'" . $this->prefix  . "', ";
+        if(strlen($this->prefix) > 0){
+            $sqlInsert.= "'" . $this->prefix  . "', ";
+        }
+        else{
+            $sqlInsert.= "null, ";            
+        }
         $sqlInsert.= "'" . $this->name  . "', ";
         $sqlInsert.= "'" . $this->description . "', ";
         $sqlInsert.= "'" . $this->orgUnitType_FK . "', ";
@@ -204,7 +209,12 @@ class OrganizationUnit extends SuperEntity{
     function update(){
         $update = "UPDATE Org_Tree ";
         $set = "SET ";        
-        $set.= "Prefix='" . $this->prefix . "', ";        
+        if(strlen($this->prefix) > 0){
+            $set.= "Prefix='" . $this->prefix . "', ";        
+        }
+        else{
+            $set.= "Prefix=null, ";                    
+        }
         $set.= "Name='" . $this->name . "', ";        
         $set.= "Description='" . $this->description . "', ";   
         if($this->orgUnitType_FK > 0){ // On edit OrgUnitType_FK === 0
