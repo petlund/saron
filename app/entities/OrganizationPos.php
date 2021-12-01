@@ -31,6 +31,10 @@ class OrganizationPos extends SuperEntity{
         $error["Result"] = "ERROR";
         $error["Message"] = "";
 
+        if(strpos($this->tablePath, TABLE_NAME_ENGAGEMENTS)){
+            $this->people_FK = $this->parentId;              
+        }
+
         if($this->orgPosStatus_FK === 6 ){
             if($this->people_FK > 0 || !($this->function_FK > 0)){
                 $error["Message"] = "Eftersom ett funktionsansvar är angivet ska endast en funktion sättas som ansvarig.";
@@ -43,13 +47,7 @@ class OrganizationPos extends SuperEntity{
                 throw new Exception(json_encode($error));
             }
             if($this->orgPosStatus_FK > 2 and $this->people_FK !== 0 ){
-                if(str_contains($this->tablePath, TABLE_NAME_ENGAGEMENTS)){
-                    $this->people_FK = 0; 
-                }
-                else{
-                    $error["Message"] = "Om positionen inte ska tillsättas eller är vakant ska ingen person kopplas till positionen.";
-                    throw new Exception(json_encode($error));
-                }
+                $this->people_FK = 0; 
             }
             if($this->function_FK > 0){
                 $error["Message"] = "Igen funktion ska anges som ansvarig.";
@@ -98,9 +96,6 @@ class OrganizationPos extends SuperEntity{
         $where = "";
         if($id < 0){
             switch ($this->tablePath){
-                case TABLE_NAME_POS:            
-                    $where = "";
-                    break;
                 case TABLE_NAME_UNITTREE . "/" . TABLE_NAME_POS:            
                     $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
                     break;
@@ -198,7 +193,7 @@ class OrganizationPos extends SuperEntity{
         }
         $set.= "Comment='" . $this->comment . "', ";
         $set.= "OrgPosStatus_FK='" . $this->orgPosStatus_FK . "', ";
-        $set.= "People_FK=" . $this->ParentId . ", ";
+        $set.= "People_FK=" . $this->people_FK . ", ";
         $set.= "Function_FK=" . $this->function_FK . ", ";
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater=" . $this->saronUser->WP_ID . " ";

@@ -176,7 +176,7 @@ function engagementTableDef(tableViewId, tablePath, childTableTitle){
                         success: function (data) {
                             $dfd.resolve(data);
                             if(data.Result === 'OK'){
-                                updatePersonEngagementRecord(data.record.ParentId);
+                                updatePersonEngagementRecord(data.Record.ParentId);
                             }
                         },
                         error: function () {
@@ -201,6 +201,12 @@ function engagementTableDef(tableViewId, tablePath, childTableTitle){
             ParentId:{
                 type: 'hidden'                
             },
+            People_FK:{
+                type: 'hidden'                
+            },
+            TablePath:{
+                type: 'hidden'                
+            },            
             OrgPosStatus_FK: {
                 title: 'Status',
                 width: '10%',
