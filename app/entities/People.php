@@ -24,10 +24,10 @@ class People extends SuperEntity{
         case RECORDS:
             switch ($this->tableView){
                 case MOBILE_INSTEAD_OF_EMAIL:
-                    return $this->selectMobile(RECORDS);       
+                    return $this->selectMobile();       
                 break;
                 case EMAIL_LIST:
-                    return $this->selectEmail(RECORDS);       
+                    return $this->selectEmail();       
                 break;
                 default:
                     return $this->selectDefault();       
@@ -99,11 +99,11 @@ class People extends SuperEntity{
         $select.= "Union "; 
         $select.= "SELECT 0 as Value, '-' as DisplayText "; 
         $select.= "Union "; 
-        $select.= "select Id as Value, " . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . " as DisplayText ";
+        $select.= "select Id as Value, concat(" . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . ", ' (', " . getMemberStateSql() . ", ')') as DisplayText ";
         
         
         $where = "";
-        $where = "WHERE " . getFilteredMemberStateSql("People", null, false, $this->tablePath);
+        $where = "WHERE " . getFilteredMemberStateSql("People", null, false, $this->source);
         
         $from = "FROM People ";
         

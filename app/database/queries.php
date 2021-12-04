@@ -125,7 +125,7 @@
 
 
     
-    function getMemberStateSql($tableAlias = "People", $fieldAlias, $continue){
+    function getMemberStateSql($tableAlias = "People", $fieldAlias ="", $continue=false){
         $sql ="(SELECT MemberState.Name FROM MemberState Where MemberState.Id = ";
         $sql.=getMemberStateIndexSql($tableAlias, null, false);
         $sql.=") ";
@@ -143,7 +143,7 @@
     }
     
 
-    function getMemberStateIndexSql($tableAlias = "People", $fieldAlias, $continue){
+    function getMemberStateIndexSql($tableAlias = "People", $fieldAlias="", $continue=false){
         $sql="Case ";
         $sql.="WHEN " . $tableAlias . ".Id is null Then 0 ";
         $sql.="WHEN " . $tableAlias . ".DateOfDeath > 0 Then 5 ";
@@ -168,10 +168,10 @@
     
     
     
-    function getFilteredMemberStateSql($tableAlias = "People", $fieldAlias, $continue, $tablePath){
+    function getFilteredMemberStateSql($tableAlias = "People", $fieldAlias, $continue, $source){
         
         $sql1 = "";
-        if($filterCreate){
+        if($source === SOURCE_EDIT){
             $sql1 = "IF(MemberState.FilterUpdate = '1', true, false) AND ";
         }
         else{
@@ -179,11 +179,11 @@
         }
         
         $sql2 = "";
-        if($filterUpdate){
-            $sql1 = "IF(MemberState.FilterCreate = '1', true, false) ";            
+        if($source === SOURCE_CREATE){
+            $sql2 = "IF(MemberState.FilterCreate = '1', true, false) ";            
         }
         else{
-            $sql1 = "true ";            
+            $sql2 = "true ";            
         }
         
         
