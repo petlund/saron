@@ -18,18 +18,24 @@ class People extends SuperEntity{
     
     
     function select(){
-        switch ($this->selection){
-        case "options":
+        switch ($this->resultType){
+        case OPTIONS:
             return $this->selectPeopleOptions();       
-        case "email":
-            return $this->selectEmail(RECORDS);       
-        case "mobileInsteadOfMail":
-            return $this->selectMobile(RECORDS);       
+        case RECORDS:
+            switch ($this->tableView){
+                case MOBILE_INSTEAD_OF_EMAIL:
+                    return $this->selectMobile(RECORDS);       
+                break;
+                case EMAIL_LIST:
+                    return $this->selectEmail(RECORDS);       
+                break;
+                default:
+                    return $this->selectDefault();       
+            }
         default:
-            return $this->selectDefault(RECORDS);
+            return $this->selectDefault();
         }
     }
-
 
     
     function selectDefault($idFromCreate = -1){

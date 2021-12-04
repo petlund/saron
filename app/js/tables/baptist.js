@@ -44,8 +44,8 @@ function baptistTableDef(tableViewId, tablePath, tableTitle){
                 list: false
             },
             TablePath:{
-                defaultValue: tableName,
-                type: 'hidden'
+                type: 'hidden',
+                defaultValue: tableName
             },
             Name: {
                 title: 'Namn',

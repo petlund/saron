@@ -119,11 +119,10 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
                     var childTablePath = tablePath + "/" + childTableName;
                     var tooltip = 'Adressuppgifter';
                     var imgFile = "home.png";
-                    var listUri = 'app/web-api/listHomes.php';
 
                     var childTableDef = homeTableDef(tableViewId, childTablePath, childTableTitle);
-                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, listUri);
-                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, peopleListUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, peopleListUri);
 
                     return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
 
@@ -142,11 +141,10 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
                     var childTablePath = tablePath + "/" + childTableName;
                     var tooltip = 'Medlemsuppgifter';
                     var imgFile = "member.png";
-                    var listUri = 'app/web-api/listPeople.php';
 
                     var childTableDef = memberTableDef(tableViewId, childTablePath, childTableTitle);
-                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, listUri);
-                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, peopleListUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, peopleListUri);
 
                     return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
 
@@ -165,11 +163,10 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
                     var childTablePath = tablePath + "/" + childTableName;
                     var tooltip = 'Dopuppgifter';
                     var imgFile = "baptist.png";
-                    var listUri = 'app/web-api/listPeople.php';
 
                     var childTableDef = baptistTableDef(tableViewId, childTablePath, childTableTitle);
-                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, listUri);
-                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, peopleListUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, peopleListUri);
 
                     return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
 
@@ -191,11 +188,9 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
                     if(data.record.KeyToChurch + data.record.KeyToExp > 0)
                         imgFile = "key.png";
                     
-                    var listUri = 'app/web-api/listPeople.php';
-
                     var childTableDef = keyTableDef(tableViewId, childTablePath, childTableTitle);
-                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, listUri);
-                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, peopleListUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, peopleListUri);
 
                     return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
  
@@ -223,9 +218,9 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
                         imgFile = "haspos.png";
                     }                    
 
-                    var childTableDef = engagementTableDef(tableViewId, childTablePath, childTableTitle);
-                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
-                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, );
+                    var childTableDef = engagementTableDef(data, tableViewId, childTablePath, childTableTitle);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, peopleListUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, peopleListUri);
 
                     return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                 }

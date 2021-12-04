@@ -92,7 +92,8 @@ $saron->table->role->name = TABLE_NAME_ROLE ;
 
 $saron->table->engagement = (object)array();
 $saron->table->engagement->viewid = "#" . TABLE_VIEW_ENGAGEMENT ;
-$saron->table->engagement->name = TABLE_NAME_ENGAGEMENT ;
+$saron->table->engagement->name = TABLE_NAME_ENGAGEMENT;
+$saron->table->engagements = (object)array();
 $saron->table->engagements->name = TABLE_NAME_ENGAGEMENTS ;
 
 $saron->table->pos = (object)array();
@@ -126,5 +127,11 @@ $saron->table->org_role_status->name = TABLE_NAME_ORG_ROLE_STATUS ;
 $saron->table->users = (object)array();
 $saron->table->users->viewid = "#" . TABLE_VIEW_USERS ;
 $saron->table->users->name = TABLE_NAME_USERS ;
+
+$saron->list = (object)array();
+$saron->list->mobile_instead_of_email =  (object)array();
+$saron->list->mobile_instead_of_email->viewid = MOBILE_INSTEAD_OF_EMAIL;
+$saron->list->email =  (object)array();
+$saron->list->email->viewid = EMAIL_LIST;
 
 $saronJSON = json_encode($saron);

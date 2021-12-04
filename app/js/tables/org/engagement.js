@@ -64,7 +64,7 @@ function peopleEngagementTableDef(tableViewId, tablePath){
                         imgFile = "haspos.png";
                     }                    
 
-                    var childTableDef = engagementTableDef(tableViewId, childTablePath, childTableTitle);
+                    var childTableDef = engagementTableDef(data, tableViewId, childTablePath, childTableTitle);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, engagementListUri);
 
@@ -128,7 +128,7 @@ function peopleEngagementTableDef(tableViewId, tablePath){
 
 
 
-function engagementTableDef(tableViewId, tablePath, childTableTitle){
+function engagementTableDef(parentData, tableViewId, tablePath, childTableTitle){
     const uri = 'app/web-api/listOrganizationPos.php';
     return {
         showCloseButton: false,
@@ -147,44 +147,8 @@ function engagementTableDef(tableViewId, tablePath, childTableTitle){
         messages: {addNewRecord: 'Tilldela personen ett vakant uppdrag'},
         actions: {
             listAction:   '/' + saron.uri.saron + uri,
-            createAction: function(postData) {
-                return $.Deferred(function ($dfd) {
-                    $.ajax({
-                        url: '/' + saron.uri.saron + 'app/web-api/addPersonToOrganizationPos.php',
-                        type: 'POST',
-                        dataType: 'json',
-                        data: postData,
-                        success: function (data) {
-                            $dfd.resolve(data);
-                            if(data.Result === 'OK'){
-                                updatePersonEngagementRecord(data.Record.ParentId);
-                            }
-                        },
-                        error: function () {
-                            $dfd.reject();
-                        }
-                    });
-                });
-            },
-            updateAction: function(postData) {
-                return $.Deferred(function ($dfd) {
-                    $.ajax({
-                        url: '/' + saron.uri.saron + 'app/web-api/updateOrganizationPos.php',
-                        type: 'POST',
-                        dataType: 'json',
-                        data: postData,
-                        success: function (data) {
-                            $dfd.resolve(data);
-                            if(data.Result === 'OK'){
-                                updatePersonEngagementRecord(data.Record.ParentId);
-                            }
-                        },
-                        error: function () {
-                            $dfd.reject();
-                        }
-                    });
-                });
-            }
+            createAction: '/' + saron.uri.saron + 'app/web-api/addPersonToOrganizationPos.php',
+            updateAction: '/' + saron.uri.saron + 'app/web-api/updateOrganizationPos.php',
         },
         fields: {
             Id: {
@@ -202,7 +166,8 @@ function engagementTableDef(tableViewId, tablePath, childTableTitle){
                 type: 'hidden'                
             },
             People_FK:{
-                type: 'hidden'                
+                type: 'hidden',
+                defaultValue: parentData.record.Id
             },
             TablePath:{
                 type: 'hidden'                
@@ -238,21 +203,31 @@ function engagementTableDef(tableViewId, tablePath, childTableTitle){
             }            
         },
         recordUpdated: function(event, data){
+            updatePersonEngagementRecord(data.record.ParentId);
             if(data.record.OrgPosStatus_FK > 3){ // set vacancy
-                updateChildRecord(PersonName, parentId, data.record.Cnt);
+                var childTable = event.target.closest('div.jtable-child-table-container');
+                $(childTable).jtable("deleteRecord",{key: data.record.Id, clientOnly:true, animationsEnabled:true});
             }
         },
+        recordAdded(event, data){
+            updatePersonEngagementRecord(data.record.ParentId);            
+        },
+        recordsLoaded: function(event, data) {
+            if(!tablePath.includes(saron.table.people.name)){
+                if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
+                    $(tableViewId).find('.jtable-toolbar-item-add-record').show();
+                }
+            }
+            else{
+                $(tableViewId).find('.jtable-toolbar-item-add-record').hide();
+            }
+        },        
         rowInserted: function(event, data){
             data.row.find('.jtable-delete-command-button').hide();
-            if (data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org'){
+            if ((data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org') || tablePath.includes(saron.table.people.name)){
                 data.row.find('.jtable-edit-command-button').hide();
             }
             addDialogDeleteListener(data);            
-        },        
-        recordsLoaded: function(event, data) {
-            if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
-                $(tableViewId).find('.jtable-toolbar-item-add-record').show();
-            }
         },        
         formCreated: function (event, data){
             if(data.formType === saron.formtype.edit){
@@ -272,21 +247,8 @@ function engagementTableDef(tableViewId, tablePath, childTableTitle){
 
 
 function updatePersonEngagementRecord(Id){
-    var url = '/' + saron.uri.saron + 'app/web-api/listEngagement.php?Id=' + Id;
+    var url = '/' + saron.uri.saron + engagementListUri;
     var options = {record:{"Id": Id}, "clientOnly": false, "url":url};
     $(saron.table.engagement.viewid).jtable('updateRecord', options);
 }
-  
 
-
-function updateChildRecord(PersonName, Id,  Cnt){
-    var $selectedRow = $("[data-record-key=" + Id + "]"); 
-    $(saron.table.engagement.viewid).jtable('closeChildTable', $selectedRow, function(){
-        var $selectedRow = $("[data-record-key=" + Id + "]"); 
-        if(Cnt > 1){
-            $(saron.table.engagement.viewid).jtable('openChildTable', $selectedRow, engagementTableDef(PEOPLE_ENG, PersonName, Id, Cnt), function(data){
-                data.childTable.jtable('load');            
-            });
-        }
-    });
-}

@@ -52,7 +52,8 @@
     Define("TABLE_VIEW_STATISTICS_DETAIL",  "STATISTICS_DETAIL");
     Define("TABLE_NAME_STATISTICS_DETAIL",  "table_statistics_detail");
 
-    
+    define("MOBILE_INSTEAD_OF_EMAIL", "MOBILE_INSTEAD_OF_EMAIL");
+    define("EMAIL_LIST", "EMAIL_LIST");
     
 //Organisation
     Define("TABLE_VIEW_ROLE",  "ORG_ROLE");

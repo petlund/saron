@@ -65,6 +65,10 @@ function memberTableDef(tableViewId, tablePath, tableTitle){
                     return _setClassAndValue(data, "Name", PERSON);
                 }       
             },
+            TablePath:{
+                type: 'hidden',
+                defaultValue: tableName
+            },
             DateOfBirth: { 
                 title: 'Född',
                 width: '7%',

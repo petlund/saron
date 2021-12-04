@@ -214,8 +214,6 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
             }
         },
         recordUpdated: function (event, data){
-            //updateParentTable(data, tableViewId, listUri);
-                    
             if(data.record.HasSubUnit !== '0' || data.record.HasPos !== '0')
                 data.row.find('.jtable-delete-command-button').hide();
             else
