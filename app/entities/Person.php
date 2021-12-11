@@ -11,7 +11,6 @@ require_once SARON_ROOT . 'app/entities/Home.php';
 
 class Person extends People{
 
-    protected $id;
     protected $HomeId;
     protected $OldHomeId;
     protected $LastName;

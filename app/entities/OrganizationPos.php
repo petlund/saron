@@ -197,7 +197,7 @@ class OrganizationPos extends SuperEntity{
         $set.= "Function_FK=" . $this->function_FK . ", ";
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater=" . $this->saronUser->WP_ID . " ";
-        $where = "WHERE id=" . $this->id;
+        $where = "WHERE Id=" . $this->id;
         $response = $this->db->update($update, $set, $where);
         
         return $this->select($this->id);
@@ -212,7 +212,7 @@ class OrganizationPos extends SuperEntity{
         $set.= "People_FK=" . $this->people_FK . ", ";
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater=" . $this->saronUser->WP_ID . " ";
-        $where = "WHERE id=" . $this->id;
+        $where = "WHERE Id=" . $this->id;
         $response = $this->db->update($update, $set, $where);
         
         return $this->select($this->id);

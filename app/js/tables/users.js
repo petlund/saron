@@ -18,7 +18,7 @@ $(document).ready(function () {
             listAction:   '/' + saron.uri.saron + 'app/web-api/listUsers.php'
         },
         fields: {
-            id: {
+            Id: {
                 key: true,
                 list: false
             },

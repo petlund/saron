@@ -35,7 +35,7 @@ function orgVersionTableDef(){
                     return 'version';
                 }
             },
-            id: {
+            Id: {
                 key: true,
                 list: false
             },

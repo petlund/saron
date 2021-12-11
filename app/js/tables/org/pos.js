@@ -17,7 +17,7 @@ $(document).ready(function () {
 );
 
 
-function posTableDef(tableViewId, tablePath, tableTitle){
+function posTableDef(parentData, tableViewId, tablePath, tableTitle){
     const tableName = saron.table.pos.name;
     
     return {
@@ -105,7 +105,10 @@ function posTableDef(tableViewId, tablePath, tableTitle){
                 width: '10%',
                 title: 'Roll',
                 options: function(data){
-                    var uri = 'app/web-api/listOrganizationRole.php';                    
+                    var uri = 'app/web-api/listOrganizationRole.php';      
+                    if(typeof(data.record) === "undefined") // when create
+                        data = {...data, record:{Id:parentData.record.Id}};
+                            
                     var parameters = getOptionsUrlParameters(data, tableViewId, tablePath, uri);                    
                     return '/' + saron.uri.saron + uri + parameters;
                 }
@@ -194,16 +197,16 @@ function posTableDef(tableViewId, tablePath, tableTitle){
             }
         },
         recordAdded: function(event, data){
-            if(saron.table.pos.viewid !== tableViewId)
-                updateParentUnit(tableViewId, data);            
+//            if(saron.table.pos.viewid !== tableViewId)
+//                updateParentUnit(tableViewId, data);            
         },
         recordUpdated: function(event, data){
-            if(saron.table.pos.viewid !== tableViewId)
-                updateParentUnit(tableViewId, data);            
+//            if(saron.table.pos.viewid !== tableViewId)
+//                updateParentUnit(tableViewId, data);            
         },
         recordDeleted: function(event, data){
-            if(saron.table.pos.viewid !== tableViewId)
-                updateParentUnit(tableViewId, data);            
+//            if(saron.table.pos.viewid !== tableViewId)
+//                updateParentUnit(tableViewId, data);            
         },
         rowInserted: function(event, data){
             data.row.addClass("Id_" + data.record.Id); 
@@ -222,10 +225,10 @@ function posTableDef(tableViewId, tablePath, tableTitle){
             }
         },        
         formCreated: function (event, data){
-//            $('#jtable-edit-form').append('<input type="hidden" name="OrgTree_FK" value="' + data.record.ParentTreeNode_FK + '" />');
-            if(data.formType === saron.formtype.edit)
+            if(data.formType === saron.formtype.edit){
+                data.form.find('select[name=OrgRole_FK]')[0].disabled=true;
                 data.row[0].style.backgroundColor = "yellow";
-
+            }
             data.form.css('width','600px');
         },
         formClosed: function (event, data){

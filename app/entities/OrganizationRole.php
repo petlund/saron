@@ -126,7 +126,7 @@ class OrganizationRole extends SuperEntity{
         }
         else{
             $rec = RECORD;
-            $where = "WHERE Role.id = " . $id . " ";
+            $where = "WHERE Role.Id = " . $id . " ";
         }
 
         $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $rec);        
@@ -140,11 +140,11 @@ class OrganizationRole extends SuperEntity{
         $from = "FROM Org_Role as Role "; 
         $where = "";
 
-//        if($this->parentId > 0){
-//            $from.= "inner join `Org_Role-UnitType` Typ on Role.Id = Typ.OrgRole_FK "; 
-//            $where = "WHERE OrgUnitType_FK = " . $this->parentId . " ";
-//            $where.=" and Role.Id not in (select P.OrgRole_FK from Org_Pos as P inner join Org_Role as R on R.Id = P.OrgRole_FK where R.RoleType = 1 and P.OrgRole_FK <> " . $this->id . ") ";
-//        }
+        if($this->source === SOURCE_CREATE){
+            $from.= "inner join `Org_Role-UnitType` Typ on Role.Id = Typ.OrgRole_FK "; 
+            $where = "WHERE OrgUnitType_FK = " . $this->parentId . " ";
+            $where.=" and Role.Id not in (select P.OrgRole_FK from Org_Pos as P inner join Org_Role as R on R.Id = P.OrgRole_FK where R.RoleType = 1 and P.OrgRole_FK <> " . $this->id . ") ";
+        }
             
         $result = $this->db->select($this->saronUser, $select , $from, $where, "Order by DisplayText ", "", "Options");    
         return $result; 
@@ -175,7 +175,7 @@ class OrganizationRole extends SuperEntity{
         $set.= "Description='" . $this->description . "', ";        
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater='" . $this->saronUser->WP_ID . "' ";
-        $where = "WHERE id=" . $this->id;
+        $where = "WHERE Id=" . $this->id;
         $this->db->update($update, $set, $where);
         return $this->select($this->id, RECORD);
     }

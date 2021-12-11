@@ -79,7 +79,7 @@ class OrganizationRoleUnitType extends SuperEntity{
         $set.= "Updater=" . $this->saronUser->WP_ID . ", ";        
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "SortOrder=" . $this->sortOrder . " ";        
-        $where = "WHERE id=" . $this->id;
+        $where = "WHERE Id=" . $this->id;
         $this->db->update($update, $set, $where);
         return $this->select($this->id, RECORD);
     }

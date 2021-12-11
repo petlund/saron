@@ -26,7 +26,7 @@ function newsTableDef(){
             deleteAction: '/' + saron.uri.saron + 'app/web-api/deleteNews.php'
         },
         fields: {
-            id: {
+            Id: {
                 key: true,
                 list: false
             },

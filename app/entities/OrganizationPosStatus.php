@@ -79,7 +79,7 @@ class OrganizationPosStatus extends SuperEntity{
         $set.= "Description='" . $this->description . "', ";        
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater='" . $this->saronUser->WP_ID . "' ";
-        $where = "WHERE id=" . $this->id;
+        $where = "WHERE Id=" . $this->id;
         $this->db->update($update, $set, $where);
         return $this->select($this->id, RECORD);
     }

@@ -33,17 +33,16 @@ function peopleEngagementTableDef(tableViewId, tablePath){
             listAction:   '/' + saron.uri.saron + engagementListUri,
         },
         fields: {
-            TablePath:{
-                list: false,
-                edit: false,
-                create: false
-            },            
             Id: {
                 key: true,
                 list: false,
                 edit: false,
                 create: false
             },
+            TablePath:{
+                type: 'hidden',
+                defaultValue: tableName
+            }, 
             Role:{
                 width: '1%',
                 sorting: false,
@@ -163,6 +162,7 @@ function engagementTableDef(parentData, tableViewId, tablePath, childTableTitle)
                 }
             },
             ParentId:{
+                defaultValue = parentData.record.Id,
                 type: 'hidden'                
             },
             People_FK:{

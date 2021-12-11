@@ -106,6 +106,14 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
             }
         },       
         fields: {
+            Id: {
+                key: true,
+                list: false
+            },
+            TablePath:{
+                type: 'hidden',
+                defaultValue: tableName
+            },
             Homes:{
                 title: '',
                 width: '1%',
@@ -224,14 +232,6 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
 
                     return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                 }
-            },
-            Id: {
-                key: true,
-                list: false
-            },
-            TablePath:{
-                type: 'hidden',
-                defaultValue: tableName
             },
             HomeId: {
                 create: true,
@@ -412,7 +412,7 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
         },        
         formCreated: function (event, data){
             var headLine;
-            //$.datepicker.formatDate("yyyy-MM-dd");
+
             if(data.formType === saron.formtype.edit){
                 if(data.record.HomeId === "0"){
                     data.record.HomeId = localStorage.getItem(NEW_HOME_ID);
@@ -420,7 +420,6 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
                 }                 
                 data.row[0].style.backgroundColor = "yellow";
                 headLine = 'Uppdatera uppgifter för: ' + data.record.FirstName + ' ' + data.record.LastName;
-                //data.form.find('input[name=DateOfMembershipStart]').hide();
             }
             else{
                 headLine = 'Ange uppgifter för ny person';                

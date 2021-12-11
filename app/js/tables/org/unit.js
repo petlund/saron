@@ -136,7 +136,7 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
                             }
                         }
 
-                        var childTableDef = posTableDef(tableViewId, childTablePath, childTableTitle);
+                        var childTableDef = posTableDef(data, tableViewId, childTablePath, childTableTitle);
                         var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, unitListUri);
                         var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, unitListUri);
                         

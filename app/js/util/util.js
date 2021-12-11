@@ -358,7 +358,7 @@ function getOptionsUrlParameters(data, tableViewId, tablePath, url){
         data.clearCache();
     }
     if(data.source === saron.source.create){
-        parameters = getURLParameters(null, tableViewId, null, tablePath, data.source, saron.responsetype.options, url);                        
+        parameters = getURLParameters(data.record.Id, tableViewId, null, tablePath, data.source, saron.responsetype.options, url);                        
         data.clearCache();                        
     }    
     return parameters;

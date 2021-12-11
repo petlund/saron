@@ -2,6 +2,26 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/news.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/People.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/queries.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationPos.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/org/role.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/util/tableNavigationUtil.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationRoleUnitType.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/Person.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/db.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/Engagement.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/org/pos.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/menu.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/people.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/org/engagement.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/org/unittype.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/util/util.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/org/unit.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationRole.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationUnit.php</file>
+        </group>
     </open-files>
 </project-private>

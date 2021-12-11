@@ -34,7 +34,7 @@ class MemberState extends SuperEntity{
             return $result;
         }
         else{
-            $result = $this->db->select($this->saronUser, $select , "FROM MemberState ", "WHERE id = " . $id . " ", $this->getSortSql(), $this->getPageSizeSql(), $rec);        
+            $result = $this->db->select($this->saronUser, $select , "FROM MemberState ", "WHERE Id = " . $id . " ", $this->getSortSql(), $this->getPageSizeSql(), $rec);        
             return $result;
         }
     }
@@ -67,7 +67,7 @@ class MemberState extends SuperEntity{
         $set.= "FilterUpdate=" . $this->filterUpdate . ", ";        
         $set.= "Updater='" . $this->saronUser->WP_ID . "', ";        
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "' ";        
-        $where = "WHERE id=" . $this->id;
+        $where = "WHERE Id=" . $this->id;
         $this->db->update($update, $set, $where);
         return $this->select($this->id, RECORD);
     }

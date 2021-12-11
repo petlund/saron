@@ -7,7 +7,6 @@ require_once SARON_ROOT . 'app/entities/PeopleFilter.php';
 
 class People extends SuperEntity{
 
-    protected $id;
     protected $uppercaseSearchString;
     protected $filter;
 

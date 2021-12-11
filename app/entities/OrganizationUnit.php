@@ -127,7 +127,7 @@ class OrganizationUnit extends SuperEntity{
                     $from.= "inner join `Org_Role-UnitType` as Rut on Tree.OrgUnitType_FK=Rut.OrgUnitType_FK ";
                     break;
                 default:
-                    $select.= $this->setParentAlias(ParentTreeNode_FK);
+                    $select.= $this->setParentAlias("ParentTreeNode_FK");
             }            
         }
         else{
@@ -228,7 +228,7 @@ class OrganizationUnit extends SuperEntity{
         }
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater='" . $this->saronUser->WP_ID . "' ";
-        $where = "WHERE id=" . $this->id;
+        $where = "WHERE Id=" . $this->id;
         $this->db->update($update, $set, $where);
         return $this->select();
     }
