@@ -42,7 +42,7 @@ class Engagement extends SuperEntity{
         $subQuery1 = $subSelect1 . $subFrom . $subWhere . $subGroupBy . $subOrderBy;
         $subQuery2 = $subSelect2 . $subFrom . $subWhere . $subGroupBy . ") as Cnt, ";
         
-        $select = "SELECT p.Id, " . getPersonSql(null, "Name", true);
+        $select = "SELECT p.Id, p.DateOfMembershipStart, " . getPersonSql(null, "Name", true);
         $select.= getMemberStateSql("p", "MemberState", true);
         $select.= DECRYPTED_ALIAS_EMAIL . ", ";
         $select.= getFieldSql(null, "Mobile", "MobileEncrypt", "", true, true);

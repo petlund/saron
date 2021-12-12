@@ -87,6 +87,11 @@ function setUpPdfDoc($type){
             $name = createOrganizationCalender($pdf, $type);
             $pdf->Output('Organisationskalender - ' . $typ . ' ' . date('Y-m-d', time()).'.pdf');
             break;
+        case "vacancy":
+            $typ = "Vakanser";
+            $name = createOrganizationCalender($pdf, $type);
+            $pdf->Output('Organisationskalender - ' . $typ . ' ' . date('Y-m-d', time()).'.pdf');
+            break;
         default:
             $typ = "Förslag";
             $name = createOrganizationCalender($pdf, $type);
@@ -138,6 +143,9 @@ function createOrganizationCalender(TCPDF $pdf, String $type){
     switch ($type){
         case "proposal":
             $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, "Förslag till förändringar utifrån beslutad organisation - " . $decisionDate, 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_HEAD_CELL_HIGHT, 'T', true);
+            break;
+        case "vacancy":
+            $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, "Vakanta uppdrag - " . date("Y-m-d", time()), 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_HEAD_CELL_HIGHT, 'T', true);
             break;
         case "vacancy":
             $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, "Vakanta uppdrag - " . date("Y-m-d", time()), 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_HEAD_CELL_HIGHT, 'T', true);
