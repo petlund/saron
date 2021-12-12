@@ -18,8 +18,7 @@ class Engagement extends SuperEntity{
  
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
-        $this->id = (int)filter_input(INPUT_GET, "Id", FILTER_SANITIZE_NUMBER_INT);
-        
+
         $this->tableview = (String)filter_input(INPUT_POST, "tableview", FILTER_SANITIZE_STRING);
         $this->filterType = (String)filter_input(INPUT_GET, "filterType", FILTER_SANITIZE_STRING);
 
@@ -46,7 +45,7 @@ class Engagement extends SuperEntity{
         $subQuery1 = $subSelect1 . $subFrom . $subWhere . $subGroupBy . $subOrderBy;
         $subQuery2 = $subSelect2 . $subFrom . $subWhere . $subGroupBy . ") as Cnt, ";
         
-        $select = "SELECT p.Id, " . getPersonSql(null, "Name", true);
+        $select = "SELECT p.Id, p.DateOfMembershipStart, " . getPersonSql(null, "Name", true);
         $select.= getMemberStateSql("p", "MemberState", true);
         $select.= DECRYPTED_ALIAS_EMAIL . ", ";
         $select.= getFieldSql(null, "Mobile", "MobileEncrypt", "", true, true);

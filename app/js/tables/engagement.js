@@ -70,6 +70,9 @@ function peopleEngagementTableDef(tableId){
             MemberState: {
                 title: 'Status'
             },
+            DateOfMembershipStart: {
+                title: 'Medlemskap Start'
+            },
             Email: {
                 title: 'Mail',
                 display: function (data){
