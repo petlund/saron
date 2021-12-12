@@ -17,7 +17,7 @@ $(document).ready(function () {
 );
 
 
-function posTableDef(parentData, tableViewId, tablePath, tableTitle, parentId){
+function posTableDef(tableViewId, tablePath, tableTitle, parentId){
     const tableName = saron.table.pos.name;
     
     return {
@@ -106,9 +106,6 @@ function posTableDef(parentData, tableViewId, tablePath, tableTitle, parentId){
                 title: 'Roll',
                 options: function(data){
                     var uri = 'app/web-api/listOrganizationRole.php';      
-                    if(typeof(data.record) === "undefined") // when create
-                        data = {...data, record:{Id:parentData.record.Id}};
-                            
                     var parameters = getOptionsUrlParameters(data, tableViewId, parentId, tablePath, uri);                    
                     return '/' + saron.uri.saron + uri + parameters;
                 }

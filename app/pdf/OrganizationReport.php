@@ -140,7 +140,7 @@ function createOrganizationCalender(TCPDF $pdf, String $type){
             $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, "Förslag till förändringar utifrån beslutad organisation - " . $decisionDate, 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_HEAD_CELL_HIGHT, 'T', true);
             break;
         case "vacancy":
-            $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, "Vakanta uppdrag - " . $decisionDate, 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_HEAD_CELL_HIGHT, 'T', true);
+            $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, "Vakanta uppdrag - " . date("Y-m-d", time()), 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_HEAD_CELL_HIGHT, 'T', true);
             break;
         default:
             $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, "Beslutad organisation - " . $decisionDate, 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_HEAD_CELL_HIGHT, 'T', true);
