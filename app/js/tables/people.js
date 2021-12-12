@@ -14,14 +14,14 @@ $(document).ready(function () {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
 
-    $(saron.table.people.viewid).jtable(peopleTableDef(saron.table.people.viewid, saron.table.people.name, null));
+    $(saron.table.people.viewid).jtable(peopleTableDef(saron.table.people.viewid, saron.table.people.name, null, null));
     var options = getPostData(null, saron.table.people.viewid, null, saron.table.people.name, saron.source.list, saron.responsetype.records, peopleListUri);
     $(saron.table.people.viewid).jtable('load', options);
     $(saron.table.people.viewid).find('.jtable-toolbar-item-add-record').hide();
 });
 
 
-function peopleTableDef(tableViewId, tablePath, tableTitle) {
+function peopleTableDef(tableViewId, tablePath, tableTitle, parentId) {
     var tableName = saron.table.people.name;
     var title = 'Personuppgifter';
     if(tableTitle !== null)
@@ -128,7 +128,7 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
                     var tooltip = 'Adressuppgifter';
                     var imgFile = "home.png";
 
-                    var childTableDef = homeTableDef(tableViewId, childTablePath, childTableTitle);
+                    var childTableDef = homeTableDef(tableViewId, childTablePath, childTableTitle, data.record.Id);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, peopleListUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, peopleListUri);
 
@@ -150,7 +150,7 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
                     var tooltip = 'Medlemsuppgifter';
                     var imgFile = "member.png";
 
-                    var childTableDef = memberTableDef(tableViewId, childTablePath, childTableTitle);
+                    var childTableDef = memberTableDef(tableViewId, childTablePath, childTableTitle, data.record.Id);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, peopleListUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, peopleListUri);
 
@@ -172,7 +172,7 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
                     var tooltip = 'Dopuppgifter';
                     var imgFile = "baptist.png";
 
-                    var childTableDef = baptistTableDef(tableViewId, childTablePath, childTableTitle);
+                    var childTableDef = baptistTableDef(tableViewId, childTablePath, childTableTitle, data.record.Id);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, peopleListUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, peopleListUri);
 
@@ -196,7 +196,7 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
                     if(data.record.KeyToChurch + data.record.KeyToExp > 0)
                         imgFile = "key.png";
                     
-                    var childTableDef = keyTableDef(tableViewId, childTablePath, childTableTitle);
+                    var childTableDef = keyTableDef(tableViewId, childTablePath, childTableTitle, data.record.Id);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, peopleListUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, peopleListUri);
 
@@ -226,7 +226,7 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
                         imgFile = "haspos.png";
                     }                    
 
-                    var childTableDef = engagementTableDef(data, tableViewId, childTablePath, childTableTitle);
+                    var childTableDef = engagementTableDef(tableViewId, childTablePath, childTableTitle, data.record.Id);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, peopleListUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, peopleListUri);
 
@@ -347,7 +347,7 @@ function peopleTableDef(tableViewId, tablePath, tableTitle) {
                 },       
                 options: function (data){
                     var url = '/' + saron.uri.saron + 'app/web-api/listPerson.php';
-                    var parameters = getOptionsUrlParameters(data, tableViewId, tablePath, url);
+                    var parameters = getOptionsUrlParameters(data, tableViewId, parentId, tablePath, url);
                     return url + parameters;
                 }
             },
@@ -475,7 +475,7 @@ function _openHomeChildTable(tableViewId, data){
     var childTableTitle = 'Hem för ' + data.record.LongHomeName;
     var options = getPostData(null, tableViewId, data.record.Id, saron.table.people.name, saron.source.list, saron.responsetype.record, homesListUri);
 
-    $(tableViewId).jtable('openChildTable', $selectedRow, homeTableDef(tableViewId, childTableTitle), function(data){
+    $(tableViewId).jtable('openChildTable', $selectedRow, homeTableDef(tableViewId, childTableTitle, data.recdord.Id), function(data){
         data.childTable.jtable('load', options);
     });    
 }

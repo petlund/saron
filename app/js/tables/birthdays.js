@@ -6,14 +6,14 @@ RECORD, OPTIONS
 const birthdayListUri = 'app/web-api/listPeople.php';
 
     $(document).ready(function () {
-        $(saron.table.birthday.viewid).jtable(birthdayTableDef(saron.table.birthday.viewid, null));
+        $(saron.table.birthday.viewid).jtable(birthdayTableDef(saron.table.birthday.viewid, null, null));
         var options = getPostData(null, saron.table.birthday.viewid, null, saron.table.birthday.name, saron.source.list, saron.responsetype.records, birthdayListUri);
         $(saron.table.birthday.viewid).jtable('load', options);
         $(saron.table.birthday.viewid).find('.jtable-toolbar-item-add-record').hide();
     });
     
 
-    function birthdayTableDef(tableViewId, tableTitle){
+    function birthdayTableDef(tableViewId, tableTitle, parentId){
         var tableName = saron.table.birthday.name;
         var title = 'Födelsedagar';
         if(tableTitle !== null)

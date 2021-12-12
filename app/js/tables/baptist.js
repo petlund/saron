@@ -8,13 +8,13 @@ const baptistListUri = 'app/web-api/listPeople.php';
 
 $(document).ready(function () {
 
-    $(saron.table.baptist.viewid).jtable(baptistTableDef(saron.table.baptist.viewid, null));
+    $(saron.table.baptist.viewid).jtable(baptistTableDef(saron.table.baptist.viewid, null, null));
     var options = getPostData(null, saron.table.baptist.viewid, null, "list", null, saron.responsetype.records, baptistListUri);
     $(saron.table.baptist.viewid).jtable('load', options);
     $(saron.table.baptist.viewid).find('.jtable-toolbar-item-add-record').hide();
 });  
     
-function baptistTableDef(tableViewId, tablePath, tableTitle){
+function baptistTableDef(tableViewId, tablePath, tableTitle, parentId){
     var tableName = saron.table.baptist.name;
     var title = 'Dopuppgifter';
     if(tableTitle !== null)

@@ -9,7 +9,7 @@ saron
 const roleListUri = 'app/web-api/listOrganizationRole.php';
 
 $(document).ready(function () {
-        $(saron.table.role.viewid).jtable(roleTableDef(saron.table.role.viewid, null, null));
+        $(saron.table.role.viewid).jtable(roleTableDef(saron.table.role.viewid, saron.table.role.name, null, null));
         var options = getPostData(null, saron.table.role.viewid, null, saron.table.role.name, saron.source.list, saron.responsetype.records, roleListUri);
         $(saron.table.role.viewid).jtable('load', options);
     }
@@ -17,7 +17,7 @@ $(document).ready(function () {
 
 
 
-function roleTableDef(tableViewId, tablePath, childTableTitle){
+function roleTableDef(tableViewId, tablePath, childTableTitle, parentId){
     const tableName = saron.table.role.name;
     return {
          showCloseButton: false,
@@ -76,7 +76,7 @@ function roleTableDef(tableViewId, tablePath, childTableTitle){
                         tooltip = "Organisatoriska enheter";
                     }
 
-                    var childTableDef = unitTableDef(tableViewId, childTablePath, childTableTitle);
+                    var childTableDef = unitTableDef(tableViewId, childTablePath, childTableTitle, data.record.Id);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, );
 
@@ -107,7 +107,7 @@ function roleTableDef(tableViewId, tablePath, childTableTitle){
                         tooltip = "Organisatoriska enhetstyper";
                     }
 
-                    var childTableDef = unitTypeTableDef(tableViewId, childTablePath, childTableTitle);
+                    var childTableDef = unitTypeTableDef(tableViewId, childTablePath, childTableTitle, data.recort.Id);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, );
 

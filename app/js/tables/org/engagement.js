@@ -4,12 +4,12 @@ ORG, TABLE, POS_ENABLED,
 saron,
 RECORD, OPTIONS
 */
- 
+  
 "use strict";
 const engagementListUri = 'app/web-api/listEngagement.php';    
 $(document).ready(function () {
 
-    $(saron.table.engagement.viewid).jtable(peopleEngagementTableDef(saron.table.engagement.viewid, saron.table.engagement.name));
+    $(saron.table.engagement.viewid).jtable(peopleEngagementTableDef(saron.table.engagement.viewid, saron.table.engagement.name, null));
     var postData = getPostData(null, saron.table.engagement.viewid, null, saron.table.engagement.name, saron.source.list, saron.responsetype.records, engagementListUri);
     $(saron.table.engagement.viewid).jtable('load', postData);
     $(saron.table.engagement.viewid).find('.jtable-toolbar-item-add-record').hide();
@@ -17,7 +17,7 @@ $(document).ready(function () {
 
 
 
-function peopleEngagementTableDef(tableViewId, tablePath){
+function peopleEngagementTableDef(tableViewId, tablePath, parentId){
     const tableName = saron.table.engagement.name;
  
     return {
@@ -63,7 +63,7 @@ function peopleEngagementTableDef(tableViewId, tablePath){
                         imgFile = "haspos.png";
                     }                    
 
-                    var childTableDef = engagementTableDef(data, tableViewId, childTablePath, childTableTitle);
+                    var childTableDef = engagementTableDef(tableViewId, childTablePath, childTableTitle, data.record.Id);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, engagementListUri);
 
@@ -127,7 +127,7 @@ function peopleEngagementTableDef(tableViewId, tablePath){
 
 
 
-function engagementTableDef(parentData, tableViewId, tablePath, childTableTitle){
+function engagementTableDef(tableViewId, tablePath, childTableTitle, parentId){
     const uri = 'app/web-api/listOrganizationPos.php';
     return {
         showCloseButton: false,
@@ -157,17 +157,9 @@ function engagementTableDef(parentData, tableViewId, tablePath, childTableTitle)
                 key: true,
                 options: function (data){
                     var uri = 'app/web-api/listOrganizationPos.php';
-                    var parameters = getOptionsUrlParameters(data, tableViewId, tablePath, uri);
+                    var parameters = getOptionsUrlParameters(data, tableViewId, parentId, tablePath, uri);
                     return  '/' + saron.uri.saron + uri + parameters;
                 }
-            },
-            ParentId:{
-                defaultValue = parentData.record.Id,
-                type: 'hidden'                
-            },
-            People_FK:{
-                type: 'hidden',
-                defaultValue: parentData.record.Id
             },
             TablePath:{
                 type: 'hidden'                
@@ -178,7 +170,7 @@ function engagementTableDef(parentData, tableViewId, tablePath, childTableTitle)
                 defaultValue: 2,
                 options: function (data){
                     var uri = 'app/web-api/listOrganizationPosStatus.php'
-                    var parameters = getOptionsUrlParameters(data, tableViewId, tablePath, uri);
+                    var parameters = getOptionsUrlParameters(data, tableViewId, parentId, tablePath, uri);
                     return  '/' + saron.uri.saron + uri + parameters;
                 }
             },

@@ -347,18 +347,18 @@ function getURLParameters(id, tableViewId, parentId, tablePath, source, resultTy
 
 
 
-function getOptionsUrlParameters(data, tableViewId, tablePath, url){
+function getOptionsUrlParameters(data, tableViewId, parentId, tablePath, url){
     var parameters = "";
     
     if(data.source === saron.source.list){
-        parameters = getURLParameters(null, tableViewId, data.record.ParentId, tablePath, data.source, saron.responsetype.options, url);
+        parameters = getURLParameters(null, tableViewId, parentId, tablePath, data.source, saron.responsetype.options, url);
     }
     if(data.source === saron.source.edit){
-        parameters = getURLParameters(data.record.Id, tableViewId, data.record.ParentId, tablePath, data.source, saron.responsetype.options, url);                        
+        parameters = getURLParameters(data.record.Id, tableViewId, parentId, tablePath, data.source, saron.responsetype.options, url);                        
         data.clearCache();
     }
     if(data.source === saron.source.create){
-        parameters = getURLParameters(data.record.Id, tableViewId, null, tablePath, data.source, saron.responsetype.options, url);                        
+        parameters = getURLParameters(null, tableViewId, parentId, tablePath, data.source, saron.responsetype.options, url);                        
         data.clearCache();                        
     }    
     return parameters;

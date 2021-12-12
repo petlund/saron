@@ -9,7 +9,7 @@ POS_ENABLED
 "use strict";    
 const unitListUri = 'app/web-api/listOrganizationUnit.php';
 
-function unitTableDef(tableViewId, tablePath, childTableTitle){
+function unitTableDef(tableViewId, tablePath, childTableTitle, parentId){
 
     var tableName = "";
     if(tableViewId === saron.table.unittree.viewid)
@@ -37,7 +37,7 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
         messages: {addNewRecord: 'Lägg till en ny organisatorisk enhet.'},
         actions: {
             listAction:   '/' + saron.uri.saron + unitListUri,
-            createAction: '/' + saron.uri.saron + 'app/web-api/createOrganizationUnit.php',
+            createAction: '/' + saron.uri.saron + 'app/web-api/createOrganizationUnit.php?ParentId=' + parentId,
             updateAction: '/' + saron.uri.saron + 'app/web-api/updateOrganizationUnit.php',
             deleteAction: '/' + saron.uri.saron + 'app/web-api/deleteOrganizationUnit.php'
         }, 
@@ -47,9 +47,7 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
                 list: false
             },
             ParentId:{
-                list: false,
-                edit: false,
-                create: false    
+                type: 'hidden'
             },
             SubUnitEnabled: {
                 title: '',
@@ -90,7 +88,7 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
                                 imgFile =  "haschild.png";
                             }
                         }
-                        var childTableDef = unitTableDef(tableViewId, childTablePath, childTableTitle);
+                        var childTableDef = unitTableDef(tableViewId, childTablePath, childTableTitle, data.record.Id);
                         var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, tableName, TABLE, unitListUri);
                         var $imgClose = closeChildTable(data, tableViewId, tableName, TABLE, unitListUri);
                         
@@ -136,7 +134,7 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
                             }
                         }
 
-                        var childTableDef = posTableDef(data, tableViewId, childTablePath, childTableTitle);
+                        var childTableDef = posTableDef(data, tableViewId, childTablePath, childTableTitle, data.record.Id);
                         var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, unitListUri);
                         var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, unitListUri);
                         
@@ -154,7 +152,7 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
                     if(includedIn(tableViewId, saron.table.unitlist.viewid))
                         data.record.ParentId=null; //using cache
                     
-                    var parameters = getOptionsUrlParameters(data, tableViewId, tablePath, unitListUri);                    
+                    var parameters = getOptionsUrlParameters(data, tableViewId, parentId, tablePath, unitListUri);                    
                     return '/' + saron.uri.saron + unitListUri + parameters;
                 }                
             },
@@ -194,7 +192,7 @@ function unitTableDef(tableViewId, tablePath, childTableTitle){
                         data.record.ParentId=null; //using cache
                     
                     var uri = 'app/web-api/listOrganizationUnitType.php';
-                    var parameters = getOptionsUrlParameters(data, tableViewId, tablePath, uri);                    
+                    var parameters = getOptionsUrlParameters(data, tableViewId, parentId, tablePath, uri);                    
                     return '/' + saron.uri.saron + uri + parameters;
                 }
             },

@@ -7,12 +7,12 @@ PERSON, inputFormWidth, inputFormFieldWidth
 
 $(document).ready(function () {
 
-    $(saron.table.keys.viewid).jtable(keyTableDef(saron.table.keys.viewid, null));
+    $(saron.table.keys.viewid).jtable(keyTableDef(saron.table.keys.viewid, null, null));
     $(saron.table.keys.viewid).jtable('load');
     $(saron.table.keys.viewid).find('.jtable-toolbar-item-add-record').hide();
 });  
 
-function keyTableDef(tableViewId, tableTitle){
+function keyTableDef(tableViewId, tableTitle, parentId){
     var tableName = saron.table.keys.name; 
     var title = 'Nyckelinnehav'; 
     if(tableTitle !== null)

@@ -40,13 +40,14 @@ function statisticTableDef(tableViewId, tableTitle){
                 sorting: false,
                 width: '1%',
                 display: function(data){
-                    var YEAR =data.record.year.substring(0, 4);
+                    var YEAR = data.record.year.substring(0, 4);
                     var childTableTitle = 'Statistik för ' + YEAR;
                     var childTableName = saron.table.statistics_detail.name;
+                    var childTablePath = tablePath + "/" + childTableName;
                     var tooltip = 'Detaljer';
                     var imgFile = "member.png";
 
-                    var childTableDef = detailTableDef(tableViewId, childTableTitle);
+                    var childTableDef = detailTableDef(tableViewId, childTablePath, childTableTitle, data.recdord.Id);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, statisticsListUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, statisticsListUri);
 
@@ -144,7 +145,7 @@ function statisticTableDef(tableViewId, tableTitle){
 }
 
 
-function detailTableDef(tableViewId, childTableTitle){
+function detailTableDef(tableViewId, childTablePath, childTableTitle, parentId){
     var listUri = 'app/web-api/listStatistics.php';
     var tableName = saron.table.statistics_detail.name;
     var title = 'Statistikdetaljer';
@@ -176,7 +177,7 @@ function detailTableDef(tableViewId, childTableTitle){
                     var tooltip = 'title="Personuppgifter"';
                     var imgFile = "haspos.png";
 
-                    var childTableDef = peopleTableDef(tableViewId, childTableTitle);
+                    var childTableDef = peopleTableDef(tableViewId, childTableTitle, data.record.Id);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, listUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
 

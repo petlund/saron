@@ -1,4 +1,6 @@
-/* global saron.uri.saron, DATE_FORMAT, NEWS */
+/* global saron.uri.saron, DATE_FORMAT, NEWS, 
+saron
+*/
 "use strict";
 
 var TABLE_MEMBER_STATE = '#MEMBER_STATE';

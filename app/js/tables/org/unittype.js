@@ -11,14 +11,14 @@ RECORD, OPTIONS
 const unitTypeListUri = 'app/web-api/listOrganizationUnitType.php';
 
 $(document).ready(function () {
-    $(saron.table.unittype.viewid).jtable(unitTypeTableDef(saron.table.unittype.viewid, saron.table.unittype.name, null));
+    $(saron.table.unittype.viewid).jtable(unitTypeTableDef(saron.table.unittype.viewid, saron.table.unittype.name, null, null));
     var options = getPostData(null, saron.table.unittype.viewid, null, saron.table.unittype.name, saron.source.list, saron.responsetype.records, unitTypeListUri);
     $(saron.table.unittype.viewid).jtable('load', options);
 });
 
 
 
-function unitTypeTableDef(tableViewId, tablePath, childTableTitle){
+function unitTypeTableDef(tableViewId, tablePath, childTableTitle, parentId){
     const tableName = saron.table.unittype.name;
  
     return {
@@ -67,7 +67,7 @@ function unitTypeTableDef(tableViewId, tablePath, childTableTitle){
                     var imgFile = "unit.png";
                     var childUri = 'app/web-api/listOrganizationUnit.php';
                     if(data.record.UsedInUnit ===  "1"){
-                        var childTableDef = unitTableDef(tableViewId, childTablePath, childTableTitle);
+                        var childTableDef = unitTableDef(tableViewId, childTablePath, childTableTitle, data.record.Id);
                         var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, saron.table.unit.name, TABLE, childUri);
                         var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, unitTypeListUri);
                         
@@ -102,7 +102,7 @@ function unitTypeTableDef(tableViewId, tablePath, childTableTitle){
                             tooltip = "Enhetstypen har roller";
                         }
                         
-                        var childTableDef = roleTableDef(tableViewId, childTablePath, childTableTitle);
+                        var childTableDef = roleTableDef(tableViewId, childTablePath, childTableTitle, data.record.Id);
                         var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
                         var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, unitTypeListUri);
                         

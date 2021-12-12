@@ -139,6 +139,9 @@ function createOrganizationCalender(TCPDF $pdf, String $type){
         case "proposal":
             $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, "Förslag till förändringar utifrån beslutad organisation - " . $decisionDate, 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_HEAD_CELL_HIGHT, 'T', true);
             break;
+        case "vacancy":
+            $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, "Vakanta uppdrag - " . $decisionDate, 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_HEAD_CELL_HIGHT, 'T', true);
+            break;
         default:
             $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, "Beslutad organisation - " . $decisionDate, 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_HEAD_CELL_HIGHT, 'T', true);
     }
@@ -264,15 +267,20 @@ function getSQL($type){
     $sql.= "left outer join Org_Role as Role on Pos.OrgRole_FK=Role.Id ";
     $sql.= "left outer join Org_PosStatus as PState on Pos.OrgPosStatus_FK=PState.Id ";
     
+    $sqlWhere = "";
     switch ($type){
         case "proposal":
             $sql.= "left outer join People on People.Id = Pos.People_FK ";  
+            break;
+        case "vacancy":
+            $sql.= "left outer join People on People.Id = Pos.People_FK ";  
+            $sqlWhere = "WHERE PState.Id = 4 ";
             break;
         default:
             $sql.= "left outer join People on People.Id = Pos.PrevPeople_FK ";    
     }
     $sql.= "inner join (" . getSubSql() . ") as QueryPath on Tree.Id = QueryPath.Id ";
-
+    $sql.= $sqlWhere;
     $sql.= "order by QueryPath.Path, SortOrder, Role_Name, Pos_Comment, Person "; // Rut.SortOrder, 
     return $sql;
 }

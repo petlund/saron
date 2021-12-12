@@ -14,7 +14,7 @@ $(document).ready(function () {
     $(saron.table.member.viewid).find('.jtable-toolbar-item-add-record').hide();
 });  
 
-function memberTableDef(tableViewId, tablePath, tableTitle){
+function memberTableDef(tableViewId, tablePath, tableTitle, parentId){
     var tableName = saron.table.member.name;
     var title = 'Medlemsuppgifter';
     if(tableTitle !== null)
@@ -101,7 +101,7 @@ function memberTableDef(tableViewId, tablePath, tableTitle){
                 },       
                 options: function (data){
                     var uri =  'app/web-api/listPerson.php';
-                    var parameters = getOptionsUrlParameters(data, tableViewId, tablePath, uri);
+                    var parameters = getOptionsUrlParameters(data, tableViewId, parentId, tablePath, uri);
                     return '/' + saron.uri.saron + uri + parameters;
                 }
             },
