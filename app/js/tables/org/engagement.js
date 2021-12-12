@@ -77,6 +77,9 @@ function peopleEngagementTableDef(tableViewId, tablePath, parentId){
             MemberState: {
                 title: 'Status'
             },
+            DateOfMembershipStart: {
+                title: 'Medlemskap Start'
+            },
             Email: {
                 title: 'Mail',
                 display: function (data){
