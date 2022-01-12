@@ -46,9 +46,10 @@ function unitTableDef(tableViewId, tablePath, childTableTitle, parentId){
                 key: true, 
                 list: false
             },
-            ParentId:{
-                type: 'hidden'
-            },
+//            ParentId:{
+//                defaultValue: parentId,
+                //type: 'hidden'
+//            },
             SubUnitEnabled: {
                 title: '',
                 width: '1%',
