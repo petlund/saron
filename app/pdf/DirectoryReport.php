@@ -28,7 +28,7 @@
     //define ("FOOTER_MARGIN", 10);
     define ("HEADER_FOOTER_CELL_WIDTH", 90);
     define ("CELL_HIGHT", 5.5);
-    define ("MAX_CELL_HIGHT", 8);
+    define ("MAX_CELL_HIGHT", 5.5);
     define ("LIST_FONT_SIZE", 12);
     define ("HEADER_FOOTER_FONT_SIZE", 10);
     define ("FONT", 'times');
@@ -96,7 +96,7 @@
     // set color for background
     $pdf->SetFillColor(220, 220, 220);
 
-    $listSpaceHight=$pdf->getPageHeight() - PDF_MARGIN_HEADER - PDF_MARGIN_FOOTER;
+    $listSpaceHight=$pdf->getPageHeight() - PDF_MARGIN_HEADER - PDF_MARGIN_FOOTER-15;
 
     $prevFamId=-1;
     $prevGroupName="";
