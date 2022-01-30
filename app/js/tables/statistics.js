@@ -9,17 +9,19 @@ const statisticsListUri = 'app/web-api/listStatistics.php';
 
 
 $(document).ready(function () {
-    $(saron.table.statistics.viewid).jtable(statisticTableDef(saron.table.statistics.viewid, null));    
+    $(saron.table.statistics.viewid).jtable(statisticTableDef(saron.table.statistics.viewid, null, null));    
     var options = getPostData(null, saron.table.statistics.viewid, null, saron.table.statistics.name, saron.source.list, saron.responsetype.records, statisticsListUri);
     $(saron.table.statistics.viewid).jtable('load',options);
     $(saron.table.statistics.viewid).find('.jtable-toolbar-item-add-record').hide();
 });
 
-function statisticTableDef(tableViewId, tableTitle){
+function statisticTableDef(tableViewId, tablePath, tableTitle){
     var tableName = saron.table.statistics.name;
     var title = 'Statistik';
     if(tableTitle !== null)
         title = tableTitle; 
+    
+    tablePath += tableName;
 
     return {
         title: title,
@@ -47,7 +49,7 @@ function statisticTableDef(tableViewId, tableTitle){
                     var tooltip = 'Detaljer';
                     var imgFile = "member.png";
 
-                    var childTableDef = detailTableDef(tableViewId, childTablePath, childTableTitle, data.recdord.Id);
+                    var childTableDef = detailTableDef(tableViewId, childTablePath, childTableTitle, data.record.Id);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, statisticsListUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, statisticsListUri);
 
@@ -145,7 +147,7 @@ function statisticTableDef(tableViewId, tableTitle){
 }
 
 
-function detailTableDef(tableViewId, childTablePath, childTableTitle, parentId){
+function detailTableDef(tableViewId, tablePath, childTableTitle, parentId){
     var listUri = 'app/web-api/listStatistics.php';
     var tableName = saron.table.statistics_detail.name;
     var title = 'Statistikdetaljer';
@@ -177,7 +179,7 @@ function detailTableDef(tableViewId, childTablePath, childTableTitle, parentId){
                     var tooltip = 'title="Personuppgifter"';
                     var imgFile = "haspos.png";
 
-                    var childTableDef = peopleTableDef(tableViewId, childTableTitle, data.record.Id);
+                    var childTableDef = peopleTableDef(tableViewId, tablePath, childTableTitle, data.record.Id);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, listUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
 

@@ -12,7 +12,7 @@ $(document).ready(function () {
     $(saron.table.keys.viewid).find('.jtable-toolbar-item-add-record').hide();
 });  
 
-function keyTableDef(tableViewId, tableTitle, parentId){
+function keyTableDef(tableViewId, tablePath, tableTitle, parentId){
     var tableName = saron.table.keys.name; 
     var title = 'Nyckelinnehav'; 
     if(tableTitle !== null)

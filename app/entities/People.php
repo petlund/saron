@@ -71,6 +71,9 @@ class People extends SuperEntity{
                 case TABLE_NAME_STATISTICS . "/" . TABLE_NAME_STATISTICS_DETAIL . "/" . TABLE_NAME_PEOPLE . "/" . TABLE_NAME_BAPTIST:            
                     $sqlWhere.= "People.Id = " . $this->parentId . " ";
                     break;
+                case TABLE_NAME_STATISTICS . "/" . TABLE_NAME_STATISTICS_DETAIL . "/" . TABLE_NAME_PEOPLE . "/" . TABLE_NAME_KEYS:            
+                    $sqlWhere.= "People.Id = " . $this->parentId . " ";
+                    break;
                 default:
                     $gf = new PeopleFilter();
                     $sqlWhere.= $gf->getPeopleFilterSql($this->groupId);
