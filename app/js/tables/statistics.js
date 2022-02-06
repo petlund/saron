@@ -1,7 +1,7 @@
 /* global PERSON, CHILD_TABLE_PREFIX, 
 saron,
 peopleListUri,
-ORG, TABLE, 
+ORG, TABLE, EVENT_TYPE,
 RECORD, OPTIONS
 
  */
@@ -202,38 +202,38 @@ function detailTableDef(tableViewId, tablePath, childTableTitle, parentId){
             event_date: {
                 title: 'Datum',
                 display: function (data){
-                    return _setClassAndValue(data, "event_date", PERSON);
+                    return _setClassAndValueWidthEventType(data, "event_date", PERSON);
                 }       
             },
             LastName: {
                 title: 'Efternamn',
                 display: function (data){
-                    return _setClassAndValue(data, "LastName", PERSON);
+                    return _setClassAndValueWidthEventType(data, "LastName", PERSON);
                 }       
             },
             FirstName: {
                 title: 'Förnamn',
                 display: function (data){
-                    return _setClassAndValue(data, "FirstName", PERSON);
+                    return _setClassAndValueWidthEventType(data, "FirstName", PERSON);
                 }       
             },
             DateOfBirth: {
                 title: 'Födelsedatum',
                 display: function (data){
-                    return _setClassAndValue(data, "DateOfBirth", PERSON);
+                    return _setClassAndValueWidthEventType(data, "DateOfBirth", PERSON);
                 }       
             },
             event_type: {
                 title: 'Händelse',
                 display: function (data){
-                    return _setClassAndValue(data, "event_type", PERSON);
+                    return _setClassAndValueWidthEventType(data, "event_type", PERSON);
                 }       
             },
             Comment: {
                 title: 'Notering',
                 width: '50%',
                 display: function (data){
-                    return _setClassAndValue(data, "Comment", PERSON);
+                    return _setClassAndValueWidthEventType(data, "Comment", PERSON);
                 }       
             }
         }
