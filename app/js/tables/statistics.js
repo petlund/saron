@@ -1,5 +1,6 @@
 /* global PERSON, CHILD_TABLE_PREFIX, 
 saron,
+peopleListUri,
 ORG, TABLE, 
 RECORD, OPTIONS
 
@@ -21,7 +22,10 @@ function statisticTableDef(tableViewId, tablePath, tableTitle){
     if(tableTitle !== null)
         title = tableTitle; 
     
-    tablePath += tableName;
+    if(tablePath===null)
+        tablePath = tableName;
+    else
+        tablePath+= tableName;
 
     return {
         title: title,
@@ -35,7 +39,11 @@ function statisticTableDef(tableViewId, tablePath, tableTitle){
             listAction:   '/' + saron.uri.saron + statisticsListUri,
         },
         fields: {
-            Id:{
+            Id: {
+                key: true,
+                list: false
+            },
+            Detail:{
                 list: true,
                 edit: false,
                 create: false,
@@ -57,12 +65,10 @@ function statisticTableDef(tableViewId, tablePath, tableTitle){
                 }
             },
             TablePath:{
-                list: false,
-                edit: false,
-                create: false
+                type: 'hidden',
+                defaultValue: tableName
             },
             year: {
-                key: true,
                 title: 'År',
                 width: '10%',
                 display: function (data){
@@ -148,7 +154,6 @@ function statisticTableDef(tableViewId, tablePath, tableTitle){
 
 
 function detailTableDef(tableViewId, tablePath, childTableTitle, parentId){
-    var listUri = 'app/web-api/listStatistics.php';
     var tableName = saron.table.statistics_detail.name;
     var title = 'Statistikdetaljer';
     if(childTableTitle !== null)
@@ -163,32 +168,39 @@ function detailTableDef(tableViewId, tablePath, childTableTitle, parentId){
         sorting: true, //Enable sorting
         multiSorting: true,
         defaultSorting: 'event_date desc, LastName ASC, FirstName ASC', //Set default sorting        
-        //showCloseButton: false,
+        showCloseButton: false,
         actions: {
-            listAction:   '/' + saron.uri.saron + listUri
+            listAction:   '/' + saron.uri.saron + statisticsListUri
         },
         fields: {
-            Id:{
+            Id: {
+                key: true,
+                list: false
+            },
+            TablePath:{
+                type: 'hidden',
+                defaultValue: tableName
+            },
+            Person:{
                 title: '',
                 width: '1%',
-                key: true,
                 sorting: false,
                 display: function(data){
                     var childTableTitle = 'Personuppgifter för "' + data.record.LastName + ' '  + data.record.FirstName + ' ' + data.record.DateOfBirth;
                     var childTableName = saron.table.people.name;
-                    var tooltip = 'title="Personuppgifter"';
+                    var childTablePath = tablePath + "/" + childTableName;
+                    var tooltip = 'Personuppgifter';
                     var imgFile = "haspos.png";
-
-                    var childTableDef = peopleTableDef(tableViewId, tablePath, childTableTitle, data.record.Id);
-                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, listUri);
-                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, listUri);
+                    
+                    var childTableDef = peopleTableDef(tableViewId, childTablePath, childTableTitle, data.record.Id);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, statisticsListUri);
+                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, statisticsListUri);
 
                     return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                 }
             },
             event_date: {
                 title: 'Datum',
-                key: true,
                 display: function (data){
                     return _setClassAndValue(data, "event_date", PERSON);
                 }       

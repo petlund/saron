@@ -64,7 +64,7 @@ function peopleEngagementTableDef(tableViewId, tablePath, parentId){
                     }                    
 
                     var childTableDef = engagementTableDef(tableViewId, childTablePath, childTableTitle, data.record.Id);
-                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
+                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, engagementListUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, engagementListUri);
 
                     return getChildNavIcon(data, childTableName, $imgChild, $imgClose);

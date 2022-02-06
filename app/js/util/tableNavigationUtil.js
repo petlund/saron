@@ -59,18 +59,18 @@ function updateParentRow(parentData, tableViewId, childTableName, listParentRowU
 
 
 
-function updateParentTable(data, tableViewId, listParentRowUri){
-    var parentId = data.record.Id;
-    if(parentId > 0){
-        var table = getParentTableById(tableViewId, parentId);
-        if(table.length === 0) 
-            table = $(tableViewId, parentId);
-
-        var url =  '/' + saron.uri.saron + listParentRowUri;
-        var postData = {record:{"Id": parentId}, "clientOnly": false, "url":url};
-        table.jtable('updateRecord', postData);                                
-    }  
-}
+//function updateParentTable(data, tableViewId, listParentRowUri){
+//    var parentId = data.record.Id;
+//    if(parentId > 0){
+//        var table = getParentTableById(tableViewId, parentId);
+//        if(table.length === 0) 
+//            table = $(tableViewId, parentId);
+//
+//        var url =  '/' + saron.uri.saron + listParentRowUri;
+//        var postData = {record:{"Id": parentId}, "clientOnly": false, "url":url};
+//        table.jtable('updateRecord', postData);                                
+//    }  
+//}
 
 
 function getParentTableById(tableViewId, parentId){

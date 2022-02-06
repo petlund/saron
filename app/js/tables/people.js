@@ -215,7 +215,6 @@ function peopleTableDef(tableViewId, tablePath, tableTitle, parentId) {
                     var childTablePath = tablePath + "/" + childTableName;
                     var tooltip = "";
                     var imgFile = "";
-                    var childUri = 'app/web-api/listOrganizationPos.php';
 
                     if(data.record.Engagement ===  '0'){
                         tooltip = 'Inga uppdrag';
@@ -406,7 +405,7 @@ function peopleTableDef(tableViewId, tablePath, tableTitle, parentId) {
             }
         },        
         recordsLoaded: function(event, data) {
-            if(data.serverResponse.user_role === saron.userrole.editor){ 
+            if(data.serverResponse.user_role === saron.userrole.editor){
                 $(tableViewId).find('.jtable-toolbar-item-add-record').show();
             }
         },        

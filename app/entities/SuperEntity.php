@@ -173,13 +173,19 @@ class SuperEntity {
     function getTablePathSql($continiue = true){
         $sql = "";
         if(strlen($this->tablePath) > 0){   
-            $sql = "'" . $this->tablePath . "' AS TablePath";
-            if($continiue){
-                $sql.= ", ";
-            }
-            else{
-                $sql.= " ";
-            }
+            $sql = "'" . $this->tablePath . "'";
+        }
+        else{
+            $sql = "'TablePath is missing '";
+        }
+        
+        $sql.=  " AS TablePath";
+        
+        if($continiue){
+            $sql.= ", ";
+        }
+        else{
+            $sql.= " ";
         }
         return $sql;
     }

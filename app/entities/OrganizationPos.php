@@ -119,6 +119,9 @@ class OrganizationPos extends SuperEntity{
                     $where = "WHERE pCur.Id = ". $this->parentId . " "; 
                     //return $this->selectPersonEngagement();            
                     break;
+                case TABLE_NAME_STATISTICS . "/" . TABLE_NAME_STATISTICS_DETAIL . "/" . TABLE_NAME_PEOPLE . "/" . TABLE_NAME_ENGAGEMENTS:            
+                    $where = "WHERE pCur.Id = ". $this->parentId . " "; 
+                    break;
                 default:
                     $where = "";
             }

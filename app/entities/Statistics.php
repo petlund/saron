@@ -36,7 +36,7 @@ class Statistics extends SuperEntity{
         }
         else{
             $rec = RECORD;
-            $where = "where year " . $this->parentId . " ";
+            $where = "where extract(YEAR from year) = " . $id . " ";
         }
          
         $sqlSelect = "SELECT *, year as Id, format(average_age, 1) as avg_age, format(average_membership_time, 1) as avg_membership_time, diff, " . $this->getTablePathSql(false);
@@ -57,25 +57,24 @@ class Statistics extends SuperEntity{
             $where = "AND Id =" . $id. " ";
         }
 
-        $sqlSelect="SELECT p.Id, " . DECRYPTED_ALIAS_LASTNAME . ", " . DECRYPTED_ALIAS_FIRSTNAME . ", " . DECRYPTED_ALIAS_COMMENT . ", DateOfBirth, " . $this->getTablePathSql(true);
-        $sql =$sqlSelect;  
+        $sql =$this->getSelectSQL(0);  
         $sql.="DateOfMembershipStart as 'event_date', 
             'Ny' as event_type, 1 as 'Diff' 
             FROM `People` as p  
             WHERE extract(YEAR from DateOfMembershipStart)=" . $curYear . " " . $where;
         $sql.=" UNION ";
-        $sql.=$sqlSelect;  
+        $sql.=$this->getSelectSQL(1000);  
         $sql.="DateOfMembershipEnd as 'event_date', 
             'Avslutad' as event_type, -1 as 'Diff' 
             FROM `People` as p  
             WHERE DateOfDeath is null and DateOfMembershipStart is not null and extract(YEAR from DateOfMembershipEnd)=" . $curYear . " " . $where;   
         $sql.=" UNION ";
-        $sql.=$sqlSelect;  
+        $sql.=$this->getSelectSQL(2000);  
         $sql.="DateOfBaptism as 'event_date', 'Döpt' as event_type, 0 as 'Diff' 
             FROM `People` as p  
             WHERE CongregationOfBaptismThis=2 and extract(YEAR from DateOfBaptism)=" . $curYear . " " . $where; 
         $sql.=" UNION ";
-        $sql.=$sqlSelect;  
+        $sql.=$this->getSelectSQL(3000);  
         $sql.="DateOfDeath as 'event_date', 'Avliden' as event_type, -1 as 'Diff' 
             FROM `People` as p  
             WHERE extract(YEAR from DateOfDeath)=" . $curYear . " " . $where;  
@@ -89,11 +88,25 @@ class Statistics extends SuperEntity{
         $sqlCount .= "(SELECT count(*) FROM `People` as p3 WHERE p3.CongregationOfBaptismThis=2 and extract(YEAR from p3.DateOfBaptism)=" . $curYear . ") "; 
         $sqlCount .= "as c;";
 
-        $result = $this->db->selectSeparate($this->saronUser, $sql, $sqlCount, $rec);    
-        return $result;
+        $preRowCountSql = "SELECT ";
+        $preRowCountSql.= "SELECT ";
         
+        
+        
+        $result = $this->db->selectSeparate($this->saronUser, $sql, $sqlCount, $rec);    
+        return $result;        
     }
 
+    
+    function getSelectSQL($offset){
+        $rowNumberSql = "(ROW_NUMBER() OVER (ORDER BY DateOfBirth) + " . $offset . ") AS Id2";
+        
+        $sqlSelect="SELECT Id, " . $this->getTablePathSql(true) . DECRYPTED_ALIAS_LASTNAME . ", " . DECRYPTED_ALIAS_FIRSTNAME . ", " . DECRYPTED_ALIAS_COMMENT . ", DateOfBirth, " . $this->getTablePathSql(true);
+        
+        return $sqlSelect;
+    }
+    
+    
     function selectEFK(){
         $interval = 10;
         $intervals = 11;

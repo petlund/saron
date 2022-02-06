@@ -11,7 +11,6 @@ $(document).ready(function () {
     $(saron.table.total.viewid).jtable(totalTableDef(saron.table.total.viewid, null));
     var options = getPostData(null, saron.table.total.viewid, null, saron.table.total.name, saron.source.list, saron.responsetype.records, totalListUri);
     $(saron.table.total.viewid).jtable('load', options);
-    $(saron.table.total.viewid).find('.jtable-toolbar-item-add-record').hide();
 
 });
 

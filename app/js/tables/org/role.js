@@ -107,7 +107,7 @@ function roleTableDef(tableViewId, tablePath, childTableTitle, parentId){
                         tooltip = "Organisatoriska enhetstyper";
                     }
 
-                    var childTableDef = unitTypeTableDef(tableViewId, childTablePath, childTableTitle, data.recort.Id);
+                    var childTableDef = unitTypeTableDef(tableViewId, childTablePath, childTableTitle, data.record.Id);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, );
 

@@ -9,10 +9,15 @@ class People extends SuperEntity{
 
     protected $uppercaseSearchString;
     protected $filter;
+    protected $personId;
 
     function __construct($db, $saronUser) {
         parent::__construct($db, $saronUser);
         $this->filter = (String)filter_input(INPUT_GET, "filter", FILTER_SANITIZE_STRING);
+        $this->personId = (int)filter_input(INPUT_GET, "PersonId", FILTER_SANITIZE_NUMBER_INT);
+        if($this->personId === 0){
+            $this->personId = (int)filter_input(INPUT_POST, "PersonId", FILTER_SANITIZE_NUMBER_INT);
+        }
     }
     
     
@@ -62,7 +67,13 @@ class People extends SuperEntity{
                 case TABLE_NAME_PEOPLE . "/" . TABLE_NAME_KEYS:            
                     $sqlWhere.= "People.Id = " . $this->parentId . " ";
                     break;
+                case TABLE_NAME_PEOPLE . "/" . TABLE_NAME_ENGAGEMENTS:            
+                    $sqlWhere.= "People.Id = " . $this->parentId . " ";
+                    break;
                 case TABLE_NAME_STATISTICS . "/" . TABLE_NAME_STATISTICS_DETAIL . "/" . TABLE_NAME_PEOPLE:            
+                    $sqlWhere.= "People.Id = " . $this->parentId . " ";
+                    break;
+                case TABLE_NAME_STATISTICS . "/" . TABLE_NAME_STATISTICS_DETAIL . "/" . TABLE_NAME_PEOPLE . "/" . TABLE_NAME_HOMES:            
                     $sqlWhere.= "People.Id = " . $this->parentId . " ";
                     break;
                 case TABLE_NAME_STATISTICS . "/" . TABLE_NAME_STATISTICS_DETAIL . "/" . TABLE_NAME_PEOPLE . "/" . TABLE_NAME_MEMBER:            
@@ -72,6 +83,9 @@ class People extends SuperEntity{
                     $sqlWhere.= "People.Id = " . $this->parentId . " ";
                     break;
                 case TABLE_NAME_STATISTICS . "/" . TABLE_NAME_STATISTICS_DETAIL . "/" . TABLE_NAME_PEOPLE . "/" . TABLE_NAME_KEYS:            
+                    $sqlWhere.= "People.Id = " . $this->parentId . " ";
+                    break;
+                case TABLE_NAME_STATISTICS . "/" . TABLE_NAME_STATISTICS_DETAIL . "/" . TABLE_NAME_PEOPLE . "/" . TABLE_NAME_ENGAGEMENTS:            
                     $sqlWhere.= "People.Id = " . $this->parentId . " ";
                     break;
                 default:
