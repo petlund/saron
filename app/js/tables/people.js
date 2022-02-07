@@ -22,6 +22,7 @@ $(document).ready(function () {
 
 
 function peopleTableDef(tableViewId, tablePath, tableTitle, parentId) {
+    $(tableViewId).find('.jtable-toolbar-item-add-record').hide();
     var tableName = saron.table.people.name;
     var title = 'Personuppgifter';
     if(tableTitle !== null)
@@ -406,7 +407,9 @@ function peopleTableDef(tableViewId, tablePath, tableTitle, parentId) {
         },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === saron.userrole.editor){
-                $(tableViewId).find('.jtable-toolbar-item-add-record').show();
+                if(tableViewId !== saron.table.statistics.viewid){
+                    $(tableViewId).find('.jtable-toolbar-item-add-record').show();
+                }
             }
         },        
         formCreated: function (event, data){

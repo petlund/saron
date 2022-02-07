@@ -91,17 +91,15 @@ class Statistics extends SuperEntity{
         $preRowCountSql = "SELECT ";
         $preRowCountSql.= "SELECT ";
         
-        
-        
         $result = $this->db->selectSeparate($this->saronUser, $sql, $sqlCount, $rec);    
         return $result;        
     }
 
     
     function getSelectSQL($offset){
-        $rowNumberSql = "(ROW_NUMBER() OVER (ORDER BY DateOfBirth) + " . $offset . ") AS Id2";
+        $rowNumberSql = "(ROW_NUMBER() OVER (ORDER BY DateOfBirth) + " . $offset . ") AS Id";
         
-        $sqlSelect="SELECT Id, " . $this->getTablePathSql(true) . DECRYPTED_ALIAS_LASTNAME . ", " . DECRYPTED_ALIAS_FIRSTNAME . ", " . DECRYPTED_ALIAS_COMMENT . ", DateOfBirth, " . $this->getTablePathSql(true);
+        $sqlSelect="SELECT p.Id as PersonId, " . $rowNumberSql . ", " . $this->getTablePathSql(true) . DECRYPTED_ALIAS_LASTNAME . ", " . DECRYPTED_ALIAS_FIRSTNAME . ", " . DECRYPTED_ALIAS_COMMENT . ", DateOfBirth, " . $this->getTablePathSql(true);
         
         return $sqlSelect;
     }

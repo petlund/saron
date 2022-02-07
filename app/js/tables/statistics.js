@@ -181,6 +181,9 @@ function detailTableDef(tableViewId, tablePath, childTableTitle, parentId){
                 type: 'hidden',
                 defaultValue: tableName
             },
+            PersonId:{
+                type: 'hidden'
+            },
             Person:{
                 title: '',
                 width: '1%',
@@ -191,6 +194,8 @@ function detailTableDef(tableViewId, tablePath, childTableTitle, parentId){
                     var childTablePath = tablePath + "/" + childTableName;
                     var tooltip = 'Personuppgifter';
                     var imgFile = "haspos.png";
+                    
+                    data.record.Id = data.record.PersonId;
                     
                     var childTableDef = peopleTableDef(tableViewId, childTablePath, childTableTitle, data.record.Id);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, statisticsListUri);
