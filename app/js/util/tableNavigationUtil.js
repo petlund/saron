@@ -11,23 +11,74 @@ function openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, chil
     var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
 
     $imgChild.click(data, function (event){
-        _openChild(data, $imgChild, tableViewId, childTableDef, childTableName, listParentRowUrl)
+        //_openChild(data, $imgChild, tableViewId, childTableDef, childTableName, listParentRowUrl);
+        _openChildAndUpdateParentIcon(data, $imgChild, tableViewId, childTableDef, childTableName, listParentRowUrl);
     });
     return $imgChild;
     
 }
 
-
-function _openChild(data, $imgChild, tableViewId, childTableDef, childTableName, listParentRowUrl){
+function _openChildAndUpdateParentIcon(data, $imgChild, tableViewId, childTableDef, childTableName, listParentRowUri){
     var $tr = $imgChild.closest('tr');
     $tr.removeClass(getAllClassNameOpenChild(data));
     $tr.addClass(getClassNameOpenChild(data, childTableName ));
 
-    $(tableViewId).jtable('openChildTable', $tr, childTableDef, function(placeholder){
+    var url = '/' + saron.uri.saron + listParentRowUri;
+    var options = {record:{Id:data.record.Id, TablePath:data.record.TablePath}, clientOnly: false, url:url};
+
+    var _table = $tr.closest('div.jtable-main-container');
+    var table = null;
+    for(var t = 0; t<_table.length;t++){
+        var parentDiv = _table[t].parentElement;
+        
+        if(parentDiv.id.length === 0)
+            parentDiv.setAttribute('id', childTableName + '_' + data.record.Id);
+
+        table = $("#" + parentDiv.id);
+        table.jtable('updateRecord', options);    
+    }
+
+    table.jtable('openChildTable', $tr, childTableDef, function(childTablePlaceHolder){
         var tablePath = getTablePath(data, childTableName);
-        var postData = getPostData(null, tableViewId, data.record.Id, tablePath, saron.source.list, saron.responsetype.records, childTableName);
-        updateParentRow(data, tableViewId, childTableName, listParentRowUrl);        
-        placeholder.childTable.jtable('load', postData, function(){
+        var id = data.record.Id;
+        if(data.record.PersonId > 0) // used in statistic table. personId is not unic, id = rowId
+            id = data.record.PersonId;
+
+        var postData = getPostData(null, 'childPlaceholder', id, tablePath, saron.source.list, saron.responsetype.records, childTableName);
+        childTablePlaceHolder.childTable.jtable('load', postData, function(data){
+        });
+    });
+}
+
+
+
+function _openChild(data, $imgChild, tableViewId, childTableDef, childTableName, listParentRowUri){
+    var $tr = $imgChild.closest('tr');
+    $tr.removeClass(getAllClassNameOpenChild(data));
+    $tr.addClass(getClassNameOpenChild(data, childTableName ));
+
+    //var placeHolder1 = $imgChild.closest('.jtable-main-container').parentElement.nodeName;
+    var tablePlaceHolder = getTableById(data, tableViewId, childTableName);
+    
+    tablePlaceHolder.jtable('openChildTable', $tr, childTableDef, function(childTablePlaceholder){
+        var tablePath = getTablePath(data, childTableName);
+        
+        
+        //var v1 = childTablePlaceholder.childTable[0].closest('div.jtable-child-table-container');
+        //.closest('.jtable-child-table-container')
+        
+        var id = data.record.Id;
+        if(data.record.PersonId > 0) // used in statistic table. personId is not unic, id = rowId
+            id = data.record.PersonId;
+        
+        var table = $(classNameId).closest('div.jtable-child-table-container');
+        var url = '/' + saron.uri.saron + listParentRowUri;
+        var options = {record:{Id:id}, clientOnly: false, url:url};
+        table.jtable('updateRecord', options);    
+//        updateParentRow(data, tableViewId, childTableName, listParentRowUrl);        
+
+        var postData = getPostData(null, 'childPlaceholder', id, tablePath, saron.source.list, saron.responsetype.records, childTableName);
+        childTablePlaceholder.childTable.jtable('load', postData, function(data){
         });
     });    
 }

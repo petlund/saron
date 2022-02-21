@@ -132,6 +132,8 @@ function peopleEngagementTableDef(tableViewId, tablePath, parentId){
 
 function engagementTableDef(tableViewId, tablePath, childTableTitle, parentId){
     const uri = 'app/web-api/listOrganizationPos.php';
+    var tableName = saron.table.engagements.name;;
+
     return {
         showCloseButton: false,
         title: function (){
@@ -165,7 +167,8 @@ function engagementTableDef(tableViewId, tablePath, childTableTitle, parentId){
                 }
             },
             TablePath:{
-                type: 'hidden'                
+                type: 'hidden',
+                defaultValue: tableName
             },            
             OrgPosStatus_FK: {
                 title: 'Status',

@@ -10,13 +10,14 @@ const statisticsListUri = 'app/web-api/listStatistics.php';
 
 
 $(document).ready(function () {
-    $(saron.table.statistics.viewid).jtable(statisticTableDef(saron.table.statistics.viewid, null, null));    
-    var options = getPostData(null, saron.table.statistics.viewid, null, saron.table.statistics.name, saron.source.list, saron.responsetype.records, statisticsListUri);
-    $(saron.table.statistics.viewid).jtable('load',options);
-    $(saron.table.statistics.viewid).find('.jtable-toolbar-item-add-record').hide();
+    var tablePlaceHolder = $(saron.table.statistics.viewid);
+    tablePlaceHolder.jtable(statisticTableDef(tablePlaceHolder, null, null));    
+    var options = getPostData(null, tablePlaceHolder, null, saron.table.statistics.name, saron.source.list, saron.responsetype.records, statisticsListUri);
+    tablePlaceHolder.jtable('load',options);
+    tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });
 
-function statisticTableDef(tableViewId, tablePath, tableTitle){
+function statisticTableDef(tablePlaceHolder, tablePath, tableTitle){
     var tableName = saron.table.statistics.name;
     var title = 'Statistik';
     if(tableTitle !== null)
@@ -57,9 +58,9 @@ function statisticTableDef(tableViewId, tablePath, tableTitle){
                     var tooltip = 'Detaljer';
                     var imgFile = "member.png";
 
-                    var childTableDef = detailTableDef(tableViewId, childTablePath, childTableTitle, data.record.Id);
-                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, statisticsListUri);
-                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, statisticsListUri);
+                    var childTableDef = detailTableDef(tablePlaceHolder, childTablePath, childTableTitle, data.record.Id);
+                    var $imgChild = openChildTable(data, tablePlaceHolder, childTableDef, imgFile, tooltip, childTableName, TABLE, statisticsListUri);
+                    var $imgClose = closeChildTable(data, tablePlaceHolder, childTableName, TABLE, statisticsListUri);
 
                     return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
                 }
@@ -173,7 +174,7 @@ function detailTableDef(tableViewId, tablePath, childTableTitle, parentId){
             listAction:   '/' + saron.uri.saron + statisticsListUri
         },
         fields: {
-            Id: {
+            Id: { // unic rowId
                 key: true,
                 list: false
             },
@@ -182,7 +183,8 @@ function detailTableDef(tableViewId, tablePath, childTableTitle, parentId){
                 defaultValue: tableName
             },
             PersonId:{
-                type: 'hidden'
+                title: 'PersonId',
+                list: true //not unic in this view
             },
             Person:{
                 title: '',
@@ -194,10 +196,10 @@ function detailTableDef(tableViewId, tablePath, childTableTitle, parentId){
                     var childTablePath = tablePath + "/" + childTableName;
                     var tooltip = 'Personuppgifter';
                     var imgFile = "haspos.png";
+
+
+                    var childTableDef = peopleTableDef(tableViewId, childTablePath, childTableTitle, data.record.PersonId); // PersonId point to childtable unic id   
                     
-                    data.record.Id = data.record.PersonId;
-                    
-                    var childTableDef = peopleTableDef(tableViewId, childTablePath, childTableTitle, data.record.Id);
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, statisticsListUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, statisticsListUri);
 

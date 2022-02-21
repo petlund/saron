@@ -97,7 +97,7 @@ class Statistics extends SuperEntity{
 
     
     function getSelectSQL($offset){
-        $rowNumberSql = "(ROW_NUMBER() OVER (ORDER BY DateOfBirth) + " . $offset . ") AS Id";
+        $rowNumberSql = "(ROW_NUMBER() OVER (ORDER BY DateOfBirth) + " . $offset . ") AS Id"; 
         
         $sqlSelect="SELECT p.Id as PersonId, " . $rowNumberSql . ", " . $this->getTablePathSql(true) . DECRYPTED_ALIAS_LASTNAME . ", " . DECRYPTED_ALIAS_FIRSTNAME . ", " . DECRYPTED_ALIAS_COMMENT . ", DateOfBirth, " . $this->getTablePathSql(true);
         

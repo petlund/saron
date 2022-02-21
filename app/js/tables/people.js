@@ -239,9 +239,9 @@ function peopleTableDef(tableViewId, tablePath, tableTitle, parentId) {
                 list: false,
                 title: 'Välj hem',
                 options: function(data){
-                    if(data.source !== saron.source.list)
-                        data.clearCache();
-                    return '/' + saron.uri.saron + 'app/web-api/listHomes.php?selection=options';
+                    var uri = 'app/web-api/listOrganizationUnitType.php';
+                    var parameters = getOptionsUrlParameters(data, tableViewId, parentId, tablePath, uri);                    
+                    return '/' + saron.uri.saron + uri + parameters;
                 }
             },
             OldHomeId: { // for requests

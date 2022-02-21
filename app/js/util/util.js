@@ -291,7 +291,8 @@ function getURLParameters(id, tableViewId, parentId, tablePath, source, resultTy
         else
             parameter+= "&";
         
-        parameter+= 'TableView=' + getTableView(tableViewId);
+        parameter+= 'TableView=TableView';
+//        parameter+= 'TableView=' + getTableView(tableViewId);
     }
     
     
@@ -340,7 +341,8 @@ function getURLParameters(id, tableViewId, parentId, tablePath, source, resultTy
         if(resultType === null){
             resultType = saron.responsetype.records;
         }
-        var options = {Id:id, TableView:getTableView(tableViewId), ParentId:parentId, TablePath:tablePath, Source:source, ResultType:resultType};
+//        var options = {Id:id, TableView:getTableView(tableViewId), ParentId:parentId, TablePath:tablePath, Source:source, ResultType:resultType};
+        var options = {Id:id, TableView:'tableViewId', ParentId:parentId, TablePath:tablePath, Source:source, ResultType:resultType};
 //        console.log(url + " => " + options);
         return options;
     }
