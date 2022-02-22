@@ -37,7 +37,7 @@ function statisticTableDef(tablePlaceHolder, tablePath, tableTitle){
         multiSorting: true,
         defaultSorting: 'year desc', //Set default sorting        
         actions: {
-            listAction:   '/' + saron.uri.saron + statisticsListUri,
+            listAction:   '/' + saron.uri.saron + statisticsListUri
         },
         fields: {
             Id: {
