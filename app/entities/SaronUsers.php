@@ -108,7 +108,8 @@ class SaronUsers extends SuperEntity{
             $org = $this->hasPrivilege($this->users[$i]->roles, SARON_ROLE_PREFIX . SARON_ROLE_ORG);
             $edit = $this->hasPrivilege($this->users[$i]->roles, SARON_ROLE_PREFIX . SARON_ROLE_EDITOR);
             
-            $result.= '{"id":' . $this->users[$i]->ID;
+            $result.= '{"Id":' . $this->users[$i]->ID;
+//            $result.= ',"OpenChildTable":' . $this->openChildTable ;
             $result.= ',"display_name":"' . $this->users[$i]->display_name; 
             $result.= '","user_login":"' . $this->users[$i]->user_login; 
             $result.= '","user_email":"' . $this->users[$i]->user_email; 

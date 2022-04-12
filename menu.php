@@ -97,7 +97,7 @@
                             </ul>
                         </li>
                         <li>
-                            <a href="#">Statistik</a>
+                            <a href="/<?php echo SARON_URI;?>app/views/test.php">Medlemsstatistik</a>
                             <ul>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/statistics.php">Medlemsstatistik</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/charts.php">Medlemsstatistik grafik</a></li>

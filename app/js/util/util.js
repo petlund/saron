@@ -38,6 +38,8 @@ function _setClassAndValue(data, field, type){
 
 }
 
+
+
 function _setClassAndValuePrefix(data, field, type, prefix){
     return _styleSaronValue(field + ' ' + _getClassName_Id(data, field, type), prefix + ' ' + data.record[field], '');    
 }

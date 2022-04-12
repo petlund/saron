@@ -3,22 +3,16 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/homes.js</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/baptist.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/Statistics.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/menu.php</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/People.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/people.js</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/statistics.js</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationPos.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/util/tableNavigationUtil.js</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/SuperEntity.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/PeopleViews.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/Statistics.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/db.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/org/pos.js</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/people.js</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/keys.js</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/member.js</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/util/util.js</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/org/unit.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/test.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/util/tableNavigationUtil.js</file>
         </group>
     </open-files>
 </project-private>

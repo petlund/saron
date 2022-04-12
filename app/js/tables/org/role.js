@@ -194,10 +194,3 @@ function roleTableDef(tableViewId, tablePath, childTableTitle, parentId){
     };
 }
 
-
-
-function updateRoleRecord(tableViewId, data){
-    var url = '/' + saron.uri.saron + 'app/web-api/listOrganizationRole.php';
-    var options = {record:{"Id": data.record.Id}, "clientOnly": false, "url":url};
-    $(tableViewId).jtable('updateRecord', options);
-}

@@ -62,7 +62,7 @@ function statisticTableDef(tablePlaceHolder, tablePath, tableTitle){
                     var $imgChild = openChildTable(data, tablePlaceHolder, childTableDef, imgFile, tooltip, childTableName, TABLE, statisticsListUri);
                     var $imgClose = closeChildTable(data, tablePlaceHolder, childTableName, TABLE, statisticsListUri);
 
-                    return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
+                    return getIcon(data,  tablePlaceHolder, childTableName, $imgChild, $imgClose);
                 }
             },
             TablePath:{
@@ -176,7 +176,7 @@ function detailTableDef(tableViewId, tablePath, childTableTitle, parentId){
         fields: {
             Id: { // unic rowId
                 key: true,
-                list: false
+                list: true
             },
             TablePath:{
                 type: 'hidden',
@@ -184,7 +184,7 @@ function detailTableDef(tableViewId, tablePath, childTableTitle, parentId){
             },
             PersonId:{
                 title: 'PersonId',
-                list: true //not unic in this view
+                list: false //not unic in this view
             },
             Person:{
                 title: '',
@@ -202,8 +202,15 @@ function detailTableDef(tableViewId, tablePath, childTableTitle, parentId){
                     
                     var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, statisticsListUri);
                     var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, statisticsListUri);
-
+                    
                     return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
+                    
+//                    var $img = openCloseChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, statisticsListUri);
+//                    return $img;
+                    
+//                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, statisticsListUri);
+//
+//                    return getChildNavIcon(data, childTableName, $imgChild, $imgClose);                    
                 }
             },
             event_date: {

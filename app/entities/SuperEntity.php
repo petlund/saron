@@ -68,12 +68,31 @@ class SuperEntity {
         if(strlen($this->resultType) === 0){
             $this->resultType = (String)filter_input(INPUT_GET, "ResultType", FILTER_SANITIZE_STRING);
         }
+//        $this->openChildTable = (String)filter_input(INPUT_POST, "OpenChildTable", FILTER_SANITIZE_STRING);
+//        if(strlen($this->openChildTable) === 0){
+//            $this->openChildTable = (String)filter_input(INPUT_GET, "OpenChildTable", FILTER_SANITIZE_STRING);
+//            if(strlen($this->openChildTable) === 0){
+//                $this->openChildTable = false;
+//            }
+//        }
 
         
     }
 
     
     
+//    protected function getOpenChildSql($continue = false){
+//        $answ = $this->openChildTable . ' as "OpenChildTable"';
+//        if($continue){
+//            return $answ . ", ";
+//        }
+//        else{
+//            return $answ;            
+//        }
+//    }
+//    
+//    
+//    
     protected function getId($entityId, $clientId){
         if($entityId > 0){
             return $entityId;

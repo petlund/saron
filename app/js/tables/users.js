@@ -20,7 +20,7 @@ $(document).ready(function () {
         fields: {
             Id: {
                 key: true,
-                list: false
+                list: true
             },
             display_name: {
                 title: 'Namn',

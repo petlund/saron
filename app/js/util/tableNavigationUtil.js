@@ -7,11 +7,36 @@ ORG, TABLE
 
 const is_open = "_is_open_";
 
+function openCloseChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, type, listParentRowUrl){
+    var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
+    var $imgClose = _getImageCloseTag(data, childTableName, type);
+
+    $imgChild.click(data, function (event){
+        _openChildAndUpdateParentIcon(data, $imgChild, childTableDef, childTableName, listParentRowUrl);
+    });
+    
+    $imgClose.click(data, function (event){
+        closeChildTable(data, tableViewId, childTableName, type, listParentRowUrl);
+    });    
+
+    
+    var openClassName = _getClassNameOpenChild(data, childTableName);
+    var tr = $imgChild.closest('tr');
+    var cName = tr.attr('class');
+    var isChildRowOpen = false;
+    if(isChildRowOpen)
+        return $imgClose;
+    else
+        return $imgChild;    
+}
+
+
 function openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, type, listParentRowUrl){
     var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
 
     $imgChild.click(data, function (event){
         _openChildAndUpdateParentIcon(data, $imgChild, childTableDef, childTableName, listParentRowUrl);
+        return _getImageCloseTag(data, childTableName, type);
     });
     return $imgChild;
     
@@ -22,16 +47,19 @@ function closeChildTable(data, tableViewId, childTableName, type, listParentRowU
     var $imgClose = _getImageCloseTag(data, childTableName, type);
     
     $imgClose.click(data, function(event) {
-        _closeChildAndUpdateParentIcon(data, $imgClose, childTableName, listParentRowUri)
+        _closeChildAndUpdateParentIcon(data, $imgClose, childTableName, listParentRowUri);
     });    
     return $imgClose;
 }
 
 
 
-function getChildNavIcon(data, childTableName, $imgChild, $imgClose){
-    var openClassName = _getClassNameOpenChild(data, childTableName);
-    var isChildRowOpen = $("." + openClassName).length > 0;
+function getIcon(data, placeHolder, childTableName, $imgChild, $imgClose){
+    var row = "[data-record-key=" + data.record.Id + "]"; 
+    var tr = placeHolder.jtable('getRowByKey', row);
+    var isChildRowOpen = false;
+
+    
     if(isChildRowOpen)
         return $imgClose;
     else
@@ -39,17 +67,35 @@ function getChildNavIcon(data, childTableName, $imgChild, $imgClose){
 }
 
 
-//********************* prvate methods *********************
+
+function getChildNavIcon(data, childTableName, $imgChild, $imgClose){
+    var table = _findTableByElement(data, $imgChild, childTableName);
+    if(table !== null)
+        var className = table.attr('class');
+
+    var tr = $imgChild.closest('.jtable-data-row');
+ 
+    var openClassName = _getClassNameOpenChild(data, childTableName);
+    var openRows = $("." + openClassName);
+    var isChildRowOpen = openRows.length > 0;
+    if(isChildRowOpen)
+        return $imgClose;
+    else
+        return $imgChild;    
+}
+
+
+//********************* private methods *********************
 
 
 function _openChildAndUpdateParentIcon(data, $imgChild, childTableDef, childTableName, listParentRowUri){
-    var tr = $imgChild.closest('tr');
+    var tr = $imgChild.closest('.jtable-data-row');
     tr.removeClass(_getAllClassNameOpenChild(data));
     tr.addClass(_getClassNameOpenChild(data, childTableName ));
 
-    var table = _findTableByElement(data, tr, childTableName);
-    _updateParentRow(data, table, listParentRowUri);
-    _openChildTable(data, tr, table, childTableDef, childTableName);
+    var tablePlaceholder = _findTableByElement(data, tr, childTableName);
+    _updateCurrentRow(data, tablePlaceholder, listParentRowUri);
+    _openChildTable(data, tr, tablePlaceholder, childTableDef, childTableName);
 
 }
 
@@ -61,7 +107,7 @@ function _closeChildAndUpdateParentIcon(data, $imgClose, childTableName, listPar
         tr.removeClass(_getAllClassNameOpenChild(data));
                 
         var table = _findTableByElement(data, tr, childTableName); 
-        _updateParentRow(data, table, listParentRowUri);
+        _updateCurrentRow(data, table, listParentRowUri);
 
         table.jtable('closeChildTable', tr, function(){});
 }
@@ -85,25 +131,25 @@ function _findTableByElement(data, element, childTableName){
 
 
 
-function _updateParentRow(data, table, listParentRowUri){
+function _updateCurrentRow(data, table, listParentRowUri){
     var url = '/' + saron.uri.saron + listParentRowUri;
     var options = {record:{Id:data.record.Id, TablePath:data.record.TablePath}, clientOnly: false, url:url};
 
-    table.jtable('updateRecord', options);    
+    table.jtable('updateRecord', options);
     
 }
 
 
 
-function _openChildTable(data, tr, parentTable, childTableDef, childTableName){
-    parentTable.jtable('openChildTable', tr, childTableDef, function(childTablePlaceHolder){
+function _openChildTable(data, tr, tablePlaceHolder, childTableDef, childTableName){
+    tablePlaceHolder.jtable('openChildTable', tr, childTableDef, function(childData){
         var tablePath = _getTablePath(data, childTableName);
         var id = data.record.Id;
         if(data.record.PersonId > 0) // used in statistic table. personId is not unic, id = rowId
             id = data.record.PersonId;
 
-        var postData = getPostData(null, 'childPlaceholder', id, tablePath, saron.source.list, saron.responsetype.records, childTableName);
-        childTablePlaceHolder.childTable.jtable('load', postData, function(data){
+        var options = getPostData(null, 'childPlaceholder', id, tablePath, saron.source.list, saron.responsetype.records, childTableName);
+        childData.childTable.jtable('load', options, function(data){
         });
     });    
 }
@@ -143,6 +189,9 @@ function _getAllClassNameOpenChild(data){
 
 
 function _getClassNameOpenChild(data, childTableName){
+//    if(data.record.PersonId > 0)
+//        return childTableName + is_open +  data.record.PersonId + ' ';
+
     return childTableName + is_open +  data.record.Id + ' ';
 }
 
@@ -158,3 +207,5 @@ function _getTablePath(data, tableName){
         else
             return tableName;    
 }
+
+
