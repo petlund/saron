@@ -9,31 +9,30 @@ POS_ENABLED
 "use strict";    
 const unitListUri = 'app/web-api/listOrganizationUnit.php';
 
-function unitTableDef(tableViewId, tablePath, childTableTitle, parentId){
-
-    var tableName = "";
-    if(tableViewId === saron.table.unittree.viewid)
-        tableName = saron.table.unittree.name;
-    else if(tableViewId === saron.table.unitlist.viewid)
-        tableName = saron.table.unitlist.name;
-    else
-        tableName = saron.table.unit.name;
+function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
+    var title = 'Organisatoriska enheter';
+    if(newTableTitle !== null)
+        title = newTableTitle;
     
+    var tableName = saron.table.unit.name;
+
+    const maxUnits = tableName + '/' + tableName;
+        if(tablePath !== maxUnits){
+        if(tablePath === null)
+            tablePath = tableName;
+        else
+            tablePath+= '/' + tableName; 
+    }    
     return {
         showCloseButton: false,
-        title: function(){
-            if(childTableTitle !== null)
-                return childTableTitle;
-            else
-                return 'Organisatoriska enheter';
-                
-        },
+        initParameters: getInitParametes(mainTableViewId, tablePath, parentId),
+        title: title,
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
         sorting: true, //Enable sorting
         multiSorting: true,
-        defaultSorting: getDefaultUnitSorting(tableViewId), //Set default sorting        
+        defaultSorting: getDefaultUnitSorting(mainTableViewId), //Set default sorting        
         messages: {addNewRecord: 'Lägg till en ny organisatorisk enhet.'},
         actions: {
             listAction:   '/' + saron.uri.saron + unitListUri,
@@ -57,43 +56,55 @@ function unitTableDef(tableViewId, tablePath, childTableTitle, parentId){
                 edit: false,
                 create: false,
                 delete: false,
-                list: includedIn(tableViewId, saron.table.unittree.viewid),
+                list: includedIn(mainTableViewId, saron.table.unittree.viewid),
                 
                 display: function (data) {
-                    var childTableTitle = 'Enhetstypen "' + data.record.Name + '" har följande roller';
+                    var childTableTitle = 'Enhetstypen "' + data.record.Name + '" har följande underenheter';
                     var childTableName  = ""; // no adding of tablePath on requrssion 
-                    var childTablePath = tablePath + "/" + childTableName;
                     var tooltip = "";
                     var imgFile = "";
+                    var parentId = data.record.Id;
+                    var url = null;
+                    var type = 0;
+                    var clientOnly = true;
 
                     if(data.record.SubUnitEnabled === SUBUNIT_ENABLED){
                         if(data.record.HasSubUnit === '0' || data.record.statusSubProposal === null  || data.record.statusSubVacant === null){
-                            tooltip = "Underorganisation";
+                            tooltip = "Inga underorganisationer";
                             imgFile = "child.png";
                         }
                         else{
                             if(data.record.statusSubProposal > 0 && data.record.statusSubVacant > 0){
-                                tooltip = 'Underorganisation med ' + data.record.statusSubProposal + ' förslag och ' + data.record.statusSubVacant + ' vakans(er)';
+                                tooltip = 'Underorganisationer har ' + data.record.statusSubProposal + ' förslag och ' + data.record.statusSubVacant + ' vakans(er)';
                                 imgFile = "haschild_YR.png";
                             }
                             else if(data.record.statusSubProposal === "0" && data.record.statusSubVacant !== "0"){
-                                tooltip = 'Underorganisation med ' + data.record.statusSubVacant + ' vakans(er)';
+                                tooltip = 'Underorganisationer har ' + data.record.statusSubVacant + ' vakans(er)';
                                 imgFile = "haschild_R.png";
                             }
                             else if(data.record.statusSubProposal !== "0" && data.record.statusSubVacant === "0"){
-                                tooltip = 'Underorganisation med ' + data.record.statusSubProposal + ' förslag';
+                                tooltip = 'Underorganisationer har ' + data.record.statusSubProposal + ' förslag';
                                 imgFile = "haschild_Y.png";
                             }
                             else{
-                                tooltip = "Underorganisation";
+                                tooltip = "Underorganisationer";
                                 imgFile =  "haschild.png";
                             }
                         }
-                        var childTableDef = unitTableDef(tableViewId, childTablePath, childTableTitle, data.record.Id);
-                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, tableName, TABLE, unitListUri);
-                        var $imgClose = closeChildTable(data, tableViewId, tableName, TABLE, unitListUri);
-                        
-                        return getChildNavIcon(data, tableName, $imgChild, $imgClose);
+
+                        var childTableDef = unitTableDef(mainTableViewId, tablePath, childTableTitle, parentId); // PersonId point to childtable unic id   
+                        var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
+                        var $imgClose = getImageCloseTag(data, childTableName, type);
+
+                        $imgChild.click(data, function (event){
+                            _clickActionOpen(childTableDef, $imgChild, event, url, clientOnly);
+                        });
+
+                        $imgClose.click(data, function (event){
+                            _clickActionClose(childTableDef, $imgClose, event, url, clientOnly);
+                        });    
+
+                        return _getClickImg(data, childTableDef, $imgChild, $imgClose);
                     }
                     return null;
                 }
@@ -107,10 +118,13 @@ function unitTableDef(tableViewId, tablePath, childTableTitle, parentId){
                 delete: false,
                 display: function(data){
                     var childTableName = saron.table.pos.name;
-                    var childTablePath = tablePath + "/" + childTableName;
                     var childTableTitle = data.record.Name + " har följande positioner";
+                    var parentId = data.record.Id;
                     var tooltip = "";
                     var imgFile = "";         
+                    var url = null;
+                    var type = 0;
+                    var clientOnly = true;
                     
                     if(data.record.PosEnabled === POS_ENABLED){
                         if(data.record.HasPos === '0'){
@@ -135,25 +149,34 @@ function unitTableDef(tableViewId, tablePath, childTableTitle, parentId){
                             }
                         }
 
-                        var childTableDef = posTableDef(tableViewId, childTablePath, childTableTitle, data.record.Id);
-                        var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, unitListUri);
-                        var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, unitListUri);
-                        
-                        return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
+                        var childTableDef = posTableDef(mainTableViewId, tablePath, childTableTitle, parentId); // PersonId point to childtable unic id   
+
+                        var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
+                        var $imgClose = getImageCloseTag(data, childTableName, type);
+
+                        $imgChild.click(data, function (event){
+                            _clickActionOpen(childTableDef, $imgChild, event, url, clientOnly);
+                        });
+
+                        $imgClose.click(data, function (event){
+                            _clickActionClose(childTableDef, $imgClose, event, url, clientOnly);
+                        });    
+
+                        return _getClickImg(data, childTableDef, $imgChild, $imgClose);
                     }
                     return null;
                 }
             },
             ParentTreeNode_FK:{
-                list: includedIn(tableViewId, saron.table.unitlist.viewid),
+                list: includedIn(mainTableViewId, saron.table.unitlist.viewid),
                 edit: true, 
-                create: !includedIn(tableViewId, saron.table.unittree.viewid),
+                create: !includedIn(mainTableViewId, saron.table.unittree.viewid),
                 title: 'Överordna verksamhet',
                 options: function(data) {
-                    if(includedIn(tableViewId, saron.table.unitlist.viewid))
+                    if(includedIn(mainTableViewId, saron.table.unitlist.viewid))
                         data.record.ParentId=null; //using cache
                     
-                    var parameters = getOptionsUrlParameters(data, tableViewId, parentId, tablePath, unitListUri);                    
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, unitListUri);                    
                     return '/' + saron.uri.saron + unitListUri + parameters;
                 }                
             },
@@ -171,13 +194,13 @@ function unitTableDef(tableViewId, tablePath, childTableTitle, parentId){
                 title: "Sökväg",
                 create: false,
                 edit: false,
-                list: includedIn(tableViewId, saron.table.role.viewid + saron.table.unittype.viewid + saron.table.unitlist.viewid)
+                list: includedIn(mainTableViewId, saron.table.role.viewid + saron.table.unittype.viewid + saron.table.unitlist.viewid)
             },
             SubUnits: {
                 title: "Underenheter",
                 create: false,
                 edit: false,
-                list: includedIn(tableViewId, saron.table.role.viewid + saron.table.unittype.viewid + saron.table.unitlist.viewid)
+                list: includedIn(mainTableViewId, saron.table.role.viewid + saron.table.unittype.viewid + saron.table.unitlist.viewid)
             },
             Description: {
                 width: '15%',
@@ -189,11 +212,11 @@ function unitTableDef(tableViewId, tablePath, childTableTitle, parentId){
                 inputTitle: 'Typ av enhet (Kan inte ändras. Vill du ändra behöver du skapa en ny organisatorisk enhet).',
                 width: '5%',
                 options: function (data){
-                    if(includedIn(tableViewId, saron.table.unitlist.viewid))
+                    if(includedIn(mainTableViewId, saron.table.unitlist.viewid))
                         data.record.ParentId=null; //using cache
                     
                     var uri = 'app/web-api/listOrganizationUnitType.php';
-                    var parameters = getOptionsUrlParameters(data, tableViewId, parentId, tablePath, uri);                    
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, uri);                    
                     return '/' + saron.uri.saron + uri + parameters;
                 }
             },
@@ -219,7 +242,7 @@ function unitTableDef(tableViewId, tablePath, childTableTitle, parentId){
                 data.row.find('.jtable-delete-command-button').show();
             
             if(data.record.parentNodeChange !== '0')
-                $(tableViewId).jtable('load');
+                $(mainTableViewId).jtable('load');
 
         },  
         rowInserted: function(event, data){
@@ -237,7 +260,7 @@ function unitTableDef(tableViewId, tablePath, childTableTitle, parentId){
         },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
-                $(tableViewId).find('.jtable-toolbar-item-add-record').show();
+                $(mainTableViewId).find('.jtable-toolbar-item-add-record').show();
             }
         },        
         formCreated: function (event, data){

@@ -24,7 +24,6 @@ $(document).ready(function () {
 });
 
 function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
-    //$(mainTableViewId).find('.jtable-toolbar-item-add-record').hide();
     var title = 'Personuppgifter';
     if(newTableTitle !== null)
         title = newTableTitle;

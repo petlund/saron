@@ -9,31 +9,36 @@ RECORD, OPTIONS
 const posListUri = 'app/web-api/listOrganizationPos.php';
 
 $(document).ready(function () {
-        $(saron.table.pos.viewid).jtable(posTableDef(saron.table.pos.viewid, saron.table.pos.name, null, null));
-        var postData = getPostData(null, saron.table.pos.viewid, null, saron.table.pos.name, saron.source.list, saron.responsetype.records, posListUri);
-        $(saron.table.pos.viewid).jtable('load', postData);
-        $(saron.table.pos.viewid).find('.jtable-toolbar-item-add-record').hide();
-    }
-);
+    var mainTableViewId = saron.table.pos.viewid;
+    var tablePlaceHolder = $(mainTableViewId);
+    tablePlaceHolder.jtable(posTableDef(mainTableViewId, saron.table.pos.name, null, null));
+    var postData = getPostData(null, mainTableViewId, null, saron.table.pos.name, saron.source.list, saron.responsetype.records, posListUri);
+    tablePlaceHolder.jtable('load', postData);
+    tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
+});
 
 
-function posTableDef(tableViewId, tablePath, tableTitle, parentId){
-    const tableName = saron.table.pos.name;
+function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
+    var title =  'Alla positioner';
+    if(newTableTitle !== null)
+        title = newTableTitle;
     
+    const tableName = saron.table.pos.name;
+    if(tablePath === null)
+        tablePath = tableName;
+    else
+        tablePath+= '/' + tableName; 
+
     return {
         showCloseButton: false,
-        title: function (){
-            if(tableTitle !== null)
-                return tableTitle;
-            else
-                return 'Positioner';
-        },
+        initParameters: getInitParametes(mainTableViewId, tablePath, parentId),
+        title: title,
         paging: true, //Enable paging§§
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
         sorting: true, //Enable sorting
         multiSorting: true,
-        defaultSorting: getDefaultPosSorting(tableViewId), //Set default sorting        
+        defaultSorting: getDefaultPosSorting(mainTableViewId), //Set default sorting        
         messages: {addNewRecord: 'Lägg till en ny position.'},
         actions: {
             listAction: '/' + saron.uri.saron + posListUri,
@@ -82,7 +87,7 @@ function posTableDef(tableViewId, tablePath, tableTitle, parentId){
                 }                
             },
             SortOrder: {
-                list: !includedIn(tableViewId, saron.table.pos.viewid),
+                list: !includedIn(mainTableViewId, saron.table.pos.viewid),
                 create: false,
                 width: '4%',
                 title: 'Sort',
@@ -92,12 +97,12 @@ function posTableDef(tableViewId, tablePath, tableTitle, parentId){
             OrgTree_FK:{                
                 create: false,
                 edit: false,
-                list: includedIn(tableViewId, saron.table.pos.viewid),
+                list: includedIn(mainTableViewId, saron.table.pos.viewid),
                 title: "Organisatorisk enhet",
                 dependsOn: 'Id',
                 options: function(data){
                     var uri = 'app/web-api/listOrganizationUnit.php';
-                    var parameters = getOptionsUrlParameters(data, tableViewId, parentId, tablePath, uri);
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, uri);
                     return '/' + saron.uri.saron + uri + parameters;
                 }
             },            
@@ -106,7 +111,7 @@ function posTableDef(tableViewId, tablePath, tableTitle, parentId){
                 title: 'Roll',
                 options: function(data){
                     var uri = 'app/web-api/listOrganizationRole.php';      
-                    var parameters = getOptionsUrlParameters(data, tableViewId, parentId, tablePath, uri);                    
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, uri);                    
                     return '/' + saron.uri.saron + uri + parameters;
                 }
             },
@@ -116,7 +121,7 @@ function posTableDef(tableViewId, tablePath, tableTitle, parentId){
                 defaultValue: '4',
                 options: function(data){                    
                     var uri = 'app/web-api/listOrganizationPosStatus.php';
-                    var parameters = getOptionsUrlParameters(data, tableViewId, parentId, tablePath, uri);                    
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, uri);                    
                     return '/' + saron.uri.saron + uri + parameters;
                 }
             },
@@ -132,7 +137,7 @@ function posTableDef(tableViewId, tablePath, tableTitle, parentId){
                 list: false,
                 options: function(data){
                     var uri = 'app/web-api/listPeople.php';
-                    var parameters = getOptionsUrlParameters(data, tableViewId, parentId, tablePath, uri);                    
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, uri);                    
                     return '/' + saron.uri.saron + uri + parameters;
                 }
             },
@@ -143,7 +148,7 @@ function posTableDef(tableViewId, tablePath, tableTitle, parentId){
                 list: false,
                 options: function(data){                    
                     var uri = 'app/web-api/listOrganizationUnit.php';
-                    var parameters = getOptionsUrlParameters(data, tableViewId, parentId, tablePath, uri);                    
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, uri);                    
                     return '/' + saron.uri.saron + uri + parameters;
                 }
             },
@@ -217,7 +222,7 @@ function posTableDef(tableViewId, tablePath, tableTitle, parentId){
             if(data.records.length > 0){
                 var showCreateButton = (data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org') && data.records[0].TablePath !== tableName; 
                 if(showCreateButton){ 
-                    $(tableViewId).find('.jtable-toolbar-item-add-record').show();
+                    $(mainTableViewId).find('.jtable-toolbar-item-add-record').show();
                 }
             }
         },        

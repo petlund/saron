@@ -9,24 +9,32 @@ saron
 const roleListUri = 'app/web-api/listOrganizationRole.php';
 
 $(document).ready(function () {
-        $(saron.table.role.viewid).jtable(roleTableDef(saron.table.role.viewid, saron.table.role.name, null, null));
-        var options = getPostData(null, saron.table.role.viewid, null, saron.table.role.name, saron.source.list, saron.responsetype.records, roleListUri);
-        $(saron.table.role.viewid).jtable('load', options);
-    }
-);
+    var mainTableViewId = saron.table.role.viewid;
+    var tablePlaceHolder = $(mainTableViewId);
+    tablePlaceHolder.jtable(roleTableDef(mainTableViewId, null, null, null));
+    var postData = getPostData(null, mainTableViewId, null, saron.table.role.name, saron.source.list, saron.responsetype.records);
+    tablePlaceHolder.jtable('load', postData);
+    tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
+});
 
 
 
-function roleTableDef(tableViewId, tablePath, childTableTitle, parentId){
+function roleTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
     const tableName = saron.table.role.name;
+    var title = "Alla roller";
+    
+    if(newTableTitle !== null)
+        title = newTableTitle;
+    
+    if(tablePath === null)
+        tablePath = tableName;
+    else
+        tablePath+= '/' + tableName; 
+    
     return {
-         showCloseButton: false,
-        title: function (){
-            if(childTableTitle !== null)
-                return childTableTitle;
-            else
-                return 'Roller';
-        },
+        showCloseButton: false,
+        initParameters: getInitParametes(mainTableViewId, tablePath, parentId),
+        title: title,
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
@@ -57,15 +65,17 @@ function roleTableDef(tableViewId, tablePath, childTableTitle, parentId){
                 create: false,
                 title: "Används",
                 edit: false,
-                list: includedIn(tableViewId, saron.table.role.viewid),
+                list: includedIn(mainTableViewId, saron.table.role.viewid),
                 sorting: false,
                 display: function(data){
                     var childTableName = saron.table.unit.name;
-                    var childTablePath = tablePath + "/" + childTableName;
                     var childTableTitle = 'Rollen "' + data.record.Name + '" ingår i följande organisatoriska enheter';
                     var tooltip = "";
                     var imgFile = "";
-                    var childUri = 'app/web-api/listOrganizationUnitType.php';
+                    var url = 'app/web-api/listOrganizationUnitType.php';
+                    var parentId = data.record.Id;
+                    var type = 0;
+                    var clientOnly = true;
 
                     if(data.record.HasChild === '0'){
                         imgFile = "unit_empty.png";
@@ -76,11 +86,19 @@ function roleTableDef(tableViewId, tablePath, childTableTitle, parentId){
                         tooltip = "Organisatoriska enheter";
                     }
 
-                    var childTableDef = unitTableDef(tableViewId, childTablePath, childTableTitle, data.record.Id);
-                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
-                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, );
+                    var childTableDef = unitTableDef(mainTableViewId, tablePath, childTableTitle, parentId); // PersonId point to childtable unic id   
+                    var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
+                    var $imgClose = getImageCloseTag(data, childTableName, type);
 
-                    return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
+                    $imgChild.click(data, function (event){
+                        _clickActionOpen(childTableDef, $imgChild, event, url, clientOnly);
+                    });
+
+                    $imgClose.click(data, function (event){
+                        _clickActionClose(childTableDef, $imgClose, event, url, clientOnly);
+                    });    
+
+                    return _getClickImg(data, childTableDef, $imgChild, $imgClose);
                 }               
             },
             Org:{
@@ -88,15 +106,18 @@ function roleTableDef(tableViewId, tablePath, childTableTitle, parentId){
                 create: false,
                 title: "Ingår i",
                 edit: false,
-                list: includedIn(tableViewId, saron.table.role.viewid),
+                list: includedIn(mainTableViewId, saron.table.role.viewid),
                 sorting: false,
                 display: function(data){
                     var childTableName = saron.table.unittype.name;
-                    var childTablePath = tablePath + "/" + childTableName;
                     var childTableTitle = 'Rollen "' + data.record.Name + '" ingår i följande enhetstyper';
                     var tooltip = "";
                     var imgFile = "";
-                    var childUri = 'app/web-api/listOrganizationUnitType.php';
+                    var parentId = data.record.Id;
+                    var url = 'app/web-api/listOrganizationUnitType.php';
+                    var parentId = data.record.Id;
+                    var type = 0;
+                    var clientOnly = true;
 
                     if(data.record.HasChild === '0'){
                         imgFile = "unittype.png";
@@ -106,12 +127,19 @@ function roleTableDef(tableViewId, tablePath, childTableTitle, parentId){
                         imgFile = "used_unittype.png";
                         tooltip = "Organisatoriska enhetstyper";
                     }
+                    var childTableDef = unitTypeTableDef(mainTableViewId, tablePath, childTableTitle, parentId); // PersonId point to childtable unic id   
+                    var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
+                    var $imgClose = getImageCloseTag(data, childTableName, type);
 
-                    var childTableDef = unitTypeTableDef(tableViewId, childTablePath, childTableTitle, data.record.Id);
-                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, childUri);
-                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, );
+                    $imgChild.click(data, function (event){
+                        _clickActionOpen(childTableDef, $imgChild, event, url, clientOnly);
+                    });
 
-                    return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
+                    $imgClose.click(data, function (event){
+                        _clickActionClose(childTableDef, $imgClose, event, url, clientOnly);
+                    });    
+
+                    return _getClickImg(data, childTableDef, $imgChild, $imgClose);
                 }
             },
             Name: {
@@ -177,7 +205,7 @@ function roleTableDef(tableViewId, tablePath, childTableTitle, parentId){
         },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
-                $(tableViewId).find('.jtable-toolbar-item-add-record').show();
+                $(mainTableViewId).find('.jtable-toolbar-item-add-record').show();
             }
         },        
         formCreated: function (event, data){

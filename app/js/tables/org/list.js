@@ -9,9 +9,11 @@ RECORD, OPTIONS
 "use strict";
 
 $(document).ready(function () {
-    $(saron.table.unitlist.viewid).jtable(unitTableDef(saron.table.unitlist.viewid, saron.table.unitlist.name,  null, null)); //-1 => null parent === topnode
-    var options = getPostData(null, saron.table.unitlist.viewid, null, saron.table.unitlist.name, saron.source.list, saron.responsetype.records, unitListUri);
-    $(saron.table.unitlist.viewid).jtable('load', options);
-    //$(TABLE_ID).find('.jtable-toolbar-item-add-record').hide();
+    var mainTableViewId = saron.table.unitlist.viewid;
+    var tablePlaceHolder = $(mainTableViewId);
+    tablePlaceHolder.jtable(unitTableDef(mainTableViewId, null,  null, null)); //-1 => null parent === topnode
+    var options = getPostData(null, mainTableViewId, null, saron.table.unitlist.name, saron.source.list, saron.responsetype.records, unitListUri);
+    tablePlaceHolder.jtable('load', options);
+    tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });
 
