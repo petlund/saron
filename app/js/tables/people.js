@@ -9,20 +9,6 @@ homesListUri
 "use strict";
 const peopleListUri = 'app/web-api/listPeople.php';
 
-function filterPeople(viewId, reloaded, tableName){
-    if(reloaded)
-        $('#searchString').val('');
-
-    var options = {searchString: $('#searchString').val(), 
-                    groupId: $('#groupId').val(), 
-                    TableViewId: viewId, 
-                    TablePath: saron.table.people.name, 
-                    ResultType: saron.responsetype.records
-                };
-
-    $('#' + viewId).jtable('load', options);
-}
-
 
 $(document).ready(function () {
     localStorage.setItem(NEW_HOME_ID, -1);

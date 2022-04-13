@@ -205,6 +205,7 @@ function baptistFormAuto(data, selectedValue){
 }
 
 
+
 function addDialogDeleteListener(data){
     data.row.find('.jtable-delete-command-button').click(data, function (event){
         data.row[0].style.backgroundColor = "red";
@@ -215,6 +216,21 @@ function addDialogDeleteListener(data){
         });
 
    });
+}
+
+
+function filterPeople(viewId, reloaded, tableName){
+    if(reloaded)
+        $('#searchString').val('');
+
+    var options = {searchString: $('#searchString').val(), 
+                    groupId: $('#groupId').val(), 
+                    TableViewId: viewId, 
+                    TablePath: tableName, 
+                    ResultType: saron.responsetype.records
+                };
+
+    $('#' + viewId).jtable('load', options);
 }
 
 

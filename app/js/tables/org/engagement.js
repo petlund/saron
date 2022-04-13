@@ -59,12 +59,15 @@ function peopleEngagementTableDef(mainTableViewId, tablePath, newTableTitle, par
                 sorting: false,
                 display: function(data){
                     var childTableName = saron.table.engagements.name;
-                    var childTablePath = tablePath + "/" + childTableName;
                     var childTableTitle = data.record.Name + '" har nedanstående uppdrag';
                     var tooltip = "";
                     var imgFile = "";
                     var childUri = 'app/web-api/listOrganizationPos.php';
-
+                    var clientOnly = true;
+                    var parentId = data.record.Id;
+                    var url = null;
+                    var type = 0;
+                    
                     if(data.record.Engagement ===  null){
                         tooltip = 'Inga uppdrag';
                         imgFile = "pos.png";
@@ -74,11 +77,20 @@ function peopleEngagementTableDef(mainTableViewId, tablePath, newTableTitle, par
                         imgFile = "haspos.png";
                     }                    
 
-                    var childTableDef = engagementTableDef(mainTableViewId, childTablePath, childTableTitle, data.record.Id);
-                    var $imgChild = openChildTable(data, mainTableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, engagementListUri);
-                    var $imgClose = closeChildTable(data, mainTableViewId, childTableName, TABLE, engagementListUri);
+                    var childTableDef = engagementTableDef(mainTableViewId, tablePath, childTableTitle, parentId); // PersonId point to childtable unic id   
+                    var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
+                    var $imgClose = getImageCloseTag(data, childTableName, type);
+                        
+                    $imgChild.click(data, function (event){
+                        _clickActionOpen(childTableDef, $imgChild, event, url, clientOnly);
+                    });
 
-                    return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
+                    $imgClose.click(data, function (event){
+                        _clickActionClose(childTableDef, $imgClose, event, url, clientOnly);
+                    });    
+
+                    return _getClickImg(data, childTableDef, $imgChild, $imgClose);
+
                 }
             },
             Name: {
