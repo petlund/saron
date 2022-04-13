@@ -6,10 +6,12 @@ RECORD, OPTIONS
 const birthdayListUri = 'app/web-api/listPeople.php';
 
     $(document).ready(function () {
-        $(saron.table.birthday.viewid).jtable(birthdayTableDef(saron.table.birthday.viewid, null, null));
+        var mainTableViewId = saron.table.birthday.viewid;
+        var tablePlaceHolder = $(mainTableViewId);
+        tablePlaceHolder.jtable(birthdayTableDef(saron.table.birthday.viewid, null, null));
         var options = getPostData(null, saron.table.birthday.viewid, null, saron.table.birthday.name, saron.source.list, saron.responsetype.records, birthdayListUri);
-        $(saron.table.birthday.viewid).jtable('load', options);
-        $(saron.table.birthday.viewid).find('.jtable-toolbar-item-add-record').hide();
+        tablePlaceHolder.jtable('load', options);
+        tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
     });
     
 

@@ -34,6 +34,14 @@ body {
     font-size: 200%;     
 }
 
+.saronAugdText {
+    width: 100%; 
+    font-family: Helvetica;    
+    font-weight: 500;
+    vertical-align: top;   
+    font-size: 150%;     
+}
+
 .saron_table_icon {
   display: block;
   margin-left: auto;

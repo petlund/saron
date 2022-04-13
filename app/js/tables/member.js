@@ -6,24 +6,32 @@ RECORD, OPTIONS
 "use strict";
 
 const memberListUri = 'app/web-api/listPeople.php';
-$(document).ready(function () {
 
-    $(saron.table.member.viewid).jtable(memberTableDef(saron.table.member.viewid, saron.table.member.name, null));
-    var options = getPostData(null, saron.table.member.viewid, null, saron.table.member.name, saron.source.list, saron.responsetype.records, memberListUri);
-    $(saron.table.member.viewid).jtable('load', options);
-    $(saron.table.member.viewid).find('.jtable-toolbar-item-add-record').hide();
+$(document).ready(function () {
+    var mainTableViewId = saron.table.member.viewid;
+    var tablePlaceHolder = $(mainTableViewId);
+    tablePlaceHolder.jtable(memberTableDef(mainTableViewId, null, null, null));
+    var options = getPostData(null, mainTableViewId, null, saron.table.member.name, saron.source.list, saron.responsetype.records, memberListUri);
+    tablePlaceHolder.jtable('load', options);
+    tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });  
 
-function memberTableDef(tableViewId, tablePath, tableTitle, parentId){
-    var tableName = saron.table.member.name;
+function memberTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
     var title = 'Medlemsuppgifter';
-    if(tableTitle !== null)
-        title = tableTitle; 
+    if(newTableTitle !== null)
+        title = newTableTitle; 
+    
+    var tableName = saron.table.member.name;
+    if(tablePath === null)
+        tablePath = tableName;
+    else
+        tablePath+= '/' + tableName; 
 
     return {
             showCloseButton: false,
+            initParameters: getInitParametes(mainTableViewId, tablePath, parentId),            
             title: title,
-            paging: true, //Enable paging
+            paging: mainTableViewId[0].includes(saron.table.member.viewid), //Enable paging
             pageSize: 10, //Set page size (default: 10)
             pageList: 'minimal',
             sorting: true, //Enable sorting
@@ -60,7 +68,7 @@ function memberTableDef(tableViewId, tablePath, tableTitle, parentId){
                 title: 'Namn',
                 width: '15%',
                 edit: false,
-                list: includedIn (tableViewId, saron.table.member.viewid),
+                list: includedIn (mainTableViewId, saron.table.member.viewid),
                 display: function (data){
                     return _setClassAndValue(data, "Name", PERSON);
                 }       
@@ -74,7 +82,7 @@ function memberTableDef(tableViewId, tablePath, tableTitle, parentId){
                 width: '7%',
                 edit: false,
                 type: 'date',
-                list: includedIn (tableViewId, saron.table.member.viewid),
+                list: includedIn (mainTableViewId, saron.table.member.viewid),
                 displayFormat: DATE_FORMAT,
                 display: function (data){
                     return _setClassAndValue(data, "DateOfBirth", PERSON);
@@ -101,7 +109,7 @@ function memberTableDef(tableViewId, tablePath, tableTitle, parentId){
                 },       
                 options: function (data){
                     var uri =  'app/web-api/listPerson.php';
-                    var parameters = getOptionsUrlParameters(data, tableViewId, parentId, tablePath, uri);
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, uri);
                     return '/' + saron.uri.saron + uri + parameters;
                 }
             },

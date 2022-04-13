@@ -50,8 +50,8 @@ class Homes extends SuperEntity{
 
     
     function select(){
-        switch ($this->selection){
-        case "options":
+        switch ($this->resultType){
+        case OPTIONS:
             $this->deleteEmptyHomes(); // clean up
             return $this->selectHomesAsOptions();       
         default:

@@ -6,22 +6,29 @@ PERSON, inputFormWidth, inputFormFieldWidth
 "use strict";
 
 $(document).ready(function () {
-
-    $(saron.table.keys.viewid).jtable(keyTableDef(saron.table.keys.viewid, null, null));
-    $(saron.table.keys.viewid).jtable('load');
-    $(saron.table.keys.viewid).find('.jtable-toolbar-item-add-record').hide();
+    var mainTableViewId = saron.table.keys.viewid;
+    var tablePlaceHolder = $(mainTableViewId);
+    tablePlaceHolder.jtable(keyTableDef(mainTableViewId, null, null, null));
+    tablePlaceHolder.jtable('load');
+    tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });  
 
-function keyTableDef(tableViewId, tablePath, tableTitle, parentId){
-    var tableName = saron.table.keys.name; 
+function keyTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
     var title = 'Nyckelinnehav'; 
-    if(tableTitle !== null)
-        title = tableTitle; 
+    if(newTableTitle !== null)
+        title = newTableTitle; 
+    
+    var tableName = saron.table.keys.name; 
+    if(tablePath === null)
+        tablePath = tableName;
+    else
+        tablePath+= '/' + tableName; 
     
     return {
         title: title,
+        initParameters: getInitParametes(mainTableViewId, tablePath, parentId),            
         showCloseButton: false,        
-        paging: true, //Enable paging
+        paging: mainTableViewId[0].includes(saron.table.keys.viewid), //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
         sorting: true, //Enable sorting
@@ -43,7 +50,7 @@ function keyTableDef(tableViewId, tablePath, tableTitle, parentId){
             Name: {
                 title: 'Namn',
                 width: '10%',
-                list: includedIn(tableViewId, saron.table.keys.viewid),
+                list: includedIn(mainTableViewId, saron.table.keys.viewid),
                 create: false,
                 edit: false,
                 display: function (data){
@@ -52,7 +59,7 @@ function keyTableDef(tableViewId, tablePath, tableTitle, parentId){
             },
             DateOfBirth: {
                 title: 'Född',
-                list: includedIn(tableViewId, saron.table.keys.viewid),
+                list: includedIn(mainTableViewId, saron.table.keys.viewid),
                 edit: false,
                 width: '5%',
                 type: 'date',
@@ -64,7 +71,7 @@ function keyTableDef(tableViewId, tablePath, tableTitle, parentId){
             MemberState:{
                 edit: false,
                 create: false,
-                list: includedIn(tableViewId, saron.table.keys.viewid),
+                list: includedIn(mainTableViewId, saron.table.keys.viewid),
                 title: 'Status',
                 width: '5%',                
             },

@@ -7,6 +7,77 @@ ORG, TABLE
 
 const is_open = "_is_open_";
 
+// new childOpenFunction
+
+function _getClickImg(data, childTableDef, $imgChild, $imgClose){
+    var tablePath = childTableDef.initParameters.TablePath;
+    var openChildTableServer = data.record.OpenChildTable;
+    var openChildTable = _getClassNameOpenChild(data, tablePath);
+    if(openChildTableServer !== false && openChildTable === openChildTableServer)
+        return $imgClose;
+    else
+        return $imgChild;      
+}    
+    
+    
+function _clickActionOpen(childTableDef, img, event, url, clientOnly){
+    var tr = img.closest('.jtable-data-row');
+    var mainTablePlaceHolder = childTableDef.initParameters.MainTableViewId;
+    
+    var tablePlaceHolder = _getChildTablePlaceHolderFromImg(img, mainTablePlaceHolder);
+    
+    tablePlaceHolder.jtable('openChildTable', tr, childTableDef, function(callBackData){
+        var id = null;
+        var parentId = childTableDef.initParameters.ParentId;
+        var tablePath = childTableDef.initParameters.TablePath;
+        var source = saron.source.list;
+        var resultType = saron.responsetype.records;        
+        var options = getPostData(id, mainTablePlaceHolder, parentId, tablePath, source, resultType);
+        
+        callBackData.childTable.jtable('load', options, function(childData){
+        });
+        var childOpen = _getClassNameOpenChild(event.data, tablePath);                                
+        _updateAfterClickAction(tablePlaceHolder, event, childOpen, url, clientOnly);            
+    });
+}
+
+
+
+function _clickActionClose(childTableDef, img, event, url, clientOnly){
+    var tr = img.closest('.jtable-data-row');
+    var mainTablePlaceHolder = childTableDef.initParameters.MainTableViewId;
+    var tablePlaceHolder = _getChildTablePlaceHolderFromImg(img, mainTablePlaceHolder);
+    
+    $(tablePlaceHolder).jtable('closeChildTable', tr, function(callBackData){
+        var childOpen = false;
+    
+        _updateAfterClickAction(tablePlaceHolder, event, childOpen, url, clientOnly);
+    });
+}
+
+
+
+function _updateAfterClickAction(tablePlaceHolder, event, childOpen, url, clientOnly){
+    var options = {url:url, clientOnly:clientOnly, animationsEnabled:false};
+    options.record = {Id: event.data.record.Id, OpenChildTable: childOpen}; 
+
+    if(tablePlaceHolder !== null)
+        $(tablePlaceHolder).jtable('updateRecord', options); //update icon
+}
+
+
+
+function _getChildTablePlaceHolderFromImg(img, mainTablePlaceHolder){
+    if(img !== null){
+        var tablePlaceHolder = img.closest('div.jtable-child-table-container');
+        if(tablePlaceHolder.length > 0)
+            return tablePlaceHolder;
+    }
+    return $(mainTablePlaceHolder);
+        
+}
+
+// end  new childOpenFunction 
 function openCloseChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, type, listParentRowUrl){
     var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
     var $imgClose = _getImageCloseTag(data, childTableName, type);

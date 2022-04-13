@@ -7,32 +7,37 @@ saron.table.baptist.viewid, saron.table.baptist.name
 const baptistListUri = 'app/web-api/listPeople.php';
 
 $(document).ready(function () {
-
-    $(saron.table.baptist.viewid).jtable(baptistTableDef(saron.table.baptist.viewid, null, null));
-    var options = getPostData(null, saron.table.baptist.viewid, null, "list", null, saron.responsetype.records, baptistListUri);
-    $(saron.table.baptist.viewid).jtable('load', options);
-    $(saron.table.baptist.viewid).find('.jtable-toolbar-item-add-record').hide();
+    var mainTableViewId = saron.table.baptist.viewid;
+    var tablePlaceHolder = $(mainTableViewId);
+    tablePlaceHolder.jtable(baptistTableDef(mainTableViewId, null, null));
+    var options = getPostData(null, mainTableViewId, saron.table.baptist.viewid, null, "list", null, saron.responsetype.records, baptistListUri);
+    tablePlaceHolder.jtable('load', options);
+    tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });  
     
-function baptistTableDef(tableViewId, tablePath, tableTitle, parentId){
-    var tableName = saron.table.baptist.name;
+function baptistTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
     var title = 'Dopuppgifter';
-    if(tableTitle !== null)
-        title = tableTitle; 
-//    if(tablePath === null)
-//        tablePath = saron.table.baptist.name;
-//    else
-        tablePath += saron.table.baptist.name;
+    if(newTableTitle !== null)
+        title = newTableTitle;
+    
+    var tableName = saron.table.baptist.name;
+
+    if(tablePath === null)
+        tablePath = tableName;
+    else
+        tablePath+= '/' + tableName; 
+
 
     return {
-            showCloseButton: false,
-            title: title,
-            paging: true, //Enable paging
-            pageSize: 10, //Set page size (default: 10)
-            pageList: 'minimal',
-            sorting: true, //Enable sorting
-            multiSorting: true,
-            defaultSorting: 'FamilyName ASC, DateOfBirthr ASC', //Set default sorting        
+        title:title,
+        initParameters: getInitParametes(mainTableViewId, tablePath, parentId),            
+        showCloseButton: false,
+        paging: mainTableViewId[0].includes(saron.table.baptist.viewid), //Enable paging
+        pageSize: 10, //Set page size (default: 10)
+        pageList: 'minimal',
+        sorting: true, //Enable sorting
+        multiSorting: true,
+        defaultSorting: 'FamilyName ASC, DateOfBirthr ASC', //Set default sorting        
         actions: {
             listAction:   '/' + saron.uri.saron + baptistListUri, 
             updateAction: '/' + saron.uri.saron + 'app/web-api/updatePerson.php'
@@ -51,7 +56,7 @@ function baptistTableDef(tableViewId, tablePath, tableTitle, parentId){
                 title: 'Namn',
                 width: '15%',
                 edit: false,
-                list: includedIn (tableViewId, saron.table.baptist.viewid),
+                list: includedIn (mainTableViewId, saron.table.baptist.viewid),
                 display: function (data){
                     return _setClassAndValue(data, "Name", PERSON);
                 }       
@@ -60,7 +65,7 @@ function baptistTableDef(tableViewId, tablePath, tableTitle, parentId){
                 title: 'Född',
                 width: '7%',
                 type: 'date',
-                list: includedIn (tableViewId, saron.table.baptist.viewid),
+                list: includedIn (mainTableViewId, saron.table.baptist.viewid),
                 displayFormat: DATE_FORMAT,
                 edit: false,
                 display: function (data){

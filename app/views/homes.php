@@ -24,7 +24,7 @@ require_once SARON_ROOT . "menu.php";
                 <td   class="saronFilter">
                     <form class="forms" id="mainfilter">
                         Grupp:          
-                        <select id="groupId" name="groupId" onchange="filterHomes('<?php include('../util/viewId.php');?>', true);" >
+                        <select id="groupId" name="groupId" onchange="filterHomes('<?php include('../util/viewId.php'); ECHO '\', false, \'' . TABLE_NAME_HOMES;?>');" >
                             <option selected="selected" value="0">Alla hem</option>
                             <option value="1">Hem utan mail- och mobiluppgifter</option>
                             <option value="2">Hem med brevutskick</option>

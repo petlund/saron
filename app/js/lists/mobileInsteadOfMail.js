@@ -1,4 +1,4 @@
-/* global saron.uri.saron, DATE_FORMAT */
+/* global saron, DATE_FORMAT */
 "use strict";
 
 $(document).ready(function () {
@@ -6,22 +6,26 @@ $(document).ready(function () {
     if(element === null)
         return;
 
-        var head1 = '<div class="saronSmallText">Mobilnummer till personer utan mail.</div><br>';
-        var head2 = '<br><br><br><br><div class="saronSmallText">Samma nummer med namn.</div><br>';
+        var head1 = '<div class="saronAugdText">Mobilnummer till personer utan mail.</div><br>';
+        var head2 = '<br><br><br><br><div class="saronAugdText">Samma nummer med namn.</div><br>';
 
-        $.get( '/' + saron.uri.saron + 'app/web-api/listPeople.php?selection=mobileInsteadOfMail', function(text) {
+        $.get( '/' + saron.uri.saron + 'app/web-api/listPeople.php?TableViewId=' + saron.list.mobile_instead_of_email.viewid + '&ResultType=' + saron.responsetype.records, function(text) {
         var data = JSON.parse(text);
         var cnt = data.TotalRecordCount;
         var str = head1;
         for(var i = 0; i<cnt; i++){                
-            str = str + data.Records[i].Mobile + ', ';
+            str += data.Records[i].Mobile + ', ';
         }
         
-        str = str + head2;
-        
+        str += head2;
+
+        str +=  "<table>";
         for(var i = 0; i<cnt; i++){                
-            str = str + data.Records[i].Name_FL + ": " + data.Records[i].Mobile + '<br>';
+            str +=  "<tr>";
+            str += "<td>" + data.Records[i].Name_FL + "</td><td> </td><td style='text-align: right'>"  + data.Records[i].Mobile + '</td>';
+            str +=  "</tr>";
         }
+        str +=  "</table>";
 
         element.innerHTML = str;
     

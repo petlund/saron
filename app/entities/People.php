@@ -29,10 +29,8 @@ class People extends SuperEntity{
             switch ($this->tableView){
                 case MOBILE_INSTEAD_OF_EMAIL:
                     return $this->selectMobile();       
-                break;
                 case EMAIL_LIST:
                     return $this->selectEmail();       
-                break;
                 default:
                     return $this->selectDefault();       
             }

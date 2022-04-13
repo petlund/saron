@@ -10,26 +10,29 @@ const statisticsListUri = 'app/web-api/listStatistics.php';
 
 
 $(document).ready(function () {
-    var tablePlaceHolder = $(saron.table.statistics.viewid);
-    tablePlaceHolder.jtable(statisticTableDef(tablePlaceHolder, null, null));    
-    var options = getPostData(null, tablePlaceHolder, null, saron.table.statistics.name, saron.source.list, saron.responsetype.records, statisticsListUri);
-    tablePlaceHolder.jtable('load',options);
+    var mainTableViewId = saron.table.statistics.viewid;
+    var tablePlaceHolder = $(mainTableViewId);
+    tablePlaceHolder.jtable(statisticTableDef(saron.table.statistics.viewid, null, null));    
+    var options = getPostData(null, null, mainTableViewId, saron.source.list, saron.responsetype.records, statisticsListUri);
+    tablePlaceHolder.jtable('load', options);
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });
 
-function statisticTableDef(tablePlaceHolder, tablePath, tableTitle){
-    var tableName = saron.table.statistics.name;
+function statisticTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
     var title = 'Statistik';
-    if(tableTitle !== null)
-        title = tableTitle; 
+    if(newTableTitle !== null)
+        title = newTableTitle;
     
-    if(tablePath===null)
+    var tableName = saron.table.statistics.name;
+
+    if(tablePath === null)
         tablePath = tableName;
     else
-        tablePath+= tableName;
+        tablePath+= '/' + tableName; 
 
     return {
-        title: title,
+        title:title,
+        initParameters: getInitParametes(mainTableViewId, tablePath, parentId),
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
@@ -54,15 +57,26 @@ function statisticTableDef(tablePlaceHolder, tablePath, tableTitle){
                     var YEAR = data.record.year.substring(0, 4);
                     var childTableTitle = 'Statistik för ' + YEAR;
                     var childTableName = saron.table.statistics_detail.name;
-                    var childTablePath = tablePath + "/" + childTableName;
                     var tooltip = 'Detaljer';
                     var imgFile = "member.png";
+                    var parentId = data.record.Id;
+                    var clientOnly = true;
+                    var url = null;
+                    var type = 0;
 
-                    var childTableDef = detailTableDef(tablePlaceHolder, childTablePath, childTableTitle, data.record.Id);
-                    var $imgChild = openChildTable(data, tablePlaceHolder, childTableDef, imgFile, tooltip, childTableName, TABLE, statisticsListUri);
-                    var $imgClose = closeChildTable(data, tablePlaceHolder, childTableName, TABLE, statisticsListUri);
+                    var childTableDef = statisticsDetailTableDef(mainTableViewId, tablePath, childTableTitle, parentId);   
+                    var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
+                    var $imgClose = getImageCloseTag(data, childTableName, type);
+                        
+                    $imgChild.click(data, function (event){
+                        _clickActionOpen(childTableDef, $imgChild, event, url, clientOnly);
+                    });
 
-                    return getIcon(data,  tablePlaceHolder, childTableName, $imgChild, $imgClose);
+                    $imgClose.click(data, function (event){
+                        _clickActionClose(childTableDef, $imgClose, event, url, clientOnly);
+                    });    
+
+                    return _getClickImg(data, childTableDef, $imgChild, $imgClose);
                 }
             },
             TablePath:{
@@ -150,19 +164,24 @@ function statisticTableDef(tablePlaceHolder, tablePath, tableTitle){
                 }       
             }
         }
-    }
+    };
 }
 
 
-function detailTableDef(tableViewId, tablePath, childTableTitle, parentId){
-    var tableName = saron.table.statistics_detail.name;
+function statisticsDetailTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
     var title = 'Statistikdetaljer';
-    if(childTableTitle !== null)
-        title = childTableTitle;
-
-
+    if(newTableTitle !== null)
+        title = newTableTitle;
+    
+    var tableName = saron.table.statistics_detail.name;
+    if(tablePath === null)
+        tablePath = tableName;
+    else
+        tablePath+= '/' + tableName; 
+    
     return {
-        title: title,                            
+        title:title,
+        initParameters: getInitParametes(mainTableViewId, tablePath, parentId),
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
@@ -176,7 +195,7 @@ function detailTableDef(tableViewId, tablePath, childTableTitle, parentId){
         fields: {
             Id: { // unic rowId
                 key: true,
-                list: true
+                list: false
             },
             TablePath:{
                 type: 'hidden',
@@ -193,25 +212,26 @@ function detailTableDef(tableViewId, tablePath, childTableTitle, parentId){
                 display: function(data){
                     var childTableTitle = 'Personuppgifter för "' + data.record.LastName + ' '  + data.record.FirstName + ' ' + data.record.DateOfBirth;
                     var childTableName = saron.table.people.name;
-                    var childTablePath = tablePath + "/" + childTableName;
                     var tooltip = 'Personuppgifter';
                     var imgFile = "haspos.png";
+                    var parentId = data.record.PersonId; //syntetic id denormalized list
+                    var clientOnly = true;
+                    var url = null;
+                    var type = 0;
 
+                    var childTableDef = peopleTableDef(mainTableViewId, tablePath, childTableTitle, parentId); // PersonId point to childtable unic id   
+                    var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
+                    var $imgClose = getImageCloseTag(data, childTableName, type);
+                        
+                    $imgChild.click(data, function (event){
+                        _clickActionOpen(childTableDef, $imgChild, event, url, clientOnly);
+                    });
 
-                    var childTableDef = peopleTableDef(tableViewId, childTablePath, childTableTitle, data.record.PersonId); // PersonId point to childtable unic id   
-                    
-                    var $imgChild = openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, statisticsListUri);
-                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, statisticsListUri);
-                    
-                    return getChildNavIcon(data, childTableName, $imgChild, $imgClose);
-                    
-//                    var $img = openCloseChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, TABLE, statisticsListUri);
-//                    return $img;
-                    
-//                    var $imgClose = closeChildTable(data, tableViewId, childTableName, TABLE, statisticsListUri);
-//
-//                    return getChildNavIcon(data, childTableName, $imgChild, $imgClose);                    
-                }
+                    $imgClose.click(data, function (event){
+                        _clickActionClose(childTableDef, $imgClose, event, url, clientOnly);
+                    });    
+
+                    return _getClickImg(data, childTableDef, $imgChild, $imgClose);                }
             },
             event_date: {
                 title: 'Datum',

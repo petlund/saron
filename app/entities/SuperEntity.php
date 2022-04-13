@@ -24,6 +24,7 @@ class SuperEntity {
     protected $jtStartIndex;
     protected $jtSorting;
     protected $tableView;
+    protected $tableViewId;
     protected $tablePath;
     protected $parentId;
     protected $resultType;
@@ -48,10 +49,19 @@ class SuperEntity {
 
         
         // POST for table load and GET for Options
-        $this->tableView = (String)filter_input(INPUT_POST, "TableView", FILTER_SANITIZE_STRING);    
-        if(strlen($this->tableView) === 0){
-            $this->tableView = (String)filter_input(INPUT_GET, "TableView", FILTER_SANITIZE_STRING);    
+        $this->tableViewId = (String)filter_input(INPUT_POST, "TableViewId", FILTER_SANITIZE_STRING);    
+        if(strlen($this->tableViewId) === 0){
+            $this->tableViewId = (String)filter_input(INPUT_GET, "TableViewId", FILTER_SANITIZE_STRING);    
         }
+        if(strlen($this->tableViewId) > 0){
+            if(substr($this->tableViewId, 0, 1) === "#"){
+                $this->tableView = substr($this->tableViewId, 1, strlen($this->tableViewId));
+            }
+            else{
+                $this->tableView = $this->tableViewId;
+            }
+        }
+        
         $this->tablePath = (String)filter_input(INPUT_POST, "TablePath", FILTER_SANITIZE_STRING);
         if(strlen($this->tablePath) === 0){
             $this->tablePath = (String)filter_input(INPUT_GET, "TablePath", FILTER_SANITIZE_STRING);

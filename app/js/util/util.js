@@ -218,19 +218,8 @@ function addDialogDeleteListener(data){
 }
 
 
-function filterPeople(viewId, reloaded, tableName){
-    if(reloaded)
-        $('#searchString').val('');
 
-    var options = {searchString: $('#searchString').val(), groupId: $('#groupId').val(), TableView: viewId, TablePath: tableName};
-
-    $('#' + viewId).jtable('load', options);
-}
-
-
-
-
-function includedIn (currentTableId, requiredTableId){
+function includedIn(currentTableId, requiredTableId){
     if(requiredTableId.includes(currentTableId))
         return true;
 
@@ -239,7 +228,7 @@ function includedIn (currentTableId, requiredTableId){
 
 
 
-function getURLParameters(id, tableViewId, parentId, tablePath, source, resultType, url){
+function getURLParameters(id, tableViewId, parentId, tablePath, source, resultType){
     var first = true;
     var parameter = "";
 
@@ -330,7 +319,7 @@ function getURLParameters(id, tableViewId, parentId, tablePath, source, resultTy
     
 
 
-    function getPostData(id, tableViewId, parentId, tablePath, source, resultType, url){
+    function getPostData(id, tableViewId, parentId, tablePath, source, resultType){
         if(parentId === null){        
             parentId = -1;
         }
@@ -339,16 +328,35 @@ function getURLParameters(id, tableViewId, parentId, tablePath, source, resultTy
             id = -1;
         }
 
-
         if(resultType === null){
             resultType = saron.responsetype.records;
         }
-//        var options = {Id:id, TableView:getTableView(tableViewId), ParentId:parentId, TablePath:tablePath, Source:source, ResultType:resultType};
-        var options = {Id:id, TableView:'tableViewId', ParentId:parentId, TablePath:tablePath, Source:source, ResultType:resultType};
-//        console.log(url + " => " + options);
+
+        if(source === null){
+            source = saron.source.list;
+        }
+        
+        var options = {Id:id, 
+                        ParentId:parentId, 
+                        TableViewId:tableViewId, 
+                        TablePath:tablePath, 
+                        Source:source, 
+                        ResultType:resultType
+                    };
+
         return options;
     }
 
+
+
+function getInitParametes(mainTableViewId, tablePath, parentId){
+    var initParameters = {MainTableViewId:mainTableViewId, 
+                            TablePath:tablePath, 
+                            ParentId:parentId
+                        };
+    return initParameters;
+    
+}
 
 
 function getOptionsUrlParameters(data, tableViewId, parentId, tablePath, url){
@@ -374,6 +382,12 @@ function getImageTag(data, imgFile, title, childTableName, type){
     var src = '"/' + saron.uri.saron + saron.uri.images + imgFile + '" title="' + title + '"';
     var imageTag = _setImageClass(data, childTableName, src, type);
     return $(imageTag);
+}
+
+
+
+function getImageCloseTag(data, childTableName, type){
+    return getImageTag(data, "cross.png", "Stäng", childTableName, type);
 }
 
 

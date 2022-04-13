@@ -6,34 +6,47 @@ RECORD, OPTIONS
 const homesListUri = 'app/web-api/listHomes.php';
 
 $(document).ready(function () {
-    $(saron.table.homes.viewid).jtable(homeTableDef(saron.table.homes.viewid, null, null));
-    var options = getPostData(null, saron.table.homes.viewid, null, saron.table.homes.name, saron.source.list, saron.responsetype.records, homesListUri);
-    $(saron.table.homes.viewid).jtable('load', options);
-    $(saron.table.homes.viewid).find('.jtable-toolbar-item-add-record').hide();
+    var mainTableViewId = saron.table.homes.viewid;
+    var tablePlaceHolder = $(mainTableViewId);
+    tablePlaceHolder.jtable(homeTableDef(mainTableViewId, null, null, null));
+    var options = getPostData(null, mainTableViewId, null, saron.table.homes.name, saron.source.list, saron.responsetype.records, homesListUri);
+    tablePlaceHolder.jtable('load', options);
+    tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });
 
 
 
-function filterHomes(viewId, reload){
+function filterHomes(viewId, reload, tableName){
     if(reload)
         $('#searchString').val('');
 
-    var options = {searchString: $('#searchString').val(), groupId: $('#groupId').val(), tableview: viewId};
+    var options = {searchString: $('#searchString').val(), 
+                    groupId: $('#groupId').val(), 
+                    TableViewId: saron.table.homes.viewid, 
+                    TablePath: saron.table.homes.name,
+                    ResultType: saron.responsetype.records
+                };
             
-    $('#' + viewId).jtable('load', options);
+    $(saron.table.homes.viewid).jtable('load', options);
 }
 
 
-function homeTableDef(tableViewId, tablePath, childTableTitle, parentId){
-    var tableName = saron.table.homes.name;
+function homeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
     var title = 'Hem';
-    if(childTableTitle !== null)
-        title = childTableTitle;
+    if(newTableTitle !== null)
+        title = newTableTitle;
+    
+    var tableName = saron.table.homes.name;
+    if(tablePath === null)
+        tablePath = tableName;
+    else
+        tablePath+= '/' + tableName; 
 
     return {
+        title:title,
+        initParameters: getInitParametes(mainTableViewId, tablePath, parentId),
         showCloseButton: false,        
-        title: title,
-        paging: true, //Enable paging
+        paging: mainTableViewId.includes(saron.table.homes.viewid), //Enable paging
         pageList: 'minimal',
         sorting: true, //Enable sorting
         multiSorting: true,
@@ -138,7 +151,7 @@ function homeTableDef(tableViewId, tablePath, childTableTitle, parentId){
             }
         },        
         formCreated: function (event, data){
-             data.row[0].style.backgroundColor = "yellow";
+            data.row[0].style.backgroundColor = "yellow";
             data.form.css('width',inputFormWidth);
             data.form.find('input[name=FamilyName]').css('width',inputFormFieldWidth);
             data.form.find('input[name=Phone]').css('width',inputFormFieldWidth);

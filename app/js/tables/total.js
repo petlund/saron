@@ -7,10 +7,11 @@ saron.table.total.name, saron.table.total.viewid
 "use strict";
 const totalListUri = 'app/web-api/listPeople.php';
 $(document).ready(function () {
-
-    $(saron.table.total.viewid).jtable(totalTableDef(saron.table.total.viewid, null));
-    var options = getPostData(null, saron.table.total.viewid, null, saron.table.total.name, saron.source.list, saron.responsetype.records, totalListUri);
-    $(saron.table.total.viewid).jtable('load', options);
+    var mainTableViewId = saron.table.total.viewid;
+    var tablePlaceHolder = $(mainTableViewId);
+    tablePlaceHolder.jtable(totalTableDef(saron.table.total.viewid, null));
+    var options = getPostData(null, mainTableViewId, null, saron.table.total.name, saron.source.list, saron.responsetype.records, totalListUri);
+    tablePlaceHolder.jtable('load', options);
 
 });
 
