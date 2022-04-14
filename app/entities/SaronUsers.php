@@ -58,28 +58,31 @@ class SaronUsers extends SuperEntity{
                     $comp = ($otp_a["enabled"] < $otp_b["enabled"]) ? -1 : 1;
                 break;
                 case "saron_reader":
-                    $viewer_a = hasPrivilege($a->roles, SARON_ROLE_PREFIX . SARON_ROLE_VIEWER);
-                    $viewer_b = hasPrivilege($b->roles, SARON_ROLE_PREFIX . SARON_ROLE_VIEWER);
+                    $viewer_a = $this->hasPrivilege($a->roles, SARON_ROLE_PREFIX . SARON_ROLE_VIEWER);
+                    $viewer_b = $this->hasPrivilege($b->roles, SARON_ROLE_PREFIX . SARON_ROLE_VIEWER);
                     if ($viewer_a == $viewer_b) {
                         return 0;
                     }
                     $comp = ($viewer_a < $viewer_b) ? -1 : 1;
                 break;
                 case "saron_editor":
-                    $edit_a = hasPrivilege($a->roles, SARON_ROLE_PREFIX . SARON_ROLE_EDITOR);
-                    $edit_b = hasPrivilege($b->roles, SARON_ROLE_PREFIX . SARON_ROLE_EDITOR);
+                    $edit_a = $this->hasPrivilege($a->roles, SARON_ROLE_PREFIX . SARON_ROLE_EDITOR);
+                    $edit_b = $this->hasPrivilege($b->roles, SARON_ROLE_PREFIX . SARON_ROLE_EDITOR);
                     if ($edit_a == $edit_b) {
                         return 0;
                     }
                     $comp = ($edit_a < $edit_b) ? -1 : 1;
                 break;
                 case "saron_org":
-                    $org_a = hasPrivilege($a->roles, SARON_ROLE_PREFIX . SARON_ROLE_ORG);
-                    $org_b = hasPrivilege($b->roles, SARON_ROLE_PREFIX . SARON_ROLE_ORG);
+                    $org_a = $this->hasPrivilege($a->roles, SARON_ROLE_PREFIX . SARON_ROLE_ORG);
+                    $org_b = $this->hasPrivilege($b->roles, SARON_ROLE_PREFIX . SARON_ROLE_ORG);
                     if ($org_a == $org_b) {
                         return 0;
                     }
                     $comp = ($org_a < $org_b) ? -1 : 1;
+                break;
+                default:
+                    $comp = 1;
                 break;
             }
             if($sort_order === "ASC"){
