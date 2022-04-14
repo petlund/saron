@@ -62,10 +62,10 @@ function peopleEngagementTableDef(mainTableViewId, tablePath, newTableTitle, par
                     var childTableTitle = data.record.Name + '" har nedanstående uppdrag';
                     var tooltip = "";
                     var imgFile = "";
-                    var childUri = 'app/web-api/listOrganizationPos.php';
+                    var parentId = data.record.Id;
+                    var url = 'app/web-api/listOrganizationPos.php';
                     var clientOnly = true;
                     var parentId = data.record.Id;
-                    var url = null;
                     var type = 0;
                     
                     if(data.record.Engagement ===  null){
@@ -177,7 +177,7 @@ function engagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId)
         sorting: true, //Enable sorting
         multiSorting: true,
         defaultSorting: 'Name', //Set default sorting        
-        messages: {addNewRecord: 'Tilldela personen ett vakant uppdrag'},
+        messages: {addNewRecord: 'Tilldela ett vakant uppdrag'},
         actions: {
             listAction:   '/' + saron.uri.saron + uri,
             createAction: '/' + saron.uri.saron + 'app/web-api/addPersonToOrganizationPos.php',
@@ -198,7 +198,18 @@ function engagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId)
             TablePath:{
                 type: 'hidden',
                 defaultValue: tableName
-            },            
+            },    
+            People_FK:{
+                type: 'hidden',
+                defaultValue: parentId
+            },
+            ParentId:{
+                type: 'hidden',
+                defaultValue: parentId
+            },
+            OrgTree_FK:{
+                type: 'hidden'
+            },
             OrgPosStatus_FK: {
                 title: 'Status',
                 width: '10%',
@@ -211,7 +222,7 @@ function engagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId)
             },
             
             Comment:{
-                title: 'Kommentar kopplat till uppdraget',
+                title: 'Kommentar',
                 inputTitle: 'Kommentar kopplat till uppdraget ej person'
             },
             UpdaterName: {
@@ -259,7 +270,6 @@ function engagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId)
         formCreated: function (event, data){
             if(data.formType === saron.formtype.edit){
                 data.row[0].style.backgroundColor = "yellow";
-                $('#jtable-edit-form').append('<input type="hidden" name="OrgTree_FK" value="' + data.record.Id + '" />');
             }
             data.form.css('width','600px');
             data.form.find('input[name=Comment]').css('width','580px');

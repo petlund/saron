@@ -53,6 +53,10 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 create: false,
                 edit: false
             },         
+            ParentId:{
+                defaultValue: parentId,
+                type: 'hidden'
+            },
             RoleType:{
                 sorting: false,
                 width: "1%",

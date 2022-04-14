@@ -115,7 +115,7 @@ class OrganizationUnit extends SuperEntity{
                     $where = "WHERE ParentTreeNode_FK = " . $this->parentId . " ";
                     break;
                 case TABLE_NAME_UNITLIST:
-                    $select.= $this->setParentAlias(ParentTreeNode_FK);
+                    $select.= $this->setParentAlias("ParentTreeNode_FK");
                 break;
                 case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_UNIT:
                     $select.= $this->setParentAlias("Tree.OrgUnitType_FK");
@@ -192,8 +192,8 @@ class OrganizationUnit extends SuperEntity{
         $sqlInsert.= "'" . $this->description . "', ";
         $sqlInsert.= "'" . $this->orgUnitType_FK . "', ";
 
-        if($this->parentTreeNode_FK > 0){
-            $sqlInsert.= "'" . $this->parentTreeNode_FK . "', ";
+        if($this->parentId > 0){
+            $sqlInsert.= "'" . $this->parentId . "', "; //ParentTreeNode_FK
         }
         else{
             $sqlInsert.= "null, ";                                

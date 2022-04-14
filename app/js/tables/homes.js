@@ -60,6 +60,10 @@ function homeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 list: false,
                 key: true
             },
+            ParentId:{
+                defaultValue: parentId,
+                type: 'hidden'
+            },
             ParentId: {
                 list: false,
                 create: false,

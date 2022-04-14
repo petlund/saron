@@ -52,18 +52,20 @@ class OrganizationPosStatus extends SuperEntity{
     function selectOptions(){
         $select = "SELECT Id as Value, Name as DisplayText ";
         $from = "FROM Org_PosStatus ";
-        $order = "Order by DisplayText ";
+        $order = "Order by SortOrder ";
         $where = "";
         
-        switch ($this->source){
-            case SOURCE_EDIT:            
-                $where.= "WHERE Id not in (5, 6) "; // Tillsätts ej, funktionsorganisation
-                break;
-            case SOURCE_CREATE:            
-                $where.= "WHERE Id < 4 "; // Tillsätts ej
-                break;
-            default:
-                $where = "";
+        if($this->tablePath === TABLE_NAME_STATISTICS . "/" . TABLE_NAME_STATISTICS_DETAIL){
+            switch ($this->source){
+                case SOURCE_EDIT:            
+                    $where.= "WHERE Id not in (5, 6) "; // Tillsätts ej, funktionsorganisation
+                    break;
+                case SOURCE_CREATE:            
+                    $where.= "WHERE Id < 4 "; // Tillsätts ej
+                    break;
+                default:
+                    $where = "";
+            }
         }
         
         $result = $this->db->select($this->saronUser, $select , $from, $where, $order, "", OPTIONS);    

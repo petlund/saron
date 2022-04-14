@@ -45,10 +45,10 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 key: true, 
                 list: false
             },
-//            ParentId:{
-//                defaultValue: parentId,
-                //type: 'hidden'
-//            },
+            ParentId:{
+                defaultValue: parentId,
+                type: 'hidden'
+            },
             SubUnitEnabled: {
                 title: '',
                 width: '1%',
@@ -64,9 +64,9 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                     var tooltip = "";
                     var imgFile = "";
                     var parentId = data.record.Id;
-                    var url = null;
+                    var url = '/' + saron.uri.saron + unitListUri;
                     var type = 0;
-                    var clientOnly = true;
+                    var clientOnly = false;
 
                     if(data.record.SubUnitEnabled === SUBUNIT_ENABLED){
                         if(data.record.HasSubUnit === '0' || data.record.statusSubProposal === null  || data.record.statusSubVacant === null){
@@ -122,9 +122,9 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                     var parentId = data.record.Id;
                     var tooltip = "";
                     var imgFile = "";         
-                    var url = null;
+                    var url = '/' + saron.uri.saron + unitListUri;
                     var type = 0;
-                    var clientOnly = true;
+                    var clientOnly = false;
                     
                     if(data.record.PosEnabled === POS_ENABLED){
                         if(data.record.HasPos === '0'){

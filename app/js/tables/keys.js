@@ -43,6 +43,10 @@ function keyTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 key: true,
                 list: false
             },
+            ParentId:{
+                defaultValue: parentId,
+                type: 'hidden'
+            },
             TablePath:{
                 defaultValue: tableName,
                 type: 'hidden'

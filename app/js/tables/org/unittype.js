@@ -59,6 +59,10 @@ function unitTypeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 key: true,
                 list: false
             },
+            ParentId:{
+                defaultValue: parentId,
+                type: 'hidden'
+            },
             UsedInUnit: {
                 title: 'Används',
                 width: '3%',

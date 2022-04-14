@@ -31,10 +31,6 @@ class OrganizationPos extends SuperEntity{
         $error["Result"] = "ERROR";
         $error["Message"] = "";
 
-        if(strpos($this->tablePath, TABLE_NAME_ENGAGEMENTS)){
-            $this->people_FK = $this->parentId;              
-        }
-
         if($this->orgPosStatus_FK === 6 ){
             if($this->people_FK > 0 || !($this->function_FK > 0)){
                 $error["Message"] = "Eftersom ett funktionsansvar är angivet ska endast en funktion sättas som ansvarig.";
@@ -56,16 +52,12 @@ class OrganizationPos extends SuperEntity{
         }
     }
 
-     function select(){
+     function select($id = -1){
         switch ($this->resultType){
         case OPTIONS:
             return $this->selectOptions();     // vacant is not hanled yet  
-        case RECORDS:
-            return $this->selectDefault();       
-        case RECORD:
-            return $this->selectDefault();       
         default:
-            return $this->selectDefault();
+            return $this->selectDefault($id);
         }
     }
     
@@ -177,7 +169,7 @@ class OrganizationPos extends SuperEntity{
         $sqlInsert.= "'" . $this->orgPosStatus_FK . "', ";
         $sqlInsert.= "null,"; //"'" . $this->orgSuperPos_FK . "', ";
         $sqlInsert.= "'" . $this->orgRole_FK . "', ";
-        $sqlInsert.= "'" . $this->orgTree_FK . "', ";
+        $sqlInsert.= "'" . $this->parentId . "', ";  //ONLY OrgTree_FK
         $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
         
         $id = $this->db->insert($sqlInsert, "Org_Pos", "Id");

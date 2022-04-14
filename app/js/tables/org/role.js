@@ -60,6 +60,10 @@ function roleTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 edit: false,
                 create: false
             },
+            ParentId:{
+                defaultValue: parentId,
+                type: 'hidden'
+            },
             UsedInUnit:{
                 width: '5%',
                 create: false,

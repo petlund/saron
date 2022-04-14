@@ -118,6 +118,10 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                 key: true,
                 list: false
             },
+            ParentId:{
+                defaultValue: parentId,
+                type: 'hidden'
+            },
             TablePath:{
                 type: 'hidden',
                 defaultValue: saron.table.people.name

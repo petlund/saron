@@ -90,6 +90,10 @@ function statisticTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                     return _setClassAndValue(data, "year", PERSON);
                 }       
             },
+            ParentId:{
+                defaultValue: parentId,
+                type: 'hidden'
+            },
             number_of_members: {
                 edit: false,
                 create: false, 
@@ -196,6 +200,10 @@ function statisticsDetailTableDef(mainTableViewId, tablePath, newTableTitle, par
             Id: { // unic rowId
                 key: true,
                 list: false
+            },
+            ParentId:{
+                defaultValue: parentId,
+                type: 'hidden'
             },
             TablePath:{
                 type: 'hidden',

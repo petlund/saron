@@ -141,9 +141,10 @@ class OrganizationRole extends SuperEntity{
         $where = "";
 
         if($this->source === SOURCE_CREATE){
-            $from.= "inner join `Org_Role-UnitType` Typ on Role.Id = Typ.OrgRole_FK "; 
-            $where = "WHERE OrgUnitType_FK = " . $this->parentId . " ";
-            $where.=" and Role.Id not in (select P.OrgRole_FK from Org_Pos as P inner join Org_Role as R on R.Id = P.OrgRole_FK where R.RoleType = 1 and P.OrgRole_FK <> " . $this->id . ") ";
+            $from.= "inner join `Org_Role-UnitType` as RUT on Role.Id = RUT.OrgRole_FK  "; 
+            $from.= "inner join Org_UnitType as UType on UType.Id = RUT.OrgUnitType_FK "; 
+            $from.= "inner join Org_Tree as Tree on Tree.OrgUnitType_FK = UType.Id "; 
+            $where = "WHERE Tree.Id = " . $this->parentId . " ";
         }
             
         $result = $this->db->select($this->saronUser, $select , $from, $where, "Order by DisplayText ", "", "Options");    

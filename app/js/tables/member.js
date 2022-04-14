@@ -64,6 +64,10 @@ function memberTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 key: true,
                 list: false
             },
+            ParentId:{
+                defaultValue: parentId,
+                type: 'hidden'
+            },
             Name: {
                 title: 'Namn',
                 width: '15%',

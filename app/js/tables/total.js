@@ -15,11 +15,11 @@ $(document).ready(function () {
 
 });
 
-function totalTableDef(tableViewId, tableTitle){
+function totalTableDef(tableViewId, tablePath, newTableTitle, parentId){
     var tableName = saron.table.total.name;
     var title = 'Översikt per person';
-    if(tableTitle !== null)
-        title = tableTitle; 
+    if(newTableTitle !== null)
+        title = newTableTitle; 
 
     return{
         title: title,
@@ -48,6 +48,10 @@ function totalTableDef(tableViewId, tableTitle){
             Id:{
                 key: true,
                 list: false
+            },
+            ParentId:{
+                defaultValue: parentId,
+                type: 'hidden'
             },
             TablePath:{
                 type: 'hidden',

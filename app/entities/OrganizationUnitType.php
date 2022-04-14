@@ -39,16 +39,16 @@ class OrganizationUnitType extends SuperEntity{
 
  
 
-    function select(){
+    function select($id = -1){
         switch ($this->resultType){
         case OPTIONS:
             return $this->selectOptions();       
         case RECORDS:
             return $this->selectDefault();       
         case RECORD:
-            return $this->selectDefault();       
+            return $this->selectDefault($id);       
         default:
-            return $this->selectDefault();
+            return $this->selectDefault($id);
         }
     }
 
