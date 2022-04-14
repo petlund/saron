@@ -104,6 +104,10 @@ $saron->table->unittype = (object)array();
 $saron->table->unittype->viewid = "#" . TABLE_VIEW_UNITTYPE ;
 $saron->table->unittype->name = TABLE_NAME_UNITTYPE ;
 
+$saron->table->role_unittype = (object)array();
+$saron->table->role_unittype->viewid = "#" . TABLE_VIEW_ROLE_UNITTYPE ;
+$saron->table->role_unittype->name = TABLE_NAME_ROLE_UNITTYPE ;
+
 $saron->table->unit = (object)array();
 $saron->table->unit->viewid = "#" . TABLE_VIEW_UNIT ;
 $saron->table->unit->name = TABLE_NAME_UNIT ;

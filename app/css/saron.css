@@ -327,7 +327,7 @@ ul{
     text-align: left;    
 }
 
-.AgeInterval, .PosOccurrency, .Phone, .Zip, .Mobile, .DateOfMembershipStart, .MembershipNo, .DateOfMembershipEnd, .DateOfBaptism, .DateOfDeath, .Age, .NextBirthday, .event_date, .number_of_members, .number_of_new_members, .number_of_finnished_members, .number_of_dead, .number_of_baptist_people, .avg_age, .avg_membership_time, .diff, .Amount, .KeyToChurch, .KeyToExp, .saron-number {
+.AgeInterval, .PosOccurrency, .Phone, .Zip, .Mobile, .DateOfMembershipStart, .MembershipNo, .DateOfMembershipEnd, .DateOfBaptism, .DateOfDeath, .Age, .NextBirthday, .event_date, .number_of_members, .number_of_new_members, .number_of_finnished_members, .number_of_dead, .number_of_baptist_people, .avg_age, .avg_membership_time, .diff, .Amount, .KeyToChurch, .KeyToExp, .saron-number, .SortOrder{
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;

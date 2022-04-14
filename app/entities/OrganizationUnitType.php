@@ -85,10 +85,6 @@ class OrganizationUnitType extends SuperEntity{
             $where = "WHERE Typ.Id= " . $id . " ";            
         }        
         
-//        if($this->posEnabled > 0){
-//            $from = "FROM Org_UnitType as Typ inner join `Org_Role-UnitType` as Rut on Rut.OrgUnitType_FK = Typ.Id ";
-//            $where = "WHERE OrgRole_FK = " . $this->posEnabled . " ";
-//        }
 
         $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $rec);    
         return $result;

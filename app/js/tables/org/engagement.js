@@ -181,7 +181,7 @@ function engagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId)
         actions: {
             listAction:   '/' + saron.uri.saron + uri,
             createAction: '/' + saron.uri.saron + 'app/web-api/addPersonToOrganizationPos.php',
-            updateAction: '/' + saron.uri.saron + 'app/web-api/updateOrganizationPos.php',
+            updateAction: '/' + saron.uri.saron + 'app/web-api/updateOrganizationPos.php'
         },
         fields: {
             Id: {
@@ -215,13 +215,13 @@ function engagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId)
                 width: '10%',
                 defaultValue: 2,
                 options: function (data){
-                    var uri = 'app/web-api/listOrganizationPosStatus.php'
+                    var uri = 'app/web-api/listOrganizationPosStatus.php';
                     var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, uri);
                     return  '/' + saron.uri.saron + uri + parameters;
                 }
-            },
-            
+            },            
             Comment:{
+                create: !mainTableViewId.includes(saron.table.engagement.viewid),
                 title: 'Kommentar',
                 inputTitle: 'Kommentar kopplat till uppdraget ej person'
             },

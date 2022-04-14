@@ -17,6 +17,7 @@ header("Cache-Control: no-cache, must-revalidate");
         <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "tree.js");?>"></script>     
         <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "list.js");?>"></script>     
         <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "role.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "role-tabletype.js");?>"></script>     
         <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "status.js");?>"></script>     
         <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "pos.js");?>"></script>     
         <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "version.js");?>"></script>     

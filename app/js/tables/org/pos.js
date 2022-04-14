@@ -95,7 +95,11 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 create: false,
                 width: '4%',
                 title: 'Sort',
-                edit: false
+                edit: false,
+                display: function (data){
+                    return _setClassAndValue(data, "SortOrder", 0);
+                }, 
+                options: {0:'0',1:'1',2:'2',3:'3',4:'4',5:'5',6:'6',7:'7',8:'8',9:'9'}
                 
             },
             OrgTree_FK:{                
@@ -108,7 +112,7 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                     var uri = 'app/web-api/listOrganizationUnit.php';
                     var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, uri);
                     return '/' + saron.uri.saron + uri + parameters;
-                }
+                }                
             },            
             OrgRole_FK: {
                 width: '10%',

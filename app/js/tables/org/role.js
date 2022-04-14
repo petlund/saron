@@ -131,7 +131,7 @@ function roleTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                         imgFile = "used_unittype.png";
                         tooltip = "Organisatoriska enhetstyper";
                     }
-                    var childTableDef = unitTypeTableDef(mainTableViewId, tablePath, childTableTitle, parentId); // PersonId point to childtable unic id   
+                    var childTableDef = role_role_unitType_TableDef(mainTableViewId, tablePath, childTableTitle, parentId); // PersonId point to childtable unic id   
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
                     var $imgClose = getImageCloseTag(data, childTableName, type);
 

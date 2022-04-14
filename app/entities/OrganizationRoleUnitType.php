@@ -29,46 +29,95 @@ class OrganizationRoleUnitType extends SuperEntity{
     }
 
 
-    function select(){
+    function select($id = -1){
         switch ($this->tablePath){
-        case TABLE_NAME_ROLE . "/" . TABLE_NAME_ROLE_UNITTYPE:
-            return $this->selectUnitTypes();       
-        case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_ROLE_UNITTYPE:
-            return $this->selectRole();       
         default:
-            return $this->selectDefault();
+            return $this->selectDefault($id);
         }
     }
 
-    function selectDefault($idFromCreate = -1){
-        $select = "SELECT *, Role.Name as RoleName, ";
+//    function selectDefault_old($idFromCreate = -1){
+//        $select = "SELECT *, Role.Name as RoleName, ";
+//        $select.= $this->getTablePathSql();
+//        $select.= $this->saronUser->getRoleSql(false) . " ";
+//        $from = "FROM Org_Role as Role inner join `Org_Role-UnitType` as Rut on Rut.OrgRole_FK = Role.Id ";
+//        $from.= "inner join Org_UnitType as Typ on Rut.OrgUnitType_FK = Typ.Id ";
+//        if($idFromCreate > 0){
+//            $where = "WHERE Rut.Id = " . $idFromCreate . " ";
+//        }
+//        else{
+//            $where = "";
+//        }
+//
+//        $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $this->resultType);    
+//        return $result;
+//    }
+    
+    
+    
+    function selectDefault($id){
+        $resultType = RECORDS;
+        
+        $select = "SELECT * , ";
         $select.= $this->getTablePathSql();
         $select.= $this->saronUser->getRoleSql(false) . " ";
-        $from = "FROM Org_Role as Role inner join `Org_Role-UnitType` as Rut on Rut.OrgRole_FK = Role.Id ";
-        $from.= "inner join Org_UnitType as Typ on Rut.OrgUnitType_FK = Typ.Id ";
-        if($idFromCreate > 0){
-            $where = "WHERE Rut.Id = " . $idFromCreate . " ";
+        $from = "FROM `Org_Role-UnitType`";
+
+        if($id < 0){
+            switch ($this->tablePath){
+            case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_ROLE_UNITTYPE:
+                $where = "WHERE OrgUnitType_FK = " . $this->parentId . " ";
+                break;
+            case TABLE_NAME_ROLE . "/" . TABLE_NAME_ROLE_UNITTYPE:
+                $where = "WHERE OrgRole_FK = " . $this->parentId . " ";
+                break;
+            }
         }
         else{
-            $where = "";
+            $resultType = RECORD;
+            $where = "WHERE Id = " . $id . " ";
         }
-
-        $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $this->resultType);    
-        return $result;
+        
+        $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $resultType);    
+        return $result;        
     }
     
+
+    function selectRole($id){
+        $select = "SELECT * ";
+        $select.= $this->getTablePathSql();
+        $select.= $this->saronUser->getRoleSql(false) . " ";
+        $from = "FROM Org_Role-UnitType";
+        $where = "WHERE OrgRole_FK = ";
+
+        $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $this->resultType);    
+        return $result;        
+    }
     
+
+
     function insert(){
+        switch ($this->tablePath){
+            case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_ROLE_UNITTYPE:
+                $OrgUnitType_FK =  $this->parentId;
+                $OrgRole_FK = $this->orgRole_FK;
+                break;
+            case TABLE_NAME_ROLE . "/" . TABLE_NAME_ROLE_UNITTYPE:
+                $OrgRole_FK = $this->parentId;
+                $OrgUnitType_FK =  $this->orgUnitType_FK;
+                break;
+        }
+
         $sqlInsert = "INSERT INTO `Org_Role-UnitType` (OrgRole_FK, SortOrder, OrgUnitType_FK, UpdaterName, Updater) ";
         $sqlInsert.= "VALUES (";
-        $sqlInsert.= "'" . $this->orgRole_FK . "', ";
+        $sqlInsert.= "'" . $OrgRole_FK . "', ";
         $sqlInsert.= "'" . $this->sortOrder . "', ";
-        $sqlInsert.= "'" . $this->orgUnitType_FK . "', ";
+        $sqlInsert.= "'" . $OrgUnitType_FK . "', ";
         $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "', ";
         $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
         
         $id = $this->db->insert($sqlInsert, "`Org_Role-UnitType`", "Id");
-        return $this->select($id, RECORD);
+        return $this->select($id);
     }
 
 
@@ -81,7 +130,7 @@ class OrganizationRoleUnitType extends SuperEntity{
         $set.= "SortOrder=" . $this->sortOrder . " ";        
         $where = "WHERE Id=" . $this->id;
         $this->db->update($update, $set, $where);
-        return $this->select($this->id, RECORD);
+        return $this->select($this->id);
     }
 
     
