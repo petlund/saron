@@ -20,7 +20,7 @@ require_once SARON_ROOT . 'app/pdf/OrganizationReport.php';
         $result = $orgVersion->insert();
         $db->transaction_end();   
 
-        setUpPdfDoc("server");
+        //setUpPdfDoc("server");
 
         echo $result;
         

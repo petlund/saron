@@ -5,23 +5,24 @@
     require_once SARON_ROOT . 'app/database/db.php';
     require_once THREE_PP_PATH . 'tcpdf/tcpdf.php';
 
-    $db = new db();
-    try{
-        $saronUser = new SaronUser($db);
-        $saronUser->hasValidSaronSession(REQUIRE_VIEWER_ROLE, REQUIRE_ORG_VIEWER_ROLE, TICKET_RENEWAL_CHECK);
-    }
-    catch(Exception $ex){
-        header("Location: /" . SARON_URI . LOGOUT_URI);
-        exit();                                                
-    }
+
 
     $type = (String)filter_input(INPUT_GET, "type", FILTER_SANITIZE_STRING);
 
     if(strlen($type) > 0){
-        setUpPdfDoc($type);
+        $db = new db();
+        try{
+            $saronUser = new SaronUser($db);
+            $saronUser->hasValidSaronSession(REQUIRE_VIEWER_ROLE, REQUIRE_ORG_VIEWER_ROLE, TICKET_RENEWAL_CHECK);
+        }
+        catch(Exception $ex){
+            header("Location: /" . SARON_URI . LOGOUT_URI);
+            exit();                                                
+        }
+        setUpPdfDoc($db, $type);
     }
     
-function setUpPdfDoc($type){
+function setUpPdfDoc($db, $type){
     define ("INNER", 1);
     define ("OUTER", 2);
     define ("BOOKLET_OUTER_MARGIN", 10);
@@ -78,23 +79,23 @@ function setUpPdfDoc($type){
     switch ($type){
         case "server":
             $typ = "Beslutad";
-            $name = createOrganizationCalender($pdf, $type);
+            $name = createOrganizationCalender($db, $pdf, $type);
             $path = SARON_ROOT . 'data/Organisationskalender.pdf';
             $pdf->Output($path, 'F'); // F = File on server
             break;
         case "decided":
             $typ = "Beslutad";
-            $name = createOrganizationCalender($pdf, $type);
+            $name = createOrganizationCalender($db, $pdf, $type);
             $pdf->Output('Organisationskalender - ' . $typ . ' ' . date('Y-m-d', time()).'.pdf');
             break;
         case "vacancy":
             $typ = "Vakanser";
-            $name = createOrganizationCalender($pdf, $type);
+            $name = createOrganizationCalender($db, $pdf, $type);
             $pdf->Output('Organisationskalender - ' . $typ . ' ' . date('Y-m-d', time()).'.pdf');
             break;
         default:
             $typ = "Förslag";
-            $name = createOrganizationCalender($pdf, $type);
+            $name = createOrganizationCalender($db, $pdf, $type);
             $pdf->Output('Organisationskalender - ' . $typ . ' ' . date('Y-m-d', time()).'.pdf');
     }
     $pdf->close();
@@ -102,7 +103,7 @@ function setUpPdfDoc($type){
     
 
 
-function createOrganizationCalender(TCPDF $pdf, String $type){
+function createOrganizationCalender(db $db, TCPDF $pdf, String $type){
     define ("CELL_HIGHT", 5.5);
     define ("MAX_CELL_HIGHT", 5.5);
     define ("MAX_HEAD_CELL_HIGHT", 8.0);
@@ -118,7 +119,6 @@ function createOrganizationCalender(TCPDF $pdf, String $type){
 
     $longName = '';
     
-    $db = new db();
     $listResult = $db->sqlQuery(getSQL($type));
     if(!$listResult){
         exit();
