@@ -211,7 +211,7 @@ function statisticsDetailTableDef(mainTableViewId, tablePath, newTableTitle, par
             },
             PersonId:{
                 title: 'PersonId',
-                list: false //not unic in this view
+                type: 'hidden'
             },
             Person:{
                 title: '',
@@ -242,7 +242,7 @@ function statisticsDetailTableDef(mainTableViewId, tablePath, newTableTitle, par
                     return _getClickImg(data, childTableDef, $imgChild, $imgClose);                }
             },
             event_date: {
-                title: 'Datum',
+                title: 'Senaste händelse',
                 display: function (data){
                     return _setClassAndValue(data, "event_date", PERSON);
                 }       
@@ -265,10 +265,28 @@ function statisticsDetailTableDef(mainTableViewId, tablePath, newTableTitle, par
                     return _setClassAndValue(data, "DateOfBirth", PERSON);
                 }       
             },
-            event_type: {
-                title: 'Händelse',
+            DateOfBaptism: {
+                title: 'Dopdatum',
                 display: function (data){
-                    return _setClassAndValue(data, "event_type", PERSON);
+                    return _setClassAndValue(data, "DateOfBaptism", PERSON);
+                }       
+            },
+            DateOfMembershipStart: {
+                title: 'Medlemskap start',
+                display: function (data){
+                    return _setClassAndValue(data, "DateOfMembershipStart", PERSON);
+                }       
+            },
+            DateOfMembershipEnd: {
+                title: 'Medlemskap avslut',
+                display: function (data){
+                    return _setClassAndValue(data, "DateOfMembershipEnd", PERSON);
+                }       
+            },
+            DateOfDeath: {
+                title: 'Avliden',
+                display: function (data){
+                    return _setClassAndValue(data, "DateOfDeth", PERSON);
                 }       
             },
             Comment: {

@@ -44,7 +44,36 @@ class Statistics extends SuperEntity{
         return $result;
     }
 
+    function selectStatisicsDetails2($idFromCreate = -1){
+        $id = $this->getId($idFromCreate, $this->id);
+
+        $curYear = $this->parentId;
+
+        $subSelect ="Max((select DateOfMembershipStart from People as p2 where p2.Id=p.Id Union ";
+        $subSelect.="select DateOfMembershipEnd from People as p2 where p2.Id=p.Id Union ";
+        $subSelect.="select DateOfBaptism from People as p2 where p2.Id=p.Id Union ";
+        $subSelect.="select DateOfDeath from People as p2 where p2.Id=p.Id)) as event_date ";
+        
+        $sqlSelect ="SELECT DateOfMembershipStart, DateOfMembershipEnd, DateOfBaptism, DateOfDeath, ";
+        $sqlSelect.= DECRYPTED_ALIAS_LASTNAME . ", " . DECRYPTED_ALIAS_FIRSTNAME . ", " . DECRYPTED_ALIAS_COMMENT . ", DateOfBirth, " . $this->getTablePathSql(true);
+        $sqlSelect.=$subSelect;
+        $sqlFrom ="FROM People as p ";  
+        $sqlWhere ="WHERE ";
+        $sqlWhere.="extract(YEAR from DateOfMembershipStart)=" . $curYear . " OR ";
+        $sqlWhere.="extract(YEAR from DateOfMembershipEnd)=" . $curYear . " OR ";  
+        $sqlWhere.="extract(YEAR from DateOfBaptism)=" . $curYear . " OR ";  
+        $sqlWhere.="extract(YEAR from DateOfDeath)=" . $curYear . " ";  
+
+        $sql.= $this->getSortSql();
+        $sql.= $this->getPageSizeSql();
+
+        $result = $this->db->select($this->saronUser, $sqlSelect, $sqlFrom, $sqlWhere, $this->getSortSql(),  $this->getPageSizeSql());    
+        return $result;
+    }
+
+    
     function selectStatisicsDetails($idFromCreate = -1){
+   
         $id = $this->getId($idFromCreate, $this->id);
 
         $curYear = $this->parentId;
@@ -97,7 +126,7 @@ class Statistics extends SuperEntity{
 
     
     function getSelectSQL($offset){
-        $rowNumberSql = "(ROW_NUMBER() OVER (ORDER BY DateOfBirth) + " . $offset . ") AS Id"; 
+        $rowNumberSql = "(ROW_NUMBER() OVER (ORDER BY DateOfBirth) + " . $offset . ") AS Id";
         
         $sqlSelect="SELECT p.Id as PersonId, " . $rowNumberSql . ", " . $this->getTablePathSql(true) . DECRYPTED_ALIAS_LASTNAME . ", " . DECRYPTED_ALIAS_FIRSTNAME . ", " . DECRYPTED_ALIAS_COMMENT . ", DateOfBirth, " . $this->getTablePathSql(true);
         
