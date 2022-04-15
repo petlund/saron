@@ -191,7 +191,7 @@ function statisticsDetailTableDef(mainTableViewId, tablePath, newTableTitle, par
         pageList: 'minimal',
         sorting: true, //Enable sorting
         multiSorting: true,
-        defaultSorting: 'event_date desc, LastName ASC, FirstName ASC', //Set default sorting        
+        //defaultSorting: 'DateOfBaptism desc, DateOfMembershipStart desc, DateOfMembershipEnd desc, DateOfDeath desc, LastName ASC, FirstName ASC', //Set default sorting        
         showCloseButton: false,
         actions: {
             listAction:   '/' + saron.uri.saron + statisticsListUri
@@ -210,7 +210,6 @@ function statisticsDetailTableDef(mainTableViewId, tablePath, newTableTitle, par
                 defaultValue: tableName
             },
             PersonId:{
-                title: 'PersonId',
                 type: 'hidden'
             },
             Person:{
