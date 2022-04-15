@@ -12,6 +12,7 @@ const PERSON_AND_HOME = 4;
 const NEWS = 5;
 const ORG = 10;
 const TABLE = 100;
+const EVENT_TYPE = 200;
 const NEW_HOME_ID = 'newHomeId';
 const OLD_HOME_PREFIX = "OldHome_";
 const NO_HOME = "Inget hem";
@@ -35,24 +36,33 @@ function _setClassAndValue(data, field, type){
         return _styleSaronValue(field + ' ' + _getClassName_Id(data, field, type), _getLetterOption(data.record[field]), '');  
     else
         return _styleSaronValue(field + ' ' + _getClassName_Id(data, field, type), data.record[field], '');    
-
 }
 
 
 
 function _setClassAndValuePrefix(data, field, type, prefix){
-    return _styleSaronValue(field + ' ' + _getClassName_Id(data, field, type), prefix + ' ' + data.record[field], '');    
+    var returnVal = _styleSaronValue(field + ' ' + _getClassName_Id(data, field, type), prefix + ' ' + data.record[field], '');    
+    return returnVal;
+}
+
+
+
+function _setClassAndValueWidthEventType(data, field, type){
+    
+    var eventType = "_event_type_id_" + data.record.event_type_id;
+    var returnVal = _styleSaronValue(field + ' ' + _getClassName_Id(data, field, type) + eventType, data.record[field], '');    
+    return returnVal;
 }
 
 
 
 function _setClassAndValueAltNull(data, field, nullValue, type){
-        if(type === PERSON_AND_HOME){
-            var classNames = field + ' ' + _getClassName_Id(data, field, PERSON) + ' ' + _getClassName_Id(data, field, HOME);
-            return _styleSaronValue(classNames, data.record[field], nullValue);
-        }
-        else    
-            return _styleSaronValue(field + ' ' + _getClassName_Id(data, field, type), data.record[field], nullValue);    
+    if(type === PERSON_AND_HOME){
+        var classNames = field + ' ' + _getClassName_Id(data, field, PERSON) + ' ' + _getClassName_Id(data, field, HOME);
+        return _styleSaronValue(classNames, data.record[field], nullValue);
+    }
+    else    
+        return _styleSaronValue(field + ' ' + _getClassName_Id(data, field, type), data.record[field], nullValue);    
 }
 
 
@@ -70,6 +80,7 @@ function _setMailClassAndValue(data, field, nullValue, type){
 
     return _styleSaronValue(field + ' ' + _getClassName_Id(data, field, type), mailRef, nullValue);        
 }
+
 
 
 function _setImageClass(data, field, src, type){

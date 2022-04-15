@@ -88,23 +88,23 @@ class Statistics extends SuperEntity{
 
         $sql =$this->getSelectSQL(0);  
         $sql.="DateOfMembershipStart as 'event_date', 
-            'Ny' as event_type, 1 as 'Diff' 
+            'Ny' as event_type, 1 as event_type_id, 1 as 'Diff' 
             FROM `People` as p  
             WHERE extract(YEAR from DateOfMembershipStart)=" . $curYear . " " . $where;
         $sql.=" UNION ";
-        $sql.=$this->getSelectSQL(1000);  
+        $sql.=$this->getSelectSQL(0);  
         $sql.="DateOfMembershipEnd as 'event_date', 
-            'Avslutad' as event_type, -1 as 'Diff' 
+            'Avslutad' as event_type, 2 as event_type_id, -1 as 'Diff' 
             FROM `People` as p  
             WHERE DateOfDeath is null and DateOfMembershipStart is not null and extract(YEAR from DateOfMembershipEnd)=" . $curYear . " " . $where;   
         $sql.=" UNION ";
-        $sql.=$this->getSelectSQL(2000);  
-        $sql.="DateOfBaptism as 'event_date', 'Döpt' as event_type, 0 as 'Diff' 
+        $sql.=$this->getSelectSQL(0);  
+        $sql.="DateOfBaptism as 'event_date', 'Döpt' as event_type, 3 as event_type_id, 0 as 'Diff' 
             FROM `People` as p  
             WHERE CongregationOfBaptismThis=2 and extract(YEAR from DateOfBaptism)=" . $curYear . " " . $where; 
         $sql.=" UNION ";
-        $sql.=$this->getSelectSQL(3000);  
-        $sql.="DateOfDeath as 'event_date', 'Avliden' as event_type, -1 as 'Diff' 
+        $sql.=$this->getSelectSQL(0);  
+        $sql.="DateOfDeath as 'event_date', 'Avliden' as event_type, 4 as event_type_id, -1 as 'Diff' 
             FROM `People` as p  
             WHERE extract(YEAR from DateOfDeath)=" . $curYear . " " . $where;  
         $sql.= $this->getSortSql();
