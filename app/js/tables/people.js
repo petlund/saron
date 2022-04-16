@@ -139,7 +139,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                     var tooltip = 'Adressuppgifter';
                     var imgFile = "home.png";
                     var clientOnly = true;
-                    var parentId = data.record.Id;
+                    var parentId = data.record.HomeId;
                     var url = null;
                     var type = 0;
 

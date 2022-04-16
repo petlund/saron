@@ -64,7 +64,7 @@ class Homes extends SuperEntity{
         $id = $this->getId($idFromCreate, $this->id);
             
         $filter = new HomesFilter();
-        $sqlSelect = SQL_STAR_HOMES . ", People.HomeId, People.Id as ParentId, " . $this->saronUser->getRoleSql(true) . CONTACTS_ALIAS_RESIDENTS;
+        $sqlSelect = SQL_STAR_HOMES  . ", " .  $this->saronUser->getRoleSql(true) . CONTACTS_ALIAS_RESIDENTS;
         $sqlWhere = "WHERE ";
 
         if($id < 0){            
@@ -75,10 +75,10 @@ class Homes extends SuperEntity{
                     $sqlWhere.= $filter->getSearchFilterSql($this->uppercaseSearchString);
                     break;
                 case TABLE_NAME_PEOPLE . "/" . TABLE_NAME_HOMES:            
-                    $sqlWhere.= "People.Id = " . $this->parentId . " ";
+                    $sqlWhere.= "Homes.Id = " . $this->parentId . " ";
                     break;
                 case TABLE_NAME_STATISTICS . "/" . TABLE_NAME_STATISTICS_DETAIL . "/" . TABLE_NAME_PEOPLE . "/" . TABLE_NAME_HOMES:            
-                    $sqlWhere.= "People.Id = " . $this->parentId . " ";
+                    $sqlWhere.= "Homes.Id = " . $this->parentId . " ";
                     break;
                 default:
                     $sqlWhere ="";
@@ -88,7 +88,7 @@ class Homes extends SuperEntity{
             $rec = RECORD;
             $sqlWhere.= "Homes.Id = " . $id . " ";
         }
-        $from = "FROM Homes inner join People on People.HomeId = Homes.Id ";
+        $from = "FROM Homes ";
         $result = $this->db->select($this->saronUser, $sqlSelect, $from, $sqlWhere, $this->getSortSql(), $this->getPageSizeSql(), $rec);
         return $result;        
     }
