@@ -201,8 +201,8 @@ class OrganizationUnit extends SuperEntity{
         $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "', ";
         $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
         
-        $this->id = $this->db->insert($sqlInsert, "Org_Tree", "Id");
-        return $this->select();
+        $id = $this->db->insert($sqlInsert, "Org_Tree", "Id");
+        return $this->select($id);
     }
     
     
