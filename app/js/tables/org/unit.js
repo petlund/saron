@@ -16,7 +16,7 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
     
     var tableName = saron.table.unit.name;
 
-    const maxUnits = tableName + '/' + tableName;
+    const maxUnits = saron.table.unittree.name + '/' + saron.table.unit.name;
         if(tablePath !== maxUnits){
         if(tablePath === null)
             tablePath = tableName;

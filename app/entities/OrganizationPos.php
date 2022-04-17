@@ -150,7 +150,7 @@ class OrganizationPos extends SuperEntity{
             default:
                 $sql = "Select null as Value, '-' as DisplayText ";
                 $sql.= "UNION "; 
-                $sql.= "SELECT Pos.Id as Value, Concat(' ', Role.Name, ': ', UnitType.Name, ' ', Tree.Name, ". EMBEDDED_SELECT_SUPERPOS . ") as DisplayText ";
+                $sql.= "SELECT Pos.Id as Value, Concat(' ', Role.Name, ' (Funktion: ', Tree.Name, ". EMBEDDED_SELECT_SUPERPOS . ", ')') as DisplayText ";
                 $sql.= $from;
         }
                 

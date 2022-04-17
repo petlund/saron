@@ -30,7 +30,7 @@ class Engagement extends SuperEntity{
         $id = $this->getId($idFromCreate, $this->id);
         $rec = RECORDS;
 
-        $subSelect1 = "(Select GROUP_CONCAT(Role.Name,', ', Pos.Comment, ' (', Tree.Name , ". EMBEDDED_SELECT_SUPERPOS . ", ') ',IF(Stat.Id > 1,Concat(' <b style=\"background:yellow;\">[', Stat.Name, ']</b>'),'') SEPARATOR '<br>') as EngagementList "; 
+        $subSelect1 = "(Select GROUP_CONCAT('<b>', Role.Name, '</b>', " . EMBEDDED_SELECT_SUPERPOS . ", ' (Funktion: ', Tree.Name , ') ', IF(Stat.Id > 1,Concat(' <b style=\"background:yellow;\">[', Stat.Name, ']</b>'),'') SEPARATOR '<br>') as EngagementList "; 
         $subSelect2 = "(select count(*) ";
         $subFrom = "from Org_Pos as Pos inner join Org_Role as Role on Pos.OrgRole_FK = Role.Id ";
         $subFrom.= "inner join Org_Tree as Tree on Pos.OrgTree_FK = Tree.Id ";

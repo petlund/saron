@@ -31,7 +31,7 @@ class OrganizationUnit extends SuperEntity{
     }
     
     
-    function select(){
+    function select($id = -1){
         switch ($this->resultType){
         case OPTIONS:
             return $this->selectOptions();       
@@ -101,7 +101,7 @@ class OrganizationUnit extends SuperEntity{
         
         if($id < 0){
             switch ($this->tablePath){
-                case TABLE_NAME_UNIT:            
+                case TABLE_NAME_UNITTREE:            
                     $select.= $this->setParentAlias("ParentTreeNode_FK");
                     if($this->parentId < 0){
                         $where = "WHERE ParentTreeNode_FK is null ";
@@ -110,7 +110,7 @@ class OrganizationUnit extends SuperEntity{
                         $where = "WHERE ParentTreeNode_FK = " . $this->parentId . " ";                    
                     }
                     break;
-                case TABLE_NAME_UNIT . "/" . TABLE_NAME_UNIT:            
+                case TABLE_NAME_UNITTREE . "/" . TABLE_NAME_UNIT:            
                     $select.= $this->setParentAlias("ParentTreeNode_FK");
                     $where = "WHERE ParentTreeNode_FK = " . $this->parentId . " ";
                     break;
