@@ -88,14 +88,14 @@ class OrganizationPos extends SuperEntity{
         $where = "";
         if($id < 0){
             switch ($this->tablePath){
-                case TABLE_NAME_UNIT . "/" . TABLE_NAME_POS:            
+                case TABLE_NAME_UNITTREE . "/" . TABLE_NAME_POS:            
                     $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
                     break;
                 case TABLE_NAME_PEOPLE . "/" . TABLE_NAME_ENGAGEMENTS:            
                     $where = "WHERE pCur.Id = ". $this->parentId . " "; 
  //                    $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
                     break;
-                case TABLE_NAME_UNIT . "/" . TABLE_NAME_UNIT . "/" . TABLE_NAME_POS:            
+                case TABLE_NAME_UNITTREE . "/" . TABLE_NAME_UNIT . "/" . TABLE_NAME_POS:            
                     $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
                     break;
                 case TABLE_NAME_ROLE . "/" . TABLE_NAME_UNIT . "/" . TABLE_NAME_POS:            
