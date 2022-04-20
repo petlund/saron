@@ -81,7 +81,7 @@ function roleTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                     var type = 0;
                     var clientOnly = true;
 
-                    if(data.record.HasChild === '0'){
+                    if(data.record.UsedInUnit === '0'){
                         imgFile = "unit_empty.png";
                         tooltip = "Inga organisatoriska enheter";
                     }
@@ -105,7 +105,7 @@ function roleTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                     return _getClickImg(data, childTableDef, $imgChild, $imgClose);
                 }               
             },
-            Org:{
+            UsedInUnitType:{
                 width: '5%',
                 create: false,
                 title: "Ingår i",

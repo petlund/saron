@@ -69,7 +69,7 @@ class OrganizationPos extends SuperEntity{
          
         $select = "SELECT Pos.*, Tree.ParentTreeNode_FK, Role.Name, Role.RoleType, Pos.Id,  IF(Pos.Updated>Role.updated, Pos.Updated, Role.Updated) as LatestUpdated, ";
         $select.= "(Select SortOrder from `Org_Role-UnitType` as RUT WHERE  RUT.OrgRole_FK = Pos.OrgRole_FK and RUT.OrgUnitType_FK = Tree.OrgUnitType_FK) as SortOrder, ";
-        $select.= getPersonSql("pPrev", "PrevPerson", true);
+//        $select.= getPersonSql("pPrev", "PrevPerson", true);
         $select.= $this->getTablePathSql();
         $select.= "IF(Pos.OrgPosStatus_FK = 6, (Select T.Name From Org_Tree as T Where T.Id = Pos.Function_FK), IF(People_FK > 0," . getPersonSql("pCur", null, false) . ", (Select R.Name From Org_Role as R Where R.Id = -People_FK))) as Responsible, ";
         $select.= "IF(Pos.PrevOrgPosStatus_FK = 6, (Select T.Name From Org_Tree as T Where T.Id = Pos.PrevFunction_FK), IF(PrevPeople_FK > 0," . getPersonSql("pPrev", null, false) . ", (Select R.Name From Org_Role as R Where R.Id = -PrevPeople_FK))) as PrevResponsible, ";
@@ -104,7 +104,7 @@ class OrganizationPos extends SuperEntity{
                 case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_UNIT . "/" . TABLE_NAME_POS:            
                     $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
                     break;
-                case TABLE_NAME_UNITLIST . "/" . TABLE_NAME_POS:            
+                case TABLE_NAME_UNITLIST . "/" . TABLE_NAME_UNIT . "/" . TABLE_NAME_POS:            
                     $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
                     break;
                 case TABLE_NAME_ENGAGEMENT . "/" . TABLE_NAME_ENGAGEMENTS:    

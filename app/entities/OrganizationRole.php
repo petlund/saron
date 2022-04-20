@@ -107,7 +107,8 @@ class OrganizationRole extends SuperEntity{
         
         $select = "SELECT *, Role.UpdaterName as UpdaterName, Role.Updated as Updated, ";
         $select.= $this->getTablePathSql();
-        $select.= "(Select count(*) from `Org_Role-UnitType` as UnitRole WHERE UnitRole.OrgRole_FK = Role.Id) as HasChild, ";
+        $select.= "(Select count(*) from Org_Pos as Pos WHERE Pos.OrgRole_FK = Role.Id) as UsedInUnit, ";
+        $select.= "(Select count(*) from `Org_Role-UnitType` as RUT WHERE RUT.OrgRole_FK = Role.Id) as UsedInUnitType, ";
         $select.= "(Select count(*) from Org_Pos as Pos WHERE Pos.OrgRole_FK=Role.Id) as PosOccurrency, ";
         $select.= $this->saronUser->getRoleSql(false) . " ";
         $from = "FROM Org_Role as Role ";

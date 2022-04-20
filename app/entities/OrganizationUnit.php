@@ -91,7 +91,7 @@ class OrganizationUnit extends SuperEntity{
             $select.= "'0' as parentNodeChange, ";                        
         }
         
-        $select.= $this->saronUser->getRoleSql(true);
+        $select.= $this->saronUser->getRoleSql(false);
         
         $from = "from Org_Tree as Tree ";
         $from.= "inner join Org_UnitType as Typ on Tree.OrgUnitType_FK = Typ.Id ";
@@ -102,7 +102,6 @@ class OrganizationUnit extends SuperEntity{
         if($id < 0){
             switch ($this->tablePath){
                 case TABLE_NAME_UNITTREE:            
-                    $select.= $this->setParentAlias("ParentTreeNode_FK");
                     if($this->parentId < 0){
                         $where = "WHERE ParentTreeNode_FK is null ";
                     }
@@ -111,27 +110,24 @@ class OrganizationUnit extends SuperEntity{
                     }
                     break;
                 case TABLE_NAME_UNITTREE . "/" . TABLE_NAME_UNIT:            
-                    $select.= $this->setParentAlias("ParentTreeNode_FK");
                     $where = "WHERE ParentTreeNode_FK = " . $this->parentId . " ";
                     break;
                 case TABLE_NAME_UNITLIST:
-                    $select.= $this->setParentAlias("ParentTreeNode_FK");
                 break;
                 case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_UNIT:
-                    $select.= $this->setParentAlias("Tree.OrgUnitType_FK");
                     $where = "WHERE OrgUnitType_FK = " . $this->parentId . " ";
                 break;
                 case TABLE_NAME_ROLE . "/" . TABLE_NAME_UNIT:
-                    $select.= $this->setParentAlias("Rut.OrgRole_FK");
-                    $where = "WHERE Rut.OrgRole_FK = " . $this->parentId . " ";
-                    $from.= "inner join `Org_Role-UnitType` as Rut on Tree.OrgUnitType_FK=Rut.OrgUnitType_FK ";
+                    $from.= "inner join ("
+                            . "select OrgTree_FK from Org_Pos where OrgRole_FK = " . $this->parentId . ""
+                            . " group by OrgTree_FK) as Pos on Pos.OrgTree_FK = Tree.Id ";
                     break;
                 default:
-                    $select.= $this->setParentAlias("ParentTreeNode_FK");
+                    $where = "";
+                break;
             }            
         }
         else{
-            $select.= $this->setParentAlias("ParentTreeNode_FK");
             $where = "WHERE Tree.Id = " . $this->id . " ";
             $rec = RECORD;
         }

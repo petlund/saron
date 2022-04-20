@@ -64,7 +64,7 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                     var tooltip = "";
                     var imgFile = "";
                     var parentId = data.record.Id;
-                    var url = '/' + saron.uri.saron + unitListUri;
+                    var url = unitListUri;
                     var type = 0;
                     var clientOnly = false;
 
@@ -118,11 +118,11 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 delete: false,
                 display: function(data){
                     var childTableName = saron.table.pos.name;
-                    var childTableTitle = data.record.Name + " har följande positioner";
+                    var childTableTitle = 'Den organisatoriska enheten "' + data.record.Name + '" har följande positioner';
                     var parentId = data.record.Id;
                     var tooltip = "";
                     var imgFile = "";         
-                    var url = '/' + saron.uri.saron + unitListUri;
+                    var url = unitListUri;
                     var type = 0;
                     var clientOnly = false;
                     

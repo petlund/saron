@@ -107,7 +107,6 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 edit: false,
                 list: includedIn(mainTableViewId, saron.table.pos.viewid),
                 title: "Organisatorisk enhet",
-                dependsOn: 'Id',
                 options: function(data){
                     var uri = 'app/web-api/listOrganizationUnit.php';
                     var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, uri);

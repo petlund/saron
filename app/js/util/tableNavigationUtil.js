@@ -57,7 +57,8 @@ function _clickActionClose(childTableDef, img, event, url, clientOnly){
 
 
 
-function _updateAfterClickAction(tablePlaceHolder, event, childOpen, url, clientOnly){
+function _updateAfterClickAction(tablePlaceHolder, event, childOpen, uri, clientOnly){
+    var url = '/' + saron.uri.saron + uri;
     var options = {url:url, clientOnly:clientOnly, animationsEnabled:false};
     options.record = {Id: event.data.record.Id, OpenChildTable: childOpen}; 
 
