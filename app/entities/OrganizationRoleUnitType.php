@@ -36,23 +36,6 @@ class OrganizationRoleUnitType extends SuperEntity{
         }
     }
 
-//    function selectDefault_old($idFromCreate = -1){
-//        $select = "SELECT *, Role.Name as RoleName, ";
-//        $select.= $this->getTablePathSql();
-//        $select.= $this->saronUser->getRoleSql(false) . " ";
-//        $from = "FROM Org_Role as Role inner join `Org_Role-UnitType` as Rut on Rut.OrgRole_FK = Role.Id ";
-//        $from.= "inner join Org_UnitType as Typ on Rut.OrgUnitType_FK = Typ.Id ";
-//        if($idFromCreate > 0){
-//            $where = "WHERE Rut.Id = " . $idFromCreate . " ";
-//        }
-//        else{
-//            $where = "";
-//        }
-//
-//        $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $this->resultType);    
-//        return $result;
-//    }
-    
     
     
     function selectDefault($id){

@@ -112,11 +112,6 @@ function keyTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
             else
                 data.row.find('.jtable-delete-command-button').hide();
         },        
-        recordsLoaded: function(event, data) {
-            if(data.serverResponse.user_role === saron.userrole.editor){ 
-                $('#KEYS').find('.jtable-toolbar-item-add-record').show();
-            }
-        },        
         formCreated: function (event, data){
             if(data.formType === saron.formtype.edit){
                 data.row[0].style.backgroundColor = "yellow";

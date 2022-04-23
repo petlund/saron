@@ -71,8 +71,10 @@ function orgVersionTableDef(){
             }
         },        
         recordsLoaded: function(event, data) {
+            var addButton = $(event.target).find('.jtable-toolbar-item-add-record');
+
             if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
-                $(saron.table.orgversion.viewid).find('.jtable-toolbar-item-add-record').show();
+                addButton.show();
                 $(saron.table.orgversion.viewid).find('.jtable-edit-command-button').show();
             }
         },        

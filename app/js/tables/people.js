@@ -472,9 +472,11 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
             }
         },        
         recordsLoaded: function(event, data) {
+            var addButton = $(event.target).find('.jtable-toolbar-item-add-record');
+
             if(data.serverResponse.user_role === saron.userrole.editor){
                 if(mainTableViewId !== saron.table.statistics.viewid){
-                    $(mainTableViewId).find('.jtable-toolbar-item-add-record').show();
+                    addButton.show();
                 }
             }
         },        

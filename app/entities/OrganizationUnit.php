@@ -35,12 +35,8 @@ class OrganizationUnit extends SuperEntity{
         switch ($this->resultType){
         case OPTIONS:
             return $this->selectOptions();       
-        case RECORDS:
-            return $this->selectDefault();       
-        case RECORD:
-            return $this->selectDefault();       
         default:
-            return $this->selectDefault();
+            return $this->selectDefault($id);
         }
     }
 
@@ -128,7 +124,7 @@ class OrganizationUnit extends SuperEntity{
             }            
         }
         else{
-            $where = "WHERE Tree.Id = " . $this->id . " ";
+            $where = "WHERE Tree.Id = " . $id . " ";
             $rec = RECORD;
         }
 

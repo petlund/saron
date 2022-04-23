@@ -173,8 +173,8 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 create: !includedIn(mainTableViewId, saron.table.unittree.viewid),
                 title: 'Överordna verksamhet',
                 options: function(data) {
-                    if(includedIn(mainTableViewId, saron.table.unitlist.viewid))
-                        data.record.ParentId=null; //using cache
+//                    if(includedIn(mainTableViewId, saron.table.unitlist.viewid))
+//                        data.record.ParentId=null; //using cache
                     
                     var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, unitListUri);                    
                     return '/' + saron.uri.saron + unitListUri + parameters;
@@ -212,8 +212,8 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 inputTitle: 'Typ av enhet (Kan inte ändras. Vill du ändra behöver du skapa en ny organisatorisk enhet).',
                 width: '5%',
                 options: function (data){
-                    if(includedIn(mainTableViewId, saron.table.unitlist.viewid))
-                        data.record.ParentId=null; //using cache
+//                    if(includedIn(mainTableViewId, saron.table.unitlist.viewid))
+//                        data.record.ParentId=null; //using cache
                     
                     var uri = 'app/web-api/listOrganizationUnitType.php';
                     var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, uri);                    
@@ -259,10 +259,20 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
             addDialogDeleteListener(data);
         },        
         recordsLoaded: function(event, data) {
-            if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
-                $(mainTableViewId).find('.jtable-toolbar-item-add-record').show();
-            }
+            var addButton = $(event.target).find('.jtable-toolbar-item-add-record');
+
+            if(includedIn(mainTableViewId, saron.table.unittree.viewid + saron.table.unitlist.viewid))
+                if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org') 
+                    addButton.show();
         },        
+        loadingRecords: function(event, data) {
+            var addButton = $(event.target).find('.jtable-toolbar-item-add-record');
+
+            if(includedIn(mainTableViewId, saron.table.unittree.viewid + saron.table.unitlist.viewid))
+                addButton.show();
+            else
+                addButton.hide();
+        },
         formCreated: function (event, data){
             if(data.formType === saron.formtype.edit){
                 data.row[0].style.backgroundColor = "yellow";

@@ -29,8 +29,12 @@ function role_role_unitType_TableDef(mainTableViewId, tablePath, newTableTitle, 
         pageList: 'minimal',
         sorting: true, //Enable sorting
         multiSorting: true,
-        defaultSorting: getDefaultSorting(mainTableViewId),       
-        messages: {addNewRecord: 'Lägg till ny roll'},
+        defaultSorting: getDefaultSorting(mainTableViewId),   
+        messages: getMessageAddNewRecord(mainTableViewId),
+        deleteConfirmation: function(data) {
+            var message = "Raderar koppling mellan enhetstyp och roll. <br>Kan inte ångras.";
+            data.deleteConfirmMessage = message;
+        },         
         actions: {            
             listAction: '/' + saron.uri.saron + role_table_typeListUri,
             createAction: '/' + saron.uri.saron + 'app/web-api/createOrganizationRole-UnitType.php',
@@ -126,8 +130,10 @@ function role_role_unitType_TableDef(mainTableViewId, tablePath, newTableTitle, 
             
         },        
         recordsLoaded: function(event, data) {
+            var addButton = $(event.target).find('.jtable-toolbar-item-add-record');
+
             if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
-                $(mainTableViewId).find('.jtable-toolbar-item-add-record').show();
+                addButton.show();
             }
         },        
         formCreated: function (event, data){
@@ -150,4 +156,12 @@ function getDefaultSorting(mainTableViewId){
         return 'SortOrder';
     else
         return 'OrgUnitType_FK';                    
+}
+
+
+function getMessageAddNewRecord(mainTableViewId){
+    if(mainTableViewId.includes(saron.table.unittype.viewid))
+        return {addNewRecord: 'Koppla roll till enhetstypen'};
+    if(mainTableViewId.includes(saron.table.role.viewid))
+        return {addNewRecord: 'Koppla enhetstyp till rollen'};
 }

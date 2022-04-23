@@ -78,11 +78,6 @@ function memberstateTableDef(){
                 data.row.find('.jtable-delete-command-button').hide();
             }
         },        
-        recordsLoaded: function(event, data) {
-            if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
-                $('#NEWS').find('.jtable-toolbar-item-add-record').show();
-            }
-        },        
         formCreated: function (event, data){
             if(data.formType === saron.formtype.edit)
                 data.row[0].style.backgroundColor = "yellow";

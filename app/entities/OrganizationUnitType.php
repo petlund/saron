@@ -136,11 +136,21 @@ class OrganizationUnitType extends SuperEntity{
 //        $sql.= "Union "; 
         $select = "SELECT id as Value, Name as DisplayText ";
         $where = "";
-//        $where = "WHERE id not in(select OrgUnitType_FK from `Org_Role-UnitType` where OrgRole_FK = " . $this->parentId . ") "; 
-//        if(strpos($this->tablePath, TABLE_NAME_ROLE) !== false){
-//            $where.=" AND PosEnabled = 2 "; // only units with posenabled list
-//        }
+        
+        if($this->source === SOURCE_CREATE){
+            $where.= "WHERE id not in(select OrgUnitType_FK from `Org_Role-UnitType` where OrgRole_FK = " . $this->parentId . ") ";             
+            if(strpos($this->tablePath, TABLE_NAME_ROLE) !== false){
+                $where.="AND PosEnabled = 2 "; // only unittypes with posenabled list
+            }
+        }
+        else{
+            if(strpos($this->tablePath, TABLE_NAME_ROLE) !== false){
+                $where.="WHERE PosEnabled = 2 "; // only unittypes with posenabled list
+            }
+        }
+        
         $from = "FROM Org_UnitType ";
+        
         $result = $this->db->select($this->saronUser, $select , $from, $where, "Order by DisplayText ", "", OPTIONS);    
         return $result; 
     }

@@ -75,7 +75,7 @@ function unitTypeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                     var childTableTitle = 'Enhetstypen "' + data.record.Name + '" används för nedanstående organisatoriska enheter';                            
                     var tooltip = "Enhetstypen används inom följande organisatoriska enheter";
                     var imgFile = "unit.png";
-                    var url = 'app/web-api/listOrganizationUnit.php';
+                    var url = 'app/web-api/listOrganizationUnitType.php';
                     var parentId = data.record.Id;
                     var type = 0;
                     var clientOnly = true;
@@ -111,7 +111,7 @@ function unitTypeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                     var tooltip = "";
                     var imgFile = "";
                     var parentId = data.record.Id;
-                    var url = 'app/web-api/listOrganizationPos.php';
+                    var url = 'app/web-api/listOrganizationUnitType.php';
                     var parentId = data.record.Id;
                     var type = 0;
                     var clientOnly = true;
@@ -218,8 +218,10 @@ function unitTypeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                     data.row.find('.jtable-delete-command-button').show();
         },        
         recordsLoaded: function(event, data) {
+            var addButton = $(event.target).find('.jtable-toolbar-item-add-record');
+
             if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
-                $(mainTableViewId).find('.jtable-toolbar-item-add-record').show();
+                addButton.show();
             }
         },        
         formCreated: function (event, data){

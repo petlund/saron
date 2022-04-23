@@ -226,10 +226,12 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
             addDialogDeleteListener(data);
         },        
         recordsLoaded: function(event, data) {
+            var addButton = $(event.target).find('.jtable-toolbar-item-add-record');
+
             if(data.records.length > 0){
                 var showCreateButton = (data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org') && data.records[0].TablePath !== tableName; 
                 if(showCreateButton){ 
-                    $(mainTableViewId).find('.jtable-toolbar-item-add-record').show();
+                    addButton.show();
                 }
             }
         },        

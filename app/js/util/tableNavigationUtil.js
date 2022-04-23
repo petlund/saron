@@ -33,12 +33,13 @@ function _clickActionOpen(childTableDef, img, event, url, clientOnly){
         var source = saron.source.list;
         var resultType = saron.responsetype.records;        
         var options = getPostData(id, mainTablePlaceHolder, parentId, tablePath, source, resultType);
-        
+
         callBackData.childTable.jtable('load', options, function(childData){
         });
         var childOpen = _getClassNameOpenChild(event.data, tablePath);                                
         _updateAfterClickAction(tablePlaceHolder, event, childOpen, url, clientOnly);            
     });
+    $(tr).find('.jtable-toolbar-item-add-record').hide();
 }
 
 

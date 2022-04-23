@@ -76,10 +76,10 @@ function roleTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                     var childTableTitle = 'Rollen "' + data.record.Name + '" ingår i följande organisatoriska enheter';
                     var tooltip = "";
                     var imgFile = "";
-                    var url = 'app/web-api/listOrganizationUnitType.php';
+                    var url = 'app/web-api/listOrganizationRole.php';
                     var parentId = data.record.Id;
                     var type = 0;
-                    var clientOnly = true;
+                    var clientOnly = false;
 
                     if(data.record.UsedInUnit === '0'){
                         imgFile = "unit_empty.png";
@@ -118,12 +118,12 @@ function roleTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                     var tooltip = "";
                     var imgFile = "";
                     var parentId = data.record.Id;
-                    var url = 'app/web-api/listOrganizationUnitType.php';
+                    var url = 'app/web-api/listOrganizationRole.php';
                     var parentId = data.record.Id;
                     var type = 0;
-                    var clientOnly = true;
+                    var clientOnly = false;
 
-                    if(data.record.HasChild === '0'){
+                    if(data.record.UsedInUnitType === '0'){
                         imgFile = "unittype.png";
                         tooltip = "Inga organisatoriska enhetstyper";
                     }
@@ -208,8 +208,10 @@ function roleTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
             
         },        
         recordsLoaded: function(event, data) {
+            var addButton = $(event.target).find('.jtable-toolbar-item-add-record');
+            
             if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
-                $(mainTableViewId).find('.jtable-toolbar-item-add-record').show();
+                addButton.show();
             }
         },        
         formCreated: function (event, data){
