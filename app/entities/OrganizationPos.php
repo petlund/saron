@@ -68,13 +68,13 @@ class OrganizationPos extends SuperEntity{
         
         $subSelectCur = "(case "
                     . "WHEN Pos.Function_FK > 0 THEN (Select concat('" . $prevTooltipStriing . "', F.Name, '" . $midTooltipStriing . "','Funktionsansvar','" . $postTooltipStriing . "') From Org_Tree as F Where F.Id = Pos.Function_FK) "
-                    . "WHEN Pos.OrgSuperPos_FK > 0 THEN (Select concat('" . $prevTooltipStriing . "', R.Name, '" . $midTooltipStriing . "'," . getPersonSql("pCur", null, false) . ",'" . $postTooltipStriing . "') From Org_Pos as P inner join Org_Role as R on R.Id=P.OrgRole_FK Where P.Id = Pos.OrgSuperPos_FK) "
+                    . "WHEN Pos.OrgSuperPos_FK > 0 THEN (Select concat('" . $prevTooltipStriing . "', R.Name, '" . $midTooltipStriing . "'," . getPersonSql("pCur2", null, false) . ",'" . $postTooltipStriing . "') From Org_Pos as P inner join Org_Role as R on R.Id=P.OrgRole_FK left outer join People as pCur2 on pCur2.Id=P.People_FK Where P.Id = Pos.OrgSuperPos_FK ) "
                     . "ELSE " . getPersonSql("pCur", null, false) . " "
                 . "end) as Responsible , ";
 
         $subSelectPrev = "(case "
                     . "WHEN Pos.PrevFunction_FK > 0 THEN (Select concat('" . $prevTooltipStriing . "', F.Name, '" . $midTooltipStriing . "','Funktionsansvar','" . $postTooltipStriing . "') From Org_Tree as F Where F.Id = Pos.Function_FK) "
-                    . "WHEN Pos.PrevOrgSuperPos_FK > 0 THEN (Select concat('" . $prevTooltipStriing . "', R.Name, '" . $midTooltipStriing . "'," . getPersonSql("pPrev", null, false) . ",'" . $postTooltipStriing . "') From Org_Pos as P inner join Org_Role as R on R.Id=P.OrgRole_FK Where P.Id = Pos.OrgSuperPos_FK) "
+                    . "WHEN Pos.PrevOrgSuperPos_FK > 0 THEN (Select concat('" . $prevTooltipStriing . "', R.Name, '" . $midTooltipStriing . "'," . getPersonSql("pPrev2", null, false) . ",'" . $postTooltipStriing . "') From Org_Pos as P inner join Org_Role as R on R.Id=P.OrgRole_FK left outer join People as pPrev2 on pPrev2.Id=P.People_FK Where P.Id = Pos.OrgSuperPos_FK) "
                     . "ELSE " . getPersonSql("pPrev", null, false) . " "
                 . "end) as PrevResponsible , ";
 
