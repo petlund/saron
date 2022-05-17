@@ -191,7 +191,8 @@ function engagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId)
                 key: true,
                 options: function (data){
                     var uri = 'app/web-api/listOrganizationPos.php';
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, uri);
+                    var field = "Id";
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);
                     return  '/' + saron.uri.saron + uri + parameters;
                 }
             },
@@ -210,13 +211,17 @@ function engagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId)
             OrgTree_FK:{
                 type: 'hidden'
             },
+            OrgSuperPos_FK:{
+                type: 'hidden'
+            },
             OrgPosStatus_FK: {
                 title: 'Status',
                 width: '10%',
                 defaultValue: 2,
                 options: function (data){
                     var uri = 'app/web-api/listOrganizationPosStatus.php';
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, uri);
+                    var field = "OrgPosStatus_FK";
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);
                     return  '/' + saron.uri.saron + uri + parameters;
                 }
             },            
@@ -271,6 +276,7 @@ function engagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId)
             if(data.formType === saron.formtype.edit){
                 data.row[0].style.backgroundColor = "yellow";
             }
+
             data.form.css('width','600px');
             data.form.find('input[name=Comment]').css('width','580px');
         },

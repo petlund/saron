@@ -78,9 +78,6 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                             case '4':
                                 src = '"/' + saron.uri.saron + saron.uri.images + 'haspos_R.png" title="Vakant"';
                                 break;
-                            case '6':
-                                src = '"/' + saron.uri.saron + saron.uri.images + 'function.png" title="Funktionsansvar"';
-                                break;
                             default:                            
                                 src = '"/' + saron.uri.saron + saron.uri.images + 'pos.png" title="Tillsätts ej"';
                         }
@@ -109,7 +106,8 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 title: "Organisatorisk enhet",
                 options: function(data){
                     var uri = 'app/web-api/listOrganizationUnit.php';
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, uri);
+                    var field = null;
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);
                     return '/' + saron.uri.saron + uri + parameters;
                 }                
             },            
@@ -118,7 +116,8 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 title: 'Roll',
                 options: function(data){
                     var uri = 'app/web-api/listOrganizationRole.php';      
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, uri);                    
+                    var field = 'OrgRole_FK';
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);                    
                     return '/' + saron.uri.saron + uri + parameters;
                 }
             },
@@ -128,7 +127,8 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 defaultValue: '4',
                 options: function(data){                    
                     var uri = 'app/web-api/listOrganizationPosStatus.php';
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, uri);                    
+                    var field = null;
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);                    
                     return '/' + saron.uri.saron + uri + parameters;
                 }
             },
@@ -136,26 +136,52 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 width: '10%',
                 inputTitle: "Kort kommentar som ska vara knuten till uppdraget inte personen.",
                 title: 'Kommentar',                
+            },           
+            ResourceType: {
+                title: 'Resurstyp',
+                create: true,
+                edit: true,
+                list: false,
+                options: function(data){                    
+                    return {'1':'Ansvarig person','2':'Organisationsroll', '3':'Alternativt funktion' };
+                }
             },
             People_FK: {
                 title: 'Ansvarig person',
+                inputTitle: 'Resurstyp: Ansvarig person',
                 create: true,
                 edit: true,
                 list: false,
                 options: function(data){
                     var uri = 'app/web-api/listPeople.php';
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, uri);                    
+                    var field = null;
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);                    
+                    return '/' + saron.uri.saron + uri + parameters;
+                }
+            },
+            OrgSuperPos_FK: {
+                title: 'Organisationsroll',
+                inputTitle: 'Resurstyp: Organisationsroll',
+                create: true,
+                edit: true,
+                list: false,
+                options: function(data){                    
+                    var uri = 'app/web-api/listOrganizationPos.php';
+                    var field = 'OrgSuperPos_FK';
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);                    
                     return '/' + saron.uri.saron + uri + parameters;
                 }
             },
             Function_FK: {
                 title: 'Alternativt funktionsansvar',
+                inputTitle: 'Resurstyp: Alternativt funktionsansvar',
                 create: true,
                 edit: true,
                 list: false,
                 options: function(data){                    
                     var uri = 'app/web-api/listOrganizationUnit.php';
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, uri);                    
+                    var field = null;
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);                    
                     return '/' + saron.uri.saron + uri + parameters;
                 }
             },
@@ -219,21 +245,23 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
         },
         rowInserted: function(event, data){
             data.row.addClass("Id_" + data.record.Id); 
-            if (data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org'){
+            if (data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org' ){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
+            }
+            if(!includedIn(mainTableViewId, saron.table.unittree.viewid + saron.table.unitlist.viewid)){
+                data.row.find('.jtable-delete-command-button').hide();                
             }
             addDialogDeleteListener(data);
         },        
         recordsLoaded: function(event, data) {
             var addButton = $(event.target).find('.jtable-toolbar-item-add-record');
+            if(addButton === null)
+                addButton = $(mainTableViewId).find('.jtable-toolbar-item-add-record');
 
-            if(data.records.length > 0){
-                var showCreateButton = (data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org') && data.records[0].TablePath !== tableName; 
-                if(showCreateButton){ 
-                    addButton.show();
-                }
-            }
+            var showAddButton = (data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org') && data.records[0].TablePath !== tableName; 
+            if(showAddButton) 
+                addButton.show();
         },        
         formCreated: function (event, data){
             if(data.formType === saron.formtype.edit){
@@ -241,6 +269,14 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 data.row[0].style.backgroundColor = "yellow";
             }
             data.form.css('width','600px');
+            
+            if(data.record !== undefined)
+                posFormAuto(data, data.record.ResourceType);
+            else
+                posFormAuto(data, 1);
+            
+            data.form.find('select[name=ResourceType]').change(function () {posFormAuto(data, this.value)});
+            
         },
         formClosed: function (event, data){
             if(data.formType === saron.formtype.edit)

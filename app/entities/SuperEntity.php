@@ -28,7 +28,7 @@ class SuperEntity {
     protected $tablePath;
     protected $parentId;
     protected $resultType;
-
+    protected $field;
 
 
     protected function __construct($db, $saronUser) {
@@ -62,6 +62,8 @@ class SuperEntity {
             }
         }
         
+        $this->field = (String)filter_input(INPUT_GET, "Field", FILTER_SANITIZE_STRING);
+
         $this->tablePath = (String)filter_input(INPUT_POST, "TablePath", FILTER_SANITIZE_STRING);
         if(strlen($this->tablePath) === 0){
             $this->tablePath = (String)filter_input(INPUT_GET, "TablePath", FILTER_SANITIZE_STRING);

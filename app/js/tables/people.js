@@ -306,7 +306,8 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                 title: 'Välj hem',
                 options: function(data){
                     var uri = 'app/web-api/listOrganizationUnitType.php';
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, uri);                    
+                    var field = null;
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);                    
                     return '/' + saron.uri.saron + uri + parameters;
                 }
             },
@@ -413,7 +414,8 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                 },       
                 options: function (data){
                     var url = '/' + saron.uri.saron + 'app/web-api/listPerson.php';
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, url);
+                    var field = null;
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, url);
                     return url + parameters;
                 }
             },

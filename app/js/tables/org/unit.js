@@ -168,15 +168,15 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 }
             },
             ParentTreeNode_FK:{
-                list: includedIn(mainTableViewId, saron.table.unitlist.viewid),
+                list: false, //includedIn(mainTableViewId, saron.table.unitlist.viewid),
                 edit: true, 
                 create: !includedIn(mainTableViewId, saron.table.unittree.viewid),
                 title: 'Överordna verksamhet',
                 options: function(data) {
 //                    if(includedIn(mainTableViewId, saron.table.unitlist.viewid))
 //                        data.record.ParentId=null; //using cache
-                    
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, unitListUri);                    
+                    var field = null;                    
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, unitListUri);                    
                     return '/' + saron.uri.saron + unitListUri + parameters;
                 }                
             },
@@ -214,9 +214,9 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 options: function (data){
 //                    if(includedIn(mainTableViewId, saron.table.unitlist.viewid))
 //                        data.record.ParentId=null; //using cache
-                    
+                    var field = null;                    
                     var uri = 'app/web-api/listOrganizationUnitType.php';
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, uri);                    
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);                    
                     return '/' + saron.uri.saron + uri + parameters;
                 }
             },

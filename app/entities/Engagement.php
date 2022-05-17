@@ -30,14 +30,19 @@ class Engagement extends SuperEntity{
         $id = $this->getId($idFromCreate, $this->id);
         $rec = RECORDS;
 
-        $subSelect1 = "(Select GROUP_CONCAT('<b>', Role.Name, '</b>', " . EMBEDDED_SELECT_SUPERPOS . ", ' (Funktion: ', Tree.Name , ') ', IF(Stat.Id > 1,Concat(' <b style=\"background:yellow;\">[', Stat.Name, ']</b>'),'') SEPARATOR '<br>') as EngagementList "; 
+        $subSelect1 = "(Select GROUP_CONCAT('<b>', Role.Name, '</b> (', Tree.Name, ') ', "
+                        . EMBEDDED_SELECT_SUPERPOS
+                        .  "  , ' ', IF(Stat.Id > 1, "
+                        . "Concat(' <b style=\"background:yellow;\">[', Stat.Name, ']</b>'),'') SEPARATOR '<br>') as EngagementList "; 
         $subSelect2 = "(select count(*) ";
+
         $subFrom = "from Org_Pos as Pos inner join Org_Role as Role on Pos.OrgRole_FK = Role.Id ";
         $subFrom.= "inner join Org_Tree as Tree on Pos.OrgTree_FK = Tree.Id ";
         $subFrom.= "inner join Org_PosStatus as Stat on Stat.Id = Pos.OrgPosStatus_FK ";
-        $subFrom.= "inner join " . ORG_POS_XREF . " on xref.Id = Pos.Id ";
-        $subWhere = "where xref.People_FK2 = p.Id and Stat.Id < 3 "; // Only proposal and committed
-        $subGroupBy = "Group by People_FK2 ";
+        $subFrom.= "left outer join (select Pos.Id, Pos.People_FK from Org_Pos as Pos inner join Org_Role as Role on Pos.OrgRole_FK=Role.Id where Role.RoleType=1) as SuperPos on Pos.OrgSuperPos_FK=SuperPos.Id ";
+
+        $subWhere = "where (Pos.People_FK = p.Id or SuperPos.People_FK = p.Id) and Stat.Id < 3 "; // Only proposal and committed
+        $subGroupBy ="";
         $subOrderBy = "Order by EngagementList) as Engagement, ";
         $subQuery1 = $subSelect1 . $subFrom . $subWhere . $subGroupBy . $subOrderBy;
         $subQuery2 = $subSelect2 . $subFrom . $subWhere . $subGroupBy . ") as Cnt, ";
@@ -47,7 +52,8 @@ class Engagement extends SuperEntity{
         $select.= DECRYPTED_ALIAS_EMAIL . ", ";
         $select.= getFieldSql(null, "Mobile", "MobileEncrypt", "", true, true);
         $select.= $this->getTablePathSql();
-        $select.= $subQuery1 . $subQuery2;        
+        $select.= $subQuery1; 
+        $select.= $subQuery2;        
         $select.= "CONCAT(Zip, ' ', City) AS Hosted, ";
         $select.= $this->saronUser->getRoleSql(false) . " ";
         

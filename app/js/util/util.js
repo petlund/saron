@@ -216,6 +216,56 @@ function baptistFormAuto(data, selectedValue){
 }
 
 
+function posFormAuto(data, selectedValue){
+    var dp1 = data.form.find('select[name=People_FK]')[0];
+    var dp2 = data.form.find('select[name=OrgSuperPos_FK]')[0];
+    var dp3 = data.form.find('select[name=Function_FK]')[0];
+
+    if(selectedValue === '3'){
+        dp1.value = null;
+        dp2.value = null;
+        if(data.record !== undefined)
+            dp3.value = data.record.Function_FK;
+        else
+            dp3.value = null;
+        
+        dp1.disabled=true;
+        dp2.disabled=true;
+        dp3.disabled=false;
+
+    }
+    else if(selectedValue === '2'){
+        dp1.value = null;
+        
+        if(data.record !== undefined)
+            dp2.value = data.record.OrgSuperPos_FK;
+        else
+            dp2.value = null;
+
+        dp3.value = null;
+
+        dp1.disabled=true;
+        dp2.disabled=false;
+        dp3.disabled=true;
+
+    }
+    else{
+        if(data.record !== undefined)
+            dp1.value = data.record.People_FK;
+        else
+            dp1.value = null;
+
+        dp2.value = null;
+        dp3.value = null;
+
+        dp1.disabled=false;
+        dp2.disabled=true;
+        dp3.disabled=true;
+
+    }
+}
+
+
 
 function addDialogDeleteListener(data){
     data.row.find('.jtable-delete-command-button').click(data, function (event){
@@ -255,7 +305,7 @@ function includedIn(currentTableId, requiredTableId){
 
 
 
-function getURLParameters(id, tableViewId, parentId, tablePath, source, resultType){
+function getURLParameters(id, tableViewId, parentId, tablePath, source, resultType, field ){
     var first = true;
     var parameter = "";
 
@@ -326,6 +376,18 @@ function getURLParameters(id, tableViewId, parentId, tablePath, source, resultTy
     }
     
         
+    if(field !== null){
+        if(first){
+            parameter = "?";
+            first = false;
+        }
+        else
+            parameter+= "&";
+    
+        parameter+= 'Field=' + field;
+    }
+    
+        
     if(resultType !== null){
         if(first){
             parameter = "?";
@@ -386,18 +448,18 @@ function getInitParametes(mainTableViewId, tablePath, parentId){
 }
 
 
-function getOptionsUrlParameters(data, tableViewId, parentId, tablePath, url){
+function getOptionsUrlParameters(data, tableViewId, parentId, tablePath, field, url){
     var parameters = "";
     
     if(data.source === saron.source.list){
-        parameters = getURLParameters(null, tableViewId, parentId, tablePath, data.source, saron.responsetype.options, url);
+        parameters = getURLParameters(null, tableViewId, parentId, tablePath, data.source, saron.responsetype.options, field, url);
     }
     if(data.source === saron.source.edit){
-        parameters = getURLParameters(data.record.Id, tableViewId, parentId, tablePath, data.source, saron.responsetype.options, url);                        
+        parameters = getURLParameters(data.record.Id, tableViewId, parentId, tablePath, data.source, saron.responsetype.options, field, url);                        
         data.clearCache();
     }
     if(data.source === saron.source.create){
-        parameters = getURLParameters(null, tableViewId, parentId, tablePath, data.source, saron.responsetype.options, url);                        
+        parameters = getURLParameters(null, tableViewId, parentId, tablePath, data.source, saron.responsetype.options, field, url);                        
         data.clearCache();                        
     }    
     return parameters;

@@ -79,7 +79,19 @@ class OrganizationRoleUnitType extends SuperEntity{
     
 
 
+    function checkData(){
+        $error = array();
+
+        if($this->orgRole_FK < 1){
+            $error["Result"] = "ERROR";
+            $error["Message"] = "Du måste ange en roll eller avbryta.";
+            throw new Exception(json_encode($error));
+        }
+    }
+
+
     function insert(){
+        $this->checkData();
         switch ($this->tablePath){
             case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_ROLE_UNITTYPE:
                 $OrgUnitType_FK =  $this->parentId;

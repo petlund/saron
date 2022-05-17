@@ -65,7 +65,8 @@ function role_role_unitType_TableDef(mainTableViewId, tablePath, newTableTitle, 
                 optionsSorting:'text',
                 options: function(data){
                     var uri = 'app/web-api/listOrganizationUnitType.php';
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, uri);                    
+                    var field = null;
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);                    
                     return '/' + saron.uri.saron + uri + parameters;
                 }
             },
@@ -78,7 +79,8 @@ function role_role_unitType_TableDef(mainTableViewId, tablePath, newTableTitle, 
                 optionsSorting:'text',
                 options: function(data){
                     var uri = 'app/web-api/listOrganizationRole.php';
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, uri);                    
+                    var field = null;
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);                    
                     return '/' + saron.uri.saron + uri + parameters;
                 }
             },

@@ -109,9 +109,9 @@ class People extends SuperEntity{
         $SELECT_CONCAT = "concat(' ', Name , ' (', " . $SELECT_PERSSON . ", ')')";
         $SELECT_CONCAT_NULL = "concat(' ', Name , ' (-)')";
         
-        $select = "select -Id as Value, IF(" . $SELECT_CONCAT . " is null, " . $SELECT_CONCAT_NULL . ", " . $SELECT_CONCAT . ") as DisplayText FROM Org_Role as Role WHERE RoleType=1 ";//and Role.Id not in (select OrgRole_FK from Org_Pos group by OrgRole_FK) "; //RoleTYpe 1 -> "OrgRole"
-        $select.= "Union "; 
-        $select.= "SELECT 0 as Value, '-' as DisplayText "; 
+//        $select = "select -Id as Value, IF(" . $SELECT_CONCAT . " is null, " . $SELECT_CONCAT_NULL . ", " . $SELECT_CONCAT . ") as DisplayText FROM Org_Role as Role WHERE RoleType=1 ";//and Role.Id not in (select OrgRole_FK from Org_Pos group by OrgRole_FK) "; //RoleTYpe 1 -> "OrgRole"
+//        $select.= "Union "; 
+        $select = "SELECT null as Value, '-' as DisplayText "; 
         $select.= "Union "; 
         $select.= "select Id as Value, concat(" . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . ", ' (', " . getMemberStateSql() . ", ')') as DisplayText ";
         

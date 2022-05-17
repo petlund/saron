@@ -137,15 +137,57 @@ class OrganizationRole extends SuperEntity{
     
     
     function selectOptions(){
-        $select = "SELECT Role.Id  as Value, Concat(Role.Name, if(RoleType = 1, ' (Org)','')) as DisplayText ";
-        $from = "FROM Org_Role as Role "; 
-        $where = "";
+        $sql = "Select * from ( ";
+        $sql.= "SELECT Role.Id  as Value, Concat('<u>', Role.Name, '</u>') as DisplayText FROM Org_Role as Role WHERE Role.RoleType = 1 ";
+        $sql.= "UNION "; 
+        $sql.= "Select null as Value, '-' as DisplayText ";
+        $sql.= "UNION "; 
+        $sql.= "SELECT Role.Id  as Value, Role.Name as DisplayText FROM Org_Role as Role WHERE Role.RoleType = 0 ";
+        $sql.= ") as options "; 
 
-        if($this->source === SOURCE_CREATE){
-            $where = "WHERE Role.Id not in (Select OrgRole_FK from `Org_Role-UnitType` WHERE OrgUnitType_FK = " . $this->parentId . ") ";
+        switch ($this->tablePath){
+            case TABLE_NAME_ROLE:
+        
+            switch ($this->source){
+                case SOURCE_CREATE:
+                    $sql.= "WHERE Role.Id not in (Select OrgRole_FK from `Org_Role-UnitType` WHERE OrgUnitType_FK = " . $this->parentId . ") ";
+                Break;
+                case SOURCE_EDIT:
+    //                $where = "WHERE Role.RoleType = 0 ";
+                Break;
+                default:
+    //                $where = "WHERE Role.RoleType = 0 ";
+                break;
+            }
+            case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_ROLE_UNITTYPE:
+            switch ($this->source){
+                case SOURCE_CREATE:
+                    $sql.= "WHERE value not in (Select OrgRole_FK from `Org_Role-UnitType` WHERE OrgUnitType_FK = " . $this->parentId . ") ";
+                Break;
+                case SOURCE_EDIT:
+    //                $where = "WHERE Role.RoleType = 0 ";
+                Break;
+                default:
+    //                $where = "WHERE Role.RoleType = 0 ";
+                break;
+            }
+            break;    
+            case TABLE_NAME_UNITTREE . "/" . TABLE_NAME_POS:
+                $sql.= "";
+            break;
+            case TABLE_NAME_UNITLIST . "/" . TABLE_NAME_POS:
+                $sql.= "";
+            break;
+            case TABLE_NAME_POS:
+                $sql.= "";
+            break;
+            default:
+                $sql.= "";
+            break;
         }
             
-        $result = $this->db->select($this->saronUser, $select , $from, $where, "Order by DisplayText ", "", "Options");    
+            
+        $result = $this->db->selectSeparate($this->saronUser, $sql, "Select 1",  "Options");    
         return $result; 
     }
     

@@ -48,6 +48,7 @@ class OrganizationVersion extends SuperEntity{
         $update = "update Org_Pos ";
         $set = "SET PrevPeople_FK = People_FK, ";        
         $set.= "PrevFunction_FK = Function_FK, ";        
+        $set.= "PrevOrgSuperPos_FK = OrgSuperPos_FK, ";        
         $set.= "PrevOrgPosStatus_FK = OrgPosStatus_FK ";        
         $where = "WHERE OrgPosStatus_FK in (1, 4, 5, 6)";
         $this->db->update($update, $set, $where);
