@@ -305,7 +305,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                 list: false,
                 title: 'Välj hem',
                 options: function(data){
-                    var uri = 'app/web-api/listOrganizationUnitType.php';
+                    var uri = 'app/web-api/listHomes.php';
                     var field = null;
                     var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);                    
                     return '/' + saron.uri.saron + uri + parameters;
