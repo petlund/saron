@@ -196,12 +196,12 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 edit: false,
                 list: includedIn(mainTableViewId, saron.table.role.viewid + saron.table.unittype.viewid + saron.table.unitlist.viewid)
             },
-            SubUnits: {
-                title: "Underenheter",
-                create: false,
-                edit: false,
-                list: includedIn(mainTableViewId, saron.table.role.viewid + saron.table.unittype.viewid + saron.table.unitlist.viewid)
-            },
+//            SubUnits: {
+//                title: "Underenheter",
+//                create: false,
+//                edit: false,
+//                list: includedIn(mainTableViewId, saron.table.role.viewid + saron.table.unittype.viewid + saron.table.unitlist.viewid)
+//            },
             Description: {
                 width: '15%',
                 title: 'Beskrivning'

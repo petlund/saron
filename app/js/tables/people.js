@@ -138,9 +138,9 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                     var childTableName = saron.table.homes.name;
                     var tooltip = 'Adressuppgifter';
                     var imgFile = "home.png";
-                    var clientOnly = true;
+                    var clientOnly = false;
                     var parentId = data.record.HomeId;
-                    var url = null;
+                    var url = 'app/web-api/listPeople.php';
                     var type = 0;
 
                     var childTableDef = homeTableDef(mainTableViewId, tablePath, childTableTitle, parentId); // PersonId point to childtable unic id   
@@ -172,7 +172,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                     var imgFile = "member.png";
                     var clientOnly = true;
                     var parentId = data.record.Id;
-                    var url = null;
+                    var url = 'app/web-api/listPeople.php';
                     var type = 0;
 
                     var childTableDef = memberTableDef(mainTableViewId, tablePath, childTableTitle, parentId); // PersonId point to childtable unic id   
@@ -204,7 +204,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                     var imgFile = "baptist.png";
                     var clientOnly = true;
                     var parentId = data.record.Id;
-                    var url = null;
+                    var url = 'app/web-api/listPeople.php';
                     var type = 0;
 
                     var childTableDef = baptistTableDef(mainTableViewId, tablePath, childTableTitle, parentId); // PersonId point to childtable unic id   
@@ -235,12 +235,12 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                     var childTableName = saron.table.keys.name;
                     var tooltip = 'NyckelInnehav';
                     var imgFile = "no_key.png";
-                    if(data.record.KeyToChurch + data.record.KeyToExp > 0)
+                    if(data.record.KeyToChurch > 1 || data.record.KeyToExp > 1)
                         imgFile = "key.png";
                     
-                    var clientOnly = true;
+                    var clientOnly = false;
                     var parentId = data.record.Id;
-                    var url = null;
+                    var url = 'app/web-api/listPeople.php';
                     var type = 0;
 
                     var childTableDef = keyTableDef(mainTableViewId, tablePath, childTableTitle, parentId); // PersonId point to childtable unic id   
@@ -547,7 +547,7 @@ function _openHomeChildTable(tableViewId, data){
     var childTableTitle = 'Hem för ' + data.record.LongHomeName;
     var options = getPostData(null, tableViewId, data.record.Id, saron.source.list, saron.responsetype.record);
 
-    $(tableViewId).jtable('openChildTable', $selectedRow, homeTableDef(tableViewId, childTableTitle, data.recdord.Id), function(data){
+    $(tableViewId).jtable('openChildTable', $selectedRow, homeTableDef(tableViewId, childTableTitle, data.record.Id), function(data){
         data.childTable.jtable('load', options);
     });    
 }

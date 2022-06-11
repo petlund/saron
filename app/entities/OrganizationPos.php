@@ -62,19 +62,21 @@ class OrganizationPos extends SuperEntity{
     function selectDefault($idFromCreate = -1){
         $id = $this->getId($idFromCreate, $this->id);
         $rec = RECORDS;
-        $prevTooltipStriing = "<div class=\"tooltip\"><u>"; 
-        $midTooltipStriing = "</u><span class=\"tooltiptext\">";
-        $postTooltipStriing = "</span></div>";
+        $prevTooltipString = "<div class=\"tooltip\"><u>"; 
+        $midTooltipString = "</u><span class=\"tooltiptext\">";
+        $postTooltipString = "</span></div>";
+
+        $statusSql = "'<BR>Rollen är: ', (Select Name from Org_PosStatus as Stat Where Id = P.OrgPosStatus_FK) ";
         
         $subSelectCur = "(case "
-                    . "WHEN Pos.Function_FK > 0 THEN (Select concat('" . $prevTooltipStriing . "', F.Name, '" . $midTooltipStriing . "','Funktionsansvar','" . $postTooltipStriing . "') From Org_Tree as F Where F.Id = Pos.Function_FK) "
-                    . "WHEN Pos.OrgSuperPos_FK > 0 THEN (Select concat('" . $prevTooltipStriing . "', R.Name, '" . $midTooltipStriing . "'," . getPersonSql("pCur2", null, false) . ",'" . $postTooltipStriing . "') From Org_Pos as P inner join Org_Role as R on R.Id=P.OrgRole_FK left outer join People as pCur2 on pCur2.Id=P.People_FK Where P.Id = Pos.OrgSuperPos_FK ) "
+                    . "WHEN Pos.Function_FK > 0 THEN (Select concat('" . $prevTooltipString . "', F.Name, '" . $midTooltipString . "','Funktionsansvar','" . $postTooltipString . "') From Org_Tree as F Where F.Id = Pos.Function_FK) "
+                    . "WHEN Pos.OrgSuperPos_FK > 0 THEN (Select concat('" . $prevTooltipString . "', R.Name, '" . $midTooltipString . "'," . getPersonSql("pCur2", null, false) . "," . $statusSql . ",'" . $postTooltipString . "') From Org_Pos as P inner join Org_Role as R on R.Id=P.OrgRole_FK left outer join People as pCur2 on pCur2.Id=P.People_FK Where P.Id = Pos.OrgSuperPos_FK ) "
                     . "ELSE " . getPersonSql("pCur", null, false) . " "
                 . "end) as Responsible , ";
 
         $subSelectPrev = "(case "
-                    . "WHEN Pos.PrevFunction_FK > 0 THEN (Select concat('" . $prevTooltipStriing . "', F.Name, '" . $midTooltipStriing . "','Funktionsansvar','" . $postTooltipStriing . "') From Org_Tree as F Where F.Id = Pos.Function_FK) "
-                    . "WHEN Pos.PrevOrgSuperPos_FK > 0 THEN (Select concat('" . $prevTooltipStriing . "', R.Name, '" . $midTooltipStriing . "'," . getPersonSql("pPrev2", null, false) . ",'" . $postTooltipStriing . "') From Org_Pos as P inner join Org_Role as R on R.Id=P.OrgRole_FK left outer join People as pPrev2 on pPrev2.Id=P.People_FK Where P.Id = Pos.OrgSuperPos_FK) "
+                    . "WHEN Pos.PrevFunction_FK > 0 THEN (Select concat('" . $prevTooltipString . "', F.Name, '" . $midTooltipString . "','Funktionsansvar','" . $postTooltipString . "') From Org_Tree as F Where F.Id = Pos.Function_FK) "
+                    . "WHEN Pos.PrevOrgSuperPos_FK > 0 THEN (Select concat('" . $prevTooltipString . "', R.Name, '" . $midTooltipString . "'," . getPersonSql("pPrev2", null, false) . ",'" . $postTooltipString . "') From Org_Pos as P inner join Org_Role as R on R.Id=P.OrgRole_FK left outer join People as pPrev2 on pPrev2.Id=P.People_FK Where P.Id = Pos.OrgSuperPos_FK) "
                     . "ELSE " . getPersonSql("pPrev", null, false) . " "
                 . "end) as PrevResponsible , ";
 

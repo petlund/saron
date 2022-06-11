@@ -3,19 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/dist/VER_5506_keys.js</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/People.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationPos.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/statistics.js</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/org/role.js</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/org/pos.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/People.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/people.js</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/web-api/listOrganizationRole.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/util/util.js</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/org/unittype.js</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/org/version.js</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationUnit.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/util/tableNavigationUtil.js</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationRole.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/delta.sql</file>
         </group>
     </open-files>
 </project-private>
