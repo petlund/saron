@@ -63,7 +63,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
 
                                 $(mainTableViewId).jtable('load', options, function (){
 //                                    if(data.Record.HomeId > 0)
-//                                        _openHomeChildTable(tableViewId, data);                                    
+//                                        _openHomeChildTable(tableViewId, tablePath, data);                                    
                                 });
                             }
                             else
@@ -96,7 +96,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                                     $(mainTableViewId).jtable('closeChildTable', $selectedRow, function(){
                                         _updateHomeFields(data);
                                         if(successData.Record.HomeId > 0 && (isChildRowOpen || moveToNewHome))
-                                            _openHomeChildTable(mainTableViewId, data);
+                                            _openHomeChildTable(mainTableViewId, tablePath, data);
                                     });
                                 }
                                 else{ // no move to another home
@@ -531,7 +531,7 @@ function updateSiblings(data, tableViewId){
         $(tableViewId).jtable('closeChildTable', $selectedRow, function(){
             _updateHomeFields(data);
             if(data.record.HomeId > 0 && (isChildRowOpen || moveToNewHome))
-                _openHomeChildTable(tableViewId, data);
+                _openHomeChildTable(tableViewId, "tablePath", data);
         });
     }
     else{ // no move to another home
@@ -541,13 +541,19 @@ function updateSiblings(data, tableViewId){
 
 
 
-function _openHomeChildTable(tableViewId, data){
+function _openHomeChildTable(tableViewId, tablePath, data){
     var rowRef = "[data-record-key=" + data.record.Id + "]";
     var $selectedRow = $(rowRef);
     var childTableTitle = 'Hem för ' + data.record.LongHomeName;
-    var options = getPostData(null, tableViewId, data.record.Id, saron.source.list, saron.responsetype.record);
+    var _tablePath = "";
+    if(tablePath !== null)
+        _tablePath = tablePath;
+    
+    _tablePath+="/" + saron.table.homes.name;
+    
+    var options = getPostData(null, tableViewId, data.record.HomeId, _tablePath, saron.source.list, saron.responsetype.record);
 
-    $(tableViewId).jtable('openChildTable', $selectedRow, homeTableDef(tableViewId, childTableTitle, data.record.Id), function(data){
+    $(tableViewId).jtable('openChildTable', $selectedRow, homeTableDef(tableViewId, tablePath, childTableTitle, data.record.Id), function(data){
         data.childTable.jtable('load', options);
     });    
 }
