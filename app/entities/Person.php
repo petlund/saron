@@ -288,6 +288,13 @@ class Person extends People{
             }
             return $this->updatePersonData();
             
+        case TABLE_NAME_STATISTICS . "/" . TABLE_NAME_STATISTICS_DETAIL . "/" . TABLE_NAME_PEOPLE:
+            $checkResult = $this->checkPersonData();
+            if($checkResult!==true){
+                return $checkResult;
+            }
+            return $this->updatePersonData();
+            
         case TABLE_NAME_MEMBER:
             $checkResult = $this->checkMembershipData();
             if($checkResult!==true){
@@ -336,7 +343,7 @@ class Person extends People{
         default:
             $error = array();
             $error["Result"] = "ERROR";
-            $error["Message"] = "Uppdateringen misslyckades.";
+            $error["Message"] = "Uppdateringen misslyckades. (TablePath finns inte med i case-satsen.)";
             return json_encode($error);            
         }        
     }
