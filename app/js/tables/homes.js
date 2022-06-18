@@ -1,4 +1,4 @@
-/* global PERSON, inputFormWidth, inputFormFieldWidth,  
+/* global PERSON, HOME, OLD_HOME, inputFormWidth, inputFormFieldWidth,  
 saron, 
 RECORD, OPTIONS
  */
@@ -64,24 +64,20 @@ function homeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 defaultValue: parentId,
                 type: 'hidden'
             },
-            ParentId: {
-                list: false,
-                create: false,
-                edit: false,
-                defaultValue: -1,
-                tiile: 'Parent',
-                type: 'hidden'
-            },
             TablePath:{
-                defaultValue: tableName,
-                type: 'hidden'
+                type: 'hidden',
+                defaultValue: saron.table.homes.name
+            },
+            LongHomeName:{
+                type: 'hidden',
+                defaultValue: 'SARON-NOT-DEFINED'
             },
             FamilyName: {
                 title: 'Familjenamn',
                 width: '10%',
                 edit: true,
                 display: function (data){
-                    return _setClassAndValue(data, "FamilyName", PERSON);
+                    return _setClassAndValue(data, "FamilyName", HOME);
                 }       
             },
             Residents: {
@@ -89,7 +85,7 @@ function homeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 width: '15%',
                 edit: false,
                 display: function (data){
-                    return _setClassAndValue(data, "Residents", PERSON);
+                    return _setClassAndValue(data, "Residents", HOME);
                 }       
             },
             Phone: {
@@ -97,7 +93,7 @@ function homeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 width: '10%',
                 edit: true,
                 display: function (data){
-                    return _setClassAndValue(data, "Phone", PERSON);
+                    return _setClassAndValue(data, "Phone", HOME);
                 }                   
             },
             Co: {
@@ -105,7 +101,7 @@ function homeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 width: '10%',
                 edit: true,
                 display: function (data){
-                    return _setClassAndValue(data, "Co", PERSON);
+                    return _setClassAndValue(data, "Co", HOME);
                 }       
             },
             Address: {
@@ -113,7 +109,7 @@ function homeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 width: '10%',
                 edit: true,
                 display: function (data){
-                    return _setClassAndValue(data, "Address", PERSON);
+                    return _setClassAndValue(data, "Address", HOME);
                 }       
             },
             Zip: {
@@ -121,7 +117,7 @@ function homeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 width: '5%',
                 edit: true,
                 display: function (data){
-                    return _setClassAndValue(data, "Zip", PERSON);
+                    return _setClassAndValue(data, "Zip", HOME);
                 }       
             },
             City: {
@@ -129,7 +125,7 @@ function homeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 width: '10%',
                 edit: true,
                 display: function (data){
-                    return _setClassAndValue(data, "City", PERSON);
+                    return _setClassAndValue(data, "City", HOME);
                 }       
             },
             Country: {
@@ -137,7 +133,7 @@ function homeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 width: '10%',
                 edit: true,
                 display: function (data){
-                    return _setClassAndValue(data, "Country", PERSON);
+                    return _setClassAndValue(data, "Country", HOME);
                 }       
             },
             Letter: {
@@ -169,7 +165,36 @@ function homeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
          },
          formClosed: function (event, data){
              data.row[0].style.backgroundColor = '';
-         }                        
+        },                        
+        recordUpdated: function (event, data){
+            _updateHomeFields(data);            
+        }
 
     };
+}
+
+
+
+
+
+function _updateHomeFields(data){
+    _updateFields(data, "LongHomeName", HOME);                                                
+    _updateFields(data, "LongHomeName", PERSON);                                                
+    _updateFields(data, "Residents", HOME);                                                
+    _updateFields(data, "Letter", HOME);                                                
+    _updateFields(data, "Phone", HOME);                                                
+//    _updateFields(data, "Name", PERSON);                                                
+//    _updateFields(data, "DateOfBirth", PERSON);                                                
+//    _updateFields(data, "DateOfMembershipEnd", PERSON);                                                
+    _updateFields(data, "MemberState", PERSON);                                                
+    _updateFields(data, "VisibleInCalendar", PERSON);                                                
+    _updateFields(data, "Comment", PERSON);                                                
+    _updateFields(data, "Mobile", PERSON);
+
+    if(data.record.HomeId !== data.record.OldHome_HomeId && data.record.OldHome_HomeId > 0){
+        _updateFields(data, "HomeId", OLD_HOME);                                                
+        _updateFields(data, "LongHomeName", OLD_HOME);                                                
+        _updateFields(data, "Residents", OLD_HOME);                                                
+        _updateFields(data, "Phone", OLD_HOME);            
+    }
 }

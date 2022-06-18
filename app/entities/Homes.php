@@ -55,16 +55,20 @@ class Homes extends SuperEntity{
             $this->deleteEmptyHomes(); // clean up
             return $this->selectHomesAsOptions();       
         default:
-            return $this->selectDefault();
+            return $this->selectDefault($idFromCreate = -1);
         }
     }
 
 
-    function selectDefault($idFromCreate = -1){
-        $id = $this->getId($idFromCreate, $this->id);
+    function selectDefault($_id){
+        $id = $this->getId($_id, $this->id);
             
         $filter = new HomesFilter();
-        $sqlSelect = SQL_STAR_HOMES  . ", " .  $this->saronUser->getRoleSql(true) . CONTACTS_ALIAS_RESIDENTS;
+        $sqlSelect = SQL_STAR_HOMES  . ", " .  $this->saronUser->getRoleSql(true);         
+        $sqlSelect.= $this->getTablePathSql(true);
+        $sqlSelect.= $this->getHomeSelectSql(ALIAS_CUR_HOMES, $this->parentId, true);
+        $sqlSelect.= getResidentsSql(ALIAS_CUR_HOMES, "Residents", $this->parentId, false);
+        //$sqlSelect.= CONTACTS_ALIAS_RESIDENTS;
         $sqlWhere = "WHERE ";
 
         if($id < 0){            
@@ -93,6 +97,21 @@ class Homes extends SuperEntity{
         return $result;        
     }
 
+
+
+    function getHomeSelectSql($tableAlias, $id, $continue){
+        $sql = getLongHomeNameSql($tableAlias, "LongHomeName", true);
+        $sql.= getFieldSql($tableAlias, "FamilyName", "FamilyNameEncrypt", "", true, true);
+        $sql.= getFieldSql($tableAlias, "Address", "AddressEncrypt", "", true, true);
+        $sql.= getFieldSql($tableAlias, "Zip", "Zip", "", false, true);
+        $sql.= getFieldSql($tableAlias, "City", "City", "", false, true);
+        $sql.= getFieldSql($tableAlias, "Country", "Country", "", false, true);
+        $sql.= getFieldSql($tableAlias, "Phone", "PhoneEncrypt", "", true, true);
+        $sql.= getFieldSql($tableAlias, "Letter", "Letter", "", false, true);
+        $sql.= getFieldSql($tableAlias, "HomeId", "Id", "", false, true);
+        $sql.= getResidentsSql($tableAlias, "Residents", $id, $continue); 
+        return $sql;
+    }
     
     
     function selectHomesAsOptions(){
@@ -129,7 +148,7 @@ class Homes extends SuperEntity{
         $sqlWhere = "WHERE Id=" . $this->HomeId . ";";
         $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
         
-        return $this->select(RECORD);
+        return $this->select($this->Id);
     }    
 
     

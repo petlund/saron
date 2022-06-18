@@ -206,16 +206,18 @@ class Person extends People{
         return true;
     }
 
-    function select(){
+    function select($id = -1){
         switch ($this->resultType){
         case OPTIONS:
             return $this->selectNextMembershipNo();       
         default:
-            return $this->selectDefault($rec = RECORD);
+            return $this->selectPerson($id);
         }
     }    
     
-    function selectDefault($rec = RECORD){
+    function selectPerson($_id){
+        $id = $this->getId($_id, $this->id);
+        
         $home = new Home($this->db, $this->saronUser);
         $sqlSelect = SQL_STAR_PEOPLE . ", " . $this->saronUser->getRoleSql(true);
         $sqlSelect.= DATES_AS_ALISAS_MEMBERSTATES . ", ";
@@ -228,9 +230,9 @@ class Person extends People{
         $sqlFrom.="left outer join Homes as " . ALIAS_OLD_HOMES . " on " .  ALIAS_OLD_HOMES . ".Id = " . $this->OldHomeId . " ";
         
         $sqlWhere = "WHERE ";
-        $sqlWhere.= "People.Id = " . $this->id;
+        $sqlWhere.= "People.Id = " . $id;
         
-        $result =  $this->db->select($this->saronUser, $sqlSelect, $sqlFrom, $sqlWhere, "", "", $rec);            
+        $result =  $this->db->select($this->saronUser, $sqlSelect, $sqlFrom, $sqlWhere, "", "", RECORD);            
         return $result;
     }
     
@@ -370,7 +372,7 @@ class Person extends People{
         $sqlWhere = "where Id=" . $this->id . ";";
 
         $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
-        return $this->select(RECORD);
+        return $this->select($this->id);
     }
     
     
@@ -388,7 +390,7 @@ class Person extends People{
         $sqlWhere = "where Id=" . $this->id . ";";
 
         $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
-        return $this->select(RECORD);
+        return $this->select($this->id);
 
     }
     
@@ -405,7 +407,7 @@ class Person extends People{
         $sqlWhere = "where Id=" . $this->id . ";";
         
         $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
-        return $this->select(RECORD);
+        return $this->select($this->id);
  
     }
    
@@ -418,7 +420,7 @@ class Person extends People{
         $sqlSet.= "CommentKeyEncrypt=" . $this->getEncryptedSqlString($this->CommentKey) . " ";
         $sqlWhere = "WHERE Id=" . $this->getCurrentId();
         $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
-        return $this->select(RECORD);
+        return $this->select($this->id);
         
     }
     

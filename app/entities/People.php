@@ -32,15 +32,15 @@ class People extends SuperEntity{
                 case EMAIL_LIST:
                     return $this->selectEmail();       
                 default:
-                    return $this->selectDefault();       
+                    return $this->selectPeople();       
             }
         default:
-            return $this->selectDefault();
+            return $this->selectPeople();
         }
     }
 
     
-    function selectDefault($idFromCreate = -1){
+    function selectPeople($idFromCreate = -1){
         $id = $this->getId($idFromCreate, $this->id);
 
         $tw = new PeopleViews();

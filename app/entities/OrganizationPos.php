@@ -51,7 +51,7 @@ class OrganizationPos extends SuperEntity{
      function select($id = -1){
         switch ($this->resultType){
         case OPTIONS:
-            return $this->selectOptions();     // vacant is not hanled yet  
+            return $this->selectOptions();     // vacant is not handled yet  
         default:    
             return $this->selectDefault($id);
         }
@@ -82,7 +82,7 @@ class OrganizationPos extends SuperEntity{
 
         $subSelectCurIndex = "(case "
                     . "WHEN Pos.Function_FK > 0 THEN 3 "
-                    . "WHEN Pos.OrgSuperPos_FK > 0 THEN 2 "
+                    . "WHEN Pos.OrgSuperPos_FK > 0 THEN 2 " 
                     . "ELSE 1 "
                 . "end) as ResourceType , ";
 

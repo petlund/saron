@@ -49,33 +49,19 @@ class Home extends Homes{
         $sqlWhere = "WHERE Id=" . $this->id . ";";
         $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
         
-        return $this->select(RECORD);
+        return $this->select($this->id);
     }    
 
     
     
-    function select($rec = RECORDS){
+    function select($_id = -1){
+        $id = $this->getId($_id, $this->id);
         $sqlSelect = "SELECT "; 
         $sqlSelect.= $this->saronUser->getRoleSql(true);
-        $sqlSelect.= $this->getHomeSelectSql(ALIAS_CUR_HOMES, $this->HomeId, false);
+        $sqlSelect.= $this->getHomeSelectSql(ALIAS_CUR_HOMES, $id, false);
         
-        $result = $this->db->select($this->saronUser, $sqlSelect, "FROM Homes ", "WHERE Id = " . $this->HomeId, "", "", $rec);
+        $result = $this->db->select($this->saronUser, $sqlSelect, "FROM Homes ", "WHERE Id = " . $this->id, "", "", RECORD);
         return $result;        
     }
-    
-    
-    function getHomeSelectSql($tableAlias, $homeId, $continue){
-        $sql = getLongHomeNameSql($tableAlias, "LongHomeName", true);
-        $sql.= getFieldSql($tableAlias, "FamilyName", "FamilyNameEncrypt", "", true, true);
-        $sql.= getFieldSql($tableAlias, "Address", "AddressEncrypt", "", true, true);
-        $sql.= getFieldSql($tableAlias, "Zip", "Zip", "", false, true);
-        $sql.= getFieldSql($tableAlias, "City", "City", "", false, true);
-        $sql.= getFieldSql($tableAlias, "Country", "Country", "", false, true);
-        $sql.= getFieldSql($tableAlias, "Phone", "PhoneEncrypt", "", true, true);
-        $sql.= getFieldSql($tableAlias, "Letter", "Letter", "", false, true);
-        $sql.= getFieldSql($tableAlias, "HomeId", "Id", "", false, true);
-        $sql.= getResidentsSql($tableAlias, "Residents", $homeId, $continue);   
-        return $sql;
-    }
-
+        
 }

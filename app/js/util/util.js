@@ -27,6 +27,27 @@ const POS_DISABLED = "1";
 const SUBUNIT_ENABLED = "2";
 const SUBUNIT_DISABLED = "1";
 
+function _setClassAndValueHeadline(data, field, type, defaultHead, preHead, postHead){
+    var value = data.record[field];
+    if(value === undefined)
+        return defaultHead;
+
+    if(value === null)
+        return defaultHead;
+    
+    if(preHead === null)
+        preHead = '';
+    
+    if(postHead === null)
+        postHead = '';
+    
+    var headLine = preHead + _styleSaronValueInline(field + ' ' + _getClassName_Id(data, field, type), data.record[field], '', true)  + postHead;    
+     
+   return headLine; 
+    
+    
+}
+
 function _setClassAndValue(data, field, type){
     if(field === "VisibleInCalendar")
         return _styleSaronValue(field + ' ' + _getClassName_Id(data, field, type), _getVisibilityOption(data.record[field]), '');  
@@ -105,26 +126,40 @@ function getShortFieldName(field){
 
 
 function _styleSaronValue(clazz, val, altValue){
+    return _styleSaronValueInline(clazz, val, altValue, false);
+}
+
+
+
+function _styleSaronValueInline(clazz, val, altValue, inline){
     if(val === null || val === undefined)
         val = altValue;
     
     if(clazz === null)
         return val;
+    var inlineStyle = '';
+    if(inline)
+        inlineStyle = 'style="display:inline"';
     
-    return '<div class="' + clazz + '">' + val + '</p>';
+    return '<p class="' + clazz + '" ' + inlineStyle + '>' + val + '</p>';
 }
+
+
 
 
 function _getId(data, type){
     if(type === HOME)
-        if(data.record.HomeId === "0")
-            return 'H' + localStorage.getItem('newHomeId');
+        if(data.record.TablePath.includes(saron.table.homes.name))
+            return 'H' + data.record.Id;
         else
             return 'H' + data.record.HomeId;
     else if(type === OLD_HOME)
         return 'H' + data.record[OLD_HOME_PREFIX + 'HomeId'];
     else if(type === PERSON)
-        return 'P' + data.record.Id;
+        if(data.record.TablePath.includes(saron.table.people.name))
+            return 'P' + data.record.Id;
+        else
+            return 'X' + data.record.Id;
     else if(type === NEWS)
         return 'N' + data.record.Id;
     else if(type === ORG)
@@ -150,6 +185,7 @@ function _updateFields(data, field, type){
             elementValue = data.record[OLD_HOME_PREFIX + field];
         else
             elementValue = data.record[field];
+//            elementValue = data.serverResponse.Record[field];
   
     var className_Id = _getClassName_Id(data, field, type);
     var element = document.getElementsByClassName(className_Id);

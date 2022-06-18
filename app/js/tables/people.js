@@ -100,7 +100,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                                     });
                                 }
                                 else{ // no move to another home
-                                    _updateHomeFields(data);                                
+                                    _updatePeopleFields(data);                                
                                 }
                             }
                             else
@@ -134,7 +134,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                 create: false,
                 delete: false,            
                 display: function (data) {
-                    var childTableTitle = 'Hem för ' + data.record.LongHomeName;
+                    var childTableTitle = _setClassAndValueHeadline(data, 'LongHomeName', HOME, 'Hem', 'Hem för ', '');;
                     var childTableName = saron.table.homes.name;
                     var tooltip = 'Adressuppgifter';
                     var imgFile = "home.png";
@@ -166,7 +166,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                 create: false,
                 delete: false,            
                 display: function (data) {
-                    var childTableTitle = 'Medlemsuppgifter för "' + data.record.Name + '"';
+                    var childTableTitle = _setClassAndValueHeadline(data, 'Name', PERSON, 'Medlemsuppgifter', 'Medlemsuppgifter för ', '');;
                     var childTableName = saron.table.member.name;
                     var tooltip = 'Medlemsuppgifter';
                     var imgFile = "member.png";
@@ -198,7 +198,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                 create: false,
                 delete: false,            
                 display: function (data) {
-                    var childTableTitle = 'Dopuppgifter för "' + data.record.Name + '"';
+                    var childTableTitle = _setClassAndValueHeadline(data, 'Name', PERSON, 'Dopuppgifter', 'Dopuppgifter för ', '');;
                     var childTableName = saron.table.baptist.name;
                     var tooltip = 'Dopuppgifter';
                     var imgFile = "baptist.png";
@@ -231,7 +231,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                 create: false,
                 delete: false,            
                 display: function (data) {
-                    var childTableTitle = 'Nyckelinnehav för "' + data.record.Name + '"';
+                    var childTableTitle = _setClassAndValueHeadline(data, 'Name', PERSON, 'Nyckelinnehav', 'Nyckelinnehav för ', '');;
                     var childTableName = saron.table.keys.name;
                     var tooltip = 'NyckelInnehav';
                     var imgFile = "no_key.png";
@@ -333,7 +333,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                 title: 'Hem',
                 display: function (data){
                     data.record.OldHomeId = data.record.HomeId;
-                    return _setClassAndValueAltNull(data, "LongHomeName", NO_HOME, PERSON_AND_HOME);
+                    return _setClassAndValueAltNull(data, "LongHomeName", NO_HOME, HOME);
                 }
             },
             LastName: {
@@ -539,35 +539,12 @@ function updateSiblings(data, tableViewId){
     }
 }
 
-
-
-function _openHomeChildTable(tableViewId, tablePath, data){
-    var rowRef = "[data-record-key=" + data.record.Id + "]";
-    var $selectedRow = $(rowRef);
-    var childTableTitle = 'Hem för ' + data.record.LongHomeName;
-    var _tablePath = "";
-    if(tablePath !== null)
-        _tablePath = tablePath;
-    
-    _tablePath+="/" + saron.table.homes.name;
-    
-    var options = getPostData(null, tableViewId, data.record.HomeId, _tablePath, saron.source.list, saron.responsetype.record);
-
-    $(tableViewId).jtable('openChildTable', $selectedRow, homeTableDef(tableViewId, tablePath, childTableTitle, data.record.Id), function(data){
-        data.childTable.jtable('load', options);
-    });    
-}
-
-
-
-
-
-function _updateHomeFields(data){
-    _updateFields(data, "LongHomeName", HOME);                                                
+function _updatePeopleFields(data){
+//    _updateFields(data, "LongHomeName", HOME);                                                
     _updateFields(data, "LongHomeName", PERSON);                                                
     _updateFields(data, "Residents", HOME);                                                
-    _updateFields(data, "Letter", HOME);                                                
-    _updateFields(data, "Phone", HOME);                                                
+//    _updateFields(data, "Letter", HOME);                                                
+//    _updateFields(data, "Phone", HOME);                                                
     _updateFields(data, "Name", PERSON);                                                
     _updateFields(data, "DateOfBirth", PERSON);                                                
     _updateFields(data, "DateOfMembershipEnd", PERSON);                                                
@@ -575,14 +552,25 @@ function _updateHomeFields(data){
     _updateFields(data, "VisibleInCalendar", PERSON);                                                
     _updateFields(data, "Comment", PERSON);                                                
     _updateFields(data, "Mobile", PERSON);
-
-    if(data.record.HomeId !== data.record.OldHome_HomeId && data.record.OldHome_HomeId > 0){
-        _updateFields(data, "HomeId", OLD_HOME);                                                
-        _updateFields(data, "LongHomeName", OLD_HOME);                                                
-        _updateFields(data, "Residents", OLD_HOME);                                                
-        _updateFields(data, "Phone", OLD_HOME);            
-    }
 }
+
+function _openHomeChildTable(tableViewId, tablePath, data){
+//    var rowRef = "[data-record-key=" + data.record.Id + "]";
+//    var $selectedRow = $(rowRef);
+//    var childTableTitle = 'Hem för ' + data.record.LongHomeName;
+//    var _tablePath = "";
+//    if(tablePath !== null)
+//        _tablePath = tablePath;
+//    
+//    _tablePath+="/" + saron.table.homes.name;
+//    
+//    var options = getPostData(null, tableViewId, data.record.HomeId, _tablePath, saron.source.list, saron.responsetype.record);
+//
+//    $(tableViewId).jtable('openChildTable', $selectedRow, homeTableDef(tableViewId, tablePath, childTableTitle, data.record.Id), function(data){
+//        data.childTable.jtable('load', options);
+//    });    
+}
+
 
 
 
