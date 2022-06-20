@@ -75,43 +75,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                     });
                 });
             },
-            updateAction: function(postData) {
-                return $.Deferred(function ($dfd) {
-                    $.ajax({
-                        url: '/' + saron.uri.saron + 'app/web-api/updatePerson.php',
-                        type: 'POST',
-                        dataType: 'json',
-                        data: postData,
-                        success: function (successData) {
-                            if(successData.Result === 'OK'){
-                                localStorage.setItem(NEW_HOME_ID, successData.Record.HomeId);
-                                var data = {record: successData.Record};
-                                $dfd.resolve(successData); //Mandatory
-                                var isChildRowOpen = false;
-                                
-                                var $selectedRow = $("[data-record-key=" + successData.Record.Id + "]"); 
-                                var moveToNewHome = (successData.Record.HomeId > 0 && successData.Record.OldHome_HomeId !== successData.Record.HomeId);
-                                if(!(successData.Record.HomeId > 0 && successData.Record.OldHome_HomeId === successData.Record.HomeId)){
-                                    isChildRowOpen = $(mainTableViewId).jtable('isChildRowOpen', $selectedRow),
-                                    $(mainTableViewId).jtable('closeChildTable', $selectedRow, function(){
-                                        _updateHomeFields(data);
-                                        if(successData.Record.HomeId > 0 && (isChildRowOpen || moveToNewHome))
-                                            _openHomeChildTable(mainTableViewId, tablePath, data);
-                                    });
-                                }
-                                else{ // no move to another home
-                                    _updatePeopleFields(data);                                
-                                }
-                            }
-                            else
-                                $dfd.resolve(successData);
-                        },
-                        error: function () {
-                            $dfd.reject();
-                        }
-                    });
-                });
-            }
+            updateAction: '/' + saron.uri.saron + 'app/web-api/updatePerson.php',
         },       
         fields: {
             Id: {
@@ -510,7 +474,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
       
         },
         recordUpdated: function (event, data){
-//            updateSiblings(data, tableViewId);
+            _updatePeopleFields(data);
             
         },
         formClosed: function (event, data){

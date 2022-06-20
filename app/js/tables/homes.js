@@ -179,17 +179,17 @@ function homeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
 
 function _updateHomeFields(data){
     _updateFields(data, "LongHomeName", HOME);                                                
-    _updateFields(data, "LongHomeName", PERSON);                                                
+//    _updateFields(data, "LongHomeName", PERSON);                                                
     _updateFields(data, "Residents", HOME);                                                
     _updateFields(data, "Letter", HOME);                                                
     _updateFields(data, "Phone", HOME);                                                
 //    _updateFields(data, "Name", PERSON);                                                
 //    _updateFields(data, "DateOfBirth", PERSON);                                                
 //    _updateFields(data, "DateOfMembershipEnd", PERSON);                                                
-    _updateFields(data, "MemberState", PERSON);                                                
-    _updateFields(data, "VisibleInCalendar", PERSON);                                                
-    _updateFields(data, "Comment", PERSON);                                                
-    _updateFields(data, "Mobile", PERSON);
+//    _updateFields(data, "MemberState", PERSON);                                                
+//    _updateFields(data, "VisibleInCalendar", PERSON);                                                
+//    _updateFields(data, "Comment", PERSON);                                                
+//    _updateFields(data, "Mobile", PERSON);
 
     if(data.record.HomeId !== data.record.OldHome_HomeId && data.record.OldHome_HomeId > 0){
         _updateFields(data, "HomeId", OLD_HOME);                                                

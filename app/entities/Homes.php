@@ -62,12 +62,12 @@ class Homes extends SuperEntity{
 
     function selectDefault($_id){
         $id = $this->getId($_id, $this->id);
-            
+        $TABLE_HOMES_AND_ID = "Homes.Id";    
+        
         $filter = new HomesFilter();
         $sqlSelect = SQL_STAR_HOMES  . ", " .  $this->saronUser->getRoleSql(true);         
         $sqlSelect.= $this->getTablePathSql(true);
-        $sqlSelect.= $this->getHomeSelectSql(ALIAS_CUR_HOMES, $this->parentId, true);
-        $sqlSelect.= getResidentsSql(ALIAS_CUR_HOMES, "Residents", $this->parentId, false);
+        $sqlSelect.= $this->getHomeSelectSql(ALIAS_CUR_HOMES, $TABLE_HOMES_AND_ID, false);
         //$sqlSelect.= CONTACTS_ALIAS_RESIDENTS;
         $sqlWhere = "WHERE ";
 
@@ -99,7 +99,7 @@ class Homes extends SuperEntity{
 
 
 
-    function getHomeSelectSql($tableAlias, $id, $continue){
+    function getHomeSelectSql($tableAlias, $homesTableNameAndId, $continue){
         $sql = getLongHomeNameSql($tableAlias, "LongHomeName", true);
         $sql.= getFieldSql($tableAlias, "FamilyName", "FamilyNameEncrypt", "", true, true);
         $sql.= getFieldSql($tableAlias, "Address", "AddressEncrypt", "", true, true);
@@ -109,7 +109,7 @@ class Homes extends SuperEntity{
         $sql.= getFieldSql($tableAlias, "Phone", "PhoneEncrypt", "", true, true);
         $sql.= getFieldSql($tableAlias, "Letter", "Letter", "", false, true);
         $sql.= getFieldSql($tableAlias, "HomeId", "Id", "", false, true);
-        $sql.= getResidentsSql($tableAlias, "Residents", $id, $continue); 
+        $sql.= getResidentsSql($tableAlias, "Residents", $homesTableNameAndId, $continue); 
         return $sql;
     }
     

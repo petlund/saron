@@ -1,6 +1,7 @@
 <?php
 
 require_once SARON_ROOT . 'app/entities/SuperEntity.php';
+require_once SARON_ROOT . 'app/entities/Homes.php';
 require_once SARON_ROOT . 'app/entities/PeopleViews.php';
 require_once SARON_ROOT . 'app/entities/PeopleFilter.php';
 
@@ -10,9 +11,11 @@ class People extends SuperEntity{
     protected $uppercaseSearchString;
     protected $filter;
     protected $personId;
+    protected $homes;
 
     function __construct($db, $saronUser) {
         parent::__construct($db, $saronUser);
+        $this->homes = new Homes($db, $saronUser);
         $this->filter = (String)filter_input(INPUT_GET, "filter", FILTER_SANITIZE_STRING);
         $this->personId = (int)filter_input(INPUT_GET, "PersonId", FILTER_SANITIZE_NUMBER_INT);
         if($this->personId === 0){
@@ -44,7 +47,9 @@ class People extends SuperEntity{
         $id = $this->getId($idFromCreate, $this->id);
 
         $tw = new PeopleViews();
-        $sqlSelect = $tw->getPeopleViewSql($this->tableView, $this->saronUser);
+        $sqlSelect = $tw->getPeopleViewSql($this->tableView, $this->saronUser) .", ";
+        $sqlSelect.= $this->homes->getHomeSelectSql(ALIAS_CUR_HOMES, "Homes.Id", false);
+        
         if(strlen($this->tablePath) >0){
             $sqlSelect.= ", ";
             $sqlSelect.= $this->getTablePathSql(false);

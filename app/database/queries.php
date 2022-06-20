@@ -260,7 +260,7 @@
  
     
     
-    function getResidentsSql($tableAlias, $fieldAlias, $HomeId, $continue){
+    function getResidentsSql($tableAlias, $fieldAlias, $homesTableNameAndId = "Homes.Id", $continue){
         $sql = "(SELECT GROUP_CONCAT(";
         $sql.= getFieldSql($tableAlias . "Res", "", "FirstNameEncrypt", "", true, false);
         $sql.= ", ' ', ";
@@ -270,13 +270,7 @@
         $sql.= " SEPARATOR '<BR>') ";
         $sql.= "FROM People as " . $tableAlias . "Res ";
         $sql.= "where HomeId = ";
-
-        if($HomeId !== null){
-            $sql.= $HomeId . " "; 
-        } 
-        else{
-            $sql.= "null ";             
-        }
+        $sql.= $homesTableNameAndId . " "; 
 
         $sql.= "AND DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' ";
         $sql.= "order by DateOfBirth) as ";

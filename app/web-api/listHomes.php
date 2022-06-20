@@ -18,5 +18,5 @@ require_once SARON_ROOT . 'app/entities/Home.php';
         echo $result;
     }
     catch(Exception $error){
-        echo $error->getMessage();
+            echo $error->getMessage();
     }
