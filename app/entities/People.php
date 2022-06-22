@@ -27,7 +27,12 @@ class People extends SuperEntity{
     function select(){
         switch ($this->resultType){
         case OPTIONS:
-            return $this->selectPeopleOptions();       
+            switch ($this->field){
+            case "People_FK":
+                return $this->selectPeopleOptions();       
+            case "MembershipNo":
+                return $this->selectNextMembershipNo();       
+            }
         case RECORDS:
             switch ($this->tableView){
                 case MOBILE_INSTEAD_OF_EMAIL:
@@ -107,6 +112,30 @@ class People extends SuperEntity{
     }
     
     
+    function selectNextMembershipNo(){
+        $sql = "SELECT 0 as Value, '[Inget medlemsnummer]' as DisplayText, 1 as ind ";
+
+        switch($this->source){
+
+            case SOURCE_EDIT:
+                $sql.= "Union "; 
+                $sql.= "select MembershipNo as Value, Concat(MembershipNo, ' [Nuvarande]') as DisplayText, 2 as ind From People Where MembershipNo>0 and Id = " . $this->id . " ";
+                $sql.= "Union "; 
+                $sql.= "select if(max(MembershipNo) is null, 0, max(MembershipNo)) + 1 as Value, CONCAT(if(max(MembershipNo) is null, 0, max(MembershipNo)) + 1, ' [Första lediga]') as DisplayText, 3 as ind ";
+                break;
+            case SOURCE_CREATE:
+                $sql.= "Union "; 
+                $sql.= "select if(max(MembershipNo) is null, 0, max(MembershipNo)) + 1 as Value, CONCAT(if(max(MembershipNo) is null, 0, max(MembershipNo)) + 1, ' [Första lediga]') as DisplayText, 3 as ind ";
+                break;
+            default:
+                $sql = "select MembershipNo as Value, MembershipNo as DisplayText";
+        }
+        $result = $this->db->select($this->saronUser, $sql, "FROM People ", "", "ORDER BY ind ", "", "Options");
+        
+        return $result;
+
+    }
+
     
     function selectPeopleOptions(){
         

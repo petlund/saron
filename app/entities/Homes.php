@@ -131,25 +131,6 @@ class Homes extends SuperEntity{
         $result = $this->db->select($this->saronUser, $sql, "FROM Homes ", $where, "ORDER BY DisplayText ", "", "Options");    
         return $result;
     } 
-    
-
-    
-    function update(){
-        $sqlUpdate = "UPDATE Homes ";
-        $sqlSet = "SET ";
-        $sqlSet.= "FamilyNameEncrypt = " . $this->getEncryptedSqlString($this->FamilyName) . ", ";
-        $sqlSet.= "AddressEncrypt = " . $this->getEncryptedSqlString($this->Address) . ", ";
-        $sqlSet.= "PhoneEncrypt = " .  $this->getEncryptedSqlString($this->Phone) . ", ";
-        $sqlSet.= "CoEncrypt = " .  $this->getEncryptedSqlString($this->Co) . ", ";
-        $sqlSet.= "City = " . $this->getSqlString($this->City) . ", ";
-        $sqlSet.= "Zip = " . $this->getSqlString($this->Zip) . ", ";
-        $sqlSet.= "Letter = " . $this->Letter . ", ";
-        $sqlSet.= "Country = " . $this->getSqlString($this->Country) . " ";     
-        $sqlWhere = "WHERE Id=" . $this->HomeId . ";";
-        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
-        
-        return $this->select($this->Id);
-    }    
 
     
     function deleteEmptyHomes(){

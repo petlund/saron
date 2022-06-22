@@ -206,59 +206,7 @@ class Person extends People{
         return true;
     }
 
-    function select($id = -1){
-        switch ($this->resultType){
-        case OPTIONS:
-            return $this->selectNextMembershipNo();       
-        default:
-            return $this->selectPerson($id);
-        }
-    }    
-    
-    function selectPerson($_id){
-        $id = $this->getId($_id, $this->id);
-        
-        $home = new Home($this->db, $this->saronUser);
-        $sqlSelect = SQL_STAR_PEOPLE . ", " . $this->saronUser->getRoleSql(true);
-        $sqlSelect.= DATES_AS_ALISAS_MEMBERSTATES . ", ";
-        $sqlSelect.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
-        $sqlSelect.= $home->getHomeSelectSql(ALIAS_CUR_HOMES, "People.HomeId", true);
-        $sqlSelect.= $home->getHomeSelectSql(ALIAS_OLD_HOMES, "OldHomeId", true);
-        $sqlSelect.= $this->getTablePathSql(false);                  
-        
-        $sqlFrom ="FROM People left outer join Homes on People.HomeId=Homes.Id ";
-        $sqlFrom.="left outer join Homes as " . ALIAS_OLD_HOMES . " on " .  ALIAS_OLD_HOMES . ".Id = " . $this->OldHomeId . " ";
-        
-        $sqlWhere = "WHERE ";
-        $sqlWhere.= "People.Id = " . $id;
-        
-        $result =  $this->db->select($this->saronUser, $sqlSelect, $sqlFrom, $sqlWhere, "", "", RECORD);            
-        return $result;
-    }
-    
-    function selectNextMembershipNo(){
-        $sql = "SELECT 0 as Value, '[Inget medlemsnummer]' as DisplayText, 1 as ind ";
-
-        switch($this->source){
-
-            case SOURCE_EDIT:
-                $sql.= "Union "; 
-                $sql.= "select MembershipNo as Value, Concat(MembershipNo, ' [Nuvarande]') as DisplayText, 2 as ind From People Where MembershipNo>0 and Id = " . $this->id . " ";
-                $sql.= "Union "; 
-                $sql.= "select if(max(MembershipNo) is null, 0, max(MembershipNo)) + 1 as Value, CONCAT(if(max(MembershipNo) is null, 0, max(MembershipNo)) + 1, ' [Första lediga]') as DisplayText, 3 as ind ";
-                break;
-            case SOURCE_CREATE:
-                $sql.= "Union "; 
-                $sql.= "select if(max(MembershipNo) is null, 0, max(MembershipNo)) + 1 as Value, CONCAT(if(max(MembershipNo) is null, 0, max(MembershipNo)) + 1, ' [Första lediga]') as DisplayText, 3 as ind ";
-                break;
-            default:
-                $sql = "select MembershipNo as Value, MembershipNo as DisplayText";
-        }
-        $result = $this->db->select($this->saronUser, $sql, "FROM People ", "", "ORDER BY ind ", "", "Options");
-        
-        return $result;
-
-    }
+   
     
     function insert(){
         $sqlInsert = "INSERT INTO People (LastNameEncrypt, FirstNameEncrypt, DateOfBirth, Gender, EmailEncrypt, MobileEncrypt, DateOfMembershipStart, MembershipNo, VisibleInCalendar, CommentEncrypt, Inserter, HomeId) ";
@@ -372,7 +320,7 @@ class Person extends People{
         $sqlWhere = "where Id=" . $this->id . ";";
 
         $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
-        return $this->select($this->id);
+        return $this->selectPersonAfterUpdate($this->id);
     }
     
     
@@ -390,7 +338,7 @@ class Person extends People{
         $sqlWhere = "where Id=" . $this->id . ";";
 
         $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
-        return $this->select($this->id);
+        return $this->selectPersonAfterUpdate($this->id);
 
     }
     
@@ -407,7 +355,7 @@ class Person extends People{
         $sqlWhere = "where Id=" . $this->id . ";";
         
         $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
-        return $this->select($this->id);
+        return $this->selectPersonAfterUpdate($this->id);
  
     }
    
@@ -420,11 +368,31 @@ class Person extends People{
         $sqlSet.= "CommentKeyEncrypt=" . $this->getEncryptedSqlString($this->CommentKey) . " ";
         $sqlWhere = "WHERE Id=" . $this->getCurrentId();
         $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
-        return $this->select($this->id);
+        return $this->selectPersonAfterUpdate($this->id);
         
+    }    
+   
+    
+    function selectPersonAfterUpdate($id){
+        $home = new Home($this->db, $this->saronUser);
+        $sqlSelect = SQL_STAR_PEOPLE . ", " . $this->saronUser->getRoleSql(true);
+        $sqlSelect.= DATES_AS_ALISAS_MEMBERSTATES . ", ";
+        $sqlSelect.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
+        $sqlSelect.= $home->getHomeSelectSql(ALIAS_CUR_HOMES, $this->HomeId, true);
+        $sqlSelect.= $home->getHomeSelectSql(ALIAS_OLD_HOMES, $this->OldHomeId, true);
+        $sqlSelect.= $this->getTablePathSql(false);                  
+        
+        $sqlFrom ="FROM People left outer join Homes on People.HomeId=Homes.Id ";
+        $sqlFrom.="left outer join Homes as " . ALIAS_OLD_HOMES . " on " .  ALIAS_OLD_HOMES . ".Id = " . $this->OldHomeId . " ";
+        
+        $sqlWhere = "WHERE ";
+        $sqlWhere.= "People.Id = " . $id;
+        
+        $result =  $this->db->select($this->saronUser, $sqlSelect, $sqlFrom, $sqlWhere, "", "", RECORD);            
+        return $result;
     }
-    
-    
+ 
+
     function anonymization(){
         $Today = date("Y-m-d") ;
         $result = $this->db->select($this->saronUser, "Select Id ", "From People ", "Where DateOfMembershipStart is not null and DateOfMembershipEnd is null and Id = " . $this->id, "", "");

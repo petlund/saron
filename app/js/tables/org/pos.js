@@ -154,7 +154,7 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 list: false,
                 options: function(data){
                     var uri = 'app/web-api/listPeople.php';
-                    var field = null;
+                    var field = "People_FK";
                     var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);                    
                     return '/' + saron.uri.saron + uri + parameters;
                 }

@@ -194,11 +194,6 @@ function _updateFields(data, field, type){
 }
 
 
-function _membershipOptions(data){
-    return '/' + saron.uri.saron + 'app/web-api/listPerson.php?Id=' + data.record.Id + '&selection=nextMembershipNo';
-}
-
-
 function _baptistOptions(){
     return {0:'Nej', 1: 'Ja, Ange församling nedan.', 2:'Ja, ' + saron.name.full_name + '.'};
 }

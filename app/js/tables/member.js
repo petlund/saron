@@ -112,8 +112,8 @@ function memberTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                     return _setClassAndValue(data, "MembershipNo", PERSON);
                 },       
                 options: function (data){
-                    var uri =  'app/web-api/listPerson.php';
-                    var field = null;
+                    var uri =  'app/web-api/listPeople.php';
+                    var field = "MembershipNo";
                     var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);
                     return '/' + saron.uri.saron + uri + parameters;
                 }

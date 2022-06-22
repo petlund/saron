@@ -75,7 +75,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                     });
                 });
             },
-            updateAction: '/' + saron.uri.saron + 'app/web-api/updatePerson.php',
+            updateAction: '/' + saron.uri.saron + 'app/web-api/updatePerson.php'
         },       
         fields: {
             Id: {
@@ -377,8 +377,8 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                     return _setClassAndValue(data, "MembershipNo", PERSON);
                 },       
                 options: function (data){
-                    var url = '/' + saron.uri.saron + 'app/web-api/listPerson.php';
-                    var field = null;
+                    var url = '/' + saron.uri.saron + 'app/web-api/listPeople.php';
+                    var field = "MembershipNo";
                     var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, url);
                     return url + parameters;
                 }
@@ -390,7 +390,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                 width: '4%',
                 display: function (data){
                     return _setClassAndValue(data, "MemberState", PERSON);
-                },       
+                }       
             },
             VisibleInCalendar: {
                 edit: false,
@@ -507,6 +507,7 @@ function _updatePeopleFields(data){
 //    _updateFields(data, "LongHomeName", HOME);                                                
     _updateFields(data, "LongHomeName", PERSON);                                                
     _updateFields(data, "Residents", HOME);                                                
+    _updateFields(data, "Residents", OLD_HOME);                                                
 //    _updateFields(data, "Letter", HOME);                                                
 //    _updateFields(data, "Phone", HOME);                                                
     _updateFields(data, "Name", PERSON);                                                
