@@ -158,9 +158,10 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
 
                     if(parentId > 0)
                         imgFile = "home.png";
-                    else
-                        imgFile = "empty.png";
-
+                    else{
+                        var $imgEmpty = getImageTag(data, "empty.png", tooltip, childTableName, -1);
+                        return $imgEmpty;
+                    }
                     var childTableDef = homeTableDef(mainTableViewId, tablePath, childTableTitle, parentId); // PersonId point to childtable unic id   
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
                     var $imgClose = getImageCloseTag(data, childTableName, type);
