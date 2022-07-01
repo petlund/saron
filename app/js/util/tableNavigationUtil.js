@@ -20,7 +20,7 @@ function _getClickImg(data, childTableDef, $imgChild, $imgClose){
 }    
     
     
-function _clickActionOpen(childTableDef, img, event, url, clientOnly){
+function _clickActionOpen(childTableDef, img, data, url, clientOnly){
     var tr = img.closest('.jtable-data-row');
     var mainTablePlaceHolder = childTableDef.initParameters.MainTableViewId;
     
@@ -36,32 +36,32 @@ function _clickActionOpen(childTableDef, img, event, url, clientOnly){
 
         callBackData.childTable.jtable('load', options, function(childData){
         });
-        var childOpen = _getClassNameOpenChild(event.data, tablePath);                                
-        _updateAfterClickAction(tablePlaceHolder, event, childOpen, url, clientOnly);            
+        var tablePathOpenChild = _getClassNameOpenChild(data, tablePath);                                
+        _updateAfterClickAction(tablePlaceHolder, data, tablePathOpenChild, url, clientOnly);            
     });
     $(tr).find('.jtable-toolbar-item-add-record').hide();
 }
 
 
 
-function _clickActionClose(childTableDef, img, event, url, clientOnly){
+function _clickActionClose(childTableDef, img, data, url, clientOnly){
     var tr = img.closest('.jtable-data-row');
     var mainTablePlaceHolder = childTableDef.initParameters.MainTableViewId;
     var tablePlaceHolder = _getChildTablePlaceHolderFromImg(img, mainTablePlaceHolder);
     
     $(tablePlaceHolder).jtable('closeChildTable', tr, function(callBackData){
-        var childOpen = false;
+        var tablePathOpenChild = false;
     
-        _updateAfterClickAction(tablePlaceHolder, event, childOpen, url, clientOnly);
+        _updateAfterClickAction(tablePlaceHolder, data, tablePathOpenChild, url, clientOnly);
     });
 }
 
 
 
-function _updateAfterClickAction(tablePlaceHolder, event, childOpen, uri, clientOnly){
+function _updateAfterClickAction(tablePlaceHolder, data, tablePathOpenChild, uri, clientOnly){
     var url = '/' + saron.uri.saron + uri;
     var options = {url:url, clientOnly:clientOnly, animationsEnabled:false};
-    options.record = {Id: event.data.record.Id, OpenChildTable: childOpen}; 
+    options.record = {Id: data.record.Id, OpenChildTable: tablePathOpenChild}; 
 
     if(tablePlaceHolder !== null)
         $(tablePlaceHolder).jtable('updateRecord', options); //update icon

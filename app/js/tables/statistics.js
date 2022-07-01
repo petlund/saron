@@ -69,11 +69,11 @@ function statisticTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                     var $imgClose = getImageCloseTag(data, childTableName, type);
                         
                     $imgChild.click(data, function (event){
-                        _clickActionOpen(childTableDef, $imgChild, event, url, clientOnly);
+                        _clickActionOpen(childTableDef, $imgChild, event.data, url, clientOnly);
                     });
 
                     $imgClose.click(data, function (event){
-                        _clickActionClose(childTableDef, $imgClose, event, url, clientOnly);
+                        _clickActionClose(childTableDef, $imgClose, event.data, url, clientOnly);
                     });    
 
                     return _getClickImg(data, childTableDef, $imgChild, $imgClose);
@@ -231,11 +231,11 @@ function statisticsDetailTableDef(mainTableViewId, tablePath, newTableTitle, par
                     var $imgClose = getImageCloseTag(data, childTableName, type);
                         
                     $imgChild.click(data, function (event){
-                        _clickActionOpen(childTableDef, $imgChild, event, url, clientOnly);
+                        _clickActionOpen(childTableDef, $imgChild, event.data, url, clientOnly);
                     });
 
                     $imgClose.click(data, function (event){
-                        _clickActionClose(childTableDef, $imgClose, event, url, clientOnly);
+                        _clickActionClose(childTableDef, $imgClose, event.data, url, clientOnly);
                     });    
 
                     return _getClickImg(data, childTableDef, $imgChild, $imgClose);                }
