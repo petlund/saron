@@ -3,13 +3,12 @@ saron,
 RECORD, OPTIONS
 */
 "use strict";
-const birthdayListUri = 'app/web-api/listPeople.php';
 
     $(document).ready(function () {
         var mainTableViewId = saron.table.birthday.viewid;
         var tablePlaceHolder = $(mainTableViewId);
         tablePlaceHolder.jtable(birthdayTableDef(saron.table.birthday.viewid, null, null));
-        var options = getPostData(null, saron.table.birthday.viewid, null, saron.table.birthday.name, saron.source.list, saron.responsetype.records, birthdayListUri);
+        var options = getPostData(null, saron.table.birthday.viewid, null, saron.table.birthday.name, saron.source.list, saron.responsetype.records);
         tablePlaceHolder.jtable('load', options);
         tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
     });
@@ -30,7 +29,7 @@ const birthdayListUri = 'app/web-api/listPeople.php';
             multiSorting: true,
             defaultSorting: 'NextBirthday ASC', //Set default sorting        
             actions: {
-                listAction:   '/' + saron.uri.saron + birthdayListUri
+                listAction:  saron.root.webapi + 'listPeople.php'
             },
             fields: {
                 Id: {

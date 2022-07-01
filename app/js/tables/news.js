@@ -20,10 +20,10 @@ function newsTableDef(){
         multiSorting: true,
         defaultSorting: 'news_date desc', //Set default sorting        
         actions: {
-            listAction:   '/' + saron.uri.saron + 'app/web-api/listNews.php',
-            createAction:   '/' + saron.uri.saron + 'app/web-api/createNews.php',
-            updateAction:   '/' + saron.uri.saron + 'app/web-api/updateNews.php',
-            deleteAction: '/' + saron.uri.saron + 'app/web-api/deleteNews.php'
+            listAction:   saron.root.webapi + 'listNews.php',
+            createAction: saron.root.webapi + 'createNews.php',
+            updateAction: saron.root.webapi + 'updateNews.php',
+            deleteAction: saron.root.webapi + 'deleteNews.php'
         },
         fields: {
             Id: {

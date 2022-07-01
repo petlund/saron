@@ -22,9 +22,9 @@ function orgVersionTableDef(){
         defaultSorting: 'decision_date desc', //Set default sorting        
         messages: {addNewRecord: 'Skapa ny version av organisationen'},
         actions: {
-            listAction:   '/' + saron.uri.saron + 'app/web-api/listOrganizationVersion.php',
-            updateAction:   '/' + saron.uri.saron + 'app/web-api/updateOrganizationVersion.php',
-            createAction: '/' + saron.uri.saron + 'app/web-api/createOrganizationVersion.php',
+            listAction:   saron.root.webapi + 'listOrganizationVersion.php',
+            updateAction: saron.root.webapi + 'updateOrganizationVersion.php',
+            createAction: saron.root.webapi + 'createOrganizationVersion.php',
         },
         fields: {
             TablePath:{

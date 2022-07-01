@@ -1,6 +1,11 @@
+/* global saron
+
+ */
+"use strict";
+
 function createMembersStatisticsChart() { 
     $.ajax({
-        url: '/' + saron.uri.saron + 'app/web-api/listStatistics.php?TablePath=LineChart'
+        url: saron.root.webapi + 'listStatistics.php?TablePath=LineChart'
     }).then(function(data) {
         var chartData = JSON.parse(data);      
         var chartsMeta = '{' +

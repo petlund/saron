@@ -1,9 +1,9 @@
-/* global saron
+/* global saron, HOME, PERSON
  * 
  */
 
 "use strict";
-const tableName = saron.table.efk.name;
+
 const tableId = saron.table.efk.viewid;
 
 $(document).ready(function () {
@@ -18,7 +18,7 @@ $(document).ready(function () {
             defaultSorting: 'AgeInterval ASC', //Set default sorting     
 
         actions: {
-            listAction:   '/' + saron.uri.saron + 'app/web-api/listStatistics.php?TablePath=' + tableName
+            listAction:   saron.root.webapi + 'listStatistics.php?TablePath=' +  saron.table.efk.name
         },
         fields: {
             AgeInterval: {

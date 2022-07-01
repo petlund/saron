@@ -479,18 +479,18 @@ function getInitParametes(mainTableViewId, tablePath, parentId){
 }
 
 
-function getOptionsUrlParameters(data, tableViewId, parentId, tablePath, field, url){
+function getOptionsUrlParameters(data, tableViewId, parentId, tablePath, field){
     var parameters = "";
     
     if(data.source === saron.source.list){
-        parameters = getURLParameters(null, tableViewId, parentId, tablePath, data.source, saron.responsetype.options, field, url);
+        parameters = getURLParameters(null, tableViewId, parentId, tablePath, data.source, saron.responsetype.options, field);
     }
     if(data.source === saron.source.edit){
-        parameters = getURLParameters(data.record.Id, tableViewId, parentId, tablePath, data.source, saron.responsetype.options, field, url);                        
+        parameters = getURLParameters(data.record.Id, tableViewId, parentId, tablePath, data.source, saron.responsetype.options, field);                        
         data.clearCache();
     }
     if(data.source === saron.source.create){
-        parameters = getURLParameters(null, tableViewId, parentId, tablePath, data.source, saron.responsetype.options, field, url);                        
+        parameters = getURLParameters(null, tableViewId, parentId, tablePath, data.source, saron.responsetype.options, field);                        
         data.clearCache();                        
     }    
     return parameters;
@@ -499,7 +499,7 @@ function getOptionsUrlParameters(data, tableViewId, parentId, tablePath, field, 
 
 
 function getImageTag(data, imgFile, title, childTableName, type){
-    var src = '"/' + saron.uri.saron + saron.uri.images + imgFile + '" title="' + title + '"';
+    var src = '"' + saron.root.images + imgFile + '" title="' + title + '"';
     var imageTag = _setImageClass(data, childTableName, src, type);
     return $(imageTag);
 }

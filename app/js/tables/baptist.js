@@ -4,13 +4,12 @@
 saron.table.baptist.viewid, saron.table.baptist.name
  */
 "use strict"; 
-const baptistListUri = 'app/web-api/listPeople.php';
 
 $(document).ready(function () {
     var mainTableViewId = saron.table.baptist.viewid;
     var tablePlaceHolder = $(mainTableViewId);
     tablePlaceHolder.jtable(baptistTableDef(mainTableViewId, null, null));
-    var options = getPostData(null, mainTableViewId, saron.table.baptist.viewid, null, "list", null, saron.responsetype.records, baptistListUri);
+    var options = getPostData(null, mainTableViewId, saron.table.baptist.viewid, saron.table.baptist.name, saron.source.list, null, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });  
@@ -39,8 +38,8 @@ function baptistTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
         multiSorting: true,
         defaultSorting: 'FamilyName ASC, DateOfBirthr ASC', //Set default sorting        
         actions: {
-            listAction:   '/' + saron.uri.saron + baptistListUri, 
-            updateAction: '/' + saron.uri.saron + 'app/web-api/updatePerson.php'
+            listAction:   saron.root.webapi + 'listPeople.php', 
+            updateAction: saron.root.webapi + 'updatePerson.php'
         },
         
         fields: { 
@@ -54,7 +53,7 @@ function baptistTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
             },
             TablePath:{
                 type: 'hidden',
-                defaultValue: tableName
+                defaultValue: saron.table.baptist.name
             },
             Name: {
                 title: 'Namn',

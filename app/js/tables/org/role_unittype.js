@@ -6,7 +6,6 @@ saron
 */
  
 "use strict";
-const role_table_typeListUri = 'app/web-api/listOrganizationRole-UnitType.php';
 
 function role_role_unitType_TableDef(mainTableViewId, tablePath, newTableTitle, parentId){
     const tableName = saron.table.role_unittype.name;
@@ -36,10 +35,10 @@ function role_role_unitType_TableDef(mainTableViewId, tablePath, newTableTitle, 
             data.deleteConfirmMessage = message;
         },         
         actions: {            
-            listAction: '/' + saron.uri.saron + role_table_typeListUri,
-            createAction: '/' + saron.uri.saron + 'app/web-api/createOrganizationRole-UnitType.php',
-            updateAction: '/' + saron.uri.saron + 'app/web-api/updateOrganizationRole-UnitType.php',  
-            deleteAction: '/' + saron.uri.saron + 'app/web-api/deleteOrganizationRole-UnitType.php'
+            listAction:   saron.root.webapi + 'listOrganizationRole-UnitType.php',
+            createAction: saron.root.webapi + 'createOrganizationRole-UnitType.php',
+            updateAction: saron.root.webapi + 'updateOrganizationRole-UnitType.php',  
+            deleteAction: saron.root.webapi + 'deleteOrganizationRole-UnitType.php'
         },
         fields: {
             TablePath:{
@@ -64,10 +63,10 @@ function role_role_unitType_TableDef(mainTableViewId, tablePath, newTableTitle, 
                 width: '50%',
                 optionsSorting:'text',
                 options: function(data){
-                    var uri = 'app/web-api/listOrganizationUnitType.php';
+                    var url = saron.root.webapi + 'listOrganizationUnitType.php';
                     var field = null;
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);                    
-                    return '/' + saron.uri.saron + uri + parameters;
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);                    
+                    return url + parameters;
                 }
             },
             OrgRole_FK: {
@@ -78,10 +77,10 @@ function role_role_unitType_TableDef(mainTableViewId, tablePath, newTableTitle, 
                 width: '50%',
                 optionsSorting:'text',
                 options: function(data){
-                    var uri = 'app/web-api/listOrganizationRole.php';
+                    var url = saron.root.webapi + 'listOrganizationRole.php';
                     var field = null;
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);                    
-                    return '/' + saron.uri.saron + uri + parameters;
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);                    
+                    return url + parameters;
                 }
             },
             SortOrder: {

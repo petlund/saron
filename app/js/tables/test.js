@@ -27,7 +27,7 @@ $(document).ready(function () {
             multiSorting: false,
             defaultSorting: 'AgeInterval ASC', //Set default sorting        
             actions: {
-                listAction:   '/' + saron.uri.saron + 'app/web-api/listUsers.php'
+                listAction:   saron.root.webapi + 'listUsers.php'
             },
             fields: {
                 Id: {
@@ -45,7 +45,7 @@ $(document).ready(function () {
                         var childTableName = 'test';
                         var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, 0);
                         var $imgClose = _getImageCloseTag(data, childTableName, 0);
-                        var url = null; //'/' + saron.uri.saron + 'app/web-api/listUsers.php';
+                        var url = null; 
                         var clientOnly = true;
                         
                         $imgChild.click(data, function (event){

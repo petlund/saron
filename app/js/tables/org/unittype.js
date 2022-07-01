@@ -8,7 +8,6 @@ saron,
 RECORD, OPTIONS
 */
 "use strict";
-const unitTypeListUri = 'app/web-api/listOrganizationUnitType.php';
 
 $(document).ready(function () {
     var mainTableViewId = saron.table.unittype.viewid;
@@ -44,10 +43,10 @@ function unitTypeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
         defaultSorting: 'Name', //Set default sorting        
         messages: {addNewRecord: 'Lägg till en ny typ av organisatorisk enhet.'},
         actions: {
-            listAction:   '/' + saron.uri.saron + unitTypeListUri,
-            createAction: '/' + saron.uri.saron + 'app/web-api/createOrganizationUnitType.php',
-            updateAction: '/' + saron.uri.saron + 'app/web-api/updateOrganizationUnitType.php',
-            deleteAction: '/' + saron.uri.saron + 'app/web-api/deleteOrganizationUnitType.php'
+            listAction:   saron.root.webapi + 'listOrganizationUnitType.php',
+            createAction: saron.root.webapi + 'createOrganizationUnitType.php',
+            updateAction: saron.root.webapi + 'updateOrganizationUnitType.php',
+            deleteAction: saron.root.webapi + 'deleteOrganizationUnitType.php'
         },
         fields:{
             TablePath:{
@@ -75,7 +74,7 @@ function unitTypeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                     var childTableTitle = 'Enhetstypen "' + data.record.Name + '" används för nedanstående organisatoriska enheter';                            
                     var tooltip = "Enhetstypen används inom följande organisatoriska enheter";
                     var imgFile = "unit.png";
-                    var url = 'app/web-api/listOrganizationUnitType.php';
+                    var url = 'listOrganizationUnitType.php';
                     var parentId = data.record.Id;
                     var type = 0;
                     var clientOnly = true;
@@ -111,7 +110,7 @@ function unitTypeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                     var tooltip = "";
                     var imgFile = "";
                     var parentId = data.record.Id;
-                    var url = 'app/web-api/listOrganizationUnitType.php';
+                    var url = 'listOrganizationUnitType.php';
                     var parentId = data.record.Id;
                     var type = 0;
                     var clientOnly = true;

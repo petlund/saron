@@ -1,4 +1,4 @@
-/* global saron.uri.saron, DATE_FORMAT, NEWS, 
+/* global DATE_FORMAT, NEWS, 
 saron
 */
 "use strict";
@@ -26,9 +26,9 @@ function memberstateTableDef(){
         multiSorting: true,
         defaultSorting: 'news_date desc', //Set default sorting        
         actions: {
-            listAction:   '/' + saron.uri.saron + 'app/web-api/listMemberState.php?ts=',
-            //createAction:   '/' + saron.uri.saron + 'app/web-api/createMemberState.php',
-            updateAction:   '/' + saron.uri.saron + 'app/web-api/updateMemberState.php'
+            listAction:   saron.root.webapi + 'listMemberState.php?ts=',
+            //createAction:   saron.root.webapi + 'createMemberState.php',
+            updateAction:   saron.root.webapi + 'updateMemberState.php'
         },
         fields: {
             Id: {

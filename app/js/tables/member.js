@@ -5,13 +5,11 @@ RECORD, OPTIONS
 
 "use strict";
 
-const memberListUri = 'app/web-api/listPeople.php';
-
 $(document).ready(function () {
     var mainTableViewId = saron.table.member.viewid;
     var tablePlaceHolder = $(mainTableViewId);
     tablePlaceHolder.jtable(memberTableDef(mainTableViewId, null, null, null));
-    var options = getPostData(null, mainTableViewId, null, saron.table.member.name, saron.source.list, saron.responsetype.records, memberListUri);
+    var options = getPostData(null, mainTableViewId, null, saron.table.member.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });  
@@ -38,11 +36,11 @@ function memberTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
             multiSorting: true,
             defaultSorting: 'FamilyName ASC, DateOfBirthr ASC', //Set default sorting        
         actions: {
-            listAction:   '/' + saron.uri.saron + memberListUri,
+            listAction:   saron.root.webapi + 'listPeople.php',
             updateAction: function(data) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + saron.uri.saron + 'app/web-api/updatePerson.php?selection=membership',
+                        url: saron.root.webapi + 'updatePerson.php',
                         type: 'POST',
                         dataType: 'json',
                         data: data,
@@ -112,10 +110,10 @@ function memberTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                     return _setClassAndValue(data, "MembershipNo", PERSON);
                 },       
                 options: function (data){
-                    var uri =  'app/web-api/listPeople.php';
+                    var url =  saron.root.webapi + 'listPeople.php';
                     var field = "MembershipNo";
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);
-                    return '/' + saron.uri.saron + uri + parameters;
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);
+                    return url + parameters;
                 }
             },
             DateOfMembershipEnd: {

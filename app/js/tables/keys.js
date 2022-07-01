@@ -35,8 +35,8 @@ function keyTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
         multiSorting: true,
         defaultSorting: 'news_date desc', //Set default sorting        
         actions: {
-            listAction:   '/' + saron.uri.saron + 'app/web-api/listPeople.php',
-            updateAction:   '/' + saron.uri.saron + 'app/web-api/updatePerson.php?selection=keyHolding'
+            listAction:   saron.root.webapi + 'listPeople.php',
+            updateAction: saron.root.webapi + 'updatePerson.php'
         },
         fields: {
             Id: {

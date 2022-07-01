@@ -9,7 +9,7 @@ $(document).ready(function () {
         var head1 = '<div class="saronAugdText">Mobilnummer till personer utan mail.</div><br>';
         var head2 = '<br><br><br><br><div class="saronAugdText">Samma nummer med namn.</div><br>';
 
-        $.get( '/' + saron.uri.saron + 'app/web-api/listPeople.php?TableViewId=' + saron.list.mobile_instead_of_email.viewid + '&ResultType=' + saron.responsetype.records, function(text) {
+        $.get(saron.root.webapi + 'listPeople.php?TableViewId=' + saron.list.mobile_instead_of_email.viewid + '&ResultType=' + saron.responsetype.records, function(text) {
         var data = JSON.parse(text);
         var cnt = data.TotalRecordCount;
         var str = head1;

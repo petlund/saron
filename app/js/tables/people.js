@@ -7,8 +7,6 @@ homesListUri
  */
 
 "use strict";
-const peopleListUri = 'app/web-api/listPeople.php';
-
 
 $(document).ready(function () {
     const queryString = window.location.search;
@@ -17,7 +15,7 @@ $(document).ready(function () {
     var mainTableViewId = saron.table.people.viewid;
     var tablePlaceHolder = $(mainTableViewId);
     tablePlaceHolder.jtable(peopleTableDef(mainTableViewId, null, null, null));
-    var options = getPostData(null, mainTableViewId, null, saron.table.people.name, saron.source.list, saron.responsetype.records, peopleListUri);
+    var options = getPostData(null, mainTableViewId, null, saron.table.people.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });
@@ -44,11 +42,11 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
         defaultSorting: 'LongHomeName ASC, DateOfBirth ASC', //Set default sorting   
         messages: {addNewRecord: 'Ny person'},
         actions: {
-            listAction:   '/' + saron.uri.saron + peopleListUri,
+            listAction:  saron.root.webapi + 'listPeople.php',
             createAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + saron.uri.saron + 'app/web-api/createPerson.php',    
+                        url: saron.root.webapi + 'createPerson.php',    
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
@@ -77,7 +75,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
             updateAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $.ajax({
-                        url: '/' + saron.uri.saron + 'app/web-api/updatePerson.php',
+                        url: saron.root.webapi + 'updatePerson.php',
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
@@ -99,19 +97,19 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                                 if(move && isChildRowOpen){
                                     var options = getPostData(null, mainTableViewId, parentId, tablePath, saron.source.list, saron.responsetype.records);
                                     var clientOnly = true;
-                                    var uri = 'app/web-api/listPeople.php';
+                                    var url = saron.root.webapi + 'listPeople.php';
                                     var childTableDef = homeTableDef(mainTableViewId, tablePath, childTableTitle, parentId);
 
                                     $(mainTableViewId).jtable('closeChildTable', $selectedRow, function(){
 
                                         var tablePathOpenChild = false;                                
-                                        _updateAfterClickAction(mainTableViewId, data, tablePathOpenChild, uri, clientOnly);            
+                                        _updateAfterClickAction(mainTableViewId, data, tablePathOpenChild, url, clientOnly);            
 
                                         if(parentId > 0){
                                             $(mainTableViewId).jtable('openChildTable', $selectedRow, childTableDef, function(callBackData){
                                                 callBackData.childTable.jtable('load', options, function(){
                                                     var tablePathOpenChild = _getClassNameOpenChild(data, tablePath);                                
-                                                    _updateAfterClickAction(mainTableViewId, data, tablePathOpenChild, uri, clientOnly);                                                   
+                                                    _updateAfterClickAction(mainTableViewId, data, tablePathOpenChild, url, clientOnly);                                                   
                                                 });
                                             });
                                         }
@@ -155,7 +153,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                     var imgFile = "home.png";
                     var clientOnly = false;
                     var parentId = data.record.HomeId;
-                    var url = 'app/web-api/listPeople.php';
+                    var url = saron.root.webapi + 'listPeople.php';
                     var type = 0;
 
                     if(parentId > 0)
@@ -192,7 +190,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                     var imgFile = "member.png";
                     var clientOnly = true;
                     var parentId = data.record.Id;
-                    var url = 'app/web-api/listPeople.php';
+                    var url = saron.root.webapi + 'listPeople.php';
                     var type = 0;
 
                     var childTableDef = memberTableDef(mainTableViewId, tablePath, childTableTitle, parentId); // PersonId point to childtable unic id   
@@ -224,7 +222,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                     var imgFile = "baptist.png";
                     var clientOnly = true;
                     var parentId = data.record.Id;
-                    var url = 'app/web-api/listPeople.php';
+                    var url = saron.root.webapi + 'listPeople.php';
                     var type = 0;
 
                     var childTableDef = baptistTableDef(mainTableViewId, tablePath, childTableTitle, parentId); // PersonId point to childtable unic id   
@@ -260,7 +258,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                     
                     var clientOnly = false;
                     var parentId = data.record.Id;
-                    var url = 'app/web-api/listPeople.php';
+                    var url = saron.root.webapi + 'listPeople.php';
                     var type = 0;
 
                     var childTableDef = keyTableDef(mainTableViewId, tablePath, childTableTitle, parentId); // PersonId point to childtable unic id   
@@ -290,9 +288,8 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                     var imgFile = "";
 
                     if(data.record.Engagement ===  '0'){
-                        var src = '"/' + saron.uri.saron + saron.uri.images + "empty.png" + '"';
-                        var imageTag = _setImageClass(data, "empty", src, 0);
-                        return $(imageTag);
+                        var $imgEmpty = getImageTag(data, "empty.png", tooltip, childTableName, -1);
+                        return $imgEmpty;
                     }
                     else{
                         tooltip = 'Har ' + data.record.Engagement + ' förtroendeuppdrag';
@@ -325,10 +322,10 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                 list: false,
                 title: 'Välj hem',
                 options: function(data){
-                    var uri = 'app/web-api/listHomes.php';
+                    var url = saron.root.webapi + 'listHomes.php';
                     var field = null;
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);                    
-                    return '/' + saron.uri.saron + uri + parameters;
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);                    
+                    return url + parameters;
                 }
             },
             OldHomeId: { // for requests
@@ -433,7 +430,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                     return _setClassAndValue(data, "MembershipNo", PERSON);
                 },       
                 options: function (data){
-                    var url = '/' + saron.uri.saron + 'app/web-api/listPeople.php';
+                    var url = saron.root.webapi + 'listPeople.php';
                     var field = "MembershipNo";
                     var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, url);
                     return url + parameters;

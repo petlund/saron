@@ -6,13 +6,12 @@ RECORD, OPTIONS
  */
 
 "use strict";
-const posListUri = 'app/web-api/listOrganizationPos.php';
 
 $(document).ready(function () {
     var mainTableViewId = saron.table.pos.viewid;
     var tablePlaceHolder = $(mainTableViewId);
     tablePlaceHolder.jtable(posTableDef(mainTableViewId, saron.table.pos.name, null, null));
-    var postData = getPostData(null, mainTableViewId, null, saron.table.pos.name, saron.source.list, saron.responsetype.records, posListUri);
+    var postData = getPostData(null, mainTableViewId, null, saron.table.pos.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', postData);
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });
@@ -41,10 +40,10 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
         defaultSorting: getDefaultPosSorting(mainTableViewId), //Set default sorting        
         messages: {addNewRecord: 'Lägg till en ny position.'},
         actions: {
-            listAction: '/' + saron.uri.saron + posListUri,
-            createAction: '/' + saron.uri.saron + 'app/web-api/createOrganizationPos.php',
-            updateAction: '/' + saron.uri.saron + 'app/web-api/updateOrganizationPos.php',
-            deleteAction: '/' + saron.uri.saron + 'app/web-api/deleteOrganizationPos.php'
+            listAction:   saron.root.webapi + 'listOrganizationPos.php',
+            createAction: saron.root.webapi + 'createOrganizationPos.php',
+            updateAction: saron.root.webapi + 'updateOrganizationPos.php',
+            deleteAction: saron.root.webapi + 'deleteOrganizationPos.php'
         }, 
         fields: {
             Id: {
@@ -65,25 +64,24 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 display: function (data) {
                     var src;
                     if(data.record.RoleType === '-1'){
-                        src = '"/' + saron.uri.saron + saron.uri.images + 'orgpos.png" title="Rollen finns på fler ställen"';
+                        src = getImageTag(data, 'orgpos.png', "Rollen finns på fler ställen", saron.table.role.name, -1)
                     }
                     else{
                         switch (data.record.OrgPosStatus_FK){
                             case '1':
-                                src = '"/' + saron.uri.saron + saron.uri.images + 'haspos.png" title="Avstämd"';
+                                src = getImageTag(data, 'haspos.png', "Avstämd", saron.table.role.name, -1)
                                 break;
                             case '2':
-                                src = '"/' + saron.uri.saron + saron.uri.images + 'haspos_Y.png" title="Förslag"';
+                                src = getImageTag(data, 'haspos_Y.png', "Förslag", saron.table.role.name, -1)
                                 break;
                             case '4':
-                                src = '"/' + saron.uri.saron + saron.uri.images + 'haspos_R.png" title="Vakant"';
+                                src = getImageTag(data, 'haspos_R.png', "Vakant", saron.table.role.name, -1)
                                 break;
                             default:                            
-                                src = '"/' + saron.uri.saron + saron.uri.images + 'pos.png" title="Tillsätts ej"';
+                                src = getImageTag(data, 'pos.png', "Tillsätts ej", saron.table.role.name, -1)
                         }
                     }
-                    var imgTag = _setImageClass(data, saron.table.role.name, src, -1);
-                    var $imgRole = $(imgTag);
+                    var $imgRole = $(src);
                     return $imgRole;
                 }                
             },
@@ -105,20 +103,20 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 list: includedIn(mainTableViewId, saron.table.pos.viewid),
                 title: "Organisatorisk enhet",
                 options: function(data){
-                    var uri = 'app/web-api/listOrganizationUnit.php';
+                    var url = saron.root.webapi + 'listOrganizationUnit.php';
                     var field = null;
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);
-                    return '/' + saron.uri.saron + uri + parameters;
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);
+                    return url + parameters;
                 }                
             },            
             OrgRole_FK: {
                 width: '10%',
                 title: 'Roll',
                 options: function(data){
-                    var uri = 'app/web-api/listOrganizationRole.php';      
+                    var url = saron.root.webapi + 'listOrganizationRole.php';      
                     var field = 'OrgRole_FK';
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);                    
-                    return '/' + saron.uri.saron + uri + parameters;
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);                    
+                    return url + parameters;
                 }
             },
             OrgPosStatus_FK: {
@@ -126,10 +124,10 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 title: 'Status',
                 defaultValue: '4',
                 options: function(data){                    
-                    var uri = 'app/web-api/listOrganizationPosStatus.php';
+                    var url = saron.root.webapi + 'listOrganizationPosStatus.php';
                     var field = null;
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);                    
-                    return '/' + saron.uri.saron + uri + parameters;
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);                    
+                    return url + parameters;
                 }
             },
             Comment:{
@@ -153,10 +151,10 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 edit: true,
                 list: false,
                 options: function(data){
-                    var uri = 'app/web-api/listPeople.php';
+                    var url = saron.root.webapi + 'listPeople.php';
                     var field = "People_FK";
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);                    
-                    return '/' + saron.uri.saron + uri + parameters;
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);                    
+                    return url + parameters;
                 }
             },
             OrgSuperPos_FK: {
@@ -166,10 +164,10 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 edit: true,
                 list: false,
                 options: function(data){                    
-                    var uri = 'app/web-api/listOrganizationPos.php';
+                    var url = saron.root.webapi + 'listOrganizationPos.php';
                     var field = 'OrgSuperPos_FK';
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);                    
-                    return '/' + saron.uri.saron + uri + parameters;
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);                    
+                    return url + parameters;
                 }
             },
             Function_FK: {
@@ -179,10 +177,10 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 edit: true,
                 list: false,
                 options: function(data){                    
-                    var uri = 'app/web-api/listOrganizationUnit.php';
+                    var url = saron.root.webapi + 'listOrganizationUnit.php';
                     var field = null;
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);                    
-                    return '/' + saron.uri.saron + uri + parameters;
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);                    
+                    return url + parameters;
                 }
             },
             Responsible: {

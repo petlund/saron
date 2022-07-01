@@ -6,13 +6,12 @@ RECORD, OPTIONS
 */
   
 "use strict";
-const engagementListUri = 'app/web-api/listEngagement.php';    
 $(document).ready(function () {
 
     var mainTableViewId = saron.table.engagement.viewid;
     var tablePlaceHolder = $(mainTableViewId);
     tablePlaceHolder.jtable(peopleEngagementTableDef(mainTableViewId, null, null, null));
-    var postData = getPostData(null, mainTableViewId, null, saron.table.engagement.name, saron.source.list, saron.responsetype.records, engagementListUri);
+    var postData = getPostData(null, mainTableViewId, null, saron.table.engagement.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', postData);
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });
@@ -41,7 +40,7 @@ function peopleEngagementTableDef(mainTableViewId, tablePath, newTableTitle, par
         multiSorting: true,
         defaultSorting: 'Name', //Set default sorting        
         actions: {
-            listAction:   '/' + saron.uri.saron + engagementListUri
+            listAction: saron.root.webapi + 'listEngagement.php'
         },
         fields: {
             Id: {
@@ -63,7 +62,7 @@ function peopleEngagementTableDef(mainTableViewId, tablePath, newTableTitle, par
                     var tooltip = "";
                     var imgFile = "";
                     var parentId = data.record.Id;
-                    var url = 'app/web-api/listOrganizationPos.php';
+                    var url = saron.root.webapi + 'listOrganizationPos.php';
                     var clientOnly = true;
                     var parentId = data.record.Id;
                     var type = 0;
@@ -154,7 +153,6 @@ function peopleEngagementTableDef(mainTableViewId, tablePath, newTableTitle, par
 
 
 function engagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
-    const uri = 'app/web-api/listOrganizationPos.php';
     
     var title = "Ansvarsuppgifter";
     if(newTableTitle !== null)
@@ -179,9 +177,9 @@ function engagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId)
         defaultSorting: 'Name', //Set default sorting        
         messages: {addNewRecord: 'Tilldela ett vakant uppdrag'},
         actions: {
-            listAction:   '/' + saron.uri.saron + uri,
-            createAction: '/' + saron.uri.saron + 'app/web-api/addPersonToOrganizationPos.php',
-            updateAction: '/' + saron.uri.saron + 'app/web-api/updateOrganizationPos.php'
+            listAction:   saron.root.webapi + 'listOrganizationPos.php',
+            createAction: saron.root.webapi + 'addPersonToOrganizationPos.php',
+            updateAction: saron.root.webapi + 'updateOrganizationPos.php'
         },
         fields: {
             Id: {
@@ -190,10 +188,10 @@ function engagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId)
                 create: true,
                 key: true,
                 options: function (data){
-                    var uri = 'app/web-api/listOrganizationPos.php';
+                    var url = saron.root.webapi + 'listOrganizationPos.php';
                     var field = "Id";
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);
-                    return  '/' + saron.uri.saron + uri + parameters;
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);
+                    return  url + parameters;
                 }
             },
             TablePath:{
@@ -219,10 +217,10 @@ function engagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId)
                 width: '10%',
                 defaultValue: 2,
                 options: function (data){
-                    var uri = 'app/web-api/listOrganizationPosStatus.php';
+                    var url = saron.root.webapi + 'listOrganizationPosStatus.php';
                     var field = "OrgPosStatus_FK";
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);
-                    return  '/' + saron.uri.saron + uri + parameters;
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);
+                    return  url + parameters;
                 }
             },            
             Comment:{
@@ -290,7 +288,7 @@ function engagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId)
 
 
 function updatePersonEngagementRecord(Id){
-    var url = '/' + saron.uri.saron + engagementListUri;
+    var url = saron.root.webapi + 'listEngagement.php';
     var options = {record:{"Id": Id}, "clientOnly": false, "url":url};
     $(saron.table.engagement.viewid).jtable('updateRecord', options);
 }

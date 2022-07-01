@@ -6,7 +6,6 @@ saron
 */
  
 "use strict";
-const roleListUri = 'app/web-api/listOrganizationRole.php';
 
 $(document).ready(function () {
     var mainTableViewId = saron.table.role.viewid;
@@ -43,10 +42,10 @@ function roleTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
         defaultSorting: 'Name', //Set default sorting        
         messages: {addNewRecord: 'Lägg till ny roll'},
         actions: {            
-            listAction: '/' + saron.uri.saron + roleListUri,
-            createAction: '/' + saron.uri.saron + 'app/web-api/createOrganizationRole.php',
-            updateAction: '/' + saron.uri.saron + 'app/web-api/updateOrganizationRole.php',  
-            deleteAction: '/' + saron.uri.saron + 'app/web-api/deleteOrganizationRole.php'
+            listAction:    saron.root.webapi + 'listOrganizationRole.php',
+            createAction:  saron.root.webapi + 'createOrganizationRole.php',
+            updateAction:  saron.root.webapi + 'updateOrganizationRole.php',  
+            deleteAction:  saron.root.webapi + 'deleteOrganizationRole.php'
         },
         fields: {
             TablePath:{
@@ -76,7 +75,7 @@ function roleTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                     var childTableTitle = 'Rollen "' + data.record.Name + '" ingår i följande organisatoriska enheter';
                     var tooltip = "";
                     var imgFile = "";
-                    var url = 'app/web-api/listOrganizationRole.php';
+                    var url = saron.root.webapi + 'listOrganizationRole.php';
                     var parentId = data.record.Id;
                     var type = 0;
                     var clientOnly = false;
@@ -118,7 +117,7 @@ function roleTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                     var tooltip = "";
                     var imgFile = "";
                     var parentId = data.record.Id;
-                    var url = 'app/web-api/listOrganizationRole.php';
+                    var url = saron.root.webapi + 'listOrganizationRole.php';
                     var parentId = data.record.Id;
                     var type = 0;
                     var clientOnly = false;

@@ -1,3 +1,4 @@
+"use strict";
 function createAgeHistogram(){
     var chartsMeta = '{' +
                         '"charts":[' +
@@ -17,7 +18,7 @@ function createAgeHistogram(){
 
     addTableCells("HistogramChart", 1, jsonChartsMeta);
     $.ajax({
-        url: '/' + saron.uri.saron + 'app/web-api/listStatistics.php?TablePath=demographicHistogram'
+        url: saron.root.webapi + 'listStatistics.php?TablePath=demographicHistogram'
     }).then(function(data) {
         chartData = JSON.parse(data);      
         for(var i=0; i< jsonChartsMeta.charts.length; i++)              

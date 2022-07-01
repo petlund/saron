@@ -5,12 +5,12 @@ saron.table.total.name, saron.table.total.viewid
 */
 
 "use strict";
-const totalListUri = 'app/web-api/listPeople.php';
+
 $(document).ready(function () {
     var mainTableViewId = saron.table.total.viewid;
     var tablePlaceHolder = $(mainTableViewId);
     tablePlaceHolder.jtable(totalTableDef(saron.table.total.viewid, null));
-    var options = getPostData(null, mainTableViewId, null, saron.table.total.name, saron.source.list, saron.responsetype.records, totalListUri);
+    var options = getPostData(null, mainTableViewId, null, saron.table.total.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
 
 });
@@ -41,8 +41,8 @@ function totalTableDef(tableViewId, tablePath, newTableTitle, parentId){
             data.deleteConfirmMessage = message;
         },         
         actions: {
-            listAction:   '/' + saron.uri.saron + totalListUri,            
-            deleteAction: '/' + saron.uri.saron + 'app/web-api/updatePerson.php?selection=anonymization&TablePath=' + tableName
+            listAction:   saron.root.webapi + 'listPeople.php',            
+            deleteAction: saron.root.webapi + 'deletePerson.php'
         },  
         fields: {
             Id:{
@@ -62,9 +62,9 @@ function totalTableDef(tableViewId, tablePath, newTableTitle, parentId){
                 width: '5%',
                 sorting: false,
                 display: function (data) {
-                    var $imgPdf = $('<img src="/' + saron.uri.saron + 'app/images/pdf.png" title="Skapa personakt PDF" />');
+                    var $imgPdf = $('<img src="' + saron.root.images + 'pdf.png" title="Skapa personakt PDF" />');
                     $imgPdf.click(function () {                        
-                        window.open('/' + saron.uri.saron + 'app/pdf/DossierReport.php?Id=' + data.record.Id, '_blank');
+                        window.open(saron.root.pdf + 'DossierReport.php?Id=' + data.record.Id, '_blank');
                     });                
                 return $imgPdf;
                 }

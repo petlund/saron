@@ -3,13 +3,12 @@ saron,
 RECORD, OPTIONS
  */
 "use strict";
-const homesListUri = 'app/web-api/listHomes.php';
 
 $(document).ready(function () {
     var mainTableViewId = saron.table.homes.viewid;
     var tablePlaceHolder = $(mainTableViewId);
     tablePlaceHolder.jtable(homeTableDef(mainTableViewId, null, null, null));
-    var options = getPostData(null, mainTableViewId, null, saron.table.homes.name, saron.source.list, saron.responsetype.records, homesListUri);
+    var options = getPostData(null, mainTableViewId, null, saron.table.homes.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });
@@ -52,8 +51,8 @@ function homeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
         multiSorting: true,
         defaultSorting: "FamilyName ASC",
         actions: {
-            listAction:   '/' + saron.uri.saron + homesListUri,
-            updateAction: '/' + saron.uri.saron + 'app/web-api/updateHome.php'
+            listAction:   saron.root.webapi + 'listHomes.php',
+            updateAction: saron.root.webapi + 'updateHome.php'
         },
         fields: {
             Id: {

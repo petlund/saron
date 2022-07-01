@@ -58,8 +58,7 @@ function _clickActionClose(childTableDef, img, data, url, clientOnly){
 
 
 
-function _updateAfterClickAction(tablePlaceHolder, data, tablePathOpenChild, uri, clientOnly){
-    var url = '/' + saron.uri.saron + uri;
+function _updateAfterClickAction(tablePlaceHolder, data, tablePathOpenChild, url, clientOnly){
     var options = {url:url, clientOnly:clientOnly, animationsEnabled:false};
     options.record = {Id: data.record.Id, OpenChildTable: tablePathOpenChild}; 
 
@@ -80,82 +79,82 @@ function _getChildTablePlaceHolderFromImg(img, mainTablePlaceHolder){
 }
 
 // end  new childOpenFunction 
-function openCloseChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, type, listParentRowUrl){
-    var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
-    var $imgClose = _getImageCloseTag(data, childTableName, type);
-
-    $imgChild.click(data, function (event){
-        _openChildAndUpdateParentIcon(data, $imgChild, childTableDef, childTableName, listParentRowUrl);
-    });
-    
-    $imgClose.click(data, function (event){
-        closeChildTable(data, tableViewId, childTableName, type, listParentRowUrl);
-    });    
-
-    
-    var openClassName = _getClassNameOpenChild(data, childTableName);
-    var tr = $imgChild.closest('tr');
-    var cName = tr.attr('class');
-    var isChildRowOpen = false;
-    if(isChildRowOpen)
-        return $imgClose;
-    else
-        return $imgChild;    
-}
-
-
-function openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, type, listParentRowUrl){
-    var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
-
-    $imgChild.click(data, function (event){
-        _openChildAndUpdateParentIcon(data, $imgChild, childTableDef, childTableName, listParentRowUrl);
-        return _getImageCloseTag(data, childTableName, type);
-    });
-    return $imgChild;
-    
-}
-
-
-function closeChildTable(data, tableViewId, childTableName, type, listParentRowUri){
-    var $imgClose = _getImageCloseTag(data, childTableName, type);
-    
-    $imgClose.click(data, function(event) {
-        _closeChildAndUpdateParentIcon(data, $imgClose, childTableName, listParentRowUri);
-    });    
-    return $imgClose;
-}
-
-
-
-function getIcon(data, placeHolder, childTableName, $imgChild, $imgClose){
-    var row = "[data-record-key=" + data.record.Id + "]"; 
-    var tr = placeHolder.jtable('getRowByKey', row);
-    var isChildRowOpen = false;
-
-    
-    if(isChildRowOpen)
-        return $imgClose;
-    else
-        return $imgChild;    
-}
-
-
-
-function getChildNavIcon(data, childTableName, $imgChild, $imgClose){
-    var table = _findTableByElement(data, $imgChild, childTableName);
-    if(table !== null)
-        var className = table.attr('class');
-
-    var tr = $imgChild.closest('.jtable-data-row');
- 
-    var openClassName = _getClassNameOpenChild(data, childTableName);
-    var openRows = $("." + openClassName);
-    var isChildRowOpen = openRows.length > 0;
-    if(isChildRowOpen)
-        return $imgClose;
-    else
-        return $imgChild;    
-}
+//function openCloseChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, type, listParentRowUrl){
+//    var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
+//    var $imgClose = _getImageCloseTag(data, childTableName, type);
+//
+//    $imgChild.click(data, function (event){
+//        _openChildAndUpdateParentIcon(data, $imgChild, childTableDef, childTableName, listParentRowUrl);
+//    });
+//    
+//    $imgClose.click(data, function (event){
+//        closeChildTable(data, tableViewId, childTableName, type, listParentRowUrl);
+//    });    
+//
+//    
+//    var openClassName = _getClassNameOpenChild(data, childTableName);
+//    var tr = $imgChild.closest('tr');
+//    var cName = tr.attr('class');
+//    var isChildRowOpen = false;
+//    if(isChildRowOpen)
+//        return $imgClose;
+//    else
+//        return $imgChild;    
+//}
+//
+//
+//function openChildTable(data, tableViewId, childTableDef, imgFile, tooltip, childTableName, type, listParentRowUrl){
+//    var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
+//
+//    $imgChild.click(data, function (event){
+//        _openChildAndUpdateParentIcon(data, $imgChild, childTableDef, childTableName, listParentRowUrl);
+//        return _getImageCloseTag(data, childTableName, type);
+//    });
+//    return $imgChild;
+//    
+//}
+//
+//
+//function closeChildTable(data, tableViewId, childTableName, type, listParentRowUri){
+//    var $imgClose = _getImageCloseTag(data, childTableName, type);
+//    
+//    $imgClose.click(data, function(event) {
+//        _closeChildAndUpdateParentIcon(data, $imgClose, childTableName, listParentRowUri);
+//    });    
+//    return $imgClose;
+//}
+//
+//
+//
+//function getIcon(data, placeHolder, childTableName, $imgChild, $imgClose){
+//    var row = "[data-record-key=" + data.record.Id + "]"; 
+//    var tr = placeHolder.jtable('getRowByKey', row);
+//    var isChildRowOpen = false;
+//
+//    
+//    if(isChildRowOpen)
+//        return $imgClose;
+//    else
+//        return $imgChild;    
+//}
+//
+//
+//
+//function getChildNavIcon(data, childTableName, $imgChild, $imgClose){
+//    var table = _findTableByElement(data, $imgChild, childTableName);
+//    if(table !== null)
+//        var className = table.attr('class');
+//
+//    var tr = $imgChild.closest('.jtable-data-row');
+// 
+//    var openClassName = _getClassNameOpenChild(data, childTableName);
+//    var openRows = $("." + openClassName);
+//    var isChildRowOpen = openRows.length > 0;
+//    if(isChildRowOpen)
+//        return $imgClose;
+//    else
+//        return $imgChild;    
+//}
 
 
 //********************* private methods *********************

@@ -7,9 +7,17 @@ require_once SARON_ROOT . "app/util/GlobalConstants_php.php";
 $saron = (object)array(); 
 // $saron->success = false; 
 $saron->uri = (object)array();
+$saron->root = (object)array();
 $saron->uri->wp = WP_URI;
 $saron->uri->saron = SARON_URI;
+$saron->root->saron = "/" . SARON_URI;
 $saron->uri->images = SARON_IMAGES_URI;
+$saron->root->images = "/" . SARON_URI . SARON_IMAGES_URI;
+$saron->uri->webapi = SARON_WEBAPI_URI;
+$saron->root->webapi = "/" . SARON_URI . SARON_WEBAPI_URI;
+$saron->uri->pdf = SARON_PDF_URI;
+$saron->root->pdf = "/" . SARON_URI . SARON_PDF_URI;
+
 
 $saron->userrole = (object)array();
 $saron->userrole->viewer = SARON_ROLE_VIEWER;

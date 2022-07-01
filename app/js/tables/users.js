@@ -15,7 +15,7 @@ $(document).ready(function () {
             multiSorting: false,
             defaultSorting: 'AgeInterval ASC', //Set default sorting        
         actions: {
-            listAction:   '/' + saron.uri.saron + 'app/web-api/listUsers.php'
+            listAction:  saron.root.webapi + 'listUsers.php'
         },
         fields: {
             Id: {

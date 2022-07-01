@@ -6,14 +6,13 @@ RECORD, OPTIONS
 
  */
 "use strict";
-const statisticsListUri = 'app/web-api/listStatistics.php';
 
 
 $(document).ready(function () {
     var mainTableViewId = saron.table.statistics.viewid;
     var tablePlaceHolder = $(mainTableViewId);
     tablePlaceHolder.jtable(statisticTableDef(saron.table.statistics.viewid, null, null));    
-    var options = getPostData(null, null, mainTableViewId, saron.source.list, saron.responsetype.records, statisticsListUri);
+    var options = getPostData(null, null, mainTableViewId, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });
@@ -40,7 +39,7 @@ function statisticTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
         multiSorting: true,
         defaultSorting: 'year desc', //Set default sorting        
         actions: {
-            listAction:   '/' + saron.uri.saron + statisticsListUri
+            listAction:   saron.root.webapi + 'listStatistics.php'
         },
         fields: {
             Id: {
@@ -194,7 +193,7 @@ function statisticsDetailTableDef(mainTableViewId, tablePath, newTableTitle, par
         //defaultSorting: 'DateOfBaptism desc, DateOfMembershipStart desc, DateOfMembershipEnd desc, DateOfDeath desc, LastName ASC, FirstName ASC', //Set default sorting        
         showCloseButton: false,
         actions: {
-            listAction:   '/' + saron.uri.saron + statisticsListUri
+            listAction:   saron.root.webapi + 'listStatistics.php'
         },
         fields: {
             Id: { // unic rowId

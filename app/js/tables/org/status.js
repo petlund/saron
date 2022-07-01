@@ -23,8 +23,8 @@ function statusTableDef(tableViewId){
         multiSorting: true,
         defaultSorting: 'Name', //Set default sorting        
         actions: {
-            listAction:   '/' + saron.uri.saron + 'app/web-api/listOrganizationPosStatus.php',
-            updateAction: '/' + saron.uri.saron + 'app/web-api/updateOrganizationPosStatus.php',
+            listAction:   saron.root.webapi  + 'listOrganizationPosStatus.php',
+            updateAction: saron.root.webapi  + 'updateOrganizationPosStatus.php',
         },
         fields: {
             TablePath:{

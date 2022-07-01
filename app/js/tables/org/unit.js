@@ -7,7 +7,6 @@ POS_ENABLED
  */
     
 "use strict";    
-const unitListUri = 'app/web-api/listOrganizationUnit.php';
 
 function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
     var title = 'Organisatoriska enheter';
@@ -35,10 +34,10 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
         defaultSorting: getDefaultUnitSorting(mainTableViewId), //Set default sorting        
         messages: {addNewRecord: 'Lägg till en ny organisatorisk enhet.'},
         actions: {
-            listAction:   '/' + saron.uri.saron + unitListUri,
-            createAction: '/' + saron.uri.saron + 'app/web-api/createOrganizationUnit.php?ParentId=' + parentId,
-            updateAction: '/' + saron.uri.saron + 'app/web-api/updateOrganizationUnit.php',
-            deleteAction: '/' + saron.uri.saron + 'app/web-api/deleteOrganizationUnit.php'
+            listAction:   saron.root.webapi  +  'listOrganizationUnit.php',
+            createAction: saron.root.webapi  +  'createOrganizationUnit.php?ParentId=' + parentId,
+            updateAction: saron.root.webapi  +  'updateOrganizationUnit.php',
+            deleteAction: saron.root.webapi  +  'deleteOrganizationUnit.php'
         }, 
         fields: {
             Id: {
@@ -64,7 +63,7 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                     var tooltip = "";
                     var imgFile = "";
                     var parentId = data.record.Id;
-                    var url = unitListUri;
+                    var url = saron.root.webapi  +  'listOrganizationUnit.php';
                     var type = 0;
                     var clientOnly = false;
 
@@ -122,7 +121,7 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                     var parentId = data.record.Id;
                     var tooltip = "";
                     var imgFile = "";         
-                    var url = unitListUri;
+                    var url = saron.root.webapi  +  'listOrganizationUnit.php';
                     var type = 0;
                     var clientOnly = false;
                     
@@ -173,11 +172,10 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 create: !includedIn(mainTableViewId, saron.table.unittree.viewid),
                 title: 'Överordna verksamhet',
                 options: function(data) {
-//                    if(includedIn(mainTableViewId, saron.table.unitlist.viewid))
-//                        data.record.ParentId=null; //using cache
+                    var url = saron.root.webapi + "listOrganizationUnit.php";
                     var field = null;                    
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, unitListUri);                    
-                    return '/' + saron.uri.saron + unitListUri + parameters;
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);                    
+                    return url + parameters;
                 }                
             },
             Prefix: {
@@ -212,12 +210,10 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 inputTitle: 'Typ av enhet (Kan inte ändras. Vill du ändra behöver du skapa en ny organisatorisk enhet).',
                 width: '5%',
                 options: function (data){
-//                    if(includedIn(mainTableViewId, saron.table.unitlist.viewid))
-//                        data.record.ParentId=null; //using cache
                     var field = null;                    
-                    var uri = 'app/web-api/listOrganizationUnitType.php';
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, uri);                    
-                    return '/' + saron.uri.saron + uri + parameters;
+                    var url = saron.root.webapi + 'listOrganizationUnitType.php';
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);                    
+                    return url + parameters;
                 }
             },
             UpdaterName: {
