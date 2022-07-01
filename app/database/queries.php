@@ -214,11 +214,11 @@
     
     function getPersonSql($tableAlias, $fieldAlias, $continue){
         $sql = "CONCAT(";
-        $sql.= getFieldSql($tableAlias, null, "LastNameEncrypt", " ", true, false);
+        $sql.= getFieldSql($tableAlias, null, "LastNameEncrypt", "", true, false);
         $sql.= ", ' ', "; 
-        $sql.= getFieldSql($tableAlias, null, "FirstNameEncrypt", " ", true, false);
+        $sql.= getFieldSql($tableAlias, null, "FirstNameEncrypt", "", true, false);
         $sql.= ", ' ', "; 
-        $sql.= getFieldSql($tableAlias, null, "DateOfBirth", " ", false, false);
+        $sql.= getFieldSql($tableAlias, null, "DateOfBirth", "", false, false);
         $sql.= ")";
         if(strlen($fieldAlias) > 0){
             $sql.= " AS " . $fieldAlias;
