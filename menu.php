@@ -3,7 +3,6 @@
     header("Pragma: no-cache"); //HTTP 1.0
     header("Expires: 0");
 
-
     require_once "config.php";
     require_once SARON_ROOT . "app/access/SaronCookie.php";
     require_once SARON_ROOT . 'app/entities/SaronUser.php';
@@ -38,6 +37,17 @@
     
     <link rel="stylesheet" type="text/css" href="/<?php echo SARON_URI;?>app/css/saron.css" />
 
+    <?php 
+        $db = new db();
+        try{
+            $saronUser = new SaronUser($db);
+            $saronUser->hasValidSaronSession(REQUIRE_VIEWER_ROLE, REQUIRE_ORG_VIEWER_ROLE, TICKET_RENEWAL_CHECK);
+        }
+        catch(Exception $ex){
+            header("Location: /" . SARON_URI . LOGOUT_URI);
+            exit();                                                
+        }
+    ?>
     <body >
         <table  class='saronMenuTable saronSmallText'>
             <tr>
@@ -53,17 +63,6 @@
                     </div>
                 </td>
             </tr>
-                <?php 
-                    $db = new db();
-                    try{
-                        $saronUser = new SaronUser($db);
-                        $saronUser->hasValidSaronSession(REQUIRE_VIEWER_ROLE, REQUIRE_ORG_VIEWER_ROLE, TICKET_RENEWAL_CHECK);
-                    }
-                    catch(Exception $ex){
-                        header("Location: /" . SARON_URI . LOGOUT_URI);
-                        exit();                                                
-                    }
-                ?>
             <tr>
                 <td colspan="4"><div>
                     <ul id="menu-bar">
