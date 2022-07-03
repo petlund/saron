@@ -25,6 +25,7 @@ class SaronUser{
     private $userDisplayName;
     private $timeStamp;
     private $ticket;
+    private $sessionOK;
     public $WP_ID;
     
     
@@ -59,9 +60,11 @@ class SaronUser{
                     setSaronCookie($newTicket);
                 }
             }
+            $this->sessionOK=true;
             return true;
         }
         catch(Exception $ex){
+            $this->sessionOK=false;
             throw new Exception($this->getErrorMessage("(8) Your session is out of scope. " . $ex));
         }
     }
@@ -301,5 +304,26 @@ class SaronUser{
             $this->db->transaction_end();
             throw new Exception($this->getErrorMessage("(1) Your session is out of scope. " . $ex));
         }
+    }
+    
+    
+    function getLoginHeadLine(){
+        echo "Inloggad som " . $this->getNameAndRole(); 
+    }
+    
+    
+    
+    function getDBConnectHeadLine(){
+    
+        $headline =  "Databas: " . DATABASE;
+        if($this->sessionOK){
+            $headline.= " - Anslutning  OK!";
+            echo $headline;
+        }
+        else{
+            $headline.= " - Anslutning  ERROR!";
+            echo $headline;
+        }
+
     }
 }
