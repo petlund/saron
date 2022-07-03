@@ -16,20 +16,31 @@ require_once SARON_ROOT . "app/util/GlobalConstants_php.php";
 
 
 class SuperEntity {
-    protected $id;
+
     protected $db;
     protected $saronUser;
+
+//  web form data
     protected $groupId;
+
+// jTable Parameter
     protected $jtPageSize;
     protected $jtStartIndex;
     protected $jtSorting;
-    protected $tableView;
+
+// postData and urlParamterData
+    protected $id;
     protected $tableViewId;
-    protected $tablePath;
     protected $parentId;
+    protected $tablePath;
+    protected $source;
     protected $resultType;
+    
+// Only urlParamterData
     protected $field;
 
+//  
+    protected $tableView;
 
     protected function __construct($db, $saronUser) {
         $this->db = $db;
@@ -80,31 +91,16 @@ class SuperEntity {
         if(strlen($this->resultType) === 0){
             $this->resultType = (String)filter_input(INPUT_GET, "ResultType", FILTER_SANITIZE_STRING);
         }
-//        $this->openChildTable = (String)filter_input(INPUT_POST, "OpenChildTable", FILTER_SANITIZE_STRING);
-//        if(strlen($this->openChildTable) === 0){
-//            $this->openChildTable = (String)filter_input(INPUT_GET, "OpenChildTable", FILTER_SANITIZE_STRING);
-//            if(strlen($this->openChildTable) === 0){
-//                $this->openChildTable = false;
-//            }
-//        }
+        $this->source = (String)filter_input(INPUT_POST, "Source", FILTER_SANITIZE_STRING);
+        if(strlen($this->source) === 0){
+            $this->source = (String)filter_input(INPUT_GET, "Source", FILTER_SANITIZE_STRING);
+        }
 
         
     }
 
     
-    
-//    protected function getOpenChildSql($continue = false){
-//        $answ = $this->openChildTable . ' as "OpenChildTable"';
-//        if($continue){
-//            return $answ . ", ";
-//        }
-//        else{
-//            return $answ;            
-//        }
-//    }
-//    
-//    
-//    
+      
     protected function getId($entityId, $clientId){
         if($entityId > 0){
             return $entityId;
