@@ -2,14 +2,14 @@
 "use strict";
 
 $(document).ready(function () {
-    var element = document.getElementById("MOBILE_INSTEAD_OF_EMAIL");
+    var element = document.getElementById(saron.list.mobile_instead_of_email.name);
     if(element === null)
         return;
 
         var head1 = '<div class="saronAugdText">Mobilnummer till personer utan mail.</div><br>';
         var head2 = '<br><br><br><br><div class="saronAugdText">Samma nummer med namn.</div><br>';
 
-        $.get(saron.root.webapi + 'listPeople.php?TableViewId=' + saron.list.mobile_instead_of_email.viewid + '&ResultType=' + saron.responsetype.records, function(text) {
+        $.get(saron.root.webapi + 'listPeople.php?TableViewId=' + saron.list.mobile_instead_of_email.nameId + '&ResultType=' + saron.responsetype.records, function(text) {
         var data = JSON.parse(text);
         var cnt = data.TotalRecordCount;
         var str = head1;

@@ -8,7 +8,7 @@ RECORD, OPTIONS
 "use strict";
 
 $(document).ready(function () {
-    var mainTableViewId = saron.table.pos.viewid;
+    var mainTableViewId = saron.table.pos.nameId;
     var tablePlaceHolder = $(mainTableViewId);
     tablePlaceHolder.jtable(posTableDef(mainTableViewId, saron.table.pos.name, null, null));
     var postData = getPostData(null, mainTableViewId, null, saron.table.pos.name, saron.source.list, saron.responsetype.records);
@@ -86,7 +86,7 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 }                
             },
             SortOrder: {
-                list: !includedIn(mainTableViewId, saron.table.pos.viewid),
+                list: !includedIn(mainTableViewId, saron.table.pos.nameId),
                 create: false,
                 width: '4%',
                 title: 'Sort',
@@ -100,7 +100,7 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
             OrgTree_FK:{                
                 create: false,
                 edit: false,
-                list: includedIn(mainTableViewId, saron.table.pos.viewid),
+                list: includedIn(mainTableViewId, saron.table.pos.nameId),
                 title: "Organisatorisk enhet",
                 options: function(data){
                     var url = saron.root.webapi + 'listOrganizationUnit.php';
@@ -230,15 +230,15 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
             }
         },
         recordAdded: function(event, data){
-//            if(saron.table.pos.viewid !== tableViewId)
+//            if(saron.table.pos.nameId !== tableViewId)
 //                updateParentUnit(tableViewId, data);            
         },
         recordUpdated: function(event, data){
-//            if(saron.table.pos.viewid !== tableViewId)
+//            if(saron.table.pos.nameId !== tableViewId)
 //                updateParentUnit(tableViewId, data);            
         },
         recordDeleted: function(event, data){
-//            if(saron.table.pos.viewid !== tableViewId)
+//            if(saron.table.pos.nameId !== tableViewId)
 //                updateParentUnit(tableViewId, data);            
         },
         rowInserted: function(event, data){
@@ -247,7 +247,7 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
-            if(!includedIn(mainTableViewId, saron.table.unittree.viewid + saron.table.unitlist.viewid)){
+            if(!includedIn(mainTableViewId, saron.table.unittree.nameId + saron.table.unitlist.nameId)){
                 data.row.find('.jtable-delete-command-button').hide();                
             }
             addDialogDeleteListener(data);
@@ -286,7 +286,7 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
 
 function getDefaultPosSorting(tableViewId){
     switch(tableViewId) {
-        case saron.table.pos.viewid:
+        case saron.table.pos.nameId:
             return "OrgTree_FK, SortOrder";
         default:
             return "SortOrder";

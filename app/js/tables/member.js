@@ -6,7 +6,7 @@ RECORD, OPTIONS
 "use strict";
 
 $(document).ready(function () {
-    var mainTableViewId = saron.table.member.viewid;
+    var mainTableViewId = saron.table.member.nameId;
     var tablePlaceHolder = $(mainTableViewId);
     tablePlaceHolder.jtable(memberTableDef(mainTableViewId, null, null, null));
     var options = getPostData(null, mainTableViewId, null, saron.table.member.name, saron.source.list, saron.responsetype.records);
@@ -29,7 +29,7 @@ function memberTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
             showCloseButton: false,
             initParameters: getInitParametes(mainTableViewId, tablePath, parentId),            
             title: title,
-            paging: mainTableViewId[0].includes(saron.table.member.viewid), //Enable paging
+            paging: mainTableViewId[0].includes(saron.table.member.nameId), //Enable paging
             pageSize: 10, //Set page size (default: 10)
             pageList: 'minimal',
             sorting: true, //Enable sorting
@@ -70,7 +70,7 @@ function memberTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 title: 'Namn',
                 width: '15%',
                 edit: false,
-                list: includedIn (mainTableViewId, saron.table.member.viewid),
+                list: includedIn (mainTableViewId, saron.table.member.nameId),
                 display: function (data){
                     return _setClassAndValue(data, "Name", PERSON);
                 }       
@@ -84,7 +84,7 @@ function memberTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 width: '7%',
                 edit: false,
                 type: 'date',
-                list: includedIn (mainTableViewId, saron.table.member.viewid),
+                list: includedIn (mainTableViewId, saron.table.member.nameId),
                 displayFormat: DATE_FORMAT,
                 display: function (data){
                     return _setClassAndValue(data, "DateOfBirth", PERSON);

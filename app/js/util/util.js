@@ -439,7 +439,7 @@ function getURLParameters(id, tableViewId, parentId, tablePath, source, resultTy
     
 
 
-    function getPostData(id, tableViewId, parentId, tablePath, source, resultType){
+    function getPostData(id, tableName, parentId, tablePath, source, resultType){
         if(parentId === null){        
             parentId = -1;
         }
@@ -458,7 +458,7 @@ function getURLParameters(id, tableViewId, parentId, tablePath, source, resultTy
         
         var options = {Id:id, 
                         ParentId:parentId, 
-                        TableViewId:tableViewId, 
+                        TableName:tableName, 
                         TablePath:tablePath, 
                         Source:source, 
                         ResultType:resultType

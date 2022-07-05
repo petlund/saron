@@ -1,5 +1,11 @@
+/* global 
+saron
+
+ */
 "use strict";
+
 function createAgeHistogram(){
+    
     var chartsMeta = '{' +
                         '"charts":[' +
                             '{"id":"memberAge1","label":"Åldersfördelning [Antal/åldersgrupp]"},' +
@@ -18,9 +24,9 @@ function createAgeHistogram(){
 
     addTableCells("HistogramChart", 1, jsonChartsMeta);
     $.ajax({
-        url: saron.root.webapi + 'listStatistics.php?TablePath=demographicHistogram'
+        url: saron.root.webapi + 'listStatistics.php?TablePath=' + saron.graph.histogram.name
     }).then(function(data) {
-        chartData = JSON.parse(data);      
+        var chartData = JSON.parse(data);      
         for(var i=0; i< jsonChartsMeta.charts.length; i++)              
             createMembershipBarChart(chartData.Results[i], jsonChartsMeta.charts[i]);
     });    

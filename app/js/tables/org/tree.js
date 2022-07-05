@@ -8,7 +8,7 @@ RECORD, OPTIONS
 "use strict";
     
 $(document).ready(function () {
-    var mainTableViewId = saron.table.unittree.viewid;
+    var mainTableViewId = saron.table.unittree.nameId;
     var tablePlaceHolder = $(mainTableViewId);
     tablePlaceHolder.jtable(unitTableDef(mainTableViewId, saron.table.unittree.name,  null, null)); //-1 => null parent === topnode
     var options = getPostData(null, mainTableViewId, null, saron.table.unittree.name, saron.source.list, saron.responsetype.records);

@@ -4,6 +4,7 @@ header("Cache-Control: no-cache, must-revalidate");
     header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
     require_once "config.php";
     require_once SARON_ROOT . "menu.php";
+    require_once SARON_ROOT . "app/util/TableName.php";
 
 ?>
 <html>   
@@ -20,9 +21,9 @@ header("Cache-Control: no-cache, must-revalidate");
             <tr class='saronSmallText saronFilter'>
                 <td class="saronFilter">
                     Söksträng:
-                    <input type="text" name="searchString" id="searchString" oninput="filterPeople('<?php include('../util/viewId.php'); ECHO '\', false, \'' . TABLE_NAME_ENGAGEMENT;?>');"/>
+                    <input type="text" name="searchString" id="searchString" oninput="filterPeople('<?php echo getTableName(); ECHO '\', false, \'' . TABLE_NAME_ENGAGEMENT;?>');"/>
                 </TD>
         </table>
-        <div id="<?php include('../util/viewId.php');?>"></div>
+        <div id="<?php echo getTableName();?>"></div>
     </body>
 </html> 

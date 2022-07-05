@@ -6,7 +6,7 @@
     require_once "config.php";
     require_once SARON_ROOT . "app/access/SaronCookie.php";
     require_once SARON_ROOT . 'app/entities/SaronUser.php';
-    require_once SARON_ROOT . "app/database/ping.php";
+    require_once SARON_ROOT . 'app/util/menyLink.php';
    
 ?>  
 <!doctype html>
@@ -51,11 +51,11 @@
     <body >
         <table  class='saronMenuTable saronSmallText'>
             <tr>
-                <td style='text-align: left'><?php echo ping()?>
+                <td style='text-align: left'><?php echo $saronUser->getDBConnectHeadLine();?>
                 </td>
                 <td>
                 </td>
-                <td style='text-align: right'><?php include("app/util/userDisplay.php")?>
+                <td style='text-align: right'><?php echo $saronUser->getLoginHeadLine();?>
                 </td>
                 <td style='width: 20px'>
                     <div id="timerProgress">
@@ -72,12 +72,12 @@
                         <li>
                             <a href="#">Register</a>
                             <ul>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/people.php?TableView=people">Personuppgifter</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/people.php?TableView=baptist"> - Dopuppgifter</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/people.php?TableView=member"> - Medlemsuppgifter</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/people.php?TableView=keys"> - Nyckelinnehav</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/homes.php?TableView=homes">Hem</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/people.php?TableView=total">Registeröversikt</a></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"people.php", TABLE_NAME_PEOPLE, "Personuppgifter");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"people.php", TABLE_NAME_BAPTIST, " - Dopuppgifter");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"people.php", TABLE_NAME_MEMBER, " - Medlemsuppgifter");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"people.php", TABLE_NAME_KEYS, " - Nyckelinnehav");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"homes.php",  TABLE_NAME_HOMES, "Hem");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"people.php", TABLE_NAME_TOTAL, "Registeröversikt");?></li>
                             </ul>
                         </li>
                         <li>
@@ -86,11 +86,11 @@
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/DirectoryReport.php" target="_blank">Adresskalender (pdf-fil)</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>data/Organisationskalender.pdf" target="_blank">Organisationskalender beslutad (pdf-fil)</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/BaptistDirectoryReport.php" target="_blank">Dopregister (pdf-fil)</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/people.php?TableView=birthdays">Födelsedagslista</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/lists.php?TableView=EMAIL_LIST">Mailadresser</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/lists.php?TableView=MOBILE_INSTEAD_OF_EMAIL">Mobilnummer (Hem utan mail)</a></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"people.php", TABLE_NAME_BIRTHDAY, "Födelsedagslista");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"lists.php", LIST_EMAIL, "Mailadresser");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"lists.php", LIST_MOBILE_INSTEAD_OF_EMAIL, "Mobilnummer för saknade emailadresser");?></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/DossierReport.php" target="_blank">Godkännande personuppgifter (pdf-fil för alla i registret)</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/users.php">Användare</a></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"users.php", TABLE_NAME_USERS, "Användare");?></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/AddressLabels.php?type=9x3" target="_empty">Adressetiketter 9x3 (pdf-fil)</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/AddressLabels.php?type=6x3" target="_empty">Adressetiketter 6x3 (pdf-fil)</a></li>
                             </ul>
@@ -98,9 +98,9 @@
                         <li>
                             <a href="/<?php echo SARON_URI;?>app/views/test.php">Medlemsstatistik</a>
                             <ul>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/statistics.php">Medlemsstatistik</a></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"statistics.php", TABLE_NAME_STATISTICS, "Medlemsstatistik");?></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/charts.php">Medlemsstatistik grafik</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/efk.php">EFK-statistik</a></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"efk.php", TABLE_NAME_EFK, "EFK-statistik");?></li>
                             </ul>
                         </li>
                         <li>
@@ -108,16 +108,17 @@
                             <ul>
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/OrganizationReport.php?type=proposal" target="_blank">Organisationskalender förslag(pdf-fil)</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/OrganizationReport.php?type=vacancy" target="_blank">Organisationskalender vakanser(pdf-fil)</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/engagement.php?TableView=ORG_ENGAGEMENT">Ansvar per person</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?TableView=ORG_UNITTREE">Organisationsträd</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?TableView=ORG_UNITLIST">Organisationslista</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?TableView=ORG_POS">Positioner</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?TableView=ORG_ROLE">Roller</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?TableView=ORG_UNITTYPE">Organisatoriska enhetstyper</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?TableView=ORG_ROLE_STATUS">Bemanningsstatus</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?TableView=MEMBER_STATE">Medlemsstatus</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?TableView=ORG_VERSION">Beslut om organisation</a></li>
-                            <!--    <li><a href="/<?php echo SARON_URI;?>app/views/organization.php?TableView=ORG_GRAPH">Grafisk presentation</a></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"engagement.php", TABLE_NAME_ENGAGEMENT, "Ansvar per person");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_UNITTREE, "Organisationsträd");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_UNITLIST, "Organisationslista");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_POS, "Positioner");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_ROLE, "Roller");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_UNITTYPE, "Organisatoriska enhetstype");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_ORG_ROLE_STATUS, "Bemanningsstatus");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_ORG_MEMBER_STATE, "Medlemsstatus");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_ORGVERSION, "Beslut om organisation");?></li>
+                            <!-- 
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", ORG_GRAPH, " --Grafisk presentation");?></li>
                             -->
                             </ul>
                         </li>

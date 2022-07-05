@@ -55,7 +55,7 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 edit: false,
                 create: false,
                 delete: false,
-                list: includedIn(mainTableViewId, saron.table.unittree.viewid),
+                list: includedIn(mainTableViewId, saron.table.unittree.nameId),
                 
                 display: function (data) {
                     var childTableTitle = 'Enhetstypen "' + data.record.Name + '" har följande underenheter';
@@ -167,9 +167,9 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 }
             },
             ParentTreeNode_FK:{
-                list: false, //includedIn(mainTableViewId, saron.table.unitlist.viewid),
+                list: false, //includedIn(mainTableViewId, saron.table.unitlist.nameId),
                 edit: true, 
-                create: !includedIn(mainTableViewId, saron.table.unittree.viewid),
+                create: !includedIn(mainTableViewId, saron.table.unittree.nameId),
                 title: 'Överordna verksamhet',
                 options: function(data) {
                     var url = saron.root.webapi + "listOrganizationUnit.php";
@@ -192,13 +192,13 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 title: "Sökväg",
                 create: false,
                 edit: false,
-                list: includedIn(mainTableViewId, saron.table.role.viewid + saron.table.unittype.viewid + saron.table.unitlist.viewid)
+                list: includedIn(mainTableViewId, saron.table.role.nameId + saron.table.unittype.nameId + saron.table.unitlist.nameId)
             },
 //            SubUnits: {
 //                title: "Underenheter",
 //                create: false,
 //                edit: false,
-//                list: includedIn(mainTableViewId, saron.table.role.viewid + saron.table.unittype.viewid + saron.table.unitlist.viewid)
+//                list: includedIn(mainTableViewId, saron.table.role.nameId + saron.table.unittype.nameId + saron.table.unitlist.nameId)
 //            },
             Description: {
                 width: '15%',
@@ -257,14 +257,14 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
         recordsLoaded: function(event, data) {
             var addButton = $(event.target).find('.jtable-toolbar-item-add-record');
 
-            if(includedIn(mainTableViewId, saron.table.unittree.viewid + saron.table.unitlist.viewid))
+            if(includedIn(mainTableViewId, saron.table.unittree.nameId + saron.table.unitlist.nameId))
                 if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org') 
                     addButton.show();
         },        
         loadingRecords: function(event, data) {
             var addButton = $(event.target).find('.jtable-toolbar-item-add-record');
 
-            if(includedIn(mainTableViewId, saron.table.unittree.viewid + saron.table.unitlist.viewid))
+            if(includedIn(mainTableViewId, saron.table.unittree.nameId + saron.table.unitlist.nameId))
                 addButton.show();
             else
                 addButton.hide();
@@ -293,7 +293,7 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
 
 function getDefaultUnitSorting(currentTableId){
     switch(currentTableId) {
-        case saron.table.unittree.viewid:
+        case saron.table.unittree.nameId:
             return "Prefix, Name";
         default:
             return "Name";

@@ -1,15 +1,15 @@
 /* global DATE_FORMAT, 
 saron, 
 inputFormWidth, inputFormFieldWidth, 
-saron.table.org_role_status.viewid, saron.table.org_role_status.name
+saron.table.org_role_status.nameId, saron.table.org_role_status.name
 */
 
 "use strict";
     
 $(document).ready(function () {
 
-    $(saron.table.org_role_status.viewid).jtable(statusTableDef(saron.table.org_role_status.viewid));
-    $(saron.table.org_role_status.viewid).jtable('load');
+    $(saron.table.org_role_status.nameId).jtable(statusTableDef(saron.table.org_role_status.nameId));
+    $(saron.table.org_role_status.nameId).jtable('load');
     }
 );
 

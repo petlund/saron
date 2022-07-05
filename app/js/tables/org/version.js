@@ -5,9 +5,9 @@
 
     
 $(document).ready(function () {
-    $(saron.table.orgversion.viewid).jtable(orgVersionTableDef());
-    $(saron.table.orgversion.viewid).jtable('load');
-    $(saron.table.orgversion.viewid).find('.jtable-toolbar-item-add-record').hide();
+    $(saron.table.orgversion.nameId).jtable(orgVersionTableDef());
+    $(saron.table.orgversion.nameId).jtable('load');
+    $(saron.table.orgversion.nameId).find('.jtable-toolbar-item-add-record').hide();
 });
 
 
@@ -75,7 +75,7 @@ function orgVersionTableDef(){
 
             if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
                 addButton.show();
-                $(saron.table.orgversion.viewid).find('.jtable-edit-command-button').show();
+                $(saron.table.orgversion.nameId).find('.jtable-edit-command-button').show();
             }
         },        
         formCreated: function (event, data){

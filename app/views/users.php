@@ -4,6 +4,7 @@ header("Pragma: no-cache"); //HTTP 1.0
 header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 require_once 'config.php'; 
 require_once SARON_ROOT . "menu.php";
+require_once SARON_ROOT . "app/util/TableName.php";
 
     
 ?>
@@ -17,6 +18,6 @@ require_once SARON_ROOT . "menu.php";
         <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "users.js");?>"></script>     
         <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/jquery.jtable.js"></script>
         <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/localization/jquery.jtable.se.js"></script>                  
-        <div id="USERS"></div> 
+        <div id="<?php echo getTableName();?>"></div>        
     </body>
 </html>

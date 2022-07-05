@@ -4,9 +4,9 @@ DATE_FORMAT
 "use strict";
     
 $(document).ready(function () {
-    $(saron.table.news.viewid).jtable(newsTableDef());
-    $(saron.table.news.viewid).jtable('load');
-    $(saron.table.news.viewid).find('.jtable-toolbar-item-add-record').hide();
+    $(saron.table.news.nameId).jtable(newsTableDef());
+    $(saron.table.news.nameId).jtable('load');
+    $(saron.table.news.nameId).find('.jtable-toolbar-item-add-record').hide();
 });
 
 
@@ -72,7 +72,7 @@ function newsTableDef(){
         },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
-                $(saron.table.news.viewid).find('.jtable-toolbar-item-add-record').show();
+                $(saron.table.news.nameId).find('.jtable-toolbar-item-add-record').show();
             }
         },        
         formCreated: function (event, data){

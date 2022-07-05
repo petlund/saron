@@ -7,7 +7,7 @@ saron
 "use strict";
 
 $(document).ready(function () {
-    const mainTablePlaceHolder = $(saron.table.users.viewid);
+    const mainTablePlaceHolder = $(saron.table.users.nameId);
     mainTablePlaceHolder.jtable(test(mainTablePlaceHolder, 'TEST'));
     mainTablePlaceHolder.jtable('load');
 });

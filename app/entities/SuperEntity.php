@@ -30,7 +30,7 @@ class SuperEntity {
 
 // postData and urlParamterData
     protected $id;
-    protected $tableViewId;
+    protected $tableName;
     protected $parentId;
     protected $tablePath;
     protected $source;
@@ -60,17 +60,9 @@ class SuperEntity {
 
         
         // POST for table load and GET for Options
-        $this->tableViewId = (String)filter_input(INPUT_POST, "TableViewId", FILTER_SANITIZE_STRING);    
-        if(strlen($this->tableViewId) === 0){
-            $this->tableViewId = (String)filter_input(INPUT_GET, "TableViewId", FILTER_SANITIZE_STRING);    
-        }
-        if(strlen($this->tableViewId) > 0){
-            if(substr($this->tableViewId, 0, 1) === "#"){
-                $this->tableView = substr($this->tableViewId, 1, strlen($this->tableViewId));
-            }
-            else{
-                $this->tableView = $this->tableViewId;
-            }
+        $this->tableName = (String)filter_input(INPUT_POST, "TableName", FILTER_SANITIZE_STRING);    
+        if(strlen($this->tableName) === 0){
+            $this->tableName = (String)filter_input(INPUT_GET, "TableName", FILTER_SANITIZE_STRING);    
         }
         
         $this->field = (String)filter_input(INPUT_GET, "Field", FILTER_SANITIZE_STRING);
@@ -117,11 +109,11 @@ class SuperEntity {
     protected function getSortSql(){
         $sqlOrderBy = "";
         if($this->groupId === 2 and 
-                ($this->tableView === TABLE_VIEW_PEOPLE or 
-                $this->tableView === TABLE_VIEW_MEMBER or 
-                $this->tableView === TABLE_VIEW_BAPTIST or 
-                $this->tableView === TABLE_VIEW_KEYS or
-                $this->tableView === TABLE_VIEW_TOTAL)
+                ($this->tableView === TABLE_NAME_PEOPLE or 
+                $this->tableView === TABLE_NAME_MEMBER or 
+                $this->tableView === TABLE_NAME_BAPTIST or 
+                $this->tableView === TABLE_NAME_KEYS or
+                $this->tableView === TABLE_NAME_TOTAL)
             ){
             $sqlOrderBy = "ORDER BY Updated desc ";            
         }

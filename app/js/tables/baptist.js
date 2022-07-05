@@ -1,15 +1,15 @@
 /* global DATE_FORMAT, PERSON, saron, 
  inputFormWidth, inputFormFieldWidth, 
  ORG, RECORD, saron.responsetype.records, OPTIONS,
-saron.table.baptist.viewid, saron.table.baptist.name
+saron.table.baptist.nameId, saron.table.baptist.name
  */
 "use strict"; 
 
 $(document).ready(function () {
-    var mainTableViewId = saron.table.baptist.viewid;
+    var mainTableViewId = saron.table.baptist.nameId;
     var tablePlaceHolder = $(mainTableViewId);
     tablePlaceHolder.jtable(baptistTableDef(mainTableViewId, null, null));
-    var options = getPostData(null, mainTableViewId, saron.table.baptist.viewid, saron.table.baptist.name, saron.source.list, null, saron.responsetype.records);
+    var options = getPostData(null, saron.table.baptist.name, null, saron.table.baptist.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });  
@@ -31,7 +31,7 @@ function baptistTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
         title:title,
         initParameters: getInitParametes(mainTableViewId, tablePath, parentId),            
         showCloseButton: false,
-        paging: mainTableViewId[0].includes(saron.table.baptist.viewid), //Enable paging
+        paging: mainTableViewId[0].includes(saron.table.baptist.nameId), //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
         sorting: true, //Enable sorting
@@ -59,7 +59,7 @@ function baptistTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 title: 'Namn',
                 width: '15%',
                 edit: false,
-                list: includedIn (mainTableViewId, saron.table.baptist.viewid),
+                list: includedIn (mainTableViewId, saron.table.baptist.nameId),
                 display: function (data){
                     return _setClassAndValue(data, "Name", PERSON);
                 }       
@@ -68,7 +68,7 @@ function baptistTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 title: 'Född',
                 width: '7%',
                 type: 'date',
-                list: includedIn (mainTableViewId, saron.table.baptist.viewid),
+                list: includedIn (mainTableViewId, saron.table.baptist.nameId),
                 displayFormat: DATE_FORMAT,
                 edit: false,
                 display: function (data){

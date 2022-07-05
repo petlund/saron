@@ -12,10 +12,10 @@ $(document).ready(function () {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
 
-    var mainTableViewId = saron.table.people.viewid;
+    var mainTableViewId = saron.table.people.nameId;
     var tablePlaceHolder = $(mainTableViewId);
     tablePlaceHolder.jtable(peopleTableDef(mainTableViewId, null, null, null));
-    var options = getPostData(null, mainTableViewId, null, saron.table.people.name, saron.source.list, saron.responsetype.records);
+    var options = getPostData(null, saron.table.people.name, null, saron.table.people.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });
@@ -35,7 +35,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
         title:title,
         initParameters: getInitParametes(mainTableViewId, tablePath, parentId),
         showCloseButton: false,
-        paging: mainTableViewId.includes(saron.table.people.viewid), //Enable paging
+        paging: mainTableViewId.includes(saron.table.people.nameId), //Enable paging
         pageList: 'minimal',
         sorting: true,
         multiSorting: true,
@@ -56,7 +56,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                                 var groupId = 12;
                                 $("#groupId").val(groupId);
                                 $("#searchString").val(data.Record.LastName);
-                                var options = {searchString: data.Record.LastName, groupId:groupId, TableView: getTableView(saron.table.people.viewid), TablePath: tableName};
+                                var options = {searchString: data.Record.LastName, groupId:groupId, TableView: getTableView(saron.table.people.nameId), TablePath: tableName};
 
                                 $(mainTableViewId).jtable('load', options, function (){
 //                                    if(data.Record.HomeId > 0)
@@ -495,7 +495,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
             var addButton = $(event.target).find('.jtable-toolbar-item-add-record');
 
             if(data.serverResponse.user_role === saron.userrole.editor){
-                if(mainTableViewId !== saron.table.statistics.viewid){
+                if(mainTableViewId !== saron.table.statistics.nameId){
                     addButton.show();
                 }
             }

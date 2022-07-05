@@ -10,7 +10,7 @@ RECORD, OPTIONS
 "use strict";
 
 $(document).ready(function () {
-    var mainTableViewId = saron.table.unittype.viewid;
+    var mainTableViewId = saron.table.unittype.nameId;
     var tablePlaceHolder = $(mainTableViewId);
     tablePlaceHolder.jtable(unitTypeTableDef(mainTableViewId, null, null, null));
     var postData = getPostData(null, mainTableViewId, null, saron.table.unittype.name, saron.source.list, saron.responsetype.records);
@@ -68,7 +68,7 @@ function unitTypeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 edit: false,
                 sorting: false,
                 create: false,
-                list: includedIn(mainTableViewId, saron.table.unittype.viewid),
+                list: includedIn(mainTableViewId, saron.table.unittype.nameId),
                 display: function(data){
                     var childTableName = saron.table.unit.name;
                     var childTableTitle = 'Enhetstypen "' + data.record.Name + '" används för nedanstående organisatoriska enheter';                            
@@ -103,7 +103,7 @@ function unitTypeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 create: false,
                 sorting: false,
                 edit: false,   
-                list: includedIn(mainTableViewId, saron.table.unittype.viewid),
+                list: includedIn(mainTableViewId, saron.table.unittype.nameId),
                 display: function(data){
                     var childTableName = saron.table.role.name;
                     var childTableTitle = 'Enhetstypen "' + data.record.Name + '" har följande roller';

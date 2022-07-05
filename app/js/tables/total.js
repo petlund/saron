@@ -1,16 +1,16 @@
 /* global saron, 
 DATE_FORMAT, PERSON, HOME, PERSON_AND_HOME, OLD_HOME,  
 inputFormWidth, inputFormFieldWidth, FullNameOfCongregation, NO_HOME, NEW_HOME_ID,
-saron.table.total.name, saron.table.total.viewid
+saron.table.total.name, saron.table.total.nameId
 */
 
 "use strict";
 
 $(document).ready(function () {
-    var mainTableViewId = saron.table.total.viewid;
+    var mainTableViewId = saron.table.total.nameId;
     var tablePlaceHolder = $(mainTableViewId);
-    tablePlaceHolder.jtable(totalTableDef(saron.table.total.viewid, null));
-    var options = getPostData(null, mainTableViewId, null, saron.table.total.name, saron.source.list, saron.responsetype.records);
+    tablePlaceHolder.jtable(totalTableDef(saron.table.total.nameId, null));
+    var options = getPostData(null, saron.table.total.name, null, saron.table.total.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
 
 });
@@ -55,7 +55,7 @@ function totalTableDef(tableViewId, tablePath, newTableTitle, parentId){
             },
             TablePath:{
                 type: 'hidden',
-                defaultValue: tableName
+                defaultValue: saron.table.total.name
             },
             PDF: {
                 title: 'Pdf',

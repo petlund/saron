@@ -34,10 +34,10 @@ class People extends SuperEntity{
                 return $this->selectNextMembershipNo();       
             }
         case RECORDS:
-            switch ($this->tableView){
-                case MOBILE_INSTEAD_OF_EMAIL:
+            switch ($this->tableName){
+                case LIST_MOBILE_INSTEAD_OF_EMAIL:
                     return $this->selectMobile();       
-                case EMAIL_LIST:
+                case LIST_EMAIL:
                     return $this->selectEmail();       
                 default:
                     return $this->selectPeople();       
@@ -52,7 +52,7 @@ class People extends SuperEntity{
         $id = $this->getId($idFromCreate, $this->id);
 
         $tw = new PeopleViews();
-        $sqlSelect = $tw->getPeopleViewSql($this->tableView, $this->saronUser) .", ";
+        $sqlSelect = $tw->getPeopleViewSql($this->tableName, $this->saronUser) .", ";
         $sqlSelect.= $this->homes->getHomeSelectSql(ALIAS_CUR_HOMES, "Homes.Id", false);
         
         if(strlen($this->tablePath) >0){

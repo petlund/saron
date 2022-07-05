@@ -56,8 +56,8 @@ function role_role_unitType_TableDef(mainTableViewId, tablePath, newTableTitle, 
                 type: 'hidden'
             },
             OrgUnitType_FK: {
-                list: mainTableViewId.includes(saron.table.role.viewid),
-                create: mainTableViewId.includes(saron.table.role.viewid),
+                list: mainTableViewId.includes(saron.table.role.nameId),
+                create: mainTableViewId.includes(saron.table.role.nameId),
                 edit: false,
                 title: 'Enhetstyp',
                 width: '50%',
@@ -70,8 +70,8 @@ function role_role_unitType_TableDef(mainTableViewId, tablePath, newTableTitle, 
                 }
             },
             OrgRole_FK: {
-                list: mainTableViewId.includes(saron.table.unittype.viewid),
-                create: mainTableViewId.includes(saron.table.unittype.viewid),
+                list: mainTableViewId.includes(saron.table.unittype.nameId),
+                create: mainTableViewId.includes(saron.table.unittype.nameId),
                 edit: false,
                 title: 'Roll',
                 width: '50%',
@@ -84,9 +84,9 @@ function role_role_unitType_TableDef(mainTableViewId, tablePath, newTableTitle, 
                 }
             },
             SortOrder: {
-                list: mainTableViewId.includes(saron.table.unittype.viewid),
-                edit: mainTableViewId.includes(saron.table.unittype.viewid),
-                create: mainTableViewId.includes(saron.table.unittype.viewid),
+                list: mainTableViewId.includes(saron.table.unittype.nameId),
+                edit: mainTableViewId.includes(saron.table.unittype.nameId),
+                create: mainTableViewId.includes(saron.table.unittype.nameId),
                 title: 'Sortering',
                 width: '5%',
                 display: function (data){
@@ -110,7 +110,7 @@ function role_role_unitType_TableDef(mainTableViewId, tablePath, newTableTitle, 
             }
         },
         recordUpdated(event, data){
-            if(mainTableViewId.includes(saron.table.role.viewid))
+            if(mainTableViewId.includes(saron.table.role.nameId))
                 data.row.find('.jtable-edit-command-button').hide();
 
             if (data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org'){
@@ -119,7 +119,7 @@ function role_role_unitType_TableDef(mainTableViewId, tablePath, newTableTitle, 
             }            
         },
         rowInserted: function(event, data){
-            if(mainTableViewId.includes(saron.table.role.viewid))
+            if(mainTableViewId.includes(saron.table.role.nameId))
                 data.row.find('.jtable-edit-command-button').hide();
 
             if (data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org'){
@@ -153,7 +153,7 @@ function role_role_unitType_TableDef(mainTableViewId, tablePath, newTableTitle, 
 
 
 function getDefaultSorting(mainTableViewId){
-    if(mainTableViewId.includes(saron.table.unittype.viewid))
+    if(mainTableViewId.includes(saron.table.unittype.nameId))
         return 'SortOrder';
     else
         return 'OrgUnitType_FK';                    
@@ -161,8 +161,8 @@ function getDefaultSorting(mainTableViewId){
 
 
 function getMessageAddNewRecord(mainTableViewId){
-    if(mainTableViewId.includes(saron.table.unittype.viewid))
+    if(mainTableViewId.includes(saron.table.unittype.nameId))
         return {addNewRecord: 'Koppla roll till enhetstypen'};
-    if(mainTableViewId.includes(saron.table.role.viewid))
+    if(mainTableViewId.includes(saron.table.role.nameId))
         return {addNewRecord: 'Koppla enhetstyp till rollen'};
 }

@@ -9,10 +9,10 @@ RECORD, OPTIONS
 
 
 $(document).ready(function () {
-    var mainTableViewId = saron.table.statistics.viewid;
+    var mainTableViewId = saron.table.statistics.nameId;
     var tablePlaceHolder = $(mainTableViewId);
-    tablePlaceHolder.jtable(statisticTableDef(saron.table.statistics.viewid, null, null));    
-    var options = getPostData(null, null, mainTableViewId, saron.source.list, saron.responsetype.records);
+    tablePlaceHolder.jtable(statisticTableDef(saron.table.statistics.nameId, null, null));    
+    var options = getPostData(null, saron.table.statistics.name, null,  saron.table.statistics.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });

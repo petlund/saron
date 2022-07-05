@@ -4,21 +4,21 @@ require_once SARON_ROOT . 'app/database/queries.php';
 
 class PeopleViews {
     
-    function getPeopleViewSql($tableview, $saronUser){
-        switch ($tableview){
-        case TABLE_VIEW_PEOPLE:
+    function getPeopleViewSql($tableName, $saronUser){
+        switch ($tableName){
+        case TABLE_NAME_PEOPLE:
             return $this->selectPeople() . ", " . $this->selectNoOfEngagements() . ', ' . $saronUser->getRoleSql(false);
-        case TABLE_VIEW_STATISTICS:
+        case TABLE_NAME_STATISTICS:
             return $this->selectPeople() . ", " . $this->selectNoOfEngagements() . ', ' . $saronUser->getRoleSql(false);
-        case TABLE_VIEW_BIRTHDAY:
+        case TABLE_NAME_BIRTHDAY:
             return $this->selectBirthday();
-        case TABLE_VIEW_MEMBER:
+        case TABLE_NAME_MEMBER:
             return SQL_STAR_PEOPLE . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . DATES_AS_ALISAS_MEMBERSTATES . ", " . $saronUser->getRoleSql(false);
-        case TABLE_VIEW_BAPTIST:
+        case TABLE_NAME_BAPTIST:
             return SQL_STAR_PEOPLE . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . DATES_AS_ALISAS_MEMBERSTATES .  ", " . $saronUser->getRoleSql(false);
-        case TABLE_VIEW_KEYS:
+        case TABLE_NAME_KEYS:
             return "Select People.Id as Id, KeyToExp, KeyToChurch, DateOfBirth, " . DECRYPTED_ALIAS_COMMENT_KEY . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . DATES_AS_ALISAS_MEMBERSTATES  . ", " . $saronUser->getRoleSql(false);
-        case TABLE_VIEW_TOTAL:
+        case TABLE_NAME_TOTAL:
             return $this->selectTotal() . ", " . $saronUser->getRoleSql(false);
         default:    
             return $this->selectPeople() . ", " . $saronUser->getRoleSql(false);

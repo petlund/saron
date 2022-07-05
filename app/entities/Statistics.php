@@ -11,7 +11,7 @@ class Statistics extends SuperEntity{
     
     function select(){
         switch ($this->tablePath){
-        case "demographicHistogram":
+        case GRAPH_NAME_HISTOGRAM:
             return $this->selectDemographicHistogram();       
         case TABLE_NAME_STATISTICS:
             return $this->selectDefault();
@@ -77,6 +77,8 @@ class Statistics extends SuperEntity{
         $id = $this->getId($idFromCreate, $this->id);
 
         $curYear = $this->parentId;
+
+        $where = "";
 
         if($id < 0){
             $rec = RECORDS;
@@ -184,7 +186,9 @@ class Statistics extends SuperEntity{
                 $sqlInterval = $sqlWhereInterval . ">= " . $minAge;
             }
         }
-        $sqlCount = "count(*) as Amount from People where ";
+        $sqlCount = "count(*) as Amount, ";
+        $sqlCount.= $this->getTablePathSql(false);
+        $sqlCount.="from People where ";
         $sqlCount.= "extract(year from now()) > extract(year from DateOfMembershipStart) and ";
         $sqlCount.= "(extract(year from now()) = extract(year from DateOfMembershipEnd) or DateOfMembershipEnd is null)"; 
 

@@ -8,7 +8,7 @@ saron
 "use strict";
 
 $(document).ready(function () {
-    var mainTableViewId = saron.table.role.viewid;
+    var mainTableViewId = saron.table.role.nameId;
     var tablePlaceHolder = $(mainTableViewId);
     tablePlaceHolder.jtable(roleTableDef(mainTableViewId, null, null, null));
     var postData = getPostData(null, mainTableViewId, null, saron.table.role.name, saron.source.list, saron.responsetype.records);
@@ -68,7 +68,7 @@ function roleTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 create: false,
                 title: "Används",
                 edit: false,
-                list: includedIn(mainTableViewId, saron.table.role.viewid),
+                list: includedIn(mainTableViewId, saron.table.role.nameId),
                 sorting: false,
                 display: function(data){
                     var childTableName = saron.table.unit.name;
@@ -109,7 +109,7 @@ function roleTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 create: false,
                 title: "Ingår i",
                 edit: false,
-                list: includedIn(mainTableViewId, saron.table.role.viewid),
+                list: includedIn(mainTableViewId, saron.table.role.nameId),
                 sorting: false,
                 display: function(data){
                     var childTableName = saron.table.unittype.name;

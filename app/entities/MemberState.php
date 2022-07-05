@@ -17,24 +17,24 @@ class MemberState extends SuperEntity{
     }
     
     
-   function select($id = -1, $rec = RECORDS){
-        switch ($this->selection){
-        case "options":
+   function select($id = -1){
+        switch ($this->resultType){
+        case OPTIONS:
             return $this->selectAsOptions();       
         default:
-            return $this->selectDefault($id, $rec);
+            return $this->selectDefault($id);
         }
     }
     
     
-    function selectDefault($id = -1, $rec=RECORDS){
+    function selectDefault($id){
         $select = "SELECT *, " . $this->saronUser->getRoleSql(false) . " ";
         if($id < 0){
-            $result = $this->db->select($this->saronUser, $select , "FROM MemberState ", "", $this->getSortSql(), $this->getPageSizeSql(), $rec);    
+            $result = $this->db->select($this->saronUser, $select , "FROM MemberState ", "", $this->getSortSql(), $this->getPageSizeSql(), RECORDS);    
             return $result;
         }
         else{
-            $result = $this->db->select($this->saronUser, $select , "FROM MemberState ", "WHERE Id = " . $id . " ", $this->getSortSql(), $this->getPageSizeSql(), $rec);        
+            $result = $this->db->select($this->saronUser, $select , "FROM MemberState ", "WHERE Id = " . $id . " ", $this->getSortSql(), $this->getPageSizeSql(), RECORD);        
             return $result;
         }
     }
@@ -47,17 +47,6 @@ class MemberState extends SuperEntity{
     }
     
 
-//    function insert(){
-//        $sqlInsert = "INSERT INTO News (information, writer) ";
-//        $sqlInsert.= "VALUES (";
-//        $sqlInsert.= "'" . $this->information . "', ";
-//        $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "')";
-//        
-//        $id = $this->db->insert($sqlInsert, "News", "id");
-//        $result =  $this->select($id, RECORD);
-//        return $result;
-//    }
-    
     
     function update(){
         $update = "UPDATE MemberState ";
@@ -69,10 +58,11 @@ class MemberState extends SuperEntity{
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "' ";        
         $where = "WHERE Id=" . $this->id;
         $this->db->update($update, $set, $where);
-        return $this->select($this->id, RECORD);
+        return $this->select($this->id);
     }
 
-//    function delete(){
-//        return $this->db->delete("delete from News where id=" . $this->id);
-//    }
+
+
+    function delete(){
+    }
 }

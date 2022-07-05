@@ -5,10 +5,10 @@ RECORD, OPTIONS
 "use strict";
 
     $(document).ready(function () {
-        var mainTableViewId = saron.table.birthday.viewid;
+        var mainTableViewId = saron.table.birthday.nameId;
         var tablePlaceHolder = $(mainTableViewId);
-        tablePlaceHolder.jtable(birthdayTableDef(saron.table.birthday.viewid, null, null));
-        var options = getPostData(null, saron.table.birthday.viewid, null, saron.table.birthday.name, saron.source.list, saron.responsetype.records);
+        tablePlaceHolder.jtable(birthdayTableDef(saron.table.birthday.nameId, null, null));
+        var options = getPostData(null, saron.table.birthday.name, null, saron.table.birthday.name, saron.source.list, saron.responsetype.records);
         tablePlaceHolder.jtable('load', options);
         tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
     });

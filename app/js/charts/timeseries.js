@@ -1,11 +1,12 @@
-/* global saron
+/* global 
+saron
 
  */
 "use strict";
 
 function createMembersStatisticsChart() { 
     $.ajax({
-        url: saron.root.webapi + 'listStatistics.php?TablePath=LineChart'
+        url: saron.root.webapi + 'listStatistics.php?TablePath=' + saron.graph.timeseries.name
     }).then(function(data) {
         var chartData = JSON.parse(data);      
         var chartsMeta = '{' +
@@ -41,7 +42,7 @@ function createMembershipLineChart(chartData, meta){
     for(var i = 0; i < chartData.Records.length; i++){
         labels.push(chartData.Records[i].year.substr(0,4));
         values.push(chartData.Records[i][meta.id]);
-        console.log(meta.id + ": " + chartData.Records[i].year.substr(0,4) + " = " + Number(chartData.Records[i][meta.id]) + " Text: " + chartData.Records[i][meta.id]);
+        //console.log(meta.id + ": " + chartData.Records[i].year.substr(0,4) + " = " + Number(chartData.Records[i][meta.id]) + " Text: " + chartData.Records[i][meta.id]);
     }
     
     var chart = new Chart(ctx, {

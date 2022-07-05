@@ -14,14 +14,14 @@ class News extends SuperEntity{
         $this->information = (String)filter_input(INPUT_POST, "information", FILTER_SANITIZE_STRING);
     }
     
-    function select($id = -1, $rec=RECORDS){
+    function select($id = -1){
         $select = "SELECT *, id as Id, " . $this->saronUser->getRoleSql(false) . " ";
         if($id < 0){
-            $result = $this->db->select($this->saronUser, $select , "FROM News ", "", $this->getSortSql(), $this->getPageSizeSql(), $rec);    
+            $result = $this->db->select($this->saronUser, $select , "FROM News ", "", $this->getSortSql(), $this->getPageSizeSql(), RECORDS);    
             return $result;
         }
         else{
-            $result = $this->db->select($this->saronUser, $select , "FROM News ", "WHERE id = " . $id . " ", $this->getSortSql(), $this->getPageSizeSql(), $rec);        
+            $result = $this->db->select($this->saronUser, $select , "FROM News ", "WHERE id = " . $id . " ", $this->getSortSql(), $this->getPageSizeSql(), RECORD);        
             return $result;
         }
     }
@@ -34,7 +34,7 @@ class News extends SuperEntity{
         $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "')";
         
         $id = $this->db->insert($sqlInsert, "News", "id");
-        $result =  $this->select($id, RECORD);
+        $result =  $this->select($id);
         return $result;
     }
     
@@ -47,11 +47,10 @@ class News extends SuperEntity{
         $set.= "writer='" . $this->saronUser->getDisplayName() . "' ";
         $where = "WHERE id=" . $this->id;
         $this->db->update($update, $set, $where);
-        return $this->select($this->id, RECORD);
+        return $this->select($this->id);
     }
 
     function delete(){
         return $this->db->delete("delete from News where id=" . $this->id);
     }
 }
-//{"Result":"OK","Record":"{'id':'167', 'news_date':'2020-06-16 18:52:14', 'information':'q', 'writer':'saron utvecklare', 'user_role':'edit'}","TotalRecordCount":"1","user_role":"edit"}"

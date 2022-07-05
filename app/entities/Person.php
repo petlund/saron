@@ -319,7 +319,7 @@ class Person extends People{
         $sqlSet.= "Updater = " . $this->saronUser->WP_ID . " ";
         $sqlWhere = "where Id=" . $this->id . ";";
 
-        $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
+        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
         return $this->selectPersonAfterUpdate($this->id);
     }
     
@@ -337,7 +337,7 @@ class Person extends People{
         $sqlSet.= "Updater = " . $this->saronUser->WP_ID  . " ";
         $sqlWhere = "where Id=" . $this->id . ";";
 
-        $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
+        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
         return $this->selectPersonAfterUpdate($this->id);
 
     }
@@ -354,7 +354,7 @@ class Person extends People{
         $sqlSet.= "Updater = " . $this->saronUser->WP_ID . " ";
         $sqlWhere = "where Id=" . $this->id . ";";
         
-        $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
+        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
         return $this->selectPersonAfterUpdate($this->id);
  
     }
@@ -367,7 +367,7 @@ class Person extends People{
         $sqlSet.= "KeyToExp=" . $this->KeyToExp . ", ";
         $sqlSet.= "CommentKeyEncrypt=" . $this->getEncryptedSqlString($this->CommentKey) . " ";
         $sqlWhere = "WHERE Id=" . $this->getCurrentId();
-        $id = $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
+        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
         return $this->selectPersonAfterUpdate($this->id);
         
     }    

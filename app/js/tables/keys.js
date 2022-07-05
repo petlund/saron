@@ -6,7 +6,7 @@ PERSON, inputFormWidth, inputFormFieldWidth
 "use strict";
 
 $(document).ready(function () {
-    var mainTableViewId = saron.table.keys.viewid;
+    var mainTableViewId = saron.table.keys.nameId;
     var tablePlaceHolder = $(mainTableViewId);
     tablePlaceHolder.jtable(keyTableDef(mainTableViewId, null, null, null));
     tablePlaceHolder.jtable('load');
@@ -28,7 +28,7 @@ function keyTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
         title: title,
         initParameters: getInitParametes(mainTableViewId, tablePath, parentId),            
         showCloseButton: false,        
-        paging: mainTableViewId[0].includes(saron.table.keys.viewid), //Enable paging
+        paging: mainTableViewId[0].includes(saron.table.keys.nameId), //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
         sorting: true, //Enable sorting
@@ -54,7 +54,7 @@ function keyTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
             Name: {
                 title: 'Namn',
                 width: '10%',
-                list: includedIn(mainTableViewId, saron.table.keys.viewid),
+                list: includedIn(mainTableViewId, saron.table.keys.nameId),
                 create: false,
                 edit: false,
                 display: function (data){
@@ -63,7 +63,7 @@ function keyTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
             },
             DateOfBirth: {
                 title: 'Född',
-                list: includedIn(mainTableViewId, saron.table.keys.viewid),
+                list: includedIn(mainTableViewId, saron.table.keys.nameId),
                 edit: false,
                 width: '5%',
                 type: 'date',
@@ -75,7 +75,7 @@ function keyTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
             MemberState:{
                 edit: false,
                 create: false,
-                list: includedIn(mainTableViewId, saron.table.keys.viewid),
+                list: includedIn(mainTableViewId, saron.table.keys.nameId),
                 title: 'Status',
                 width: '5%',                
             },

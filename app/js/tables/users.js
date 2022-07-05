@@ -6,7 +6,12 @@ saron
 
 $(document).ready(function () {
 
-    $(saron.table.users.viewid).jtable({
+    $(saron.table.users.nameId).jtable(usersTableDef());
+    $(saron.table.users.nameId).jtable('load');
+});
+        
+function usersTableDef(){
+    return {
         title: 'Användare av Saron',
             paging: true, //Enable paging
             pageSize: 10, //Set page size (default: 10)
@@ -19,6 +24,8 @@ $(document).ready(function () {
         },
         fields: {
             Id: {
+                
+                title: 'ID',
                 key: true,
                 list: true
             },
@@ -78,14 +85,5 @@ $(document).ready(function () {
                 }
             }
         }
-    });
- //Re-load records when user click 'load records' button.
-        $(saron.table.users.viewid).click(function (e) {
-            e.preventDefault();
-            $(saron.table.users.viewid).jtable('load');
-        });
- 
-        //Load all records when page is first shown
-        $(saron.table.users.viewid).click();
-});
-    
+    };
+}

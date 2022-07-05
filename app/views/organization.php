@@ -4,6 +4,7 @@
     header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
     require_once "config.php";
     require_once SARON_ROOT . "menu.php";
+    require_once SARON_ROOT . "app/util/TableName.php";
     
 ?>
 <html>   
@@ -26,6 +27,6 @@
         <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/jquery.jtable.js"></script>
         <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/localization/jquery.jtable.se.js"></script>   
         <div class='saronSmallText'></div>
-        <div id="<?php include('../util/viewId.php');?>"></div>
+        <div id="<?php echo getTableName();?>"></div>        
     </body
 </html> 

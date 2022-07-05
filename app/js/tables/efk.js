@@ -1,14 +1,20 @@
-/* global saron, HOME, PERSON
- * 
+/* global 
+ saron, HOME, PERSON 
  */
 
 "use strict";
 
-const tableId = saron.table.efk.viewid;
-
 $(document).ready(function () {
 
-    $(tableId).jtable({
+    $(saron.table.efk.nameId).jtable(efkTableDef());
+    var options = getPostData(null, saron.table.efk.name, null, saron.table.efk.name, saron.source.list, saron.responsetype.records);
+    $(saron.table.efk.nameId).jtable('load', options);
+        
+});
+
+function efkTableDef(){
+    
+    return{
         title: 'EFK Statistik ' + previousYear(),
             paging: false, //Enable paging
             pageSize: 10, //Set page size (default: 10)
@@ -18,7 +24,7 @@ $(document).ready(function () {
             defaultSorting: 'AgeInterval ASC', //Set default sorting     
 
         actions: {
-            listAction:   saron.root.webapi + 'listStatistics.php?TablePath=' +  saron.table.efk.name
+            listAction:   saron.root.webapi + 'listStatistics.php'
         },
         fields: {
             AgeInterval: {
@@ -36,22 +42,18 @@ $(document).ready(function () {
                     return _setClassAndValue(data, "Amount", PERSON);
                 }       
             },
+            TablePath:{
+                type: 'hidden',
+                defaultValue: saron.table.efk.name
+            },
             Dummy: {
                 title: '',
                 width: '80%',
                 sorting:false 
             }
         }
-    });
- //Re-load records when user click 'load records' button.
-        $(tableId).click(function (e) {
-            e.preventDefault();
-            $(tableId).jtable('load');
-        });
- 
-        //Load all records when page is first shown
-        $(tableId).click();
-});
+    };
+}
     
 function previousYear (){
     var d = new Date();

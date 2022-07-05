@@ -8,7 +8,7 @@ RECORD, OPTIONS
 "use strict";
 $(document).ready(function () {
 
-    var mainTableViewId = saron.table.engagement.viewid;
+    var mainTableViewId = saron.table.engagement.nameId;
     var tablePlaceHolder = $(mainTableViewId);
     tablePlaceHolder.jtable(peopleEngagementTableDef(mainTableViewId, null, null, null));
     var postData = getPostData(null, mainTableViewId, null, saron.table.engagement.name, saron.source.list, saron.responsetype.records);
@@ -224,7 +224,7 @@ function engagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId)
                 }
             },            
             Comment:{
-                create: !mainTableViewId.includes(saron.table.engagement.viewid),
+                create: !mainTableViewId.includes(saron.table.engagement.nameId),
                 title: 'Kommentar',
                 inputTitle: 'Kommentar kopplat till uppdraget ej person'
             },
@@ -290,6 +290,6 @@ function engagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId)
 function updatePersonEngagementRecord(Id){
     var url = saron.root.webapi + 'listEngagement.php';
     var options = {record:{"Id": Id}, "clientOnly": false, "url":url};
-    $(saron.table.engagement.viewid).jtable('updateRecord', options);
+    $(saron.table.engagement.nameId).jtable('updateRecord', options);
 }
 

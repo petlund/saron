@@ -4,6 +4,7 @@ header("Pragma: no-cache"); //HTTP 1.0
 header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 require_once 'config.php'; 
 require_once SARON_ROOT . "menu.php";
+require_once SARON_ROOT . "app/util/TableName.php";
 
      
 ?>
@@ -29,7 +30,7 @@ require_once SARON_ROOT . "menu.php";
             <tr class="saronFilter">
                 <td  class="saronFilter">
                     <form class="forms" id="mainfilter">Grupp:
-                        <select id="groupId" name="groupId" onchange="filterPeople('<?php include('../util/viewId.php'); ECHO '\', false, \'' . TABLE_NAME_PEOPLE;?>');" >
+                        <select id="groupId" name="groupId" onchange="filterPeople('<?php echo getTableName(); ECHO '\', false, \'' . TABLE_NAME_PEOPLE;?>');" >
                         <option selected="selected" value="0">Medlemmar</option>
                         <option value="1">Dopregister</option>
                         <option value="2">Senast ändrade personer</option>
@@ -53,10 +54,10 @@ require_once SARON_ROOT . "menu.php";
                 </td>
                 <td  class="saronFilter">
                     Söksträng:
-                    <input type="text" name="searchString" id="searchString" oninput="filterPeople('<?php include('../util/viewId.php'); ECHO '\', false, \'' . TABLE_NAME_PEOPLE;?>');"/>
+                    <input type="text" name="searchString" id="searchString" oninput="filterPeople('<?php  echo getTableName(); ECHO '\', false, \'' . TABLE_NAME_PEOPLE;?>');"/>
                 </td>
             </tr>
         </table>
-        <div id="<?php include('../util/viewId.php');?>"></div>
+        <div id="<?php echo getTableName();?>"></div>        
     </body>
 </html>

@@ -4,6 +4,7 @@ header("Pragma: no-cache"); //HTTP 1.0
 header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 require_once 'config.php'; 
 require_once SARON_ROOT . "menu.php";
+require_once SARON_ROOT . "app/util/TableName.php";
 
     
 ?>
@@ -24,7 +25,7 @@ require_once SARON_ROOT . "menu.php";
                 <td   class="saronFilter">
                     <form class="forms" id="mainfilter">
                         Grupp:          
-                        <select id="groupId" name="groupId" onchange="filterHomes('<?php include('../util/viewId.php'); ECHO '\', false, \'' . TABLE_NAME_HOMES;?>');" >
+                        <select id="groupId" name="groupId" onchange="filterHomes('<?php echo getTableName(); ECHO '\', false, \'' . TABLE_NAME_HOMES;?>');" >
                             <option selected="selected" value="0">Alla hem</option>
                             <option value="1">Hem utan mail- och mobiluppgifter</option>
                             <option value="2">Hem med brevutskick</option>
@@ -33,11 +34,10 @@ require_once SARON_ROOT . "menu.php";
                 </td>
                 <td   class="saronFilter">
                     Söksträng:
-                    <input type="text" name="searchString" id="searchString" oninput="filterHomes('<?php include('../util/viewId.php');?>');"/>
+                    <input type="text" name="searchString" id="searchString" oninput="filterHomes('<?php echo getTableName();?>');"/>
                 </td>
             </tr>
         </table>    
-        <div id="homes"></div>
-        
+        <div id="<?php echo getTableName();?>"></div>        
     </body>
 </html>

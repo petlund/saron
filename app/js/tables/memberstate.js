@@ -1,20 +1,17 @@
-/* global DATE_FORMAT, NEWS, 
+/* global DATE_FORMAT, 
 saron
 */
 "use strict";
 
-var TABLE_MEMBER_STATE = '#MEMBER_STATE';
     
 $(document).ready(function () {
-    $(TABLE_MEMBER_STATE).jtable(memberstateTableDef());
-    $(TABLE_MEMBER_STATE).jtable('load');
-    $(TABLE_MEMBER_STATE).find('.jtable-toolbar-item-add-record').hide();
+    $(saron.table.org_member_state.nameId).jtable(memberstateTableDef());
+    var postData = getPostData(null, saron.table.org_member_state.name, null, ssaron.table.org_member_state.name, saron.source.list, saron.responsetype.records);
+    $(saron.table.org_member_state.nameId).jtable('load', postData);
+    $(saron.table.org_member_state.nameId).find('.jtable-toolbar-item-add-record').hide();
 });
 
 
-function clog(lbl, str){
-    console.log(lbl + ': ' + str);
-}
 
 function memberstateTableDef(){
     return {
@@ -26,8 +23,7 @@ function memberstateTableDef(){
         multiSorting: true,
         defaultSorting: 'news_date desc', //Set default sorting        
         actions: {
-            listAction:   saron.root.webapi + 'listMemberState.php?ts=',
-            //createAction:   saron.root.webapi + 'createMemberState.php',
+            listAction:   saron.root.webapi + 'listMemberState.php',
             updateAction:   saron.root.webapi + 'updateMemberState.php'
         },
         fields: {
