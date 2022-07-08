@@ -42,7 +42,7 @@ function efkTableDef(){
                     return _setClassAndValue(data, "Amount", PERSON);
                 }       
             },
-            TablePath:{
+            AppCanvasName:{
                 type: 'hidden',
                 defaultValue: saron.table.efk.name
             },

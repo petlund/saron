@@ -13,7 +13,7 @@ $(document).ready(function () {
     }
 );
 
-function statusTableDef(tableViewId){
+function statusTableDef(mainTableViewId){
     return {
         title: 'Status',
         paging: true, //Enable paging
@@ -27,7 +27,7 @@ function statusTableDef(tableViewId){
             updateAction: saron.root.webapi  + 'updateOrganizationPosStatus.php',
         },
         fields: {
-            TablePath:{
+            AppCanvasName:{
                 list: false,
                 edit: false,
                 create: false
@@ -73,7 +73,7 @@ function statusTableDef(tableViewId){
         },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
-                $(tableViewId).find('.jtable-toolbar-item-add-record').show();
+                $(mainTableViewId).find('.jtable-toolbar-item-add-record').show();
             }
         },        
         formCreated: function (event, data){

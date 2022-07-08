@@ -149,14 +149,14 @@ function _styleSaronValueInline(clazz, val, altValue, inline){
 
 function _getId(data, type){
     if(type === HOME)
-        if(data.record.TablePath.includes(saron.table.homes.name))
+        if(data.record.AppCanvasName.includes(saron.table.homes.name))
             return 'H' + data.record.Id;
         else
             return 'H' + data.record.HomeId;
     else if(type === OLD_HOME)
         return 'H' + data.record[OLD_HOME_PREFIX + 'HomeId'];
     else if(type === PERSON)
-        if(data.record.TablePath.includes(saron.table.people.name))
+        if(data.record.AppCanvasName.includes(saron.table.people.name))
             return 'P' + data.record.Id;
         else
             return 'X' + data.record.Id;
@@ -318,7 +318,7 @@ function filterPeople(viewId, reloaded, tableName){
     var options = {searchString: $('#searchString').val(), 
                     groupId: $('#groupId').val(), 
                     TableViewId: viewId, 
-                    TablePath: tableName, 
+                    AppCanvasName: tableName, 
                     ResultType: saron.responsetype.records
                 };
 
@@ -336,7 +336,7 @@ function includedIn(currentTableId, requiredTableId){
 
 
 
-function getURLParameters(id, tableViewId, parentId, tablePath, source, resultType, field ){
+function getURLParameters(id, appCanvasName, parentId, appCanvasPath, source, resultType, field ){
     var first = true;
     var parameter = "";
 
@@ -371,7 +371,7 @@ function getURLParameters(id, tableViewId, parentId, tablePath, source, resultTy
         parameter+= 'ParentId=' + parentId;
     }
     
-    if(tablePath !== null){        
+    if(appCanvasPath !== null){        
         if(first){
             parameter = "?";
             first = false;
@@ -379,10 +379,10 @@ function getURLParameters(id, tableViewId, parentId, tablePath, source, resultTy
         else
             parameter+= "&";
 
-        parameter+= 'TablePath=' + tablePath;
+        parameter+= 'AppCanvasPath=' + appCanvasPath;
     }
     
-    if(tableViewId !== null){
+    if(appCanvasName !== null){
         if(first){
             parameter = "?";
             first = false;
@@ -390,7 +390,7 @@ function getURLParameters(id, tableViewId, parentId, tablePath, source, resultTy
         else
             parameter+= "&";
         
-        parameter+= 'TableView=TableView';
+        parameter+= 'AppCanvasName=' + appCanvasName;
 //        parameter+= 'TableView=' + getTableView(tableViewId);
     }
     
@@ -439,7 +439,7 @@ function getURLParameters(id, tableViewId, parentId, tablePath, source, resultTy
     
 
 
-    function getPostData(id, tableName, parentId, tablePath, source, resultType){
+    function getPostData(id, appCanvasName, parentId, appCanvasPath, source, resultType){
         if(parentId === null){        
             parentId = -1;
         }
@@ -458,8 +458,8 @@ function getURLParameters(id, tableViewId, parentId, tablePath, source, resultTy
         
         var options = {Id:id, 
                         ParentId:parentId, 
-                        TableName:tableName, 
-                        TablePath:tablePath, 
+                        AppCanvasName:appCanvasName, 
+                        AppCanvasPath:appCanvasPath, 
                         Source:source, 
                         ResultType:resultType
                     };
@@ -479,18 +479,18 @@ function getInitParametes(mainTableViewId, tablePath, parentId){
 }
 
 
-function getOptionsUrlParameters(data, tableViewId, parentId, tablePath, field){
+function getOptionsUrlParameters(data, appCanvasName, parentId, appCanvasPath, field){
     var parameters = "";
     
     if(data.source === saron.source.list){
-        parameters = getURLParameters(null, tableViewId, parentId, tablePath, data.source, saron.responsetype.options, field);
+        parameters = getURLParameters(null, appCanvasName, parentId, appCanvasPath, data.source, saron.responsetype.options, field);
     }
     if(data.source === saron.source.edit){
-        parameters = getURLParameters(data.record.Id, tableViewId, parentId, tablePath, data.source, saron.responsetype.options, field);                        
+        parameters = getURLParameters(data.record.Id, appCanvasName, parentId, appCanvasPath, data.source, saron.responsetype.options, field);                        
         data.clearCache();
     }
     if(data.source === saron.source.create){
-        parameters = getURLParameters(null, tableViewId, parentId, tablePath, data.source, saron.responsetype.options, field);                        
+        parameters = getURLParameters(null, appCanvasName, parentId, appCanvasPath, data.source, saron.responsetype.options, field);                        
         data.clearCache();                        
     }    
     return parameters;

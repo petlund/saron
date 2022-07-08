@@ -61,7 +61,7 @@ class OrganizationRole extends SuperEntity{
 
         $where = "";         
         if($id < 0){
-            switch ($this->tablePath){
+            switch ($this->appCanvasPath){
                 case TABLE_NAME_ROLE:            
                     $where = "";
                     break;
@@ -90,7 +90,7 @@ class OrganizationRole extends SuperEntity{
         $subSelect.= ') as PosOccurrency';
 
         $select = "SELECT *, Role.Name as RoleName, " . $subSelect . ", ";
-        $select.= $this->getTablePathSql();
+        $select.= $this->getAppCanvasSql();
         $select.= $this->saronUser->getRoleSql(false) . " ";
 
         $from = "FROM Org_Role as Role inner join `Org_Role-UnitType` as Rut on Rut.OrgRole_FK = Role.Id ";
@@ -106,7 +106,7 @@ class OrganizationRole extends SuperEntity{
         $rec = RECORDS;
         
         $select = "SELECT *, Role.UpdaterName as UpdaterName, Role.Updated as Updated, ";
-        $select.= $this->getTablePathSql();
+        $select.= $this->getAppCanvasSql();
         $select.= "(Select count(*) from Org_Pos as Pos WHERE Pos.OrgRole_FK = Role.Id) as UsedInUnit, ";
         $select.= "(Select count(*) from `Org_Role-UnitType` as RUT WHERE RUT.OrgRole_FK = Role.Id) as UsedInUnitType, ";
         $select.= "(Select count(*) from Org_Pos as Pos WHERE Pos.OrgRole_FK=Role.Id) as PosOccurrency, ";
@@ -115,7 +115,7 @@ class OrganizationRole extends SuperEntity{
         $where = "";
         
         if($id < 0){
-            switch ($this->tablePath){
+            switch ($this->appCanvasPath){
                 case TABLE_NAME_ROLE:            
                     break;
                 case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_ROLE:            
@@ -145,7 +145,7 @@ class OrganizationRole extends SuperEntity{
         $sql.= "SELECT Role.Id  as Value, Role.Name as DisplayText FROM Org_Role as Role WHERE Role.RoleType = 0 ";
         $sql.= ") as options "; 
 
-        switch ($this->tablePath){
+        switch ($this->appCanvasPath){
             case TABLE_NAME_ROLE:
         
             switch ($this->source){

@@ -76,7 +76,7 @@ class OrganizationUnit extends SuperEntity{
         //filter all nodes witch not have childs and all child below curret node
         
         $select = "Select stat.*, Tree.OrgUnitType_FK, Typ.PosEnabled, Tree.Name, Tree.ParentTreeNode_FK, Tree.Prefix, Tree.Description, Typ.Id as TypeId, Tree.Id, Typ.SubUnitEnabled, Tree.UpdaterName, Tree.Updated, ";
-        $select.= $this->getTablePathSql();
+        $select.= $this->getAppCanvasSql();
         $select.= "(Select count(*) from Org_Tree as Tree1 where Tree1.ParentTreeNode_FK = Tree.Id) as HasSubUnit, ";
         $select.= "(Select count(*) from Org_Pos as Pos1 where Tree.Id = Pos1.OrgTree_FK) as HasPos, ";
         
@@ -96,7 +96,7 @@ class OrganizationUnit extends SuperEntity{
         $where = "";
         
         if($id < 0){
-            switch ($this->tablePath){
+            switch ($this->appCanvasPath){
                 case TABLE_NAME_UNITTREE:            
                     if($this->parentId < 0){
                         $where = "WHERE ParentTreeNode_FK is null ";

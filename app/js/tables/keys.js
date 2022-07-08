@@ -47,7 +47,7 @@ function keyTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 defaultValue: parentId,
                 type: 'hidden'
             },
-            TablePath:{
+            AppCanvasName:{
                 defaultValue: tableName,
                 type: 'hidden'
             },

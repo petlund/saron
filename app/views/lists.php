@@ -4,7 +4,7 @@
     header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
     require_once 'config.php';
     require_once SARON_ROOT . "menu.php";
-    require_once SARON_ROOT . "app/util/TableName.php";
+    require_once SARON_ROOT . "app/util/AppCanvasName.php";
    
 ?>
 <html>
@@ -19,7 +19,7 @@
         <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/localization/jquery.jtable.se.js"></script>                  
         
         <br>
-        <div id="<?php echo getTableName();?>"></div>        
+        <div id="<?php echo getAppCanvasName();?>"></div>        
     </body>
 </html>
 

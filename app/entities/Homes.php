@@ -66,14 +66,14 @@ class Homes extends SuperEntity{
         
         $filter = new HomesFilter();
         $sqlSelect = SQL_STAR_HOMES  . ", " .  $this->saronUser->getRoleSql(true);         
-        $sqlSelect.= $this->getTablePathSql(true);
+        $sqlSelect.= $this->getAppCanvasSql(true);
         $sqlSelect.= $this->getHomeSelectSql(ALIAS_CUR_HOMES, $TABLE_HOMES_AND_ID, false);
         //$sqlSelect.= CONTACTS_ALIAS_RESIDENTS;
         $sqlWhere = "WHERE ";
 
         if($id < 0){            
             $rec = RECORDS;
-            switch ($this->tablePath){
+            switch ($this->appCanvasPath){
                 case TABLE_NAME_HOMES:            
                     $sqlWhere.= $filter->getHomesFilterSql($this->groupId);
                     $sqlWhere.= $filter->getSearchFilterSql($this->uppercaseSearchString);

@@ -11,7 +11,7 @@ $(document).ready(function () {
     var mainTableViewId = saron.table.pos.nameId;
     var tablePlaceHolder = $(mainTableViewId);
     tablePlaceHolder.jtable(posTableDef(mainTableViewId, saron.table.pos.name, null, null));
-    var postData = getPostData(null, mainTableViewId, null, saron.table.pos.name, saron.source.list, saron.responsetype.records);
+    var postData = getPostData(null, saron.table.pos.name, null, saron.table.pos.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', postData);
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });
@@ -22,11 +22,10 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
     if(newTableTitle !== null)
         title = newTableTitle;
     
-    const tableName = saron.table.pos.name;
     if(tablePath === null)
-        tablePath = tableName;
+        tablePath = saron.table.pos.name;
     else
-        tablePath+= '/' + tableName; 
+        tablePath+= '/' + saron.table.pos.name; 
 
     return {
         showCloseButton: false,
@@ -104,8 +103,8 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 title: "Organisatorisk enhet",
                 options: function(data){
                     var url = saron.root.webapi + 'listOrganizationUnit.php';
-                    var field = null;
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);
+                    var field = "OrgTree_FK";
+                    var parameters = getOptionsUrlParameters(data, saron.table.pos.name, parentId, tablePath, field);
                     return url + parameters;
                 }                
             },            
@@ -115,7 +114,7 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 options: function(data){
                     var url = saron.root.webapi + 'listOrganizationRole.php';      
                     var field = 'OrgRole_FK';
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);                    
+                    var parameters = getOptionsUrlParameters(data, saron.table.pos.name, parentId, tablePath, field);                    
                     return url + parameters;
                 }
             },
@@ -125,8 +124,8 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 defaultValue: '4',
                 options: function(data){                    
                     var url = saron.root.webapi + 'listOrganizationPosStatus.php';
-                    var field = null;
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);                    
+                    var field = "OrgPosStatus_FK";
+                    var parameters = getOptionsUrlParameters(data, saron.table.pos.name, parentId, tablePath, field);                    
                     return url + parameters;
                 }
             },
@@ -153,7 +152,7 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 options: function(data){
                     var url = saron.root.webapi + 'listPeople.php';
                     var field = "People_FK";
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);                    
+                    var parameters = getOptionsUrlParameters(data, saron.table.pos.name, parentId, tablePath, field);                    
                     return url + parameters;
                 }
             },
@@ -166,7 +165,7 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 options: function(data){                    
                     var url = saron.root.webapi + 'listOrganizationPos.php';
                     var field = 'OrgSuperPos_FK';
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);                    
+                    var parameters = getOptionsUrlParameters(data, saron.table.pos.name, parentId, tablePath, field);                    
                     return url + parameters;
                 }
             },
@@ -179,7 +178,7 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 options: function(data){                    
                     var url = saron.root.webapi + 'listOrganizationUnit.php';
                     var field = null;
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);                    
+                    var parameters = getOptionsUrlParameters(data, saron.table.pos.name, parentId, tablePath, field);                    
                     return url + parameters;
                 }
             },
@@ -257,7 +256,7 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
             if(addButton === null)
                 addButton = $(mainTableViewId).find('.jtable-toolbar-item-add-record');
 
-            var showAddButton = (data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org') && data.records[0].TablePath !== tableName; 
+            var showAddButton = (data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org') && data.records[0].AppCanvasName !== saron.table.pos.name; 
             if(showAddButton) 
                 addButton.show();
         },        

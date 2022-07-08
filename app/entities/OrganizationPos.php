@@ -38,7 +38,7 @@ class OrganizationPos extends SuperEntity{
             }
         }
         if($this->orgPosStatus_FK > 2){
-            if($this->tablePath === TABLE_NAME_ENGAGEMENT . "/" . TABLE_NAME_ENGAGEMENTS){
+            if($this->appCanvasPath === TABLE_NAME_ENGAGEMENT . "/" . TABLE_NAME_ENGAGEMENTS){
                 $this->people_FK=null;
             }
             if($this->people_FK > 0 or $this->function_FK > 0 or $this->orgSuperPos_FK > 0){
@@ -91,7 +91,7 @@ class OrganizationPos extends SuperEntity{
         $select = "SELECT Pos.*, Tree.ParentTreeNode_FK, Role.Name, Role.RoleType, Pos.Id,  IF(Pos.Updated>Role.updated, Pos.Updated, Role.Updated) as LatestUpdated, ";
         $select.= $subSelectCurIndex;
         $select.= "(Select SortOrder from `Org_Role-UnitType` as RUT WHERE  RUT.OrgRole_FK = Pos.OrgRole_FK and RUT.OrgUnitType_FK = Tree.OrgUnitType_FK) as SortOrder, ";
-        $select.= $this->getTablePathSql();
+        $select.= $this->getAppCanvasSql();
         $select.= $subSelectCur;
         $select.= $subSelectPrev;
         $select.= "Role.Name as RoleName, ";
@@ -109,7 +109,7 @@ class OrganizationPos extends SuperEntity{
         
         $where = "";
         if($id < 0){
-            switch ($this->tablePath){
+            switch ($this->appCanvasPath){
                 case TABLE_NAME_UNITTREE . "/" . TABLE_NAME_POS:            
                     $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
                     break;

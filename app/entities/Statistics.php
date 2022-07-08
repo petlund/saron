@@ -10,9 +10,11 @@ class Statistics extends SuperEntity{
     }
     
     function select(){
-        switch ($this->tablePath){
+        switch ($this->appCanvasPath){
         case GRAPH_NAME_HISTOGRAM:
             return $this->selectDemographicHistogram();       
+        case GRAPH_NAME_TIME_SERIES:
+            return $this->selectDefault();       
         case TABLE_NAME_STATISTICS:
             return $this->selectDefault();
         case TABLE_NAME_STATISTICS . "/" . TABLE_NAME_STATISTICS_DETAIL:
@@ -39,7 +41,7 @@ class Statistics extends SuperEntity{
             $where = "where extract(YEAR from year) = " . $id . " ";
         }
          
-        $sqlSelect = "SELECT *, year as Id, format(average_age, 1) as avg_age, format(average_membership_time, 1) as avg_membership_time, diff, " . $this->getTablePathSql(false);
+        $sqlSelect = "SELECT *, year as Id, format(average_age, 1) as avg_age, format(average_membership_time, 1) as avg_membership_time, diff, " . $this->getAppCanvasSql(false);
         $result = $this->db->select($this->saronUser, $sqlSelect, "From Statistics ", $where, $this->getSortSql(),  $this->getPageSizeSql());    
         return $result;
     }
@@ -55,7 +57,7 @@ class Statistics extends SuperEntity{
         $subSelect.="select DateOfDeath from People as p2 where p2.Id=p.Id)) as event_date ";
         
         $sqlSelect ="SELECT DateOfMembershipStart, DateOfMembershipEnd, DateOfBaptism, DateOfDeath, ";
-        $sqlSelect.= DECRYPTED_ALIAS_LASTNAME . ", " . DECRYPTED_ALIAS_FIRSTNAME . ", " . DECRYPTED_ALIAS_COMMENT . ", DateOfBirth, " . $this->getTablePathSql(true);
+        $sqlSelect.= DECRYPTED_ALIAS_LASTNAME . ", " . DECRYPTED_ALIAS_FIRSTNAME . ", " . DECRYPTED_ALIAS_COMMENT . ", DateOfBirth, " . $this->getAppCanvasSql(true);
         $sqlSelect.=$subSelect;
         $sqlFrom ="FROM People as p ";  
         $sqlWhere ="WHERE ";
@@ -130,7 +132,7 @@ class Statistics extends SuperEntity{
     function getSelectSQL($offset){
         $rowNumberSql = "(ROW_NUMBER() OVER (ORDER BY DateOfBirth) + " . $offset . ") AS Id";
         
-        $sqlSelect="SELECT p.Id as PersonId, " . $rowNumberSql . ", " . $this->getTablePathSql(true) . DECRYPTED_ALIAS_LASTNAME . ", " . DECRYPTED_ALIAS_FIRSTNAME . ", " . DECRYPTED_ALIAS_COMMENT . ", DateOfBirth, " . $this->getTablePathSql(true);
+        $sqlSelect="SELECT p.Id as PersonId, " . $rowNumberSql . ", " . $this->getAppCanvasSql(true) . DECRYPTED_ALIAS_LASTNAME . ", " . DECRYPTED_ALIAS_FIRSTNAME . ", " . DECRYPTED_ALIAS_COMMENT . ", DateOfBirth, " . $this->getAppCanvasSql(true);
         
         return $sqlSelect;
     }
@@ -187,7 +189,7 @@ class Statistics extends SuperEntity{
             }
         }
         $sqlCount = "count(*) as Amount, ";
-        $sqlCount.= $this->getTablePathSql(false);
+        $sqlCount.= $this->getAppCanvasSql(false);
         $sqlCount.="from People where ";
         $sqlCount.= "extract(year from now()) > extract(year from DateOfMembershipStart) and ";
         $sqlCount.= "(extract(year from now()) = extract(year from DateOfMembershipEnd) or DateOfMembershipEnd is null)"; 

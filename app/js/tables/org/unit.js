@@ -173,8 +173,8 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 title: 'Överordna verksamhet',
                 options: function(data) {
                     var url = saron.root.webapi + "listOrganizationUnit.php";
-                    var field = null;                    
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);                    
+                    var field = "ParentTreeNode_FK";                    
+                    var parameters = getOptionsUrlParameters(data, tableName, parentId, tablePath, field);                    
                     return url + parameters;
                 }                
             },
@@ -188,7 +188,7 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 width: '10%',
                 title: 'Namn'
             },
-            Path: {
+            OrgPath: {
                 title: "Sökväg",
                 create: false,
                 edit: false,
@@ -212,7 +212,7 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 options: function (data){
                     var field = null;                    
                     var url = saron.root.webapi + 'listOrganizationUnitType.php';
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);                    
+                    var parameters = getOptionsUrlParameters(data, tableName, parentId, tablePath, field);                    
                     return url + parameters;
                 }
             },

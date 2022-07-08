@@ -21,7 +21,7 @@ $(document).ready(function () {
 });
 
 function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
-    var title = 'Personuppgifter';
+    var title = 'Personuppgifter2';
     if(newTableTitle !== null)
         title = newTableTitle;
     
@@ -32,7 +32,9 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
         tablePath+= '/' + tableName; 
 
     return {
-        title:title,
+        title: function(data){
+            return title;
+        },
         initParameters: getInitParametes(mainTableViewId, tablePath, parentId),
         showCloseButton: false,
         paging: mainTableViewId.includes(saron.table.people.nameId), //Enable paging
@@ -56,7 +58,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                                 var groupId = 12;
                                 $("#groupId").val(groupId);
                                 $("#searchString").val(data.Record.LastName);
-                                var options = {searchString: data.Record.LastName, groupId:groupId, TableView: getTableView(saron.table.people.nameId), TablePath: tableName};
+                                var options = {searchString: data.Record.LastName, groupId:groupId, TableView: getTableView(saron.table.people.nameId), AppCanvasName: tableName};
 
                                 $(mainTableViewId).jtable('load', options, function (){
 //                                    if(data.Record.HomeId > 0)
@@ -135,7 +137,11 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                 defaultValue: parentId,
                 type: 'hidden'
             },
-            TablePath:{
+            AppCanvasName:{
+                type: 'hidden',
+                defaultValue: saron.table.people.name
+            },
+            AppCanvasPath:{
                 type: 'hidden',
                 defaultValue: saron.table.people.name
             },
@@ -325,7 +331,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                 options: function(data){
                     var url = saron.root.webapi + 'listHomes.php';
                     var field = null;
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);                    
+                    var parameters = getOptionsUrlParameters(data, saron.table.people.name, parentId, tablePath, field);                    
                     return url + parameters;
                 }
             },
@@ -433,7 +439,7 @@ function peopleTableDef(mainTableViewId, tablePath, newTableTitle, parentId) {
                 options: function (data){
                     var url = saron.root.webapi + 'listPeople.php';
                     var field = "MembershipNo";
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field, url);
+                    var parameters = getOptionsUrlParameters(data, saron.table.people.name, parentId, tablePath, field, url);
                     return url + parameters;
                 }
             },

@@ -30,7 +30,7 @@ class OrganizationRoleUnitType extends SuperEntity{
 
 
     function select($id = -1){
-        switch ($this->tablePath){
+        switch ($this->appCanvasPath){
         default:
             return $this->selectDefault($id);
         }
@@ -42,12 +42,12 @@ class OrganizationRoleUnitType extends SuperEntity{
         $resultType = RECORDS;
         
         $select = "SELECT * , ";
-        $select.= $this->getTablePathSql();
+        $select.= $this->getAppCanvasSql();
         $select.= $this->saronUser->getRoleSql(false) . " ";
         $from = "FROM `Org_Role-UnitType`";
 
         if($id < 0){
-            switch ($this->tablePath){
+            switch ($this->appCanvasPath){
             case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_ROLE_UNITTYPE:
                 $where = "WHERE OrgUnitType_FK = " . $this->parentId . " ";
                 break;
@@ -68,7 +68,7 @@ class OrganizationRoleUnitType extends SuperEntity{
 
     function selectRole($id){
         $select = "SELECT * ";
-        $select.= $this->getTablePathSql();
+        $select.= $this->getAppCanvasSql();
         $select.= $this->saronUser->getRoleSql(false) . " ";
         $from = "FROM Org_Role-UnitType";
         $where = "WHERE OrgRole_FK = ";
@@ -92,7 +92,7 @@ class OrganizationRoleUnitType extends SuperEntity{
 
     function insert(){
         $this->checkData();
-        switch ($this->tablePath){
+        switch ($this->appCanvasPath){
             case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_ROLE_UNITTYPE:
                 $OrgUnitType_FK =  $this->parentId;
                 $OrgRole_FK = $this->orgRole_FK;

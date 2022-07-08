@@ -49,7 +49,7 @@ function peopleEngagementTableDef(mainTableViewId, tablePath, newTableTitle, par
                 edit: false,
                 create: false
             },
-            TablePath:{
+            AppCanvasName:{
                 type: 'hidden',
                 defaultValue: tableName
             }, 
@@ -190,11 +190,11 @@ function engagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId)
                 options: function (data){
                     var url = saron.root.webapi + 'listOrganizationPos.php';
                     var field = "Id";
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);
+                    var parameters = getOptionsUrlParameters(data, tableName, parentId, tablePath, field);
                     return  url + parameters;
                 }
             },
-            TablePath:{
+            AppCanvasName:{
                 type: 'hidden',
                 defaultValue: tableName
             },    
@@ -219,7 +219,7 @@ function engagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId)
                 options: function (data){
                     var url = saron.root.webapi + 'listOrganizationPosStatus.php';
                     var field = "OrgPosStatus_FK";
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);
+                    var parameters = getOptionsUrlParameters(data, tableName, parentId, tablePath, field);
                     return  url + parameters;
                 }
             },            

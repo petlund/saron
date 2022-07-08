@@ -6,7 +6,7 @@ saron
     
 $(document).ready(function () {
     $(saron.table.org_member_state.nameId).jtable(memberstateTableDef());
-    var postData = getPostData(null, saron.table.org_member_state.name, null, ssaron.table.org_member_state.name, saron.source.list, saron.responsetype.records);
+    var postData = getPostData(null, saron.table.org_member_state.name, null, saron.table.org_member_state.name, saron.source.list, saron.responsetype.records);
     $(saron.table.org_member_state.nameId).jtable('load', postData);
     $(saron.table.org_member_state.nameId).find('.jtable-toolbar-item-add-record').hide();
 });

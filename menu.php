@@ -118,7 +118,7 @@
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_ORG_MEMBER_STATE, "Medlemsstatus");?></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_ORGVERSION, "Beslut om organisation");?></li>
                             <!-- 
-                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", ORG_GRAPH, " --Grafisk presentation");?></li>
+                                <li><?php //echo getMenyLink(SARON_VIEW_URI,"organization.php", ORG_GRAPH, " --Grafisk presentation");?></li>
                             -->
                             </ul>
                         </li>

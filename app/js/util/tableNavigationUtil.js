@@ -10,9 +10,9 @@ const is_open = "_is_open_";
 // new childOpenFunction
 
 function _getClickImg(data, childTableDef, $imgChild, $imgClose){
-    var tablePath = childTableDef.initParameters.TablePath;
+    var appCanvasName = childTableDef.initParameters.AppCanvasName;
     var openChildTableServer = data.record.OpenChildTable;
-    var openChildTable = _getClassNameOpenChild(data, tablePath);
+    var openChildTable = _getClassNameOpenChild(data, appCanvasName);
     if(openChildTableServer !== false && openChildTable === openChildTableServer)
         return $imgClose;
     else
@@ -128,7 +128,7 @@ function _findTableByElement(data, element, childTableName){
 
 function _updateCurrentRow(data, table, listParentRowUri){
     var url = '/' + saron.uri.saron + listParentRowUri;
-    var options = {record:{Id:data.record.Id, TablePath:data.record.TablePath}, clientOnly: false, url:url};
+    var options = {record:{Id:data.record.Id, AppCanvasName:data.record.AppCanvasName}, clientOnly: false, url:url};
 
     table.jtable('updateRecord', options);
     
@@ -193,7 +193,7 @@ function _getClassNameOpenChild(data, childTableName){
 
 
 function _getTablePath(data, tableName){
-    var parentTablePath = data.record.TablePath;
+    var parentTablePath = data.record.AppCanvasName;
     if(tableName === saron.table.unittree.name && parentTablePath === saron.table.unittree.name + "/" + saron.table.unittree.name)
         return saron.table.unittree.name + "/" + saron.table.unittree.name;
     else

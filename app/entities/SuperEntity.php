@@ -30,9 +30,9 @@ class SuperEntity {
 
 // postData and urlParamterData
     protected $id;
-    protected $tableName;
+    protected $appCanvasName;
     protected $parentId;
-    protected $tablePath;
+    protected $appCanvasPath;
     protected $source;
     protected $resultType;
     
@@ -60,16 +60,16 @@ class SuperEntity {
 
         
         // POST for table load and GET for Options
-        $this->tableName = (String)filter_input(INPUT_POST, "TableName", FILTER_SANITIZE_STRING);    
-        if(strlen($this->tableName) === 0){
-            $this->tableName = (String)filter_input(INPUT_GET, "TableName", FILTER_SANITIZE_STRING);    
+        $this->appCanvasName = (String)filter_input(INPUT_POST, "AppCanvasName", FILTER_SANITIZE_STRING);    
+        if(strlen($this->appCanvasName) === 0){
+            $this->appCanvasName = (String)filter_input(INPUT_GET, "AppCanvasName", FILTER_SANITIZE_STRING);    
         }
         
         $this->field = (String)filter_input(INPUT_GET, "Field", FILTER_SANITIZE_STRING);
 
-        $this->tablePath = (String)filter_input(INPUT_POST, "TablePath", FILTER_SANITIZE_STRING);
-        if(strlen($this->tablePath) === 0){
-            $this->tablePath = (String)filter_input(INPUT_GET, "TablePath", FILTER_SANITIZE_STRING);
+        $this->appCanvasPath = (String)filter_input(INPUT_POST, "AppCanvasPath", FILTER_SANITIZE_STRING);
+        if(strlen($this->appCanvasPath) === 0){
+            $this->appCanvasPath = (String)filter_input(INPUT_GET, "AppCanvasPath", FILTER_SANITIZE_STRING);
         }
         $this->source = (String)filter_input(INPUT_POST, "Source", FILTER_SANITIZE_STRING);
         if(strlen($this->source) === 0){
@@ -149,15 +149,6 @@ class SuperEntity {
         
     }
     
-    protected function setParentAlias($field, $continue = false){
-        $sql = $field . " as ParentId";
-        if($continue){
-            return $sql . ", ";
-        }
-        return $sql . " ";
-    }
-
-
     function getEncryptedSqlString($str){
         if(strlen($str)>0){
             return "AES_ENCRYPT('" . $this->salt() . $str . "', " . PKEY . ")";
@@ -189,16 +180,45 @@ class SuperEntity {
 
     
     
-    function getTablePathSql($continiue = true){
+    function getAppCanvasSql($continiue = true){
+        return $this->getAppCanvasPathSql(true) . $this->getAppCanvasNameSql($continiue);        
+    }
+    
+    
+    
+    private function getAppCanvasPathSql($continiue = true){
+    
         $sql = "";
-        if(strlen($this->tablePath) > 0){   
-            $sql = "'" . $this->tablePath . "'";
+        if(strlen($this->appCanvasPath) > 0){   
+            $sql = "'" . $this->appCanvasPath . "'";
         }
         else{
-            $sql = "'TablePath is missing '";
+            $sql = "'AppCanvasPath is missing '";
         }
         
-        $sql.=  " AS TablePath";
+        $sql.=  " AS AppCanvasPath";
+        
+        if($continiue){
+            $sql.= ", ";
+        }
+        else{
+            $sql.= " ";
+        }
+        return $sql;
+    }
+    
+    
+    
+    private function getAppCanvasNameSql($continiue = true){
+        $sql = "";
+        if(strlen($this->appCanvasName) > 0){   
+            $sql = "'" . $this->appCanvasName . "'";
+        }
+        else{
+            $sql = "'AppCanvasName is missing '";
+        }
+        
+        $sql.=  " AS AppCanvasName";
         
         if($continiue){
             $sql.= ", ";

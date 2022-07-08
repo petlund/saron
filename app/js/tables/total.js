@@ -9,18 +9,26 @@ saron.table.total.name, saron.table.total.nameId
 $(document).ready(function () {
     var mainTableViewId = saron.table.total.nameId;
     var tablePlaceHolder = $(mainTableViewId);
-    tablePlaceHolder.jtable(totalTableDef(saron.table.total.nameId, null));
+    tablePlaceHolder.jtable(totalTableDef(mainTableViewId, null));
     var options = getPostData(null, saron.table.total.name, null, saron.table.total.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
 
 });
 
-function totalTableDef(tableViewId, tablePath, newTableTitle, parentId){
+function totalTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
     var tableName = saron.table.total.name;
     var title = 'Översikt per person';
     if(newTableTitle !== null)
         title = newTableTitle; 
-
+    
+    if(newTableTitle !== null)
+        title = newTableTitle;
+    
+    if(tablePath === null)
+        tablePath = tableName;
+    else
+        tablePath+= '/' + tableName; 
+    
     return{
         title: title,
         paging: true, //Enable paging
@@ -53,7 +61,7 @@ function totalTableDef(tableViewId, tablePath, newTableTitle, parentId){
                 defaultValue: parentId,
                 type: 'hidden'
             },
-            TablePath:{
+            AppCanvasName:{
                 type: 'hidden',
                 defaultValue: saron.table.total.name
             },

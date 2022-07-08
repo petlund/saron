@@ -8,7 +8,7 @@ saron.table.baptist.nameId, saron.table.baptist.name
 $(document).ready(function () {
     var mainTableViewId = saron.table.baptist.nameId;
     var tablePlaceHolder = $(mainTableViewId);
-    tablePlaceHolder.jtable(baptistTableDef(mainTableViewId, null, null));
+    tablePlaceHolder.jtable(baptistTableDef(mainTableViewId, saron.table.baptist.name, null, null));
     var options = getPostData(null, saron.table.baptist.name, null, saron.table.baptist.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
@@ -51,7 +51,7 @@ function baptistTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 defaultValue: parentId,
                 type: 'hidden'
             },
-            TablePath:{
+            AppCanvasName:{
                 type: 'hidden',
                 defaultValue: saron.table.baptist.name
             },

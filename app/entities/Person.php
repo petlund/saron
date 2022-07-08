@@ -230,7 +230,7 @@ class Person extends People{
 
     
     function update(){
-        switch ($this->tablePath){
+        switch ($this->appCanvasPath){
         case TABLE_NAME_PEOPLE:
             $checkResult = $this->checkPersonData();
             if($checkResult!==true){
@@ -293,7 +293,7 @@ class Person extends People{
         default:
             $error = array();
             $error["Result"] = "ERROR";
-            $error["Message"] = "Uppdateringen misslyckades. (TablePath finns inte med i case-satsen.)";
+            $error["Message"] = "Uppdateringen misslyckades. (AppCanvasPath finns inte med i case-satsen.)";
             return json_encode($error);            
         }        
     }
@@ -380,7 +380,7 @@ class Person extends People{
         $sqlSelect.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
         $sqlSelect.= $home->getHomeSelectSql(ALIAS_CUR_HOMES, $this->HomeId, true);
         $sqlSelect.= $home->getHomeSelectSql(ALIAS_OLD_HOMES, $this->OldHomeId, true);
-        $sqlSelect.= $this->getTablePathSql(false);                  
+        $sqlSelect.= $this->getAppCanvasSql(false);                  
         
         $sqlFrom ="FROM People left outer join Homes on People.HomeId=Homes.Id ";
         $sqlFrom.="left outer join Homes as " . ALIAS_OLD_HOMES . " on " .  ALIAS_OLD_HOMES . ".Id = " . $this->OldHomeId . " ";

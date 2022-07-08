@@ -51,7 +51,7 @@ class Engagement extends SuperEntity{
         $select.= getMemberStateSql("p", "MemberState", true);
         $select.= DECRYPTED_ALIAS_EMAIL . ", ";
         $select.= getFieldSql(null, "Mobile", "MobileEncrypt", "", true, true);
-        $select.= $this->getTablePathSql();
+        $select.= $this->getAppCanvasSql();
         $select.= $subQuery1; 
         $select.= $subQuery2;        
         $select.= "CONCAT(Zip, ' ', City) AS Hosted, ";

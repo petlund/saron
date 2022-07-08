@@ -41,7 +41,7 @@ function role_role_unitType_TableDef(mainTableViewId, tablePath, newTableTitle, 
             deleteAction: saron.root.webapi + 'deleteOrganizationRole-UnitType.php'
         },
         fields: {
-            TablePath:{
+            CanvasName:{
                 type: 'hidden',
                 defaultValue: tablePath
             },

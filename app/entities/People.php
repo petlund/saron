@@ -34,7 +34,7 @@ class People extends SuperEntity{
                 return $this->selectNextMembershipNo();       
             }
         case RECORDS:
-            switch ($this->tableName){
+            switch ($this->appCanvasName){
                 case LIST_MOBILE_INSTEAD_OF_EMAIL:
                     return $this->selectMobile();       
                 case LIST_EMAIL:
@@ -52,17 +52,17 @@ class People extends SuperEntity{
         $id = $this->getId($idFromCreate, $this->id);
 
         $tw = new PeopleViews();
-        $sqlSelect = $tw->getPeopleViewSql($this->tableName, $this->saronUser) .", ";
+        $sqlSelect = $tw->getPeopleViewSql($this->appCanvasName, $this->saronUser) .", ";
         $sqlSelect.= $this->homes->getHomeSelectSql(ALIAS_CUR_HOMES, "Homes.Id", false);
         
-        if(strlen($this->tablePath) >0){
+        if(strlen($this->appCanvasPath) >0){
             $sqlSelect.= ", ";
-            $sqlSelect.= $this->getTablePathSql(false);
+            $sqlSelect.= $this->getAppCanvasSql(false);
         }
         $sqlWhere = "WHERE ";       
         if($id < 0){
             $rec = RECORDS;     
-            switch ($this->tablePath){
+            switch ($this->appCanvasPath){
                 case TABLE_NAME_PEOPLE . "/" . TABLE_NAME_HOMES:            
                     $sqlWhere.= "People.Id = " . $this->parentId . " ";
                     break;

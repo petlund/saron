@@ -59,7 +59,7 @@ class OrganizationUnitType extends SuperEntity{
         $rec = RECORDS;
 
         $select = "SELECT Typ.Id, Typ.PosEnabled, Typ.SubUnitEnabled, Typ.Name, Typ.Description, Typ.UpdaterName, Typ.Updated, "; 
-        $select.= $this->getTablePathSql();
+        $select.= $this->getAppCanvasSql();
         $select.= "(select If(count(*)=0,0,1) From Org_Tree as Tree where  Tree.OrgUnitType_FK = Typ.Id) as UsedInUnit, ";
         $select.= "(select sum((select count(*) from Org_Tree as T2 where T2.ParentTreeNode_FK=T1.Id)) From Org_Tree as T1 where  T1.OrgUnitType_FK = Typ.Id Group by T1.OrgUnitType_FK) as UseChild, ";
         $select.= "(select sum((select count(*) from Org_Pos as P where P.OrgTree_FK = T1.Id)) From Org_Tree as T1 where  T1.OrgUnitType_FK = Typ.Id Group by T1.OrgUnitType_FK) as UseRole, ";
@@ -68,7 +68,7 @@ class OrganizationUnitType extends SuperEntity{
         $from = "FROM Org_UnitType as Typ ";
  
         if($id < 0){
-            switch ($this->tablePath){
+            switch ($this->appCanvasPath){
                 case TABLE_NAME_UNITTYPE:            
                     $where = "";
                     break;
@@ -107,13 +107,13 @@ class OrganizationUnitType extends SuperEntity{
             . ') as Occurrency ';
         
         $select = "SELECT *, " ;
-        $select.= $this->getTablePathSql();
+        $select.= $this->getAppCanvasSql();
         $select.=$subSelect . ", ";
         $select.= $this->saronUser->getRoleSql(false) . " ";
         $from = "FROM Org_UnitType as Typ inner join `Org_Role-UnitType` as Rut on Rut.OrgUnitType_FK = Typ.Id ";
         
         if($id < 0){
-            switch ($this->tablePath){
+            switch ($this->appCanvasPath){
                 case TABLE_NAME_UNITTYPE:            
                     $where = "";
                     break;
@@ -139,12 +139,12 @@ class OrganizationUnitType extends SuperEntity{
         
         if($this->source === SOURCE_CREATE){
             $where.= "WHERE id not in(select OrgUnitType_FK from `Org_Role-UnitType` where OrgRole_FK = " . $this->parentId . ") ";             
-            if(strpos($this->tablePath, TABLE_NAME_ROLE) !== false){
+            if(strpos($this->appCanvasPath, TABLE_NAME_ROLE) !== false){
                 $where.="AND PosEnabled = 2 "; // only unittypes with posenabled list
             }
         }
         else{
-            if(strpos($this->tablePath, TABLE_NAME_ROLE) !== false){
+            if(strpos($this->appCanvasPath, TABLE_NAME_ROLE) !== false){
                 $where.="WHERE PosEnabled = 2 "; // only unittypes with posenabled list
             }
         }

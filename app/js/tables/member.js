@@ -75,7 +75,7 @@ function memberTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                     return _setClassAndValue(data, "Name", PERSON);
                 }       
             },
-            TablePath:{
+            AppCanvasName:{
                 type: 'hidden',
                 defaultValue: tableName
             },
@@ -112,7 +112,7 @@ function memberTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 options: function (data){
                     var url =  saron.root.webapi + 'listPeople.php';
                     var field = "MembershipNo";
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);
+                    var parameters = getOptionsUrlParameters(data, tableName, parentId, tablePath, field);
                     return url + parameters;
                 }
             },

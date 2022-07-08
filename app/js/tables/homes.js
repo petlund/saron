@@ -22,7 +22,7 @@ function filterHomes(viewId, reload, tableName){
     var options = {searchString: $('#searchString').val(), 
                     groupId: $('#groupId').val(), 
                     TableViewId: saron.table.homes.nameId, 
-                    TablePath: saron.table.homes.name,
+                    AppCanvasName: saron.table.homes.name,
                     ResultType: saron.responsetype.records
                 };
             
@@ -63,7 +63,7 @@ function homeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 defaultValue: parentId,
                 type: 'hidden'
             },
-            TablePath:{
+            CanvasName:{
                 type: 'hidden',
                 defaultValue: saron.table.homes.name
             },

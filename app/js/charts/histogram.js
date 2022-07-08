@@ -1,6 +1,5 @@
 /* global 
-saron
-
+saron, HOME 
  */
 "use strict";
 
@@ -23,9 +22,11 @@ function createAgeHistogram(){
     var jsonChartsMeta = JSON.parse(chartsMeta);      
 
     addTableCells("HistogramChart", 1, jsonChartsMeta);
-    $.ajax({
-        url: saron.root.webapi + 'listStatistics.php?TablePath=' + saron.graph.histogram.name
-    }).then(function(data) {
+    
+    var url = {url: saron.root.webapi + 'listStatistics.php'};
+    var postData = getPostData(null, saron.graph.histogram.name, null, saron.graph.histogram.name, saron.source.list, saron.responsetype.records);
+    $.post(url, postData
+    ).then(function(data) {
         var chartData = JSON.parse(data);      
         for(var i=0; i< jsonChartsMeta.charts.length; i++)              
             createMembershipBarChart(chartData.Results[i], jsonChartsMeta.charts[i]);

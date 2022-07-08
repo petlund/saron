@@ -4,8 +4,8 @@ require_once SARON_ROOT . 'app/database/queries.php';
 
 class PeopleViews {
     
-    function getPeopleViewSql($tableName, $saronUser){
-        switch ($tableName){
+    function getPeopleViewSql($appCanvasName, $saronUser){
+        switch ($appCanvasName){
         case TABLE_NAME_PEOPLE:
             return $this->selectPeople() . ", " . $this->selectNoOfEngagements() . ', ' . $saronUser->getRoleSql(false);
         case TABLE_NAME_STATISTICS:

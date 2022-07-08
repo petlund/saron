@@ -55,7 +55,7 @@ class OrganizationPosStatus extends SuperEntity{
         $order = "Order by SortOrder ";
         $where = "";
         
-        if($this->tablePath === TABLE_NAME_ENGAGEMENT . "/" . TABLE_NAME_ENGAGEMENTS){
+        if($this->appCanvasPath === TABLE_NAME_ENGAGEMENT . "/" . TABLE_NAME_ENGAGEMENTS){
             switch ($this->source){
                 case SOURCE_EDIT:            
                     $where.= "WHERE Id not in (5, 6) "; // Tillsätts ej, funktionsorganisation

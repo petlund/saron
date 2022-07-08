@@ -7,9 +7,11 @@ $(document).ready(function () {
         return;
 
     
-    
-    $.get( saron.root.webapi + 'listPeople.php?ResultType=' + saron.responsetype.records + '&TableViewId=' + saron.list.email.nameId, function(text) {
-        var data = JSON.parse(text);
+    var url = {url: saron.root.webapi + 'listStatistics.php'};
+    var postData = getPostData(null, saron.list.email.name, null, saron.graph.timeseries.name, saron.source.list, saron.responsetype.records);
+    $.post(url, postData
+    ).then(function(json) {    
+        var data = JSON.parse(json);
         var cnt = data.Records.length;
         var head = '<div class="saronAugdText">Mailadresser att kopiera och klistra in i adressfält för hemlig kopia. (' + cnt + ' st.)</div><br>';
         var str = head;

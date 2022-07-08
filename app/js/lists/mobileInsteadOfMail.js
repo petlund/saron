@@ -9,12 +9,15 @@ $(document).ready(function () {
         var head1 = '<div class="saronAugdText">Mobilnummer till personer utan mail.</div><br>';
         var head2 = '<br><br><br><br><div class="saronAugdText">Samma nummer med namn.</div><br>';
 
-        $.get(saron.root.webapi + 'listPeople.php?TableViewId=' + saron.list.mobile_instead_of_email.nameId + '&ResultType=' + saron.responsetype.records, function(text) {
-        var data = JSON.parse(text);
-        var cnt = data.TotalRecordCount;
-        var str = head1;
-        for(var i = 0; i<cnt; i++){                
-            str += data.Records[i].Mobile + ', ';
+        var url = {url: saron.root.webapi + 'listPeople.php'};
+        var postData = getPostData(null, saron.list.mobile_instead_of_email.name, null, saron.list.mobile_instead_of_email.name, saron.source.list, saron.responsetype.records);
+        $.post(url, postData
+        ).then(function(json) {    
+            var data = JSON.parse(json);
+            var cnt = data.TotalRecordCount;
+            var str = head1;
+            for(var i = 0; i<cnt; i++){                
+                str += data.Records[i].Mobile + ', ';
         }
         
         str += head2;

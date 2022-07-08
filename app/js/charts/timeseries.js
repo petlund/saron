@@ -5,9 +5,10 @@ saron
 "use strict";
 
 function createMembersStatisticsChart() { 
-    $.ajax({
-        url: saron.root.webapi + 'listStatistics.php?TablePath=' + saron.graph.timeseries.name
-    }).then(function(data) {
+    var url = {url: saron.root.webapi + 'listStatistics.php'};
+    var postData = getPostData(null, saron.graph.timeseries.name, null, saron.graph.timeseries.name, saron.source.list, saron.responsetype.records);
+    $.post(url, postData
+    ).then(function(data) {
         var chartData = JSON.parse(data);      
         var chartsMeta = '{' +
                             '"charts":[' +

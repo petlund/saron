@@ -27,7 +27,7 @@ function orgVersionTableDef(){
             createAction: saron.root.webapi + 'createOrganizationVersion.php',
         },
         fields: {
-            TablePath:{
+            AppCanvasName:{
                 list: false,
                 edit: false,
                 create: false,

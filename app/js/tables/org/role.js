@@ -48,7 +48,7 @@ function roleTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
             deleteAction:  saron.root.webapi + 'deleteOrganizationRole.php'
         },
         fields: {
-            TablePath:{
+            AppCanvasName:{
                 list: false,
                 edit: false,
                 create: false

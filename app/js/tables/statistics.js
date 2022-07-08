@@ -11,7 +11,7 @@ RECORD, OPTIONS
 $(document).ready(function () {
     var mainTableViewId = saron.table.statistics.nameId;
     var tablePlaceHolder = $(mainTableViewId);
-    tablePlaceHolder.jtable(statisticTableDef(saron.table.statistics.nameId, null, null));    
+    tablePlaceHolder.jtable(statisticTableDef(mainTableViewId, null, null));    
     var options = getPostData(null, saron.table.statistics.name, null,  saron.table.statistics.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
@@ -78,7 +78,7 @@ function statisticTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                     return _getClickImg(data, childTableDef, $imgChild, $imgClose);
                 }
             },
-            TablePath:{
+            AppCanvasName:{
                 type: 'hidden',
                 defaultValue: tableName
             },
@@ -204,7 +204,7 @@ function statisticsDetailTableDef(mainTableViewId, tablePath, newTableTitle, par
                 defaultValue: parentId,
                 type: 'hidden'
             },
-            TablePath:{
+            AppCanvasName:{
                 type: 'hidden',
                 defaultValue: tableName
             },

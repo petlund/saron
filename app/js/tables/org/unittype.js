@@ -49,7 +49,7 @@ function unitTypeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
             deleteAction: saron.root.webapi + 'deleteOrganizationUnitType.php'
         },
         fields:{
-            TablePath:{
+            AppCanvasName:{
                 list: false,
                 edit: false,
                 create: false
