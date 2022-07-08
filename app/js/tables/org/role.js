@@ -9,7 +9,7 @@ saron
 
 $(document).ready(function () {
     var mainTableViewId = saron.table.role.nameId;
-    var tablePlaceHolder = $(mainTableViewId);
+    var tablePlaceHolder = "#" + tableName;
     tablePlaceHolder.jtable(roleTableDef(mainTableViewId, null, null, null));
     var postData = getPostData(null, mainTableViewId, null, saron.table.role.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', postData);

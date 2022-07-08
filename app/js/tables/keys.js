@@ -6,17 +6,16 @@ PERSON, inputFormWidth, inputFormFieldWidth
 "use strict";
 
 $(document).ready(function () {
-    var mainTableViewId = saron.table.keys.nameId;
-    var tablePlaceHolder = $(mainTableViewId);
-    tablePlaceHolder.jtable(keyTableDef(mainTableViewId, null, null, null));
+    var tablePlaceHolder = $("#" + saron.table.keys.name);
+    tablePlaceHolder.jtable(keyTableDef(null, null));
     tablePlaceHolder.jtable('load');
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });  
 
-function keyTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
+function keyTableDef(tableTitle, tablePath){
     var title = 'Nyckelinnehav'; 
-    if(newTableTitle !== null)
-        title = newTableTitle; 
+    if(tableTitle !== null)
+        title = tableTitle; 
     
     var tableName = saron.table.keys.name; 
     if(tablePath === null)
@@ -26,9 +25,8 @@ function keyTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
     
     return {
         title: title,
-        initParameters: getInitParametes(mainTableViewId, tablePath, parentId),            
         showCloseButton: false,        
-        paging: mainTableViewId[0].includes(saron.table.keys.nameId), //Enable paging
+        paging: tablePath.startsWith(saron.table.keys.name), //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
         sorting: true, //Enable sorting
@@ -44,17 +42,21 @@ function keyTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 list: false
             },
             ParentId:{
-                defaultValue: parentId,
+                defaultValue: -1,
                 type: 'hidden'
             },
             AppCanvasName:{
                 defaultValue: tableName,
                 type: 'hidden'
             },
+            AppCanvasPath:{
+                defaultValue: tableName,
+                type: 'hidden'
+            },
             Name: {
                 title: 'Namn',
                 width: '10%',
-                list: includedIn(mainTableViewId, saron.table.keys.nameId),
+                list: includedIn(saron.table.keys.name, tablePath),
                 create: false,
                 edit: false,
                 display: function (data){
@@ -63,7 +65,7 @@ function keyTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
             },
             DateOfBirth: {
                 title: 'Född',
-                list: includedIn(mainTableViewId, saron.table.keys.nameId),
+                list: includedIn(saron.table.keys.name, tablePath),
                 edit: false,
                 width: '5%',
                 type: 'date',
@@ -75,7 +77,7 @@ function keyTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
             MemberState:{
                 edit: false,
                 create: false,
-                list: includedIn(mainTableViewId, saron.table.keys.nameId),
+                list: includedIn(saron.table.keys.name, tablePath),
                 title: 'Status',
                 width: '5%',                
             },

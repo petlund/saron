@@ -9,7 +9,7 @@ RECORD, OPTIONS
 
 $(document).ready(function () {
     var mainTableViewId = saron.table.unitlist.nameId;
-    var tablePlaceHolder = $(mainTableViewId);
+    var tablePlaceHolder = "#" + tableName;
     tablePlaceHolder.jtable(unitTableDef(mainTableViewId, saron.table.unitlist.name,  null, null)); //-1 => null parent === topnode
     var options = getPostData(null, mainTableViewId, null, saron.table.unitlist.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);

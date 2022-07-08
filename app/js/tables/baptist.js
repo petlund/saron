@@ -6,18 +6,17 @@ saron.table.baptist.nameId, saron.table.baptist.name
 "use strict"; 
 
 $(document).ready(function () {
-    var mainTableViewId = saron.table.baptist.nameId;
-    var tablePlaceHolder = $(mainTableViewId);
-    tablePlaceHolder.jtable(baptistTableDef(mainTableViewId, saron.table.baptist.name, null, null));
+    var tablePlaceHolder = $("#" + saron.table.baptist.name);
+    tablePlaceHolder.jtable(baptistTableDef(null, null));
     var options = getPostData(null, saron.table.baptist.name, null, saron.table.baptist.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });  
     
-function baptistTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
+function baptistTableDef(tableTitle, tablePath){
     var title = 'Dopuppgifter';
-    if(newTableTitle !== null)
-        title = newTableTitle;
+    if(tableTitle !== null)
+        title = tableTitle;
     
     var tableName = saron.table.baptist.name;
 
@@ -29,9 +28,8 @@ function baptistTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
 
     return {
         title:title,
-        initParameters: getInitParametes(mainTableViewId, tablePath, parentId),            
         showCloseButton: false,
-        paging: mainTableViewId[0].includes(saron.table.baptist.nameId), //Enable paging
+        paging: tablePath.startsWith(saron.table.baptist.name), //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
         sorting: true, //Enable sorting
@@ -48,7 +46,7 @@ function baptistTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 list: false
             },
             ParentId:{
-                defaultValue: parentId,
+                defaultValue: -1,
                 type: 'hidden'
             },
             AppCanvasName:{
@@ -59,7 +57,7 @@ function baptistTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 title: 'Namn',
                 width: '15%',
                 edit: false,
-                list: includedIn (mainTableViewId, saron.table.baptist.nameId),
+                list: includedIn (saron.table.baptist.name, tablePath),
                 display: function (data){
                     return _setClassAndValue(data, "Name", PERSON);
                 }       
@@ -68,7 +66,7 @@ function baptistTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 title: 'Född',
                 width: '7%',
                 type: 'date',
-                list: includedIn (mainTableViewId, saron.table.baptist.nameId),
+                list: includedIn (saron.table.baptist.name, tablePath),
                 displayFormat: DATE_FORMAT,
                 edit: false,
                 display: function (data){

@@ -10,7 +10,7 @@ RECORD, OPTIONS
 
 $(document).ready(function () {
     var mainTableViewId = saron.table.statistics.nameId;
-    var tablePlaceHolder = $(mainTableViewId);
+    var tablePlaceHolder = "#" + tableName;
     tablePlaceHolder.jtable(statisticTableDef(mainTableViewId, null, null));    
     var options = getPostData(null, saron.table.statistics.name, null,  saron.table.statistics.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);

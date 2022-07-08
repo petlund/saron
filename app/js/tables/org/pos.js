@@ -9,7 +9,7 @@ RECORD, OPTIONS
 
 $(document).ready(function () {
     var mainTableViewId = saron.table.pos.nameId;
-    var tablePlaceHolder = $(mainTableViewId);
+    var tablePlaceHolder = "#" + tableName;
     tablePlaceHolder.jtable(posTableDef(mainTableViewId, saron.table.pos.name, null, null));
     var postData = getPostData(null, saron.table.pos.name, null, saron.table.pos.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', postData);
@@ -254,7 +254,7 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
         recordsLoaded: function(event, data) {
             var addButton = $(event.target).find('.jtable-toolbar-item-add-record');
             if(addButton === null)
-                addButton = $(mainTableViewId).find('.jtable-toolbar-item-add-record');
+                addButton = "#" + tableName.find('.jtable-toolbar-item-add-record');
 
             var showAddButton = (data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org') && data.records[0].AppCanvasName !== saron.table.pos.name; 
             if(showAddButton) 

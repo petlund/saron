@@ -238,7 +238,7 @@ function unitTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 data.row.find('.jtable-delete-command-button').show();
             
             if(data.record.parentNodeChange !== '0')
-                $(mainTableViewId).jtable('load');
+                $("#" + tableName).jtable('load');
 
         },  
         rowInserted: function(event, data){

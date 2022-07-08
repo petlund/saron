@@ -5,10 +5,9 @@ RECORD, OPTIONS
 "use strict";
 
 $(document).ready(function () {
-    var mainTableViewId = saron.table.homes.nameId;
-    var tablePlaceHolder = $(mainTableViewId);
-    tablePlaceHolder.jtable(homeTableDef(mainTableViewId, null, null, null));
-    var options = getPostData(null, mainTableViewId, null, saron.table.homes.name, saron.source.list, saron.responsetype.records);
+    var tablePlaceHolder = $("#" + saron.table.homes.name);
+    tablePlaceHolder.jtable(homeTableDef(null, null));
+    var options = getPostData(null, saron.table.homes.name, null, saron.table.homes.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });
@@ -30,10 +29,10 @@ function filterHomes(viewId, reload, tableName){
 }
 
 
-function homeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
+function homeTableDef(tableTitle, tablePath){
     var title = 'Hem';
-    if(newTableTitle !== null)
-        title = newTableTitle;
+    if(tableTitle !== null)
+        title = tableTitle;
     
     var tableName = saron.table.homes.name;
     if(tablePath === null)
@@ -43,9 +42,8 @@ function homeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
 
     return {
         title:title,
-        initParameters: getInitParametes(mainTableViewId, tablePath, parentId),
         showCloseButton: false,        
-        paging: mainTableViewId.includes(saron.table.homes.nameId), //Enable paging
+        paging: tablePath.startsWith(saron.table.homes.name), //Enable paging
         pageList: 'minimal',
         sorting: true, //Enable sorting
         multiSorting: true,
@@ -60,7 +58,7 @@ function homeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 key: true
             },
             ParentId:{
-                defaultValue: parentId,
+                defaultValue: -1,
                 type: 'hidden'
             },
             CanvasName:{

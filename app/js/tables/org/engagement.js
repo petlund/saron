@@ -8,20 +8,19 @@ RECORD, OPTIONS
 "use strict";
 $(document).ready(function () {
 
-    var mainTableViewId = saron.table.engagement.nameId;
-    var tablePlaceHolder = $(mainTableViewId);
-    tablePlaceHolder.jtable(peopleEngagementTableDef(mainTableViewId, null, null, null));
-    var postData = getPostData(null, mainTableViewId, null, saron.table.engagement.name, saron.source.list, saron.responsetype.records);
+    var tablePlaceHolder = $("#" + saron.table.engagement.name);
+    tablePlaceHolder.jtable(peopleEngagementTableDef(null, null));
+    var postData = getPostData(null, saron.table.engagement.name, null, saron.table.engagement.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', postData);
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });
 
 
 
-function peopleEngagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
+function peopleEngagementTableDef(tableTitle, tablePath){
     var title = 'Ansvarsuppgifter per person';
-    if(newTableTitle !== null)
-        title = newTableTitle; 
+    if(tableTitle !== null)
+        title = tableTitle; 
     
     var tableName = saron.table.engagement.name; 
     if(tablePath === null)
@@ -31,7 +30,6 @@ function peopleEngagementTableDef(mainTableViewId, tablePath, newTableTitle, par
  
     return {
         showCloseButton: false,
-        initParameters: getInitParametes(mainTableViewId, tablePath, parentId),            
         title: title,
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
@@ -61,7 +59,6 @@ function peopleEngagementTableDef(mainTableViewId, tablePath, newTableTitle, par
                     var childTableTitle = data.record.Name + '" har nedanstående uppdrag';
                     var tooltip = "";
                     var imgFile = "";
-                    var parentId = data.record.Id;
                     var url = saron.root.webapi + 'listOrganizationPos.php';
                     var clientOnly = true;
                     var parentId = data.record.Id;
@@ -76,7 +73,7 @@ function peopleEngagementTableDef(mainTableViewId, tablePath, newTableTitle, par
                         imgFile = "haspos.png";
                     }                    
 
-                    var childTableDef = engagementTableDef(mainTableViewId, tablePath, childTableTitle, parentId); // PersonId point to childtable unic id   
+                    var childTableDef = engagementTableDef(childTableTitle, tablePath); // PersonId point to childtable unic id   
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
                     var $imgClose = getImageCloseTag(data, childTableName, type);
                         
@@ -133,7 +130,7 @@ function peopleEngagementTableDef(mainTableViewId, tablePath, newTableTitle, par
         },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
-                $(mainTableViewId).find('.jtable-toolbar-item-add-record').show();
+                "#" + tableName.find('.jtable-toolbar-item-add-record').show();
             }
         },        
         formCreated: function (event, data){
@@ -152,11 +149,11 @@ function peopleEngagementTableDef(mainTableViewId, tablePath, newTableTitle, par
 
 
 
-function engagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
+function engagementTableDef(tableTitle, tablePath){
     
     var title = "Ansvarsuppgifter";
-    if(newTableTitle !== null)
-        title = newTableTitle; 
+    if(tableTitle !== null)
+        title = tableTitle; 
     
     var tableName = saron.table.engagements.name; 
     if(tablePath === null)
@@ -168,7 +165,6 @@ function engagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId)
     return {
         showCloseButton: false,
         title: title,        
-        initParameters: getInitParametes(mainTableViewId, tablePath, parentId),
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
@@ -190,6 +186,7 @@ function engagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId)
                 options: function (data){
                     var url = saron.root.webapi + 'listOrganizationPos.php';
                     var field = "Id";
+                    var parentId = data.record.ParentId;
                     var parameters = getOptionsUrlParameters(data, tableName, parentId, tablePath, field);
                     return  url + parameters;
                 }
@@ -200,11 +197,11 @@ function engagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId)
             },    
             People_FK:{
                 type: 'hidden',
-                defaultValue: parentId
+                defaultValue: -1
             },
             ParentId:{
                 type: 'hidden',
-                defaultValue: parentId
+                defaultValue: -1
             },
             OrgTree_FK:{
                 type: 'hidden'
@@ -219,12 +216,13 @@ function engagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId)
                 options: function (data){
                     var url = saron.root.webapi + 'listOrganizationPosStatus.php';
                     var field = "OrgPosStatus_FK";
+                    var parentId = data.record.ParentId;
                     var parameters = getOptionsUrlParameters(data, tableName, parentId, tablePath, field);
                     return  url + parameters;
                 }
             },            
             Comment:{
-                create: !mainTableViewId.includes(saron.table.engagement.nameId),
+                create: !tableName.includes(tablePath),
                 title: 'Kommentar',
                 inputTitle: 'Kommentar kopplat till uppdraget ej person'
             },
@@ -256,11 +254,11 @@ function engagementTableDef(mainTableViewId, tablePath, newTableTitle, parentId)
         recordsLoaded: function(event, data) {
             if(!tablePath.includes(saron.table.people.name)){
                 if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
-                    $(mainTableViewId).find('.jtable-toolbar-item-add-record').show();
+                    $("#" + tableName).find('.jtable-toolbar-item-add-record').show();
                 }
             }
             else{
-                $(mainTableViewId).find('.jtable-toolbar-item-add-record').hide();
+                $("#" + tableName).find('.jtable-toolbar-item-add-record').hide();
             }
         },        
         rowInserted: function(event, data){

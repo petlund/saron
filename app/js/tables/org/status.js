@@ -73,7 +73,7 @@ function statusTableDef(mainTableViewId){
         },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
-                $(mainTableViewId).find('.jtable-toolbar-item-add-record').show();
+                "#" + tableName.find('.jtable-toolbar-item-add-record').show();
             }
         },        
         formCreated: function (event, data){

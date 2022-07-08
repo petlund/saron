@@ -6,18 +6,17 @@ RECORD, OPTIONS
 "use strict";
 
 $(document).ready(function () {
-    var mainTableViewId = saron.table.member.nameId;
-    var tablePlaceHolder = $(mainTableViewId);
-    tablePlaceHolder.jtable(memberTableDef(mainTableViewId, null, null, null));
-    var options = getPostData(null, mainTableViewId, null, saron.table.member.name, saron.source.list, saron.responsetype.records);
+    var tablePlaceHolder = $("#" + saron.table.member.name);
+    tablePlaceHolder.jtable(memberTableDef(null, null));
+    var options = getPostData(null, saron.table.member.name, null, saron.table.member.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });  
 
-function memberTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
+function memberTableDef(tableTitle, tablePath){
     var title = 'Medlemsuppgifter';
-    if(newTableTitle !== null)
-        title = newTableTitle; 
+    if(tableTitle !== null)
+        title = tableTitle; 
     
     var tableName = saron.table.member.name;
     if(tablePath === null)
@@ -27,9 +26,8 @@ function memberTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
 
     return {
             showCloseButton: false,
-            initParameters: getInitParametes(mainTableViewId, tablePath, parentId),            
             title: title,
-            paging: mainTableViewId[0].includes(saron.table.member.nameId), //Enable paging
+            paging: tablePath.startsWith(saron.table.member.name), //Enable paging
             pageSize: 10, //Set page size (default: 10)
             pageList: 'minimal',
             sorting: true, //Enable sorting
@@ -63,14 +61,14 @@ function memberTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 list: false
             },
             ParentId:{
-                defaultValue: parentId,
+                defaultValue: -1,
                 type: 'hidden'
             },
             Name: {
                 title: 'Namn',
                 width: '15%',
                 edit: false,
-                list: includedIn (mainTableViewId, saron.table.member.nameId),
+                list: includedIn (saron.table.member.name, tablePath),
                 display: function (data){
                     return _setClassAndValue(data, "Name", PERSON);
                 }       
@@ -84,7 +82,7 @@ function memberTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 width: '7%',
                 edit: false,
                 type: 'date',
-                list: includedIn (mainTableViewId, saron.table.member.nameId),
+                list: includedIn (saron.table.member.name, tablePath),
                 displayFormat: DATE_FORMAT,
                 display: function (data){
                     return _setClassAndValue(data, "DateOfBirth", PERSON);

@@ -5,8 +5,7 @@ RECORD, OPTIONS
 "use strict";
 
     $(document).ready(function () {
-        var mainTableViewId = saron.table.birthday.nameId;
-        var tablePlaceHolder = $(mainTableViewId);
+        var tablePlaceHolder = $("#" + saron.table.birthday.name);
         tablePlaceHolder.jtable(birthdayTableDef(saron.table.birthday.nameId, null, saron.table.birthday.name, null));
         var options = getPostData(null, saron.table.birthday.name, null, saron.table.birthday.name, saron.source.list, saron.responsetype.records);
         tablePlaceHolder.jtable('load', options);
@@ -14,7 +13,7 @@ RECORD, OPTIONS
     });
     
 
-    function birthdayTableDef(mainTableViewId, tableTitle, tablePath, parentId){
+    function birthdayTableDef(tableTitle, tablePath){
         var tableName = saron.table.birthday.name;
         var title = 'Födelsedagar';
         if(tableTitle !== null)
@@ -27,7 +26,6 @@ RECORD, OPTIONS
         
         return {
             title: title,
-            initParameters: getInitParametes(mainTableViewId, tablePath, parentId),            
             paging: true, //Enable paging
             pageSize: 10, //Set page size (default: 10)
             pageList: 'minimal',

@@ -10,9 +10,8 @@ const is_open = "_is_open_";
 // new childOpenFunction
 
 function _getClickImg(data, childTableDef, $imgChild, $imgClose){
-    var appCanvasName = childTableDef.initParameters.AppCanvasName;
     var openChildTableServer = data.record.OpenChildTable;
-    var openChildTable = _getClassNameOpenChild(data, appCanvasName);
+    var openChildTable = _getClassNameOpenChild(data, data.record.AppCanvasName);
     if(openChildTableServer !== false && openChildTable === openChildTableServer)
         return $imgClose;
     else
@@ -22,22 +21,23 @@ function _getClickImg(data, childTableDef, $imgChild, $imgClose){
     
 function _clickActionOpen(childTableDef, img, data, url, clientOnly){
     var tr = img.closest('.jtable-data-row');
-    var mainTablePlaceHolder = childTableDef.initParameters.MainTableViewId;
-    
-    var tablePlaceHolder = _getChildTablePlaceHolderFromImg(img, mainTablePlaceHolder);
+    var appCanvasRoot = getRootElementFromTablePath(data.record.AppCanvasPath);
+    var tablePlaceHolder = _getChildTablePlaceHolderFromImg(img, appCanvasRoot);
     
     tablePlaceHolder.jtable('openChildTable', tr, childTableDef, function(callBackData){
         var id = null;
-        var parentId = childTableDef.initParameters.ParentId;
-        var tablePath = childTableDef.initParameters.TablePath;
+        var parentId = data.record.ParentId;
+        var appCanvasPath = data.record.AppCanvasPath;
+        var appCanvasName = data.record.AppCanvasName;
         var source = saron.source.list;
         var resultType = saron.responsetype.records;        
-        var options = getPostData(id, mainTablePlaceHolder, parentId, tablePath, source, resultType);
+        var options = getPostData(id, appCanvasName, parentId, appCanvasPath, source, resultType);
 
         callBackData.childTable.jtable('load', options, function(childData){
         });
-        var tablePathOpenChild = _getClassNameOpenChild(data, tablePath);                                
-        _updateAfterClickAction(tablePlaceHolder, data, tablePathOpenChild, url, clientOnly);            
+        
+        var classNameOpenChild = _getClassNameOpenChild(data, appCanvasName);                                
+        _updateAfterClickAction(tablePlaceHolder, data, classNameOpenChild, url, clientOnly);            
     });
     $(tr).find('.jtable-toolbar-item-add-record').hide();
 }
@@ -50,9 +50,9 @@ function _clickActionClose(childTableDef, img, data, url, clientOnly){
     var tablePlaceHolder = _getChildTablePlaceHolderFromImg(img, mainTablePlaceHolder);
     
     $(tablePlaceHolder).jtable('closeChildTable', tr, function(callBackData){
-        var tablePathOpenChild = false;
+        var classNameOpenChild = false;
     
-        _updateAfterClickAction(tablePlaceHolder, data, tablePathOpenChild, url, clientOnly);
+        _updateAfterClickAction(tablePlaceHolder, data, classNameOpenChild, url, clientOnly);
     });
 }
 
@@ -68,19 +68,28 @@ function _updateAfterClickAction(tablePlaceHolder, data, tablePathOpenChild, url
 
 
 
-function _getChildTablePlaceHolderFromImg(img, mainTablePlaceHolder){
+function _getChildTablePlaceHolderFromImg(img, tableName){
     if(img !== null){
         var tablePlaceHolder = img.closest('div.jtable-child-table-container');
         if(tablePlaceHolder.length > 0)
             return tablePlaceHolder;
     }
-    return $(mainTablePlaceHolder);
+    return $("#" + tableName);
         
 }
 
 
 
 //********************* private methods *********************
+
+
+function getRootElementFromTablePath(tablePath){
+    var p = tablePath.indexOf("/");
+    if(p < 1)
+        return tablePath;
+    else
+        return tablePath.substring(0,p);
+}
 
 
 function _openChildAndUpdateParentIcon(data, $imgChild, childTableDef, childTableName, listParentRowUri){
@@ -183,11 +192,9 @@ function _getAllClassNameOpenChild(data){
 
 
 
-function _getClassNameOpenChild(data, childTableName){
-//    if(data.record.PersonId > 0)
-//        return childTableName + is_open +  data.record.PersonId + ' ';
+function _getClassNameOpenChild(data, tableName){
 
-    return childTableName + is_open +  data.record.Id + ' ';
+    return tableName + is_open +  data.record.Id + ' ';
 }
 
 

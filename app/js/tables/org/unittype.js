@@ -11,7 +11,7 @@ RECORD, OPTIONS
 
 $(document).ready(function () {
     var mainTableViewId = saron.table.unittype.nameId;
-    var tablePlaceHolder = $(mainTableViewId);
+    var tablePlaceHolder = "#" + tableName;
     tablePlaceHolder.jtable(unitTypeTableDef(mainTableViewId, null, null, null));
     var postData = getPostData(null, mainTableViewId, null, saron.table.unittype.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', postData);
