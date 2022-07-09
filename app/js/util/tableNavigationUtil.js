@@ -46,8 +46,8 @@ function _clickActionOpen(childTableDef, img, data, url, clientOnly){
 
 function _clickActionClose(childTableDef, img, data, url, clientOnly){
     var tr = img.closest('.jtable-data-row');
-    var mainTablePlaceHolder = childTableDef.initParameters.MainTableViewId;
-    var tablePlaceHolder = _getChildTablePlaceHolderFromImg(img, mainTablePlaceHolder);
+    var appCanvasRoot = getRootElementFromTablePath(data.record.AppCanvasPath);
+    var tablePlaceHolder = _getChildTablePlaceHolderFromImg(img, appCanvasRoot);
     
     $(tablePlaceHolder).jtable('closeChildTable', tr, function(callBackData){
         var classNameOpenChild = false;
