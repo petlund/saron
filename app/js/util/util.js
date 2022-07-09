@@ -498,9 +498,9 @@ function getOptionsUrlParameters(data, appCanvasName, parentId, appCanvasPath, f
 
 
 
-function getImageTag(data, imgFile, title, childTableName, type){
+function getImageTag(data, imgFile, title, childTableDef, type){
     var src = '"' + saron.root.images + imgFile + '" title="' + title + '"';
-    var imageTag = _setImageClass(data, childTableName, src, type);
+    var imageTag = _setImageClass(data, childTableDef.tableName, src, type);
     return $(imageTag);
 }
 

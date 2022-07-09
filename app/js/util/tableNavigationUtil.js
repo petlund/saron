@@ -11,7 +11,7 @@ const is_open = "_is_open_";
 
 function _getClickImg(data, childTableDef, $imgChild, $imgClose){
     var openChildTableServer = data.record.OpenChildTable;
-    var openChildTable = _getClassNameOpenChild(data, data.record.AppCanvasName);
+    var openChildTable = _getClassNameOpenChild(data, childTableDef.appCanvasName);
     if(openChildTableServer !== false && openChildTable === openChildTableServer)
         return $imgClose;
     else
@@ -19,32 +19,34 @@ function _getClickImg(data, childTableDef, $imgChild, $imgClose){
 }    
     
     
-function _clickActionOpen(childTableDef, img, data, url, clientOnly){
+function _clickActionOpen(childTableDef, img, data, clientOnly){
     var tr = img.closest('.jtable-data-row');
     var appCanvasRoot = getRootElementFromTablePath(data.record.AppCanvasPath);
     var tablePlaceHolder = _getChildTablePlaceHolderFromImg(img, appCanvasRoot);
-    
+//    data.record.AppCanvasPath = data.record.AppCanvasPath + "/" + childTableDef.appCanvasName;
+ 
     tablePlaceHolder.jtable('openChildTable', tr, childTableDef, function(callBackData){
         var id = null;
         var parentId = data.record.ParentId;
-        var appCanvasPath = data.record.AppCanvasPath;
-        var appCanvasName = data.record.AppCanvasName;
+        var appCanvasName = childTableDef.appCanvasName;
+        var appCanvasPath = data.record.AppCanvasPath + "/" + appCanvasName;
         var source = saron.source.list;
         var resultType = saron.responsetype.records;        
         var options = getPostData(id, appCanvasName, parentId, appCanvasPath, source, resultType);
 
         callBackData.childTable.jtable('load', options, function(childData){
+            var addButton = callBackData.childTable.find('.jtable-toolbar-item-add-record');
+            addButton.hide();
         });
         
         var classNameOpenChild = _getClassNameOpenChild(data, appCanvasName);                                
-        _updateAfterClickAction(tablePlaceHolder, data, classNameOpenChild, url, clientOnly);            
+        _updateAfterClickAction(tablePlaceHolder, data, classNameOpenChild, childTableDef.actions.listAction, clientOnly);            
     });
-    $(tr).find('.jtable-toolbar-item-add-record').hide();
 }
 
 
 
-function _clickActionClose(childTableDef, img, data, url, clientOnly){
+function _clickActionClose(childTableDef, img, data, clientOnly){
     var tr = img.closest('.jtable-data-row');
     var appCanvasRoot = getRootElementFromTablePath(data.record.AppCanvasPath);
     var tablePlaceHolder = _getChildTablePlaceHolderFromImg(img, appCanvasRoot);
@@ -52,7 +54,7 @@ function _clickActionClose(childTableDef, img, data, url, clientOnly){
     $(tablePlaceHolder).jtable('closeChildTable', tr, function(callBackData){
         var classNameOpenChild = false;
     
-        _updateAfterClickAction(tablePlaceHolder, data, classNameOpenChild, url, clientOnly);
+        _updateAfterClickAction(tablePlaceHolder, data, classNameOpenChild, childTableDef.actions.listAction, clientOnly);
     });
 }
 
@@ -67,70 +69,12 @@ function _updateAfterClickAction(tablePlaceHolder, data, tablePathOpenChild, url
 }
 
 
-
-function _getChildTablePlaceHolderFromImg(img, tableName){
-    if(img !== null){
-        var tablePlaceHolder = img.closest('div.jtable-child-table-container');
-        if(tablePlaceHolder.length > 0)
-            return tablePlaceHolder;
-    }
-    return $("#" + tableName);
-        
-}
-
-
-
-//********************* private methods *********************
-
-
 function getRootElementFromTablePath(tablePath){
     var p = tablePath.indexOf("/");
     if(p < 1)
         return tablePath;
     else
         return tablePath.substring(0,p);
-}
-
-
-function _openChildAndUpdateParentIcon(data, $imgChild, childTableDef, childTableName, listParentRowUri){
-    var tr = $imgChild.closest('.jtable-data-row');
-    tr.removeClass(_getAllClassNameOpenChild(data));
-    tr.addClass(_getClassNameOpenChild(data, childTableName ));
-
-    var tablePlaceholder = _findTableByElement(data, tr, childTableName);
-    _updateCurrentRow(data, tablePlaceholder, listParentRowUri);
-    _openChildTable(data, tr, tablePlaceholder, childTableDef, childTableName);
-
-}
-
-
-
-
-function _closeChildAndUpdateParentIcon(data, $imgClose, childTableName, listParentRowUri){
-        var tr = $imgClose.closest('tr'); 
-        tr.removeClass(_getAllClassNameOpenChild(data));
-                
-        var table = _findTableByElement(data, tr, childTableName); 
-        _updateCurrentRow(data, table, listParentRowUri);
-
-        table.jtable('closeChildTable', tr, function(){});
-}
-
-
-
-function _findTableByElement(data, element, childTableName){
-
-    var _table = element.closest('div.jtable-main-container');
-    var table = null;
-    for(var t = 0; t<_table.length;t++){
-        var parentDiv = _table[t].parentElement;
-        
-        if(parentDiv.id.length === 0)
-            parentDiv.setAttribute('id', childTableName + '_' + data.record.Id);
-
-        table = $("#" + parentDiv.id);
-    }
-    return table;
 }
 
 
@@ -142,23 +86,6 @@ function _updateCurrentRow(data, table, listParentRowUri){
     table.jtable('updateRecord', options);
     
 }
-
-
-
-function _openChildTable(data, tr, tablePlaceHolder, childTableDef, childTableName){
-    tablePlaceHolder.jtable('openChildTable', tr, childTableDef, function(childData){
-        var tablePath = _getTablePath(data, childTableName);
-        var id = data.record.Id;
-        if(data.record.PersonId > 0) // used in statistic table. personId is not unic, id = rowId
-            id = data.record.PersonId;
-
-        var options = getPostData(null, 'childPlaceholder', id, tablePath, saron.source.list, saron.responsetype.records, childTableName);
-        childData.childTable.jtable('load', options, function(data){
-        });
-    });    
-}
-
-
 
 
 
@@ -198,16 +125,95 @@ function _getClassNameOpenChild(data, tableName){
 }
 
 
-
-function _getTablePath(data, tableName){
-    var parentTablePath = data.record.AppCanvasName;
-    if(tableName === saron.table.unittree.name && parentTablePath === saron.table.unittree.name + "/" + saron.table.unittree.name)
-        return saron.table.unittree.name + "/" + saron.table.unittree.name;
-    else
-        if(parentTablePath !== null)
-            return parentTablePath + "/" + tableName;
-        else
-            return tableName;    
+function _getChildTablePlaceHolderFromImg(img, tableName){
+    if(img !== null){
+        var tablePlaceHolder = img.closest('div.jtable-child-table-container');
+        if(tablePlaceHolder.length > 0)
+            return tablePlaceHolder;
+    }
+    return $("#" + tableName);
+        
 }
 
 
+
+//function _getTablePath(data, tableName){
+//    var parentTablePath = data.record.AppCanvasName;
+//    if(tableName === saron.table.unittree.name && parentTablePath === saron.table.unittree.name + "/" + saron.table.unittree.name)
+//        return saron.table.unittree.name + "/" + saron.table.unittree.name;
+//    else
+//        if(parentTablePath !== null)
+//            return parentTablePath + "/" + tableName;
+//        else
+//            return tableName;    
+//}
+//
+//
+//
+//
+//
+//
+//
+//
+//function _openChildAndUpdateParentIcon(data, $imgChild, childTableDef, childTableName, listParentRowUri){
+//    var tr = $imgChild.closest('.jtable-data-row');
+//    tr.removeClass(_getAllClassNameOpenChild(data));
+//    tr.addClass(_getClassNameOpenChild(data, childTableName ));
+//
+//    var tablePlaceholder = _findTableByElement(data, tr, childTableName);
+//    _updateCurrentRow(data, tablePlaceholder, listParentRowUri);
+//    _openChildTable(data, tr, tablePlaceholder, childTableDef, childTableName);
+//
+//}
+//
+//
+//
+//
+//function _closeChildAndUpdateParentIcon(data, $imgClose, childTableName, listParentRowUri){
+//        var tr = $imgClose.closest('tr'); 
+//        tr.removeClass(_getAllClassNameOpenChild(data));
+//                
+//        var table = _findTableByElement(data, tr, childTableName); 
+//        _updateCurrentRow(data, table, listParentRowUri);
+//
+//        table.jtable('closeChildTable', tr, function(){});
+//}
+//
+//
+//
+//function _findTableByElement(data, element, childTableName){
+//
+//    var _table = element.closest('div.jtable-main-container');
+//    var table = null;
+//    for(var t = 0; t<_table.length;t++){
+//        var parentDiv = _table[t].parentElement;
+//        
+//        if(parentDiv.id.length === 0)
+//            parentDiv.setAttribute('id', childTableName + '_' + data.record.Id);
+//
+//        table = $("#" + parentDiv.id);
+//    }
+//    return table;
+//}
+//
+//
+//
+//
+//
+//
+//function _openChildTable(data, tr, tablePlaceHolder, childTableDef, childTableName){
+//    tablePlaceHolder.jtable('openChildTable', tr, childTableDef, function(childData){
+//        var tablePath = _getTablePath(data, childTableName);
+//        var id = data.record.Id;
+//        if(data.record.PersonId > 0) // used in statistic table. personId is not unic, id = rowId
+//            id = data.record.PersonId;
+//
+//        var options = getPostData(null, 'childPlaceholder', id, tablePath, saron.source.list, saron.responsetype.records, childTableName);
+//        childData.childTable.jtable('load', options, function(data){
+//        });
+//    });    
+//}
+//
+//
+//
+//

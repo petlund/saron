@@ -5,7 +5,7 @@ RECORD, OPTIONS
 "use strict";
 
 $(document).ready(function () {
-    var tablePlaceHolder = $("#" + saron.table.homes.name);
+    var tablePlaceHolder = $(saron.table.homes.nameId);
     tablePlaceHolder.jtable(homeTableDef(null, null));
     var options = getPostData(null, saron.table.homes.name, null, saron.table.homes.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
@@ -29,21 +29,18 @@ function filterHomes(viewId, reload, tableName){
 }
 
 
-function homeTableDef(tableTitle, tablePath){
+function homeTableDef(tableTitle){
     var title = 'Hem';
     if(tableTitle !== null)
         title = tableTitle;
     
-    var tableName = saron.table.homes.name;
-    if(tablePath === null)
-        tablePath = tableName;
-    else
-        tablePath+= '/' + tableName; 
-
     return {
+        appCanvasName: saron.table.homes.name,
         title:title,
         showCloseButton: false,        
-        paging: tablePath.startsWith(saron.table.homes.name), //Enable paging
+        paging: function (data){
+            return data.record.AppCanvasPath.startsWith(saron.table.homes.name)
+        }, //Enable paging
         pageList: 'minimal',
         sorting: true, //Enable sorting
         multiSorting: true,

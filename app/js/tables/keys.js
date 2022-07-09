@@ -17,16 +17,13 @@ function keyTableDef(tableTitle, tablePath){
     if(tableTitle !== null)
         title = tableTitle; 
     
-    var tableName = saron.table.keys.name; 
-    if(tablePath === null)
-        tablePath = tableName;
-    else
-        tablePath+= '/' + tableName; 
-    
     return {
+        appCanvasName: saron.table.keys.name,
         title: title,
         showCloseButton: false,        
-        paging: tablePath.startsWith(saron.table.keys.name), //Enable paging
+        paging: function (data){
+            return data.record.AppCanvasPath.startsWith(saron.table.keys.name)
+        }, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
         sorting: true, //Enable sorting
@@ -46,17 +43,19 @@ function keyTableDef(tableTitle, tablePath){
                 type: 'hidden'
             },
             AppCanvasName:{
-                defaultValue: tableName,
+                defaultValue: saron.table.keys.name,
                 type: 'hidden'
             },
             AppCanvasPath:{
-                defaultValue: tableName,
+                defaultValue: saron.table.keys.name,
                 type: 'hidden'
             },
             Name: {
                 title: 'Namn',
                 width: '10%',
-                list: includedIn(saron.table.keys.name, tablePath),
+                list: function(data){
+                    return includedIn (saron.table.keys.name, data.record.AppCanvasPath);
+                },
                 create: false,
                 edit: false,
                 display: function (data){
@@ -65,7 +64,9 @@ function keyTableDef(tableTitle, tablePath){
             },
             DateOfBirth: {
                 title: 'Född',
-                list: includedIn(saron.table.keys.name, tablePath),
+                list: function(data){
+                    return includedIn (saron.table.keys.name, data.record.AppCanvasPath);
+                },
                 edit: false,
                 width: '5%',
                 type: 'date',
@@ -77,7 +78,9 @@ function keyTableDef(tableTitle, tablePath){
             MemberState:{
                 edit: false,
                 create: false,
-                list: includedIn(saron.table.keys.name, tablePath),
+                list: function(data){
+                    return includedIn (saron.table.keys.name, data.record.AppCanvasPath);
+                },
                 title: 'Status',
                 width: '5%',                
             },

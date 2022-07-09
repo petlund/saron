@@ -13,23 +13,18 @@ $(document).ready(function () {
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });  
     
-function baptistTableDef(tableTitle, tablePath){
+function baptistTableDef(tableTitle){
     var title = 'Dopuppgifter';
     if(tableTitle !== null)
         title = tableTitle;
     
-    var tableName = saron.table.baptist.name;
-
-    if(tablePath === null)
-        tablePath = tableName;
-    else
-        tablePath+= '/' + tableName; 
-
-
     return {
+        appCanvasName: saron.table.baptist.name,
         title:title,
         showCloseButton: false,
-        paging: tablePath.startsWith(saron.table.baptist.name), //Enable paging
+        paging: function (data){
+            return data.record.AppCanvasPath.startsWith(saron.table.baptist.name)
+        }, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
         sorting: true, //Enable sorting
@@ -57,7 +52,9 @@ function baptistTableDef(tableTitle, tablePath){
                 title: 'Namn',
                 width: '15%',
                 edit: false,
-                list: includedIn (saron.table.baptist.name, tablePath),
+                list: function(data){
+                    return includedIn (saron.table.baptist.name, data.record.AppCanvasPath);
+                },
                 display: function (data){
                     return _setClassAndValue(data, "Name", PERSON);
                 }       
@@ -66,7 +63,9 @@ function baptistTableDef(tableTitle, tablePath){
                 title: 'Född',
                 width: '7%',
                 type: 'date',
-                list: includedIn (saron.table.baptist.name, tablePath),
+                list: function(data){
+                    return includedIn (saron.table.baptist.name, data.record.AppCanvasPath);
+                },
                 displayFormat: DATE_FORMAT,
                 edit: false,
                 display: function (data){

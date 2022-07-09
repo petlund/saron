@@ -7,27 +7,21 @@ saron.table.total.name, saron.table.total.nameId
 "use strict";
 
 $(document).ready(function () {
-    var tablePlaceHolder = $("#" + saron.table.total.name);
+    var tablePlaceHolder = $(saron.table.total.nameId);
     tablePlaceHolder.jtable(totalTableDef(null, null));
     var options = getPostData(null, saron.table.total.name, null, saron.table.total.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
 
 });
 
-function totalTableDef(tableTitle, tablePath){
-    var tableName = saron.table.total.name;
+function totalTableDef(tableTitle){
     var title = 'Översikt per person';
 
     if(tableTitle !== null)
         title = tableTitle; 
-    
-    
-    if(tablePath === null)
-        tablePath = tableName;
-    else
-        tablePath+= '/' + tableName; 
-    
+        
     return{
+        appCanvasName:  saron.table.total.name,
         title: title,
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)

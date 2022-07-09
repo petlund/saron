@@ -10,29 +10,27 @@ $(document).ready(function () {
     tablePlaceHolder.jtable(memberTableDef(null, null));
     var options = getPostData(null, saron.table.member.name, null, saron.table.member.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
-    tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
+    //tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });  
 
-function memberTableDef(tableTitle, tablePath){
+function memberTableDef(tableTitle){
     var title = 'Medlemsuppgifter';
     if(tableTitle !== null)
         title = tableTitle; 
     
-    var tableName = saron.table.member.name;
-    if(tablePath === null)
-        tablePath = tableName;
-    else
-        tablePath+= '/' + tableName; 
 
     return {
-            showCloseButton: false,
-            title: title,
-            paging: tablePath.startsWith(saron.table.member.name), //Enable paging
-            pageSize: 10, //Set page size (default: 10)
-            pageList: 'minimal',
-            sorting: true, //Enable sorting
-            multiSorting: true,
-            defaultSorting: 'FamilyName ASC, DateOfBirthr ASC', //Set default sorting        
+        appCanvasName: saron.table.member.name,
+        showCloseButton: false,
+        title: title,
+        paging: function (data){
+            return data.record.AppCanvasPath.startsWith(saron.table.member.name)
+        }, //Enable paging
+        pageSize: 10, //Set page size (default: 10)
+        pageList: 'minimal',
+        sorting: true, //Enable sorting
+        multiSorting: true,
+        defaultSorting: 'FamilyName ASC, DateOfBirthr ASC', //Set default sorting        
         actions: {
             listAction:   saron.root.webapi + 'listPeople.php',
             updateAction: function(data) {
@@ -68,21 +66,25 @@ function memberTableDef(tableTitle, tablePath){
                 title: 'Namn',
                 width: '15%',
                 edit: false,
-                list: includedIn (saron.table.member.name, tablePath),
+                list: function(data){
+                    return includedIn (saron.table.member.name, data.record.AppCanvasPath);
+                },
                 display: function (data){
                     return _setClassAndValue(data, "Name", PERSON);
                 }       
             },
             AppCanvasName:{
                 type: 'hidden',
-                defaultValue: tableName
+                defaultValue: saron.table.member.name
             },
             DateOfBirth: { 
                 title: 'Född',
                 width: '7%',
                 edit: false,
                 type: 'date',
-                list: includedIn (saron.table.member.name, tablePath),
+                list: function(data){
+                    return includedIn (saron.table.member.name, data.record.AppCanvasPath);
+                },
                 displayFormat: DATE_FORMAT,
                 display: function (data){
                     return _setClassAndValue(data, "DateOfBirth", PERSON);
@@ -110,7 +112,7 @@ function memberTableDef(tableTitle, tablePath){
                 options: function (data){
                     var url =  saron.root.webapi + 'listPeople.php';
                     var field = "MembershipNo";
-                    var parameters = getOptionsUrlParameters(data, tableName, parentId, tablePath, field);
+                    var parameters = getOptionsUrlParameters(data, saron.table.member.name, data.record.ParentId, tablePath, field);
                     return url + parameters;
                 }
             },

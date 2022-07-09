@@ -18,23 +18,20 @@ $(document).ready(function () {
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });
 
-function peopleTableDef(tableTitle, tablePath) {
+function peopleTableDef(tableTitle) {
     var title = 'Personuppgifter';
-    var tableName = saron.table.people.name;
-    var tablePlaceHolder = $("#" + saron.table.people.name);
 
     if(tableTitle !== null)
         title = tableTitle;
     
-    if(tablePath === null)
-        tablePath = tableName;
-    else
-        tablePath+= '/' + tableName; 
 
     return {
+        appCanvasName: saron.table.people.name,
         title: title,
         showCloseButton: false,
-        paging: tablePath.startsWith(saron.table.people.name), //Enable paging
+        paging: function (data){
+            return data.record.AppCanvasPath.startsWith(saron.table.people.name)
+        }, //Enable paging
         pageList: 'minimal',
         sorting: true,
         multiSorting: true,
@@ -80,7 +77,7 @@ function peopleTableDef(tableTitle, tablePath) {
                             if(successData.Result === 'OK'){
                                 $dfd.resolve(successData); //Mandatory
                                 var data = {record: successData.Record};                                
-                                                                
+                                var tableName = saron.table.people.name;                           
                                 var $selectedRow = $("[data-record-key=" + data.record.Id + "]"); 
                                 var moveToNewHome = (data.record.HomeId > 0 && data.record.OldHome_HomeId !== data.record.HomeId);
                                 var moveToNoHome = (data.record.HomeId === null);
@@ -96,6 +93,7 @@ function peopleTableDef(tableTitle, tablePath) {
                                     var clientOnly = true;
                                     var url = saron.root.webapi + 'listPeople.php';
                                     var childTableDef = homeTableDef(tableName, tablePath, childTableTitle, parentId);
+                                    var tablePlaceHolder = $(saron.table.people.nameId);
 
                                     tablePlaceHolder.jtable('closeChildTable', $selectedRow, function(){
 
@@ -149,32 +147,30 @@ function peopleTableDef(tableTitle, tablePath) {
                 delete: false,            
                 display: function (data) {
                     var childTableTitle = _setClassAndValueHeadline(data, 'LongHomeName', HOME, 'Hem', 'Hem för ', '');;
-                    var childTableName = saron.table.homes.name;
                     var tooltip = 'Adressuppgifter';
                     var imgFile = "home.png";
                     var clientOnly = false;
-                    var url = saron.root.webapi + 'listPeople.php';
                     var type = 0;
+
+                    var childTableDef = homeTableDef(childTableTitle); // PersonId point to childtable unic id   
 
                     if(data.record.HomeId > 0)
                         imgFile = "home.png";
                     else{
-                        var $imgEmpty = getImageTag(data, "empty.png", tooltip, childTableName, -1);
+                        var $imgEmpty = getImageTag(data, "empty.png", tooltip, childTableDef, -1);
                         return $imgEmpty;
                     }
-                    var childTableDef = homeTableDef(childTableTitle, tablePath); // PersonId point to childtable unic id   
-                    var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
-                    var $imgClose = getImageCloseTag(data, childTableName, type);
+
+                    var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
+                    var $imgClose = getImageCloseTag(data, childTableDef, type);
                         
                     $imgChild.click(data, function (event){
                         event.data.record.ParentId = data.record.HomeId;
-                        event.data.record.AppCanvasPath = event.data.record.AppCanvasPath + "/" + saron.table.homes.name;
-                        event.data.record.AppCanvasName = saron.table.homes.name;
-                        _clickActionOpen(childTableDef, $imgChild, event.data, url, clientOnly);
+                        _clickActionOpen(childTableDef, $imgChild, event.data, clientOnly);
                     });
 
                     $imgClose.click(data, function (event){
-                        _clickActionClose(childTableDef, $imgClose, event.data, url, clientOnly);
+                        _clickActionClose(childTableDef, $imgClose, event.data, clientOnly);
                     });    
 
                     return _getClickImg(data, childTableDef, $imgChild, $imgClose);
@@ -189,24 +185,22 @@ function peopleTableDef(tableTitle, tablePath) {
                 delete: false,            
                 display: function (data) {
                     var childTableTitle = _setClassAndValueHeadline(data, 'Name', PERSON, 'Medlemsuppgifter', 'Medlemsuppgifter för ', '');;
-                    var childTableName = saron.table.member.name;
                     var tooltip = 'Medlemsuppgifter';
                     var imgFile = "member.png";
                     var clientOnly = true;
-                    var parentId = data.record.Id;
-                    var url = saron.root.webapi + 'listPeople.php';
                     var type = 0;
 
-                    var childTableDef = memberTableDef(childTableTitle, tablePath); // PersonId point to childtable unic id   
-                    var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
-                    var $imgClose = getImageCloseTag(data, childTableName, type);
+                    var childTableDef = memberTableDef(childTableTitle); // PersonId point to childtable unic id   
+                    var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
+                    var $imgClose = getImageCloseTag(data, childTableDef, type);
                         
                     $imgChild.click(data, function (event){
-                        _clickActionOpen(childTableDef, $imgChild, event.data, url, clientOnly);
+                        event.data.record.ParentId = data.record.Id;
+                        _clickActionOpen(childTableDef, $imgChild, event.data, clientOnly);
                     });
 
                     $imgClose.click(data, function (event){
-                        _clickActionClose(childTableDef, $imgClose, event.data, url, clientOnly);
+                        _clickActionClose(childTableDef, $imgClose, event.data, clientOnly);
                     });    
 
                     return _getClickImg(data, childTableDef, $imgChild, $imgClose);
@@ -221,24 +215,22 @@ function peopleTableDef(tableTitle, tablePath) {
                 delete: false,            
                 display: function (data) {
                     var childTableTitle = _setClassAndValueHeadline(data, 'Name', PERSON, 'Dopuppgifter', 'Dopuppgifter för ', '');;
-                    var childTableName = saron.table.baptist.name;
                     var tooltip = 'Dopuppgifter';
                     var imgFile = "baptist.png";
                     var clientOnly = true;
-                    var parentId = data.record.Id;
-                    var url = saron.root.webapi + 'listPeople.php';
                     var type = 0;
 
-                    var childTableDef = baptistTableDef(childTableTitle, tablePath); // PersonId point to childtable unic id   
-                    var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
-                    var $imgClose = getImageCloseTag(data, childTableName, type);
+                    var childTableDef = baptistTableDef(childTableTitle); // PersonId point to childtable unic id   
+                    var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
+                    var $imgClose = getImageCloseTag(data, childTableDef, type);
                         
                     $imgChild.click(data, function (event){
-                        _clickActionOpen(childTableDef, $imgChild, event.data, url, clientOnly);
+                        event.data.record.ParentId = data.record.Id;
+                        _clickActionOpen(childTableDef, $imgChild, event.data, clientOnly);
                     });
 
                     $imgClose.click(data, function (event){
-                        _clickActionClose(childTableDef, $imgClose, event.data, url, clientOnly);
+                        _clickActionClose(childTableDef, $imgClose, event.data, clientOnly);
                     });    
 
                     return _getClickImg(data, childTableDef, $imgChild, $imgClose);
@@ -254,27 +246,26 @@ function peopleTableDef(tableTitle, tablePath) {
                 delete: false,            
                 display: function (data) {
                     var childTableTitle = _setClassAndValueHeadline(data, 'Name', PERSON, 'Nyckelinnehav', 'Nyckelinnehav för ', '');;
-                    var childTableName = saron.table.keys.name;
                     var tooltip = 'NyckelInnehav';
                     var imgFile = "no_key.png";
+
                     if(data.record.KeyToChurch > 1 || data.record.KeyToExp > 1)
                         imgFile = "key.png";
                     
                     var clientOnly = false;
-                    var parentId = data.record.Id;
-                    var url = saron.root.webapi + 'listPeople.php';
                     var type = 0;
 
-                    var childTableDef = keyTableDef(childTableTitle, tablePath); // PersonId point to childtable unic id   
-                    var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
-                    var $imgClose = getImageCloseTag(data, childTableName, type);
+                    var childTableDef = keyTableDef(childTableTitle); // PersonId point to childtable unic id   
+                    var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
+                    var $imgClose = getImageCloseTag(data, childTableDef, type);
                         
                     $imgChild.click(data, function (event){
-                        _clickActionOpen(childTableDef, $imgChild, event.data, url, clientOnly);
+                        event.data.record.ParentId = data.record.Id;
+                        _clickActionOpen(childTableDef, $imgChild, event.data, clientOnly);
                     });
 
                     $imgClose.click(data, function (event){
-                        _clickActionClose(childTableDef, $imgClose, event.data, url, clientOnly);
+                        _clickActionClose(childTableDef, $imgClose, event.data, clientOnly);
                     });    
 
                     return _getClickImg(data, childTableDef, $imgChild, $imgClose); 
@@ -286,13 +277,14 @@ function peopleTableDef(tableTitle, tablePath) {
                 width: '1%',
                 sorting: false,
                 display: function(data){
-                    var childTableName = saron.table.engagements.name;
-                    var childTableTitle = data.record.Name + '" har nedanstående uppdrag';
+                    var childTableTitle = data.record.Name + ' har nedanstående uppdrag';
                     var tooltip = "";
                     var imgFile = "";
 
+                    var childTableDef = engagementsTableDef(childTableTitle); // PersonId point to childtable unic id   
+
                     if(data.record.Engagement ===  '0'){
-                        var $imgEmpty = getImageTag(data, "empty.png", tooltip, childTableName, -1);
+                        var $imgEmpty = getImageTag(data, "empty.png", tooltip, childTableDef, -1);
                         return $imgEmpty;
                     }
                     else{
@@ -301,20 +293,18 @@ function peopleTableDef(tableTitle, tablePath) {
                     }                    
 
                     var clientOnly = true;
-                    var parentId = data.record.Id;
-                    var url = null;
                     var type = 0;
 
-                    var childTableDef = engagementTableDef(childTableTitle, tablePath); // PersonId point to childtable unic id   
-                    var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
-                    var $imgClose = getImageCloseTag(data, childTableName, type);
+                    var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
+                    var $imgClose = getImageCloseTag(data, childTableDef, type);
                         
                     $imgChild.click(data, function (event){
-                        _clickActionOpen(childTableDef, $imgChild, event.data, url, clientOnly);
+                        event.data.record.ParentId = data.record.Id;
+                        _clickActionOpen(childTableDef, $imgChild, event.data, clientOnly);
                     });
 
                     $imgClose.click(data, function (event){
-                        _clickActionClose(childTableDef, $imgClose, event.data, url, clientOnly);
+                        _clickActionClose(childTableDef, $imgClose, event.data, clientOnly);
                     });    
 
                     return _getClickImg(data, childTableDef, $imgChild, $imgClose);
@@ -498,7 +488,8 @@ function peopleTableDef(tableTitle, tablePath) {
             var addButton = $(event.target).find('.jtable-toolbar-item-add-record');
 
             if(data.serverResponse.user_role === saron.userrole.editor){
-                if(tableName !== saron.table.statistics.nameId){
+                var rootElement = getRootElementFromTablePath(data.records[0].AppCanvasPath);
+                if(rootElement === saron.table.people.name){
                     addButton.show();
                 }
             }
