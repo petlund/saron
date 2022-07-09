@@ -9,29 +9,20 @@ RECORD, OPTIONS
 
 
 $(document).ready(function () {
-    var mainTableViewId = saron.table.statistics.nameId;
-    var tablePlaceHolder = "#" + tableName;
-    tablePlaceHolder.jtable(statisticTableDef(mainTableViewId, null, null));    
+    var tablePlaceHolder = $(saron.table.statistics.nameId);
+    tablePlaceHolder.jtable(statisticTableDef(null));    
     var options = getPostData(null, saron.table.statistics.name, null,  saron.table.statistics.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
-    tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });
 
-function statisticTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
+function statisticTableDef(newTableTitle){
     var title = 'Statistik';
     if(newTableTitle !== null)
         title = newTableTitle;
     
-    var tableName = saron.table.statistics.name;
-
-    if(tablePath === null)
-        tablePath = tableName;
-    else
-        tablePath+= '/' + tableName; 
-
     return {
+        appCanvasName: saron.table.statistics.name,
         title:title,
-        initParameters: getInitParametes(mainTableViewId, tablePath, parentId),
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
@@ -55,24 +46,22 @@ function statisticTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 display: function(data){
                     var YEAR = data.record.year.substring(0, 4);
                     var childTableTitle = 'Statistik för ' + YEAR;
-                    var childTableName = saron.table.statistics_detail.name;
                     var tooltip = 'Detaljer';
                     var imgFile = "member.png";
-                    var parentId = data.record.Id;
                     var clientOnly = true;
-                    var url = null;
                     var type = 0;
 
-                    var childTableDef = statisticsDetailTableDef(mainTableViewId, tablePath, childTableTitle, parentId);   
-                    var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
-                    var $imgClose = getImageCloseTag(data, childTableName, type);
+                    var childTableDef = statisticsDetailTableDef(childTableTitle);   
+                    var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
+                    var $imgClose = getImageCloseTag(data, childTableDef, type);
                         
                     $imgChild.click(data, function (event){
-                        _clickActionOpen(childTableDef, $imgChild, event.data, url, clientOnly);
+                        event.data.record.ParentId = data.record.Id;
+                        _clickActionOpen(childTableDef, $imgChild, event.data, clientOnly);
                     });
 
                     $imgClose.click(data, function (event){
-                        _clickActionClose(childTableDef, $imgClose, event.data, url, clientOnly);
+                        _clickActionClose(childTableDef, $imgClose, event.data, clientOnly);
                     });    
 
                     return _getClickImg(data, childTableDef, $imgChild, $imgClose);
@@ -80,7 +69,7 @@ function statisticTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
             },
             AppCanvasName:{
                 type: 'hidden',
-                defaultValue: tableName
+                defaultValue: saron.table.statistics.name
             },
             year: {
                 title: 'År',
@@ -90,7 +79,7 @@ function statisticTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 }       
             },
             ParentId:{
-                defaultValue: parentId,
+                defaultValue: -1,
                 type: 'hidden'
             },
             number_of_members: {
@@ -171,20 +160,14 @@ function statisticTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
 }
 
 
-function statisticsDetailTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
+function statisticsDetailTableDef(tableTitle){
     var title = 'Statistikdetaljer';
-    if(newTableTitle !== null)
-        title = newTableTitle;
-    
-    var tableName = saron.table.statistics_detail.name;
-    if(tablePath === null)
-        tablePath = tableName;
-    else
-        tablePath+= '/' + tableName; 
+    if(tableTitle !== null)
+        title = tableTitle;
     
     return {
+        appCanvasName: saron.table.statistics_detail.name,
         title:title,
-        initParameters: getInitParametes(mainTableViewId, tablePath, parentId),
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
@@ -201,12 +184,12 @@ function statisticsDetailTableDef(mainTableViewId, tablePath, newTableTitle, par
                 list: false
             },
             ParentId:{
-                defaultValue: parentId,
+                defaultValue: -1,
                 type: 'hidden'
             },
             AppCanvasName:{
                 type: 'hidden',
-                defaultValue: tableName
+                defaultValue: saron.table.statistics_detail.name
             },
             PersonId:{
                 type: 'hidden'
@@ -220,16 +203,16 @@ function statisticsDetailTableDef(mainTableViewId, tablePath, newTableTitle, par
                     var childTableName = saron.table.people.name;
                     var tooltip = 'Personuppgifter';
                     var imgFile = "haspos.png";
-                    var parentId = data.record.PersonId; //syntetic id denormalized list
                     var clientOnly = true;
                     var url = null;
                     var type = 0;
 
-                    var childTableDef = peopleTableDef(mainTableViewId, tablePath, childTableTitle, parentId); // PersonId point to childtable unic id   
+                    var childTableDef = peopleTableDef(childTableTitle); // PersonId point to childtable unic id   
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
                     var $imgClose = getImageCloseTag(data, childTableName, type);
                         
                     $imgChild.click(data, function (event){
+                        event.data.record.ParentId = data.record.PersonId;
                         _clickActionOpen(childTableDef, $imgChild, event.data, url, clientOnly);
                     });
 
