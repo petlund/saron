@@ -8,10 +8,9 @@ RECORD, OPTIONS
 "use strict";
 
 $(document).ready(function () {
-    var mainTableViewId = saron.table.unitlist.nameId;
-    var tablePlaceHolder = "#" + tableName;
-    tablePlaceHolder.jtable(unitTableDef(mainTableViewId, saron.table.unitlist.name,  null, null)); //-1 => null parent === topnode
-    var options = getPostData(null, mainTableViewId, null, saron.table.unitlist.name, saron.source.list, saron.responsetype.records);
+    var tablePlaceHolder = $(saron.table.unitlist.nameId);
+    tablePlaceHolder.jtable(unitTableDef(null, saron.table.unitlist.name)); //-1 => null parent === topnode
+    var options = getPostData(null, saron.table.unitlist.name, null, saron.table.unitlist.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });

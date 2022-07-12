@@ -6,10 +6,11 @@ PERSON, inputFormWidth, inputFormFieldWidth
 "use strict";
 
 $(document).ready(function () {
-    var tablePlaceHolder = $("#" + saron.table.keys.name);
-    tablePlaceHolder.jtable(keyTableDef(null, null));
+    var tablePlaceHolder = $(saron.table.keys.nameId);
+    var table = keyTableDef(null, saron.table.keys.name);
+    table.paging = true;
+    tablePlaceHolder.jtable(table);
     tablePlaceHolder.jtable('load');
-    tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });  
 
 function keyTableDef(tableTitle, tablePath){
@@ -21,9 +22,7 @@ function keyTableDef(tableTitle, tablePath){
         appCanvasName: saron.table.keys.name,
         title: title,
         showCloseButton: false,        
-        paging: function (data){
-            return data.record.AppCanvasPath.startsWith(saron.table.keys.name)
-        }, //Enable paging
+        paging: false,
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
         sorting: true, //Enable sorting

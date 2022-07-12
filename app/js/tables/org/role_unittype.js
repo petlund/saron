@@ -7,21 +7,14 @@ saron
  
 "use strict";
 
-function role_role_unitType_TableDef(mainTableViewId, tablePath, newTableTitle, parentId){
-    const tableName = saron.table.role_unittype.name;
+function role_role_unitType_TableDef(newTableTitle, tablePath){
+
     var title = "Alla kopplingar mellan roller och enhetstyper";
     
-    if(newTableTitle !== null)
-        title = newTableTitle;
-    
-    if(tablePath === null)
-        tablePath = tableName;
-    else
-        tablePath+= '/' + tableName; 
     
     return {
+        appCanvasName: saron.table.role_unittype,
         showCloseButton: false,
-        initParameters: getInitParametes(mainTableViewId, tablePath, parentId),
         title: title,
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
@@ -41,10 +34,6 @@ function role_role_unitType_TableDef(mainTableViewId, tablePath, newTableTitle, 
             deleteAction: saron.root.webapi + 'deleteOrganizationRole-UnitType.php'
         },
         fields: {
-            CanvasName:{
-                type: 'hidden',
-                defaultValue: tablePath
-            },
             Id: {
                 key: true,
                 list: false,
@@ -52,8 +41,16 @@ function role_role_unitType_TableDef(mainTableViewId, tablePath, newTableTitle, 
                 create: false
             },
             ParentId:{
-                defaultValue: parentId,
+                defaultValue: -1,
                 type: 'hidden'
+            },
+            AppCanvasName:{
+                type: 'hidden',
+                defaultValue: saron.table.people.name
+            },
+            AppCanvasPath:{
+                type: 'hidden',
+                defaultValue: saron.table.people.name
             },
             OrgUnitType_FK: {
                 list: mainTableViewId.includes(saron.table.role.nameId),
@@ -65,7 +62,7 @@ function role_role_unitType_TableDef(mainTableViewId, tablePath, newTableTitle, 
                 options: function(data){
                     var url = saron.root.webapi + 'listOrganizationUnitType.php';
                     var field = null;
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);                    
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, data.record.ParentId, data.record.AppCanvasPath, field);                    
                     return url + parameters;
                 }
             },
@@ -79,7 +76,7 @@ function role_role_unitType_TableDef(mainTableViewId, tablePath, newTableTitle, 
                 options: function(data){
                     var url = saron.root.webapi + 'listOrganizationRole.php';
                     var field = null;
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, parentId, tablePath, field);                    
+                    var parameters = getOptionsUrlParameters(data, mainTableViewId, data.record.ParentId, data.record.AppCanvasPath, field);                    
                     return url + parameters;
                 }
             },
@@ -160,9 +157,9 @@ function getDefaultSorting(mainTableViewId){
 }
 
 
-function getMessageAddNewRecord(mainTableViewId){
-    if(mainTableViewId.includes(saron.table.unittype.nameId))
+function getMessageAddNewRecord(tableName){
+    if(tableName.includes(saron.table.unittype.name))
         return {addNewRecord: 'Koppla roll till enhetstypen'};
-    if(mainTableViewId.includes(saron.table.role.nameId))
+    if(tableName.includes(saron.table.role.name))
         return {addNewRecord: 'Koppla enhetstyp till rollen'};
 }

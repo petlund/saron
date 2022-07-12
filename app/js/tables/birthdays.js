@@ -5,8 +5,8 @@ RECORD, OPTIONS
 "use strict";
 
     $(document).ready(function () {
-        var tablePlaceHolder = $("#" + saron.table.birthday.name);
-        tablePlaceHolder.jtable(birthdayTableDef(saron.table.birthday.nameId, null, saron.table.birthday.name, null));
+        var tablePlaceHolder = $(saron.table.birthday.nameId);
+        tablePlaceHolder.jtable(birthdayTableDef(null, saron.table.birthday.name));
         var options = getPostData(null, saron.table.birthday.name, null, saron.table.birthday.name, saron.source.list, saron.responsetype.records);
         tablePlaceHolder.jtable('load', options);
         tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();

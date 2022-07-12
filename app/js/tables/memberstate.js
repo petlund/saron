@@ -5,7 +5,7 @@ saron
 
     
 $(document).ready(function () {
-    $(saron.table.org_member_state.nameId).jtable(memberstateTableDef());
+    $(saron.table.org_member_state.nameId).jtable(memberstateTableDef(null, saron.table.org_member_state.name));
     var postData = getPostData(null, saron.table.org_member_state.name, null, saron.table.org_member_state.name, saron.source.list, saron.responsetype.records);
     $(saron.table.org_member_state.nameId).jtable('load', postData);
     $(saron.table.org_member_state.nameId).find('.jtable-toolbar-item-add-record').hide();
@@ -13,7 +13,7 @@ $(document).ready(function () {
 
 
 
-function memberstateTableDef(){
+function memberstateTableDef(tableTitle, tablePath){
     return {
         title: 'Personstatus',
         paging: true, //Enable paging

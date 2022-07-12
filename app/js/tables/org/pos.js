@@ -8,35 +8,32 @@ RECORD, OPTIONS
 "use strict";
 
 $(document).ready(function () {
-    var mainTableViewId = saron.table.pos.nameId;
-    var tablePlaceHolder = "#" + tableName;
-    tablePlaceHolder.jtable(posTableDef(mainTableViewId, saron.table.pos.name, null, null));
+    var tablePlaceHolder = $(saron.table.pos.nameId);
+    var table = posTableDef(null, saron.table.pos.name);
+    table.defaultSorting = "OrgTree_FK, SortOrder";
+    tablePlaceHolder.jtable(table);
     var postData = getPostData(null, saron.table.pos.name, null, saron.table.pos.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', postData);
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });
 
 
-function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
+function posTableDef(tableTitle, tablePath){
     var title =  'Alla positioner';
-    if(newTableTitle !== null)
-        title = newTableTitle;
+    if(tableTitle !== null)
+        title = tableTitle;
     
-    if(tablePath === null)
-        tablePath = saron.table.pos.name;
-    else
-        tablePath+= '/' + saron.table.pos.name; 
 
     return {
+        appCanvasName: saron.table.pos.name,
         showCloseButton: false,
-        initParameters: getInitParametes(mainTableViewId, tablePath, parentId),
         title: title,
         paging: true, //Enable paging§§
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
         sorting: true, //Enable sorting
         multiSorting: true,
-        defaultSorting: getDefaultPosSorting(mainTableViewId), //Set default sorting        
+        defaultSorting: "SortOrder",        
         messages: {addNewRecord: 'Lägg till en ny position.'},
         actions: {
             listAction:   saron.root.webapi + 'listOrganizationPos.php',
@@ -52,8 +49,16 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 edit: false
             },         
             ParentId:{
-                defaultValue: parentId,
+                defaultValue: -1,
                 type: 'hidden'
+            },
+            AppCanvasName:{
+                type: 'hidden',
+                defaultValue: saron.table.pos.name
+            },
+            AppCanvasPath:{
+                type: 'hidden',
+                defaultValue: saron.table.pos.name
             },
             RoleType:{
                 sorting: false,
@@ -68,16 +73,16 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                     else{
                         switch (data.record.OrgPosStatus_FK){
                             case '1':
-                                src = getImageTag(data, 'haspos.png', "Avstämd", saron.table.role.name, -1)
+                                src = getImageTag(data, 'haspos.png', "Avstämd", saron.table.role.name, -1);
                                 break;
                             case '2':
-                                src = getImageTag(data, 'haspos_Y.png', "Förslag", saron.table.role.name, -1)
+                                src = getImageTag(data, 'haspos_Y.png', "Förslag", saron.table.role.name, -1);
                                 break;
                             case '4':
-                                src = getImageTag(data, 'haspos_R.png', "Vakant", saron.table.role.name, -1)
+                                src = getImageTag(data, 'haspos_R.png', "Vakant", saron.table.role.name, -1);
                                 break;
                             default:                            
-                                src = getImageTag(data, 'pos.png', "Tillsätts ej", saron.table.role.name, -1)
+                                src = getImageTag(data, 'pos.png', "Tillsätts ej", saron.table.role.name, -1);
                         }
                     }
                     var $imgRole = $(src);
@@ -85,7 +90,7 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 }                
             },
             SortOrder: {
-                list: !includedIn(mainTableViewId, saron.table.pos.nameId),
+                list: enableListOfFieldInPos("SortOrder", tablePath),
                 create: false,
                 width: '4%',
                 title: 'Sort',
@@ -99,12 +104,14 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
             OrgTree_FK:{                
                 create: false,
                 edit: false,
-                list: includedIn(mainTableViewId, saron.table.pos.nameId),
+                list: function(data){
+                    return includedIn (saron.table.pos.name, data.record.AppCanvasPath);
+                },
                 title: "Organisatorisk enhet",
                 options: function(data){
                     var url = saron.root.webapi + 'listOrganizationUnit.php';
                     var field = "OrgTree_FK";
-                    var parameters = getOptionsUrlParameters(data, saron.table.pos.name, parentId, tablePath, field);
+                    var parameters = getOptionsUrlParameters(data, saron.table.pos.name, data.record.ParentId, data.record.AppCanvasPath, field);
                     return url + parameters;
                 }                
             },            
@@ -114,7 +121,7 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 options: function(data){
                     var url = saron.root.webapi + 'listOrganizationRole.php';      
                     var field = 'OrgRole_FK';
-                    var parameters = getOptionsUrlParameters(data, saron.table.pos.name, parentId, tablePath, field);                    
+                    var parameters = getOptionsUrlParameters(data, saron.table.pos.name, data.record.ParentId, data.record.AppCanvasPath, field);                    
                     return url + parameters;
                 }
             },
@@ -125,7 +132,7 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 options: function(data){                    
                     var url = saron.root.webapi + 'listOrganizationPosStatus.php';
                     var field = "OrgPosStatus_FK";
-                    var parameters = getOptionsUrlParameters(data, saron.table.pos.name, parentId, tablePath, field);                    
+                    var parameters = getOptionsUrlParameters(data, saron.table.pos.name, data.record.ParentId, data.record.AppCanvasPath, field);                    
                     return url + parameters;
                 }
             },
@@ -152,7 +159,7 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 options: function(data){
                     var url = saron.root.webapi + 'listPeople.php';
                     var field = "People_FK";
-                    var parameters = getOptionsUrlParameters(data, saron.table.pos.name, parentId, tablePath, field);                    
+                    var parameters = getOptionsUrlParameters(data, saron.table.pos.name, data.record.ParentId, data.record.AppCanvasPath, field);                    
                     return url + parameters;
                 }
             },
@@ -165,7 +172,7 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 options: function(data){                    
                     var url = saron.root.webapi + 'listOrganizationPos.php';
                     var field = 'OrgSuperPos_FK';
-                    var parameters = getOptionsUrlParameters(data, saron.table.pos.name, parentId, tablePath, field);                    
+                    var parameters = getOptionsUrlParameters(data, saron.table.pos.name, data.record.ParentId, data.record.AppCanvasPath, field);                    
                     return url + parameters;
                 }
             },
@@ -178,7 +185,7 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 options: function(data){                    
                     var url = saron.root.webapi + 'listOrganizationUnit.php';
                     var field = null;
-                    var parameters = getOptionsUrlParameters(data, saron.table.pos.name, parentId, tablePath, field);                    
+                    var parameters = getOptionsUrlParameters(data, saron.table.pos.name, data.record.ParentId, data.record.AppCanvasPath, field);                    
                     return url + parameters;
                 }
             },
@@ -246,7 +253,7 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
-            if(!includedIn(mainTableViewId, saron.table.unittree.nameId + saron.table.unitlist.nameId)){
+            if(!includedIn(getRootElementFromTablePath(data.record.AppCanvasPath), saron.table.unittree.name + saron.table.unitlist.name)){
                 data.row.find('.jtable-delete-command-button').hide();                
             }
             addDialogDeleteListener(data);
@@ -254,7 +261,7 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
         recordsLoaded: function(event, data) {
             var addButton = $(event.target).find('.jtable-toolbar-item-add-record');
             if(addButton === null)
-                addButton = "#" + tableName.find('.jtable-toolbar-item-add-record');
+                addButton = $(saron.table.pos.nameId).find('.jtable-toolbar-item-add-record');
 
             var showAddButton = (data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org') && data.records[0].AppCanvasName !== saron.table.pos.name; 
             if(showAddButton) 
@@ -280,14 +287,23 @@ function posTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 data.row[0].style.backgroundColor = '';
         }
     };
-}
+ }
 
 
-function getDefaultPosSorting(tableViewId){
-    switch(tableViewId) {
-        case saron.table.pos.nameId:
-            return "OrgTree_FK, SortOrder";
-        default:
-            return "SortOrder";
+function enableListOfFieldInPos(field, tablePath){
+    var tablename = saron.table.pos.name;
+    
+    if(field === "SortOrder"){
+        var appCanvasPathRoot = getRootElementFromTablePath(tablePath)
+        if(appCanvasPathRoot === tablename)
+            return false;
+        else
+            return true;
     }
+    else if (field === "x"){
+        return true;
+    }
+    else
+        return true;
 }
+

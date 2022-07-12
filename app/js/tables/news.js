@@ -4,13 +4,13 @@ DATE_FORMAT
 "use strict";
     
 $(document).ready(function () {
-    $(saron.table.news.nameId).jtable(newsTableDef());
+    $(saron.table.news.nameId).jtable(newsTableDef(null, saron.table.news.name));
     $(saron.table.news.nameId).jtable('load');
     $(saron.table.news.nameId).find('.jtable-toolbar-item-add-record').hide();
 });
 
 
-function newsTableDef(){
+function newsTableDef(tableTitle, tablePath){
     return {
         title: 'Nyheter',
         paging: true, //Enable paging

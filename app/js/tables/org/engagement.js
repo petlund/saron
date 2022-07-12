@@ -9,7 +9,7 @@ RECORD, OPTIONS
 $(document).ready(function () {
 
     var tablePlaceHolder = $(saron.table.engagement.nameId);
-    tablePlaceHolder.jtable(peopleEngagementTableDef(null, null));
+    tablePlaceHolder.jtable(peopleEngagementTableDef(null, saron.table.engagement.name));
     var postData = getPostData(null, saron.table.engagement.name, null, saron.table.engagement.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', postData);
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
@@ -17,7 +17,7 @@ $(document).ready(function () {
 
 
 
-function peopleEngagementTableDef(tableTitle){
+function peopleEngagementTableDef(tableTitle, tablePath){
     var title = 'Ansvarsuppgifter per person';
     if(tableTitle !== null)
         title = tableTitle; 
@@ -51,14 +51,12 @@ function peopleEngagementTableDef(tableTitle){
                 width: '1%',
                 sorting: false,
                 display: function(data){
-                    var childTableName = saron.table.engagements.name;
-                    var childTableTitle = data.record.Name + '" har nedanstående uppdrag';
+                    var childTableTitle = data.record.Name + ' har nedanstående uppdrag';
                     var tooltip = "";
                     var imgFile = "";
-                    var url = saron.root.webapi + 'listOrganizationPos.php';
                     var clientOnly = true;
-                    var parentId = data.record.Id;
                     var type = 0;
+                    var childTablePath = tablePath + "/" + saron.table.role.name;
                     
                     if(data.record.Engagement ===  null){
                         tooltip = 'Inga uppdrag';
@@ -69,16 +67,17 @@ function peopleEngagementTableDef(tableTitle){
                         imgFile = "haspos.png";
                     }                    
 
-                    var childTableDef = engagementsTableDef(childTableTitle); // PersonId point to childtable unic id   
-                    var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
-                    var $imgClose = getImageCloseTag(data, childTableName, type);
+                    var childTableDef = engagementsTableDef(childTableTitle, childTablePath); // PersonId point to childtable unic id   
+                    var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
+                    var $imgClose = getImageCloseTag(data, childTableDef, type);
                         
                     $imgChild.click(data, function (event){
-                        _clickActionOpen(childTableDef, $imgChild, event.data, url, clientOnly);
+                        event.data.record.ParentId = data.record.Id;
+                        _clickActionOpen(childTableDef, $imgChild, event.data, clientOnly);
                     });
 
                     $imgClose.click(data, function (event){
-                        _clickActionClose(childTableDef, $imgClose, event.data, url, clientOnly);
+                        _clickActionClose(childTableDef, $imgClose, event.data, clientOnly);
                     });    
 
                     return _getClickImg(data, childTableDef, $imgChild, $imgClose);
@@ -145,7 +144,7 @@ function peopleEngagementTableDef(tableTitle){
 
 
 
-function engagementsTableDef(tableTitle){
+function engagementsTableDef(tableTitle, tablePath){
     
     var title = "Ansvarsuppgifter";
     if(tableTitle !== null)
@@ -178,7 +177,7 @@ function engagementsTableDef(tableTitle){
                     var url = saron.root.webapi + 'listOrganizationPos.php';
                     var field = "Id";
                     var parentId = data.record.ParentId;
-                    var parameters = getOptionsUrlParameters(data, saron.table.engagements.name, parentId, data.record.AppCanvasPath, field);
+                    var parameters = getOptionsUrlParameters(data, saron.table.engagements.name, data.record.ParentId, data.record.AppCanvasPath, field);
                     return  url + parameters;
                 }
             },
@@ -207,8 +206,7 @@ function engagementsTableDef(tableTitle){
                 options: function (data){
                     var url = saron.root.webapi + 'listOrganizationPosStatus.php';
                     var field = "OrgPosStatus_FK";
-                    var parentId = data.record.ParentId;
-                    var parameters = getOptionsUrlParameters(data, saron.table.engagement.name, parentId, data.record.AppCanvasPath, field);
+                    var parameters = getOptionsUrlParameters(data, saron.table.engagement.name, data.record.ParentId, data.record.AppCanvasPath, field);
                     return  url + parameters;
                 }
             },            

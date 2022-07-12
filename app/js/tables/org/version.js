@@ -5,13 +5,13 @@
 
     
 $(document).ready(function () {
-    $(saron.table.orgversion.nameId).jtable(orgVersionTableDef());
+    $(saron.table.orgversion.nameId).jtable(orgVersionTableDef(null, saron.table.orgversion.name));
     $(saron.table.orgversion.nameId).jtable('load');
     $(saron.table.orgversion.nameId).find('.jtable-toolbar-item-add-record').hide();
 });
 
 
-function orgVersionTableDef(){
+function orgVersionTableDef(tableTitle, tablePath){
     return {
         title: 'Beslutslog över organisatationsförändringar',
         paging: true, //Enable paging

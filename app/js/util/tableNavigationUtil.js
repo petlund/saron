@@ -10,9 +10,9 @@ const is_open = "_is_open_";
 // new childOpenFunction
 
 function _getClickImg(data, childTableDef, $imgChild, $imgClose){
-    var openChildTableServer = data.record.OpenChildTable;
-    var openChildTable = _getClassNameOpenChild(data, childTableDef.appCanvasName);
-    if(openChildTableServer !== false && openChildTable === openChildTableServer)
+    var openChildTable = data.record.OpenChildTable;
+    var currentChildTable = childTableDef.appCanvasName;
+    if(openChildTable !== false && currentChildTable === openChildTable)
         return $imgClose;
     else
         return $imgChild;      
@@ -20,27 +20,33 @@ function _getClickImg(data, childTableDef, $imgChild, $imgClose){
     
     
 function _clickActionOpen(childTableDef, img, data, clientOnly){
+    const maxUnits = saron.table.unittree.name + '/' + saron.table.unit.name;
+
     var tr = img.closest('.jtable-data-row');
     var appCanvasRoot = getRootElementFromTablePath(data.record.AppCanvasPath);
     var tablePlaceHolder = _getChildTablePlaceHolderFromImg(img, appCanvasRoot);
-//    data.record.AppCanvasPath = data.record.AppCanvasPath + "/" + childTableDef.appCanvasName;
- 
+
+    var id = null;
+    var parentId = data.record.ParentId;
+    var appCanvasName = childTableDef.appCanvasName;
+    var appCanvasPath = data.record.AppCanvasPath;
+
+    if(!(appCanvasPath === maxUnits && appCanvasName === saron.table.unit.name))
+        appCanvasPath+= "/" + appCanvasName;
+
+    childTableDef.appCanvasPath = appCanvasPath;
+    var source = saron.source.list;
+    var resultType = saron.responsetype.records;        
+    var options = getPostData(id, appCanvasName, parentId, appCanvasPath, source, resultType);
+
     tablePlaceHolder.jtable('openChildTable', tr, childTableDef, function(callBackData){
-        var id = null;
-        var parentId = data.record.ParentId;
-        var appCanvasName = childTableDef.appCanvasName;
-        var appCanvasPath = data.record.AppCanvasPath + "/" + appCanvasName;
-        var source = saron.source.list;
-        var resultType = saron.responsetype.records;        
-        var options = getPostData(id, appCanvasName, parentId, appCanvasPath, source, resultType);
 
         callBackData.childTable.jtable('load', options, function(childData){
             var addButton = callBackData.childTable.find('.jtable-toolbar-item-add-record');
             addButton.hide();
         });
         
-        var classNameOpenChild = _getClassNameOpenChild(data, appCanvasName);                                
-        _updateAfterClickAction(tablePlaceHolder, data, classNameOpenChild, childTableDef.actions.listAction, clientOnly);            
+        _updateAfterClickAction(tablePlaceHolder, data, appCanvasName, childTableDef.actions.listAction, clientOnly);            
     });
 }
 
@@ -52,29 +58,29 @@ function _clickActionClose(childTableDef, img, data, clientOnly){
     var tablePlaceHolder = _getChildTablePlaceHolderFromImg(img, appCanvasRoot);
     
     $(tablePlaceHolder).jtable('closeChildTable', tr, function(callBackData){
-        var classNameOpenChild = false;
+        var openChild = false;
     
-        _updateAfterClickAction(tablePlaceHolder, data, classNameOpenChild, childTableDef.actions.listAction, clientOnly);
+        _updateAfterClickAction(tablePlaceHolder, data, openChild, childTableDef.actions.listAction, clientOnly);
     });
 }
 
 
 
-function _updateAfterClickAction(tablePlaceHolder, data, tablePathOpenChild, url, clientOnly){
+function _updateAfterClickAction(tablePlaceHolder, data, openChild, url, clientOnly){
     var options = {url:url, clientOnly:clientOnly, animationsEnabled:false};
-    options.record = {Id: data.record.Id, OpenChildTable: tablePathOpenChild}; 
+    options.record = {Id: data.record.Id, OpenChildTable: openChild}; 
 
     if(tablePlaceHolder !== null)
         $(tablePlaceHolder).jtable('updateRecord', options); //update icon
 }
 
 
-function getRootElementFromTablePath(tablePath){
-    var p = tablePath.indexOf("/");
+function getRootElementFromTablePath(appCanvasPath){
+    var p = appCanvasPath.indexOf("/");
     if(p < 1)
-        return tablePath;
+        return appCanvasPath;
     else
-        return tablePath.substring(0,p);
+        return appCanvasPath.substring(0,p);
 }
 
 
@@ -125,13 +131,13 @@ function _getClassNameOpenChild(data, tableName){
 }
 
 
-function _getChildTablePlaceHolderFromImg(img, tableName){
+function _getChildTablePlaceHolderFromImg(img, appCanvasName){
     if(img !== null){
         var tablePlaceHolder = img.closest('div.jtable-child-table-container');
         if(tablePlaceHolder.length > 0)
             return tablePlaceHolder;
     }
-    return $("#" + tableName);
+    return $("#" + appCanvasName);
         
 }
 

@@ -6,14 +6,15 @@ saron.table.baptist.nameId, saron.table.baptist.name
 "use strict"; 
 
 $(document).ready(function () {
-    var tablePlaceHolder = $("#" + saron.table.baptist.name);
-    tablePlaceHolder.jtable(baptistTableDef(null, null));
+    var tablePlaceHolder = $(saron.table.baptist.nameId);
+    var table = baptistTableDef(null, saron.table.baptist.name);
+    table.paging = true;
+    tablePlaceHolder.jtable(table);
     var options = getPostData(null, saron.table.baptist.name, null, saron.table.baptist.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
-    tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });  
     
-function baptistTableDef(tableTitle){
+function baptistTableDef(tableTitle, tablePath){
     var title = 'Dopuppgifter';
     if(tableTitle !== null)
         title = tableTitle;
@@ -22,9 +23,7 @@ function baptistTableDef(tableTitle){
         appCanvasName: saron.table.baptist.name,
         title:title,
         showCloseButton: false,
-        paging: function (data){
-            return data.record.AppCanvasPath.startsWith(saron.table.baptist.name)
-        }, //Enable paging
+        paging: false,
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
         sorting: true, //Enable sorting
@@ -45,6 +44,10 @@ function baptistTableDef(tableTitle){
                 type: 'hidden'
             },
             AppCanvasName:{
+                type: 'hidden',
+                defaultValue: saron.table.baptist.name
+            },
+            AppCanvasPath:{
                 type: 'hidden',
                 defaultValue: saron.table.baptist.name
             },

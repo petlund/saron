@@ -10,30 +10,23 @@ RECORD, OPTIONS
 "use strict";
 
 $(document).ready(function () {
-    var mainTableViewId = saron.table.unittype.nameId;
-    var tablePlaceHolder = "#" + tableName;
-    tablePlaceHolder.jtable(unitTypeTableDef(mainTableViewId, null, null, null));
-    var postData = getPostData(null, mainTableViewId, null, saron.table.unittype.name, saron.source.list, saron.responsetype.records);
+    var tablePlaceHolder = $(saron.table.unittype.nameId);
+    tablePlaceHolder.jtable(unitTypeTableDef(null, saron.table.unittype.name));
+    var postData = getPostData(null, saron.table.unittype.name, null, saron.table.unittype.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', postData);
     tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });
 
 
-
-function unitTypeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
+function unitTypeTableDef(tableTitle, tablePath){
     var title = 'Organisatoriska enhetertyper'; 
-    if(newTableTitle !== null)
-        title = newTableTitle;
+    if(tableTitle !== null)
+        title = tableTitle;
     
-    const tableName = saron.table.unittype.name;
-    if(tablePath === null)
-        tablePath = tableName;
-    else
-        tablePath+= '/' + tableName; 
     
     return {
+        appCanvasName: saron.table.unittype.name,
         showCloseButton: false,
-        initParameters: getInitParametes(mainTableViewId, tablePath, parentId),
         title: title,        
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
@@ -49,18 +42,21 @@ function unitTypeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
             deleteAction: saron.root.webapi + 'deleteOrganizationUnitType.php'
         },
         fields:{
-            AppCanvasName:{
-                list: false,
-                edit: false,
-                create: false
-            },
             Id: {
                 key: true,
                 list: false
             },
             ParentId:{
-                defaultValue: parentId,
+                defaultValue: -1,
                 type: 'hidden'
+            },
+            AppCanvasName:{
+                type: 'hidden',
+                defaultValue: saron.table.unittype.name
+            },
+            AppCanvasPath:{
+                type: 'hidden',
+                defaultValue: saron.table.unittype.name
             },
             UsedInUnit: {
                 title: 'Används',
@@ -68,23 +64,25 @@ function unitTypeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 edit: false,
                 sorting: false,
                 create: false,
-                list: includedIn(mainTableViewId, saron.table.unittype.nameId),
+                list: function(data){
+                    return includedIn (saron.table.unittype.name, data.record.AppCanvasPath);
+                },
                 display: function(data){
-                    var childTableName = saron.table.unit.name;
                     var childTableTitle = 'Enhetstypen "' + data.record.Name + '" används för nedanstående organisatoriska enheter';                            
                     var tooltip = "Enhetstypen används inom följande organisatoriska enheter";
                     var imgFile = "unit.png";
                     var url = 'listOrganizationUnitType.php';
-                    var parentId = data.record.Id;
                     var type = 0;
                     var clientOnly = true;
+                    var childTablePath = tablePath + "/" + saron.table.unit.name;
                     
                     if(data.record.UsedInUnit ===  "1"){                        
-                        var childTableDef = unitTableDef(mainTableViewId, tablePath, childTableTitle, parentId); // PersonId point to childtable unic id   
-                        var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
-                        var $imgClose = getImageCloseTag(data, childTableName, type);
+                        var childTableDef = unitTableDef(childTableTitle, childTablePath); // PersonId point to childtable unic id   
+                        var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
+                        var $imgClose = getImageCloseTag(data, childTableDef, type);
 
                         $imgChild.click(data, function (event){
+                            event.data.record.ParentId = data.record.Id;
                             _clickActionOpen(childTableDef, $imgChild, event.data, url.data, clientOnly);
                         });
 
@@ -103,17 +101,16 @@ function unitTypeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                 create: false,
                 sorting: false,
                 edit: false,   
-                list: includedIn(mainTableViewId, saron.table.unittype.nameId),
+                list: function(data){
+                    return includedIn (saron.table.unittype.name, data.record.AppCanvasPath);
+                },
                 display: function(data){
-                    var childTableName = saron.table.role.name;
                     var childTableTitle = 'Enhetstypen "' + data.record.Name + '" har följande roller';
                     var tooltip = "";
                     var imgFile = "";
-                    var parentId = data.record.Id;
-                    var url = 'listOrganizationUnitType.php';
-                    var parentId = data.record.Id;
                     var type = 0;
                     var clientOnly = true;
+                    var childTablePath = tablePath + "/" + saron.table.role_unittype.name;
 
                     if(data.record.PosEnabled ===  POS_ENABLED){
 
@@ -126,16 +123,17 @@ function unitTypeTableDef(mainTableViewId, tablePath, newTableTitle, parentId){
                             tooltip = "Enhetstypen har roller";
                         }
                         
-                        var childTableDef = role_role_unitType_TableDef(mainTableViewId, tablePath, childTableTitle, parentId); // PersonId point to childtable unic id   
-                        var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
-                        var $imgClose = getImageCloseTag(data, childTableName, type);
+                        var childTableDef = role_role_unitType_TableDef(childTableTitle, childTablePath);    
+                        var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
+                        var $imgClose = getImageCloseTag(data, childTableDef, type);
 
                         $imgChild.click(data, function (event){
-                            _clickActionOpen(childTableDef, $imgChild, event.data, url.data, clientOnly);
+                            event.data.record.ParentId = data.record.Id;
+                            _clickActionOpen(childTableDef, $imgChild, event.data, clientOnly);
                         });
 
                         $imgClose.click(data, function (event){
-                            _clickActionClose(childTableDef, $imgClose, event.data, url, clientOnly);
+                            _clickActionClose(childTableDef, $imgClose, event.data, clientOnly);
                         });    
 
                         return _getClickImg(data, childTableDef, $imgChild, $imgClose);

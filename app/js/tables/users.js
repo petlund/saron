@@ -6,11 +6,11 @@ saron
 
 $(document).ready(function () {
 
-    $(saron.table.users.nameId).jtable(usersTableDef());
+    $(saron.table.users.nameId).jtable(usersTableDef(null, saron.table.users.name));
     $(saron.table.users.nameId).jtable('load');
 });
         
-function usersTableDef(){
+function usersTableDef(tableTitle, tablePath){
     return {
         title: 'Användare av Saron',
             paging: true, //Enable paging

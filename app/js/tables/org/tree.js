@@ -1,19 +1,16 @@
 /* global DATE_FORMAT,  
-saron,
-inputFormWidth, inputFormFieldWidth,
-ORG,
-RECORD, OPTIONS
+saron
  */
 
 "use strict";
     
 $(document).ready(function () {
-    var mainTableViewId = saron.table.unittree.nameId;
-    var tablePlaceHolder = "#" + tableName;
-    tablePlaceHolder.jtable(unitTableDef(mainTableViewId, saron.table.unittree.name,  null, null)); //-1 => null parent === topnode
+    var tablePlaceHolder = $(saron.table.unittree.nameId);
+    var table = unitTableDef(null, saron.table.unittree.name);
+    table.defaultSorting = "Prefix, Name";
+    tablePlaceHolder.jtable(table);
     var options = getPostData(null, saron.table.unittree.name, null, saron.table.unittree.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
-    tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });
 
 

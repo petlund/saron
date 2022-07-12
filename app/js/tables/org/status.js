@@ -8,12 +8,12 @@ saron.table.org_role_status.nameId, saron.table.org_role_status.name
     
 $(document).ready(function () {
 
-    $(saron.table.org_role_status.nameId).jtable(statusTableDef(saron.table.org_role_status.nameId));
+    $(saron.table.org_role_status.nameId).jtable(statusTableDef(null, saron.table.org_role_status.name));
     $(saron.table.org_role_status.nameId).jtable('load');
     }
 );
 
-function statusTableDef(mainTableViewId){
+function statusTableDef(tableTitle, tablePath){
     return {
         title: 'Status',
         paging: true, //Enable paging
@@ -73,7 +73,7 @@ function statusTableDef(mainTableViewId){
         },        
         recordsLoaded: function(event, data) {
             if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
-                "#" + tableName.find('.jtable-toolbar-item-add-record').show();
+                $(saron.table.status.nameId).find('.jtable-toolbar-item-add-record').show();
             }
         },        
         formCreated: function (event, data){

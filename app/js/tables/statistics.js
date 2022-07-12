@@ -10,12 +10,12 @@ RECORD, OPTIONS
 
 $(document).ready(function () {
     var tablePlaceHolder = $(saron.table.statistics.nameId);
-    tablePlaceHolder.jtable(statisticTableDef(null));    
+    tablePlaceHolder.jtable(statisticTableDef(null, saron.table.statistics.name));    
     var options = getPostData(null, saron.table.statistics.name, null,  saron.table.statistics.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
 });
 
-function statisticTableDef(newTableTitle){
+function statisticTableDef(newTableTitle, tablePath){
     var title = 'Statistik';
     if(newTableTitle !== null)
         title = newTableTitle;
@@ -50,8 +50,9 @@ function statisticTableDef(newTableTitle){
                     var imgFile = "member.png";
                     var clientOnly = true;
                     var type = 0;
+                    var childTablePath = tablePath + "/" + saron.table.statistics_detail.name;
 
-                    var childTableDef = statisticsDetailTableDef(childTableTitle);   
+                    var childTableDef = statisticsDetailTableDef(childTableTitle, childTablePath);   
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
                     var $imgClose = getImageCloseTag(data, childTableDef, type);
                         
@@ -160,7 +161,7 @@ function statisticTableDef(newTableTitle){
 }
 
 
-function statisticsDetailTableDef(tableTitle){
+function statisticsDetailTableDef(tableTitle, tablePath){
     var title = 'Statistikdetaljer';
     if(tableTitle !== null)
         title = tableTitle;
@@ -206,8 +207,9 @@ function statisticsDetailTableDef(tableTitle){
                     var clientOnly = true;
                     var url = null;
                     var type = 0;
+                    var childTablePath = tablePath + "/" + saron.table.unittype.name;
 
-                    var childTableDef = peopleTableDef(childTableTitle); // PersonId point to childtable unic id   
+                    var childTableDef = peopleTableDef(childTableTitle, childTablePath); // PersonId point to childtable unic id   
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
                     var $imgClose = getImageCloseTag(data, childTableName, type);
                         

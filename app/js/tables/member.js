@@ -6,14 +6,15 @@ RECORD, OPTIONS
 "use strict";
 
 $(document).ready(function () {
-    var tablePlaceHolder = $("#" + saron.table.member.name);
-    tablePlaceHolder.jtable(memberTableDef(null, null));
+    var tablePlaceHolder = $(saron.table.member.nameId);
+    var table = memberTableDef(null, saron.table.member.name);
+    table.paging = true;
+    tablePlaceHolder.jtable(table);
     var options = getPostData(null, saron.table.member.name, null, saron.table.member.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
-    //tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });  
 
-function memberTableDef(tableTitle){
+function memberTableDef(tableTite, tablePath){
     var title = 'Medlemsuppgifter';
     if(tableTitle !== null)
         title = tableTitle; 
@@ -23,9 +24,7 @@ function memberTableDef(tableTitle){
         appCanvasName: saron.table.member.name,
         showCloseButton: false,
         title: title,
-        paging: function (data){
-            return data.record.AppCanvasPath.startsWith(saron.table.member.name)
-        }, //Enable paging
+        paging: false,
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
         sorting: true, //Enable sorting
@@ -77,6 +76,10 @@ function memberTableDef(tableTitle){
                 type: 'hidden',
                 defaultValue: saron.table.member.name
             },
+            AppCanvasPath:{
+                type: 'hidden',
+                defaultValue: saron.table.member.name
+            },
             DateOfBirth: { 
                 title: 'Född',
                 width: '7%',
@@ -112,7 +115,7 @@ function memberTableDef(tableTitle){
                 options: function (data){
                     var url =  saron.root.webapi + 'listPeople.php';
                     var field = "MembershipNo";
-                    var parameters = getOptionsUrlParameters(data, saron.table.member.name, data.record.ParentId, tablePath, field);
+                    var parameters = getOptionsUrlParameters(data, saron.table.member.name, data.record.ParentId, data.record.appCanvasPath, field);
                     return url + parameters;
                 }
             },

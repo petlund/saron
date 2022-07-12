@@ -6,13 +6,13 @@
 
 $(document).ready(function () {
 
-    $(saron.table.efk.nameId).jtable(efkTableDef());
+    $(saron.table.efk.nameId).jtable(efkTableDef(null,saron.table.efk.name));
     var options = getPostData(null, saron.table.efk.name, null, saron.table.efk.name, saron.source.list, saron.responsetype.records);
     $(saron.table.efk.nameId).jtable('load', options);
         
 });
 
-function efkTableDef(){
+function efkTableDef(tableTitle, tablePath){
     
     return{
         title: 'EFK Statistik ' + previousYear(),

@@ -86,9 +86,7 @@ class SuperEntity {
         $this->source = (String)filter_input(INPUT_POST, "Source", FILTER_SANITIZE_STRING);
         if(strlen($this->source) === 0){
             $this->source = (String)filter_input(INPUT_GET, "Source", FILTER_SANITIZE_STRING);
-        }
-
-        
+        }                
     }
 
     

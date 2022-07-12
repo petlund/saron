@@ -6,10 +6,11 @@ RECORD, OPTIONS
 
 $(document).ready(function () {
     var tablePlaceHolder = $(saron.table.homes.nameId);
-    tablePlaceHolder.jtable(homeTableDef(null, null));
+    var table = homeTableDef(null, saron.table.homes.name);
+    table.paging = true;
+    tablePlaceHolder.jtable(table);
     var options = getPostData(null, saron.table.homes.name, null, saron.table.homes.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
-    tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });
 
 
@@ -29,7 +30,7 @@ function filterHomes(viewId, reload, tableName){
 }
 
 
-function homeTableDef(tableTitle){
+function homeTableDef(tableTitle, tablePath){
     var title = 'Hem';
     if(tableTitle !== null)
         title = tableTitle;
@@ -38,9 +39,7 @@ function homeTableDef(tableTitle){
         appCanvasName: saron.table.homes.name,
         title:title,
         showCloseButton: false,        
-        paging: function (data){
-            return data.record.AppCanvasPath.startsWith(saron.table.homes.name)
-        }, //Enable paging
+        paging: false,
         pageList: 'minimal',
         sorting: true, //Enable sorting
         multiSorting: true,

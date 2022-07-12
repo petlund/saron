@@ -8,13 +8,13 @@ saron.table.total.name, saron.table.total.nameId
 
 $(document).ready(function () {
     var tablePlaceHolder = $(saron.table.total.nameId);
-    tablePlaceHolder.jtable(totalTableDef(null, null));
+    tablePlaceHolder.jtable(totalTableDef(null, saron.table.total.name));
     var options = getPostData(null, saron.table.total.name, null, saron.table.total.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
 
 });
 
-function totalTableDef(tableTitle){
+function totalTableDef(tableTitle, tablePath){
     var title = 'Översikt per person';
 
     if(tableTitle !== null)
