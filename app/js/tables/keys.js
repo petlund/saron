@@ -7,7 +7,7 @@ PERSON, inputFormWidth, inputFormFieldWidth
 
 $(document).ready(function () {
     var tablePlaceHolder = $(saron.table.keys.nameId);
-    var table = keyTableDef(null, saron.table.keys.name);
+    var table = keyTableDef(null, saron.table.keys.name, null, null);
     tablePlaceHolder.jtable(table);
     var postData = getPostData(null, saron.table.keys.name, null, saron.table.keys.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', postData);

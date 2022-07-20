@@ -9,7 +9,7 @@ saron.table.org_role_status.nameId, saron.table.org_role_status.name
 $(document).ready(function () {
 
     var tablePlaceHolder = $(saron.table.org_role_status.nameId);
-    tablePlaceHolder.jtable(statusTableDef(null, saron.table.org_role_status.name));
+    tablePlaceHolder.jtable(statusTableDef(null, saron.table.org_role_status.name, null, null));
 
     var addButton = tablePlaceHolder.find('.jtable-toolbar-item-add-record');
     addButton.hide();

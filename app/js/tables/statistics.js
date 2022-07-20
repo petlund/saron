@@ -10,7 +10,7 @@ RECORD, OPTIONS
 
 $(document).ready(function () {
     var tablePlaceHolder = $(saron.table.statistics.nameId);
-    tablePlaceHolder.jtable(statisticTableDef(null, null, null));    
+    tablePlaceHolder.jtable(statisticTableDef(null, null, null, null));    
     var options = getPostData(null, saron.table.statistics.name, null,  saron.table.statistics.name, saron.source.list, saron.responsetype.records);
     
     var addButton = tablePlaceHolder.find('.jtable-toolbar-item-add-record');
@@ -56,7 +56,7 @@ function statisticTableDef(tableTitle, parentTablePath, parentId, parentTableDef
                     var clientOnly = true;
                     var type = 0;
 
-                    var childTableDef = statisticsDetailTableDef(childTableTitle, tablePath, data.record.Id);   
+                    var childTableDef = statisticsDetailTableDef(childTableTitle, tablePath, data.record.Id, childTableDef);   
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
                     var $imgClose = getImageCloseTag(data, childTableDef, type);
                         
@@ -231,7 +231,7 @@ function statisticsDetailTableDef(tableTitle, parentTablePath, parentId, parentT
                     var url = null;
                     var type = 0;
 
-                    var childTableDef = peopleTableDef(childTableTitle, tablePath, data.record.PersonId); // PersonId point to childtable unic id   
+                    var childTableDef = peopleTableDef(childTableTitle, tablePath, data.record.PersonId, childTableDef); // PersonId point to childtable unic id   
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
                     var $imgClose = getImageCloseTag(data, childTableName, type);
                         

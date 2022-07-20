@@ -6,7 +6,8 @@
 
 $(document).ready(function () {
 
-    $(saron.table.efk.nameId).jtable(efkTableDef(null,saron.table.efk.name, null));
+    var tablePlaceHolder = $(saron.table.efk.nameId);
+    tablePlaceHolder.jtable(efkTableDef(null,saron.table.efk.name, null, null));
     var options = getPostData(null, saron.table.efk.name, null, saron.table.efk.name, saron.source.list, saron.responsetype.records);
     $(saron.table.efk.nameId).jtable('load', options);
         

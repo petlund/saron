@@ -7,7 +7,7 @@ RECORD, OPTIONS
 
 $(document).ready(function () {
     var tablePlaceHolder = $(saron.table.member.nameId);
-    var table = memberTableDef(null, null, null);
+    var table = memberTableDef(null, null, null, null);
     tablePlaceHolder.jtable(table);
     var options = getPostData(null, saron.table.member.name, null, saron.table.member.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);

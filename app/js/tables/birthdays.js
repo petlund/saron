@@ -6,7 +6,7 @@ RECORD, OPTIONS
 
     $(document).ready(function () {
         var tablePlaceHolder = $(saron.table.birthday.nameId);
-        tablePlaceHolder.jtable(birthdayTableDef(null, saron.table.birthday.name, null));
+        tablePlaceHolder.jtable(birthdayTableDef(null, saron.table.birthday.name, null, null));
         var options = getPostData(null, saron.table.birthday.name, null, saron.table.birthday.name, saron.source.list, saron.responsetype.records);
         tablePlaceHolder.jtable('load', options);
     });

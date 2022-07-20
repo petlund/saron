@@ -5,12 +5,12 @@ saron
 "use strict";
 
 $(document).ready(function () {
-
-    $(saron.table.users.nameId).jtable(usersTableDef(null, saron.table.users.name));
-    $(saron.table.users.nameId).jtable('load');
+    tablePlaceHolder = $(saron.table.users.nameId);
+    tablePlaceHolder.jtable(usersTableDef(null, saron.table.users.name, null, null));
+    tablePlaceHolder.jtable('load');
 });
         
-function usersTableDef(tableTitle, tablePath){
+function usersTableDef(tableTitle, tablePath, parentId, parentTableDef){
     return {
         title: 'Användare av Saron',
             paging: true, //Enable paging

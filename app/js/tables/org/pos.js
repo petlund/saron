@@ -9,7 +9,7 @@ RECORD, OPTIONS
 
 $(document).ready(function () {
     var tablePlaceHolder = $(saron.table.pos.nameId);
-    var table = posTableDef(null, saron.table.pos.name, null);
+    var table = posTableDef(null, saron.table.pos.name, null, null);
     table.defaultSorting = "OrgTree_FK, SortOrder";
     tablePlaceHolder.jtable(table);
     var postData = getPostData(null, saron.table.pos.name, null, saron.table.pos.name, saron.source.list, saron.responsetype.records);

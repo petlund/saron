@@ -5,9 +5,10 @@ saron
 
     
 $(document).ready(function () {
-    $(saron.table.org_member_state.nameId).jtable(memberstateTableDef(null, saron.table.org_member_state.name));
+    var tablePlaceHolder = $(saron.table.org_member_state.nameId);
+    tablePlaceHolder.jtable(memberstateTableDef(null, saron.table.org_member_state.name));
     var postData = getPostData(null, saron.table.org_member_state.name, null, saron.table.org_member_state.name, saron.source.list, saron.responsetype.records);
-    $(saron.table.org_member_state.nameId).jtable('load', postData);
+    tablePlaceHolder.jtable('load', postData);
 });
 
 

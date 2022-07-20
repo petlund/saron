@@ -7,7 +7,7 @@ saron.table.baptist.nameId, saron.table.baptist.name
 
 $(document).ready(function () {
     var tablePlaceHolder = $(saron.table.baptist.nameId);
-    var table = baptistTableDef(null, null, null);
+    var table = baptistTableDef(null, null, null, null);
     tablePlaceHolder.jtable(table);
     var options = getPostData(null, saron.table.baptist.name, null, saron.table.baptist.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);

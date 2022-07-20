@@ -9,7 +9,7 @@ RECORD, OPTIONS
 $(document).ready(function () {
 
     var tablePlaceHolder = $(saron.table.engagement.nameId);
-    tablePlaceHolder.jtable(peopleEngagementTableDef(null, null, null));
+    tablePlaceHolder.jtable(peopleEngagementTableDef(null, null, null, null));
     var postData = getPostData(null, saron.table.engagement.name, null, saron.table.engagement.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', postData);
 
@@ -69,7 +69,7 @@ function peopleEngagementTableDef(tableTitle, parentTablePath, parentId, parentT
                         imgFile = "haspos.png";
                     }                    
 
-                    var childTableDef = engagementsTableDef(childTableTitle, tablePath, data.record.Id);
+                    var childTableDef = engagementsTableDef(childTableTitle, tablePath, data.record.Id, childTableDef);
                     childTableDef.parentTableDef = tableDef;
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
                     var $imgClose = getImageCloseTag(data, childTableDef, type);

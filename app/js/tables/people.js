@@ -12,7 +12,7 @@ $(document).ready(function () {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     var tablePlaceHolder = $(saron.table.people.nameId);
-    var table = peopleTableDef(null, null, null);
+    var table = peopleTableDef(null, null, null, null);
     table.paging = true;
     tablePlaceHolder.jtable(table);
     var options = getPostData(null, saron.table.people.name, null, saron.table.people.name, saron.source.list, saron.responsetype.records);
@@ -92,7 +92,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                                     var options = getPostData(null, tableName, parentId, tablePath, saron.source.list, saron.responsetype.records);
                                     var clientOnly = true;
                                     var url = saron.root.webapi + 'listPeople.php';
-                                    var childTableDef = homeTableDef(childTableTitle, tablePath, data.record.HomeId);
+                                    var childTableDef = homeTableDef(childTableTitle, tablePath, data.record.HomeId, childTableDef);
                                     var tablePlaceHolder = $(saron.table.people.nameId);
 
                                     tablePlaceHolder.jtable('closeChildTable', $selectedRow, function(){
@@ -152,7 +152,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                     var clientOnly = true;
                     var type = 0;
 
-                    var childTableDef = homeTableDef(childTableTitle, tablePath, data.record.HomeId); // PersonId point to childtable unic id   
+                    var childTableDef = homeTableDef(childTableTitle, tablePath, data.record.HomeId, childTableDef); // PersonId point to childtable unic id   
 
                     if(data.record.HomeId > 0)
                         imgFile = "home.png";
@@ -189,7 +189,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                     var clientOnly = true;
                     var type = 0;
 
-                    var childTableDef = memberTableDef(childTableTitle, tablePath, data.record.Id); // PersonId point to childtable unic id   
+                    var childTableDef = memberTableDef(childTableTitle, tablePath, data.record.Id, childTableDef); // PersonId point to childtable unic id   
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
                     var $imgClose = getImageCloseTag(data, childTableDef, type);
                         
@@ -218,7 +218,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                     var clientOnly = true;
                     var type = 0;
 
-                    var childTableDef = baptistTableDef(childTableTitle, tablePath, data.record.Id); // PersonId point to childtable unic id   
+                    var childTableDef = baptistTableDef(childTableTitle, tablePath, data.record.Id, childTableDef); // PersonId point to childtable unic id   
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
                     var $imgClose = getImageCloseTag(data, childTableDef, type);
                         
@@ -252,7 +252,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                     var clientOnly = false;
                     var type = 0;
 
-                    var childTableDef = keyTableDef(childTableTitle, tablePath, data.record.Id); // PersonId point to childtable unic id   
+                    var childTableDef = keyTableDef(childTableTitle, tablePath, data.record.Id, childTableDef); // PersonId point to childtable unic id   
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
                     var $imgClose = getImageCloseTag(data, childTableDef, type);
                         
@@ -277,7 +277,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                     var tooltip = "";
                     var imgFile = "";
 
-                    var childTableDef = engagementsTableDef(childTableTitle, tablePath, data.record.Id); // PersonId point to childtable unic id   
+                    var childTableDef = engagementsTableDef(childTableTitle, tablePath, data.record.Id, childTableDef); // PersonId point to childtable unic id   
 
                     if(data.record.Engagement ===  '0'){
                         var $imgEmpty = getImageTag(data, "empty.png", tooltip, childTableDef, -1);

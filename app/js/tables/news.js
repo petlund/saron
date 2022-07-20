@@ -4,9 +4,10 @@ DATE_FORMAT
 "use strict";
     
 $(document).ready(function () {
-    $(saron.table.news.nameId).jtable(newsTableDef(null, saron.table.news.name, null));
-    $(saron.table.news.nameId).find('.jtable-toolbar-item-add-record').hide();
-    $(saron.table.news.nameId).jtable('load');
+    var tablePlaceHolder = $(saron.table.news.nameId);
+    tablePlaceHolder.jtable(newsTableDef(null, saron.table.news.name, null, null));
+    tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
+    tablePlaceHolder.jtable('load');
 });
 
 

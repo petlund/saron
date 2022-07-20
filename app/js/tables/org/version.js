@@ -6,7 +6,7 @@
     
 $(document).ready(function () {
     var tablePlaceHolder = $(saron.table.orgversion.nameId)
-    tablePlaceHolder.jtable(orgVersionTableDef(null, saron.table.orgversion.name, null));
+    tablePlaceHolder.jtable(orgVersionTableDef(null, saron.table.orgversion.name, null, null));
 
     var addButton = tablePlaceHolder.find('.jtable-toolbar-item-add-record');
     addButton.hide();
