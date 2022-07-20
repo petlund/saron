@@ -28,6 +28,7 @@ function peopleEngagementTableDef(tableTitle, parentTablePath, parentId, parentT
         parentId: parentId,
         tableName: tableName,
         tablePath: tablePath,
+        parentTableDef: parentTableDef,
         showCloseButton: false,
         title: 'Ansvarsuppgifter per person',
         paging: true, //Enable paging
@@ -163,6 +164,7 @@ function engagementsTableDef(tableTitle, parentTablePath, parentId, parentTableD
         parentId: parentId,
         tableName: tableName,
         tablePath: tablePath,
+        parentTableDef: parentTableDef,
         showCloseButton: false,
         title: "Ansvarsuppgifter",        
         paging: true, //Enable paging

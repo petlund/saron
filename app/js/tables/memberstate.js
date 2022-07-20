@@ -21,6 +21,7 @@ function memberstateTableDef(tableTitle, parentTablePath, parentId, parentTableD
         parentId: parentId,
         tableName: tableName,
         tablePath: tablePath,
+        parentTableDef: parentTableDef,
         title: 'Personstatus',
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)

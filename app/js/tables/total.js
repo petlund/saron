@@ -22,6 +22,7 @@ function totalTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
         parentId: parentId,
         tableName: tableName,
         tablePath: tablePath,
+        parentTableDef: parentTableDef,
         title: 'Översikt per person',
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)

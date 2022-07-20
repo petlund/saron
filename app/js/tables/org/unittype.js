@@ -28,6 +28,7 @@ function unitTypeTableDef(tableTitle, parentTablePath, parentId, parentTableDef)
         parentId: parentId,
         tablePath: tablePath,
         tableName: tableName,
+        parentTableDef: parentTableDef,
         showCloseButton: false,
         title: 'Organisatoriska enhetertyper',        
         paging: true, //Enable paging

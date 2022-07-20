@@ -11,8 +11,9 @@ $(document).ready(function () {
 });
         
 function usersTableDef(tableTitle, tablePath, parentId, parentTableDef){
-    return {
+    var tableDef =  {
         title: 'Användare av Saron',
+            parentTableDef: parentTableDef,
             paging: true, //Enable paging
             pageSize: 10, //Set page size (default: 10)
             pageList: 'minimal',
@@ -86,4 +87,5 @@ function usersTableDef(tableTitle, tablePath, parentId, parentTableDef){
             }
         }
     };
+    return tableDef;
 }

@@ -18,6 +18,7 @@ $(document).ready(function () {
 function orgVersionTableDef(tableTitle, tablePath, parentId, parentTableDef){
     return {
         title: 'Beslutslog över organisatationsförändringar',
+        parentTableDef: parentTableDef,
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',

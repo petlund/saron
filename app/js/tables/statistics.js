@@ -27,6 +27,7 @@ function statisticTableDef(tableTitle, parentTablePath, parentId, parentTableDef
         parentId: parentId,
         tableName: tableName,
         tablePath: tablePath,
+        parentTableDef: parentTableDef,
         title:'Statistik',
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
@@ -190,6 +191,7 @@ function statisticsDetailTableDef(tableTitle, parentTablePath, parentId, parentT
         parentId: parentId,
         tableName: tableName,
         tablePath: tablePath,
+        parentTableDef: parentTableDef,
         appCanvasName: saron.table.statistics_detail.name,
         title: 'Statistikdetaljer',
         paging: true, //Enable paging

@@ -31,6 +31,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
         parentId: parentId,
         tableName: tableName,
         tablePath: tablePath,
+        parentTableDef: parentTableDef,
         title: 'Personuppgifter',
         showCloseButton: false,
         paging: false, //Enable paging

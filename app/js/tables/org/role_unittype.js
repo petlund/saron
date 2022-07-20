@@ -15,6 +15,7 @@ function role_role_unitType_TableDef(tableTitle, parentTablePath, parentId, pare
         parentId: parentId,
         tablePath: tablePath,
         tableName: tableName,
+        parentTableDef: parentTableDef,
         showCloseButton: false,
         title: "Alla kopplingar mellan roller och enhetstyper",
         paging: true, //Enable paging

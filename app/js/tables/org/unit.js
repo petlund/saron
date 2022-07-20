@@ -16,6 +16,7 @@ function unitTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
         parentId: parentId,
         tableName: tableName,
         tablePath: tablePath,
+        parentTableDef: parentTableDef,
         showCloseButton: false,
         title: 'Organisatoriska enheter',
         paging: true, //Enable paging

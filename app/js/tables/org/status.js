@@ -21,6 +21,7 @@ $(document).ready(function () {
 function statusTableDef(tableTitle, tablePath, parentId, parentTableDef){
     return {
         title: 'Status',
+        parentTableDef: parentTableDef,
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',

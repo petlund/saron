@@ -15,7 +15,7 @@ $(document).ready(function () {
 
 function efkTableDef(tableTitle, tablePath, parentId, parentTableDef){
     
-    return{
+    var tableDef = {
         title: 'EFK Statistik ' + previousYear(),
             paging: false, //Enable paging
             pageSize: 10, //Set page size (default: 10)
@@ -54,6 +54,7 @@ function efkTableDef(tableTitle, tablePath, parentId, parentTableDef){
             }
         }
     };
+    return tableDef;
 }
     
 function previousYear (){

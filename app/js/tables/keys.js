@@ -21,6 +21,7 @@ function keyTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
         parentId: parentId,
         tableName: tableName,
         tablePath: tablePath,
+        parentTableDef: parentTableDef,
         title: 'Nyckelinnehav',
         showCloseButton: false,        
         paging: true,

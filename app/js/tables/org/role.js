@@ -28,6 +28,7 @@ function roleTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
         parentId: parentId,
         tableName: tableName,
         tablePath: tablePath,
+        parentTableDef: parentTableDef,
         showCloseButton: false,
         title: "Alla roller",
         paging: true, //Enable paging

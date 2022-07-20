@@ -38,6 +38,7 @@ function homeTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
         parentId: parentId,
         tableName: tableName,
         tablePath: tablePath,
+        parentTableDef: parentTableDef,
         title: 'Hem',
         showCloseButton: false,        
         paging: false,

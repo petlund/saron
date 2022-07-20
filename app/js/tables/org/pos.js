@@ -29,6 +29,7 @@ function posTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
         parentId: parentId,
         tableName: tableName,
         tablePath: tablePath,
+        parentTableDef: parentTableDef,
         showCloseButton: false,
         title: 'Alla positioner',
         paging: true, //Enable paging§§
