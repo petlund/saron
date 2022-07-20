@@ -10,19 +10,24 @@ RECORD, OPTIONS
 
 $(document).ready(function () {
     var tablePlaceHolder = $(saron.table.statistics.nameId);
-    tablePlaceHolder.jtable(statisticTableDef(null, saron.table.statistics.name));    
+    tablePlaceHolder.jtable(statisticTableDef(null, null, null));    
     var options = getPostData(null, saron.table.statistics.name, null,  saron.table.statistics.name, saron.source.list, saron.responsetype.records);
+    
+    var addButton = tablePlaceHolder.find('.jtable-toolbar-item-add-record');
+    addButton.hide();
+
     tablePlaceHolder.jtable('load', options);
 });
 
-function statisticTableDef(newTableTitle, tablePath){
-    var title = 'Statistik';
-    if(newTableTitle !== null)
-        title = newTableTitle;
-    
-    return {
-        appCanvasName: saron.table.statistics.name,
-        title:title,
+function statisticTableDef(tableTitle, parentTablePath, parentId){
+    var tableName = saron.table.statistics.name;
+    var tablePath = getChildTablePath(parentTablePath, tableName);
+
+    var tableDef = {
+        parentId: parentId,
+        tableName: tableName,
+        tablePath: tablePath,
+        title:'Statistik',
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
@@ -50,22 +55,21 @@ function statisticTableDef(newTableTitle, tablePath){
                     var imgFile = "member.png";
                     var clientOnly = true;
                     var type = 0;
-                    var childTablePath = tablePath + "/" + saron.table.statistics_detail.name;
 
-                    var childTableDef = statisticsDetailTableDef(childTableTitle, childTablePath);   
+                    var childTableDef = statisticsDetailTableDef(childTableTitle, tablePath, data.record.Id);   
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
                     var $imgClose = getImageCloseTag(data, childTableDef, type);
                         
                     $imgChild.click(data, function (event){
                         event.data.record.ParentId = data.record.Id;
-                        _clickActionOpen(childTableDef, $imgChild, event.data, clientOnly);
+                        openChildTable(childTableDef, $imgChild, event.data, clientOnly);
                     });
 
                     $imgClose.click(data, function (event){
-                        _clickActionClose(childTableDef, $imgClose, event.data, clientOnly);
+                        closeChildTable(childTableDef, $imgClose, event.data, clientOnly);
                     });    
 
-                    return _getClickImg(data, childTableDef, $imgChild, $imgClose);
+                    return getClickImg(data, childTableDef, $imgChild, $imgClose);
                 }
             },
             AppCanvasName:{
@@ -158,23 +162,42 @@ function statisticTableDef(newTableTitle, tablePath){
             }
         }
     };
+    if(tableTitle !== null)
+        tableDef.title = tableTitle;
+    
+    configStatisticDetailsTableDef(tableDef);
+    
+    return tableDef;
+}    
+
+
+
+function configStatisticTableDef(tableDef){
+
+    var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
+
+    if(tablePathRoot === saron.table.statistics.name){
+
+    }    
 }
 
 
-function statisticsDetailTableDef(tableTitle, tablePath){
-    var title = 'Statistikdetaljer';
-    if(tableTitle !== null)
-        title = tableTitle;
-    
-    return {
+function statisticsDetailTableDef(tableTitle, parentTablePath, parentId){
+    var tableName = saron.table.statistics_detail.name;
+    var tablePath = getChildTablePath(parentTablePath, tableName);
+
+    var tableDef = {
+        parentId: parentId,
+        tableName: tableName,
+        tablePath: tablePath,
         appCanvasName: saron.table.statistics_detail.name,
-        title:title,
+        title: 'Statistikdetaljer',
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
         sorting: true, //Enable sorting
         multiSorting: true,
-        //defaultSorting: 'DateOfBaptism desc, DateOfMembershipStart desc, DateOfMembershipEnd desc, DateOfDeath desc, LastName ASC, FirstName ASC', //Set default sorting        
+        defaultSorting: 'event_date desc, Name', //Set default sorting        
         showCloseButton: false,
         actions: {
             listAction:   saron.root.webapi + 'listStatistics.php'
@@ -200,86 +223,109 @@ function statisticsDetailTableDef(tableTitle, tablePath){
                 width: '1%',
                 sorting: false,
                 display: function(data){
-                    var childTableTitle = 'Personuppgifter för "' + data.record.LastName + ' '  + data.record.FirstName + ' ' + data.record.DateOfBirth;
+                    var childTableTitle = 'Registeruppgifter för ' + data.record.Name;
                     var childTableName = saron.table.people.name;
                     var tooltip = 'Personuppgifter';
                     var imgFile = "haspos.png";
                     var clientOnly = true;
                     var url = null;
                     var type = 0;
-                    var childTablePath = tablePath + "/" + saron.table.unittype.name;
 
-                    var childTableDef = peopleTableDef(childTableTitle, childTablePath); // PersonId point to childtable unic id   
+                    var childTableDef = peopleTableDef(childTableTitle, tablePath, data.record.PersonId); // PersonId point to childtable unic id   
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
                     var $imgClose = getImageCloseTag(data, childTableName, type);
                         
                     $imgChild.click(data, function (event){
-                        event.data.record.ParentId = data.record.PersonId;
-                        _clickActionOpen(childTableDef, $imgChild, event.data, url, clientOnly);
+                        openChildTable(childTableDef, $imgChild, event.data, url, clientOnly);
                     });
 
                     $imgClose.click(data, function (event){
-                        _clickActionClose(childTableDef, $imgClose, event.data, url, clientOnly);
+                        closeChildTable(childTableDef, $imgClose, event.data, url, clientOnly);
                     });    
 
-                    return _getClickImg(data, childTableDef, $imgChild, $imgClose);                }
+                    return getClickImg(data, childTableDef, $imgChild, $imgClose);                }
             },
             event_date: {
-                title: 'Senaste händelse',
+                title: 'Datum',
                 display: function (data){
                     return _setClassAndValueWidthEventType(data, "event_date", PERSON);
                 }       
             },
+            event_type:{
+                title: 'Händelse'
+            },
+            Name: {
+                title: 'Efternamn',
+                width: '30%',
+                display: function (data){
+                    return _setClassAndValueWidthEventType(data, "Name", PERSON);
+                }       
+            },
             LastName: {
+                list: false,
                 title: 'Efternamn',
                 display: function (data){
                     return _setClassAndValueWidthEventType(data, "LastName", PERSON);
                 }       
             },
             FirstName: {
+                list: false,
                 title: 'Förnamn',
                 display: function (data){
                     return _setClassAndValueWidthEventType(data, "FirstName", PERSON);
                 }       
             },
             DateOfBirth: {
+                list: false,
                 title: 'Födelsedatum',
                 display: function (data){
                     return _setClassAndValueWidthEventType(data, "DateOfBirth", PERSON);
                 }       
             },
-            DateOfBaptism: {
-                title: 'Dopdatum',
-                display: function (data){
-                    return _setClassAndValue(data, "DateOfBaptism", PERSON);
-                }       
-            },
-            DateOfMembershipStart: {
-                title: 'Medlemskap start',
-                display: function (data){
-                    return _setClassAndValue(data, "DateOfMembershipStart", PERSON);
-                }       
-            },
-            DateOfMembershipEnd: {
-                title: 'Medlemskap avslut',
-                display: function (data){
-                    return _setClassAndValue(data, "DateOfMembershipEnd", PERSON);
-                }       
-            },
-            DateOfDeath: {
-                title: 'Avliden',
-                display: function (data){
-                    return _setClassAndValue(data, "DateOfDeth", PERSON);
-                }       
-            },
+//            DateOfBaptism: {
+//                title: 'Dopdatum',
+//                display: function (data){
+//                    return _setClassAndValue(data, "DateOfBaptism", PERSON);
+//                }       
+//            },
+//            DateOfMembershipStart: {
+//                title: 'Medlemskap start',
+//                display: function (data){
+//                    return _setClassAndValue(data, "DateOfMembershipStart", PERSON);
+//                }       
+//            },
+//            DateOfMembershipEnd: {
+//                title: 'Medlemskap avslut',
+//                display: function (data){
+//                    return _setClassAndValue(data, "DateOfMembershipEnd", PERSON);
+//                }       
+//            },
+//            DateOfDeath: {
+//                title: 'Avliden',
+//                display: function (data){
+//                    return _setClassAndValue(data, "DateOfDeth", PERSON);
+//                }       
+//            },
             Comment: {
                 title: 'Notering',
-                width: '50%',
+                width: '30%',
                 display: function (data){
                     return _setClassAndValueWidthEventType(data, "Comment", PERSON);
                 }       
             }
         }
     };
-}
+    if(tableTitle !== null)
+        tableDef.title = tableTitle;
+    
+    configStatisticDetailsTableDef(tableDef);
+    
+    return tableDef;
+}    
 
+
+
+function configStatisticDetailsTableDef(tableDef){
+
+    var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
+}

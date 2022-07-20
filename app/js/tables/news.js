@@ -4,14 +4,20 @@ DATE_FORMAT
 "use strict";
     
 $(document).ready(function () {
-    $(saron.table.news.nameId).jtable(newsTableDef(null, saron.table.news.name));
-    $(saron.table.news.nameId).jtable('load');
+    $(saron.table.news.nameId).jtable(newsTableDef(null, saron.table.news.name, null));
     $(saron.table.news.nameId).find('.jtable-toolbar-item-add-record').hide();
+    $(saron.table.news.nameId).jtable('load');
 });
 
 
-function newsTableDef(tableTitle, tablePath){
-    return {
+function newsTableDef(tableTitle, parentTablePath, parentId){
+    var tableName = saron.table.news.name;
+    var tablePath = getChildTablePath(parentTablePath, tableName);
+
+    var tableDef =  {
+        parentId: parentId,
+        tableName: tableName,
+        tablePath: tablePath,
         title: 'Nyheter',
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
@@ -64,16 +70,11 @@ function newsTableDef(tableTitle, tablePath){
             }
         },
         rowInserted: function(event, data){
-            if (data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org'){
-                data.row.find('.jtable-edit-command-button').hide();
-                data.row.find('.jtable-delete-command-button').hide();
-            }
+            alowedToUpdateOrDelete(event, data, tableDef)
             addDialogDeleteListener(data);
         },        
         recordsLoaded: function(event, data) {
-            if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
-                $(saron.table.news.nameId).find('.jtable-toolbar-item-add-record').show();
-            }
+            alowedToAddRecords(event, data, tableDef)
         },        
         formCreated: function (event, data){
             if(data.formType === saron.formtype.edit)
@@ -87,5 +88,20 @@ function newsTableDef(tableTitle, tablePath){
                 data.row[0].style.backgroundColor = '';
         }
     };
+    
+    if(tableTitle !== null)
+        tableDef.title = tableTitle;
+    
+    configNewsTableDef(tableDef);
+    
+    return tableDef;
+}    
 
-};
+
+
+function configNewsTableDef(tableDef){
+
+    var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
+
+    //tableDef.actions.createAction = null;
+}

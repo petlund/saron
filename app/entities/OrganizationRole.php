@@ -147,35 +147,35 @@ class OrganizationRole extends SuperEntity{
 
         switch ($this->appCanvasPath){
             case TABLE_NAME_ROLE:
-        
-            switch ($this->source){
-                case SOURCE_CREATE:
-                    $sql.= "WHERE Role.Id not in (Select OrgRole_FK from `Org_Role-UnitType` WHERE OrgUnitType_FK = " . $this->parentId . ") ";
-                Break;
-                case SOURCE_EDIT:
-    //                $where = "WHERE Role.RoleType = 0 ";
-                Break;
-                default:
-    //                $where = "WHERE Role.RoleType = 0 ";
-                break;
-            }
+                switch ($this->source){
+                    case SOURCE_CREATE:
+                        $sql.= "WHERE Role.Id not in (Select OrgRole_FK from `Org_Role-UnitType` WHERE OrgUnitType_FK = " . $this->parentId . ") ";
+                    Break;
+                    case SOURCE_EDIT:
+        //                $where = "WHERE Role.RoleType = 0 ";
+                    Break;
+                    default:
+        //                $where = "WHERE Role.RoleType = 0 ";
+                    break;
+                }
+                break;    
             case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_ROLE_UNITTYPE:
-            switch ($this->source){
-                case SOURCE_CREATE:
-                    $sql.= "WHERE value not in (Select OrgRole_FK from `Org_Role-UnitType` WHERE OrgUnitType_FK = " . $this->parentId . ") ";
-                Break;
-                case SOURCE_EDIT:
-    //                $where = "WHERE Role.RoleType = 0 ";
-                Break;
-                default:
-    //                $where = "WHERE Role.RoleType = 0 ";
-                break;
-            }
-            break;    
-            case TABLE_NAME_UNITTREE . "/" . TABLE_NAME_POS:
+                switch ($this->source){
+                    case SOURCE_CREATE:
+                        $sql.= "WHERE value not in (Select OrgRole_FK from `Org_Role-UnitType` WHERE OrgUnitType_FK = " . $this->parentId . ") ";
+                    Break;
+                    case SOURCE_EDIT:
+        //                $where = "WHERE Role.RoleType = 0 ";
+                    Break;
+                    default:
+        //                $where = "WHERE Role.RoleType = 0 ";
+                    break;
+                }
+                break;    
+            case TABLE_NAME_UNITTREE . "/" . TABLE_NAME_UNIT . "/" . TABLE_NAME_POS:
                 $sql.= "";
             break;
-            case TABLE_NAME_UNITLIST . "/" . TABLE_NAME_POS:
+            case TABLE_NAME_UNITLIST . "/" . TABLE_NAME_UNIT . "/" . TABLE_NAME_POS:
                 $sql.= "";
             break;
             case TABLE_NAME_POS:

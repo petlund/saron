@@ -30,7 +30,7 @@ require_once SARON_ROOT . "app/util/AppCanvasName.php";
             <tr class="saronFilter">
                 <td  class="saronFilter">
                     <form class="forms" id="mainfilter">Grupp:
-                        <select id="groupId" name="groupId" onchange="filterPeople('<?php echo getAppCanvasName(); ECHO '\', false, \'' . TABLE_NAME_PEOPLE;?>');" >
+                        <select id="groupId" name="groupId" onchange="filterPeople('<?php echo getAppCanvasName(); ECHO '\', false, \'';?>');" >
                         <option selected="selected" value="0">Medlemmar</option>
                         <option value="1">Dopregister</option>
                         <option value="2">Senast ändrade personer</option>
@@ -54,7 +54,7 @@ require_once SARON_ROOT . "app/util/AppCanvasName.php";
                 </td>
                 <td  class="saronFilter">
                     Söksträng:
-                    <input type="text" name="searchString" id="searchString" oninput="filterPeople('<?php  echo getAppCanvasName(); ECHO '\', false, \'' . TABLE_NAME_PEOPLE;?>');"/>
+                    <input type="text" name="searchString" id="searchString" oninput="filterPeople('<?php  echo getAppCanvasName(); ECHO '\', false, \'';?>');"/>
                 </td>
             </tr>
         </table>

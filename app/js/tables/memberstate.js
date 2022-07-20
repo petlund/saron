@@ -8,13 +8,18 @@ $(document).ready(function () {
     $(saron.table.org_member_state.nameId).jtable(memberstateTableDef(null, saron.table.org_member_state.name));
     var postData = getPostData(null, saron.table.org_member_state.name, null, saron.table.org_member_state.name, saron.source.list, saron.responsetype.records);
     $(saron.table.org_member_state.nameId).jtable('load', postData);
-    $(saron.table.org_member_state.nameId).find('.jtable-toolbar-item-add-record').hide();
 });
 
 
 
-function memberstateTableDef(tableTitle, tablePath){
-    return {
+function memberstateTableDef(tableTitle, parentTablePath, parentId){
+    var tableName = saron.table.org_member_state.name;
+    var tablePath = getChildTablePath(parentTablePath, tableName);
+
+    var tableDef = {
+        parentId: parentId,
+        tableName: tableName,
+        tablePath: tablePath,
         title: 'Personstatus',
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
@@ -69,10 +74,7 @@ function memberstateTableDef(tableTitle, tablePath){
             }
         },
         rowInserted: function(event, data){
-            if (data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org'){
-                data.row.find('.jtable-edit-command-button').hide();
-                data.row.find('.jtable-delete-command-button').hide();
-            }
+            alowedToUpdateOrDelete(event, data, tableDef);
         },        
         formCreated: function (event, data){
             if(data.formType === saron.formtype.edit)
@@ -86,4 +88,19 @@ function memberstateTableDef(tableTitle, tablePath){
                 data.row[0].style.backgroundColor = '';
         }
     };
-};
+    if(tableTitle !== null)
+        tableDef.title = tableTitle;
+    
+    configMemberStateTableDef(tableDef);
+    
+    return tableDef;    
+}
+
+
+function configMemberStateTableDef(tableDef){
+    var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
+
+    if(tablePathRoot !== saron.table.org_member_state.name){
+        
+    }
+}

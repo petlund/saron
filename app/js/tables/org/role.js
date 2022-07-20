@@ -9,24 +9,27 @@ saron
 
 $(document).ready(function () {
     var tablePlaceHolder = $(saron.table.role.nameId);
-    tablePlaceHolder.jtable(roleTableDef(null, saron.table.role.name));
+    tablePlaceHolder.jtable(roleTableDef(null, null, null));
     var postData = getPostData(null, saron.table.role.name, null, saron.table.role.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', postData);
-    tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
+
+    var addButton = tablePlaceHolder.find('.jtable-toolbar-item-add-record');
+    addButton.hide();
+
 });
 
 
 
-function roleTableDef(newTableTitle, tablePath){
-    var title = "Alla roller";
-    
-    if(newTableTitle !== null)
-        title = newTableTitle;
-        
-    return {
-        appCanvasPath: saron.table.role.name,
+function roleTableDef(tableTitle, parentTablePath, parentId){
+    var tableName = saron.table.role.name;
+    var tablePath = getChildTablePath(parentTablePath, tableName);
+
+    var tableDef = {
+        parentId: parentId,
+        tableName: tableName,
+        tablePath: tablePath,
         showCloseButton: false,
-        title: title,
+        title: "Alla roller",
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
@@ -64,9 +67,7 @@ function roleTableDef(newTableTitle, tablePath){
                 create: false,
                 title: "Används",
                 edit: false,
-                list: function(data){
-                    return includedIn (saron.table.role.name, data.record.AppCanvasPath);
-                },
+                list: true,
                 sorting: false,
                 display: function(data){
                     var childTableTitle = 'Rollen "' + data.record.Name + '" ingår i följande organisatoriska enheter';
@@ -74,7 +75,6 @@ function roleTableDef(newTableTitle, tablePath){
                     var imgFile = "";
                     var type = 0;
                     var clientOnly = false;
-                    var childTablePath = tablePath + "/" + saron.table.unit.name;
 
                     if(data.record.UsedInUnit === '0'){
                         imgFile = "unit_empty.png";
@@ -85,20 +85,20 @@ function roleTableDef(newTableTitle, tablePath){
                         tooltip = "Organisatoriska enheter";
                     }
 
-                    var childTableDef = unitTableDef(childTableTitle, childTablePath); // PersonId point to childtable unic id   
+                    var childTableDef = unitTableDef(childTableTitle, tablePath, data.record.Id); // PersonId point to childtable unic id   
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
                     var $imgClose = getImageCloseTag(data, childTableDef, type);
 
                     $imgChild.click(data, function (event){
                         event.data.record.ParentId = data.record.Id;
-                        _clickActionOpen(childTableDef, $imgChild, event.data, clientOnly);
+                        openChildTable(childTableDef, $imgChild, event.data, clientOnly);
                     });
 
                     $imgClose.click(data, function (event){
-                        _clickActionClose(childTableDef, $imgClose, event.data, clientOnly);
+                        closeChildTable(childTableDef, $imgClose, event.data, clientOnly);
                     });    
 
-                    return _getClickImg(data, childTableDef, $imgChild, $imgClose);
+                    return getClickImg(data, childTableDef, $imgChild, $imgClose);
                 }               
             },
             UsedInUnitType:{
@@ -106,9 +106,7 @@ function roleTableDef(newTableTitle, tablePath){
                 create: false,
                 title: "Ingår i",
                 edit: false,
-                list: function(data){
-                    return includedIn (saron.table.role.name, data.record.AppCanvasPath);
-                },
+                list: true,
                 sorting: false,
                 display: function(data){
                     var childTableName = saron.table.unittype.name;
@@ -117,7 +115,6 @@ function roleTableDef(newTableTitle, tablePath){
                     var imgFile = "";
                     var type = 0;
                     var clientOnly = false;
-                    var childTablePath = tablePath + "/" + saron.table.unittype.name;
 
                     if(data.record.UsedInUnitType === '0'){
                         imgFile = "unittype.png";
@@ -127,20 +124,20 @@ function roleTableDef(newTableTitle, tablePath){
                         imgFile = "used_unittype.png";
                         tooltip = "Organisatoriska enhetstyper";
                     }
-                    var childTableDef = role_role_unitType_TableDef(childTableTitle, childTablePath);  
+                    var childTableDef = role_role_unitType_TableDef(childTableTitle, tablePath, data.record.Id);  
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
                     var $imgClose = getImageCloseTag(data, childTableName, type);
 
                     $imgChild.click(data, function (event){
                         event.data.record.ParentId = data.record.Id;
-                        _clickActionOpen(childTableDef, $imgChild, event.data, clientOnly);
+                        openChildTable(childTableDef, $imgChild, event.data, clientOnly);
                     });
 
                     $imgClose.click(data, function (event){
-                        _clickActionClose(childTableDef, $imgClose, event.data, clientOnly);
+                        closeChildTable(childTableDef, $imgClose, event.data, clientOnly);
                     });    
 
-                    return _getClickImg(data, childTableDef, $imgChild, $imgClose);
+                    return getClickImg(data, childTableDef, $imgChild, $imgClose);
                 }
             },
             Name: {
@@ -194,22 +191,16 @@ function roleTableDef(newTableTitle, tablePath){
             
         },
         rowInserted: function(event, data){
-            if (data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org'){
-                data.row.find('.jtable-edit-command-button').hide();
-                data.row.find('.jtable-delete-command-button').hide();
-            }
-            if (data.record.HasChild !== '0')
+            alowedToUpdateOrDelete(event, data, tableDef);
+
+            if (data.record.PosOccurrency !== '0')
                 data.row.find('.jtable-delete-command-button').hide();
             
             addDialogDeleteListener(data);
             
         },        
         recordsLoaded: function(event, data) {
-            var addButton = $(event.target).find('.jtable-toolbar-item-add-record');
-            
-            if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
-                addButton.show();
-            }
+            alowedToAddRecords(event, data, tableDef);
         },        
         formCreated: function (event, data){
             if(data.formType === saron.formtype.edit)
@@ -223,5 +214,17 @@ function roleTableDef(newTableTitle, tablePath){
                 data.row[0].style.backgroundColor = '';
         }
     };
+
+
+    if(tableTitle !== null)
+        tableDef.title = tableTitle;
+    
+    
+    configRoleTableDef(tableDef);
+
+    return tableDef;
 }
 
+
+function configRoleTableDef(tableDef){
+}

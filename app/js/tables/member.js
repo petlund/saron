@@ -7,24 +7,23 @@ RECORD, OPTIONS
 
 $(document).ready(function () {
     var tablePlaceHolder = $(saron.table.member.nameId);
-    var table = memberTableDef(null, saron.table.member.name);
-    table.paging = true;
+    var table = memberTableDef(null, null, null);
     tablePlaceHolder.jtable(table);
     var options = getPostData(null, saron.table.member.name, null, saron.table.member.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
 });  
 
-function memberTableDef(tableTite, tablePath){
-    var title = 'Medlemsuppgifter';
-    if(tableTitle !== null)
-        title = tableTitle; 
-    
+function memberTableDef(tableTitle, parentTablePath, parentId){
+    var tableName = saron.table.member.name;
+    var tablePath = getChildTablePath(parentTablePath, tableName);
 
-    return {
-        appCanvasName: saron.table.member.name,
+    var tableDef = {
+        parentId: parentId,
+        tableName: tableName,
+        tablePath: tablePath,
         showCloseButton: false,
-        title: title,
-        paging: false,
+        title: 'Medlemsuppgifter',
+        paging: true,
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
         sorting: true, //Enable sorting
@@ -151,11 +150,8 @@ function memberTableDef(tableTite, tablePath){
             }
         },
         rowInserted: function(event, data){
-            if (data.record.user_role !== saron.userrole.editor){
-                data.row.find('.jtable-edit-command-button').hide();
-                data.row.find('.jtable-delete-command-button').hide();
-            }
-        },       
+            alowedToUpdateOrDelete(event, data, tableDef);
+        },        
         recordUpdated(data, event){
             _updateFields(event, "MemberState", PERSON);                                                
             _updateFields(event, "VisibleInCalendar", PERSON);                                                
@@ -177,5 +173,30 @@ function memberTableDef(tableTite, tablePath){
             data.row[0].style.backgroundColor = '';
         }    
     };
+
+    if(tableTitle !== null)
+        tableDef.title = tableTitle;
+    
+    configMemberTableDef(tableDef);
+    
+    return tableDef;    
 }
+
+
+function configMemberTableDef(tableDef, tablePath){
+    var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
+
+    if(tablePathRoot === saron.table.member.name){
+    }
+    else{
+        tableDef.fields.Name.list = false;
+        tableDef.fields.DateOfBirth.list = false;
+        tableDef.fields.MemberState.list = false;        
+        tableDef.paging = false;
+    }    
+    if(tablePathRoot === saron.table.statistics.name){
+        tableDef.actions.updateAction = null;
+    }
+}
+
 

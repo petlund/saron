@@ -57,7 +57,9 @@ class Statistics extends SuperEntity{
         $subSelect.="select DateOfDeath from People as p2 where p2.Id=p.Id)) as event_date ";
         
         $sqlSelect ="SELECT DateOfMembershipStart, DateOfMembershipEnd, DateOfBaptism, DateOfDeath, ";
-        $sqlSelect.= DECRYPTED_ALIAS_LASTNAME . ", " . DECRYPTED_ALIAS_FIRSTNAME . ", " . DECRYPTED_ALIAS_COMMENT . ", DateOfBirth, " . $this->getAppCanvasSql(true);
+        $sqlSelect.= DECRYPTED_ALIAS_LASTNAME . ", " . DECRYPTED_ALIAS_FIRSTNAME . ", " . DECRYPTED_ALIAS_COMMENT . ", DateOfBirth, ";
+        $sqlSelect.= $this->getAppCanvasSql(true);
+        $sqlSelect.= getPersonSql("p", "Name", TRUE);
         $sqlSelect.=$subSelect;
         $sqlFrom ="FROM People as p ";  
         $sqlWhere ="WHERE ";
@@ -132,7 +134,12 @@ class Statistics extends SuperEntity{
     function getSelectSQL($offset){
         $rowNumberSql = "(ROW_NUMBER() OVER (ORDER BY DateOfBirth) + " . $offset . ") AS Id";
         
-        $sqlSelect="SELECT p.Id as PersonId, " . $rowNumberSql . ", " . $this->getAppCanvasSql(true) . DECRYPTED_ALIAS_LASTNAME . ", " . DECRYPTED_ALIAS_FIRSTNAME . ", " . DECRYPTED_ALIAS_COMMENT . ", DateOfBirth, " . $this->getAppCanvasSql(true);
+        $sqlSelect="SELECT p.Id as PersonId, " . $rowNumberSql . ", ";
+        $sqlSelect.=$this->getAppCanvasSql(true);
+//        $sqlSelect.=DECRYPTED_ALIAS_LASTNAME . ", " . DECRYPTED_ALIAS_FIRSTNAME . ", ";
+//        $sqlSelect.="DateOfBirth, ";
+        $sqlSelect.= getPersonSql("p", "Name", TRUE);
+        $sqlSelect.=DECRYPTED_ALIAS_COMMENT . ", ";
         
         return $sqlSelect;
     }

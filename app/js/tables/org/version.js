@@ -5,9 +5,13 @@
 
     
 $(document).ready(function () {
-    $(saron.table.orgversion.nameId).jtable(orgVersionTableDef(null, saron.table.orgversion.name));
+    var tablePlaceHolder = $(saron.table.orgversion.nameId)
+    tablePlaceHolder.jtable(orgVersionTableDef(null, saron.table.orgversion.name));
+
+    var addButton = tablePlaceHolder.find('.jtable-toolbar-item-add-record');
+    addButton.hide();
+    
     $(saron.table.orgversion.nameId).jtable('load');
-    $(saron.table.orgversion.nameId).find('.jtable-toolbar-item-add-record').hide();
 });
 
 
@@ -71,13 +75,7 @@ function orgVersionTableDef(tableTitle, tablePath){
             }
         },        
         recordsLoaded: function(event, data) {
-            var addButton = $(event.target).find('.jtable-toolbar-item-add-record');
-
-            if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
-                addButton.show();
-                $(saron.table.orgversion.nameId).find('.jtable-edit-command-button').show();
-            }
-        },        
+            alowedToAddRecords(event, data, tableDef);        },        
         formCreated: function (event, data){
             if(data.formType === saron.formtype.edit)
                 data.row[0].style.backgroundColor = "yellow";

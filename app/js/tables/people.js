@@ -12,24 +12,26 @@ $(document).ready(function () {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     var tablePlaceHolder = $(saron.table.people.nameId);
-    var table = peopleTableDef(null, saron.table.people.name);
+    var table = peopleTableDef(null, null, null);
     table.paging = true;
     tablePlaceHolder.jtable(table);
     var options = getPostData(null, saron.table.people.name, null, saron.table.people.name, saron.source.list, saron.responsetype.records);
+    
+    var addButton = tablePlaceHolder.find('.jtable-toolbar-item-add-record');
+    addButton.hide();
+    
     tablePlaceHolder.jtable('load', options);
-    tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
 });
 
-function peopleTableDef(tableTitle, tablePath) {
-    var title = 'Personuppgifter';
+function peopleTableDef(tableTitle, parentTablePath, parentId) {
+    var tableName = saron.table.people.name;
+    var tablePath = getChildTablePath(parentTablePath, tableName);
 
-    if(tableTitle !== null)
-        title = tableTitle;
-    
-
-    return {
-        appCanvasName: saron.table.people.name,
-        title: title,
+    var tableDef = {
+        parentId: parentId,
+        tableName: tableName,
+        tablePath: tablePath,
+        title: 'Personuppgifter',
         showCloseButton: false,
         paging: false, //Enable paging
         pageList: 'minimal',
@@ -83,8 +85,6 @@ function peopleTableDef(tableTitle, tablePath) {
                                 var moveToNoHome = (data.record.HomeId === null);
                                 var move = (moveToNewHome || moveToNoHome);
                                 var isChildRowOpen = $(saron.table.people.nameId).jtable('isChildRowOpen', $selectedRow);
-                                var parentId = data.record.HomeId;
-                                var childTablePath = tablePath + "/" + saron.table.homes.name;
                                 
                                 var childTableTitle = _setClassAndValueHeadline(data, 'LongHomeName', HOME, 'Hem', 'Hem för ', '');;
                                 
@@ -92,7 +92,7 @@ function peopleTableDef(tableTitle, tablePath) {
                                     var options = getPostData(null, tableName, parentId, tablePath, saron.source.list, saron.responsetype.records);
                                     var clientOnly = true;
                                     var url = saron.root.webapi + 'listPeople.php';
-                                    var childTableDef = homeTableDef(childTableTitle, childTablePath);
+                                    var childTableDef = homeTableDef(childTableTitle, tablePath, data.record.HomeId);
                                     var tablePlaceHolder = $(saron.table.people.nameId);
 
                                     tablePlaceHolder.jtable('closeChildTable', $selectedRow, function(){
@@ -151,9 +151,8 @@ function peopleTableDef(tableTitle, tablePath) {
                     var imgFile = "home.png";
                     var clientOnly = true;
                     var type = 0;
-                    var childTablePath = tablePath + "/" + saron.table.homes.name;
 
-                    var childTableDef = homeTableDef(childTableTitle, childTablePath); // PersonId point to childtable unic id   
+                    var childTableDef = homeTableDef(childTableTitle, tablePath, data.record.HomeId); // PersonId point to childtable unic id   
 
                     if(data.record.HomeId > 0)
                         imgFile = "home.png";
@@ -166,15 +165,14 @@ function peopleTableDef(tableTitle, tablePath) {
                     var $imgClose = getImageCloseTag(data, childTableDef, type);
                         
                     $imgChild.click(data, function (event){
-                        event.data.record.ParentId = data.record.HomeId;
-                        _clickActionOpen(childTableDef, $imgChild, event.data, clientOnly);
+                        openChildTable(childTableDef, $imgChild, event.data, clientOnly);
                     });
 
                     $imgClose.click(data, function (event){
-                        _clickActionClose(childTableDef, $imgClose, event.data, clientOnly);
+                        closeChildTable(childTableDef, $imgClose, event.data, clientOnly);
                     });    
 
-                    return _getClickImg(data, childTableDef, $imgChild, $imgClose);
+                    return getClickImg(data, childTableDef, $imgChild, $imgClose);
                 }
             },
             MemberShip:{
@@ -190,22 +188,20 @@ function peopleTableDef(tableTitle, tablePath) {
                     var imgFile = "member.png";
                     var clientOnly = true;
                     var type = 0;
-                    var childTablePath = tablePath + "/" + saron.table.member.name;
 
-                    var childTableDef = memberTableDef(childTableTitle, childTablePath); // PersonId point to childtable unic id   
+                    var childTableDef = memberTableDef(childTableTitle, tablePath, data.record.Id); // PersonId point to childtable unic id   
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
                     var $imgClose = getImageCloseTag(data, childTableDef, type);
                         
                     $imgChild.click(data, function (event){
-                        event.data.record.ParentId = data.record.Id;
-                        _clickActionOpen(childTableDef, $imgChild, event.data, clientOnly);
+                        openChildTable(childTableDef, $imgChild, event.data, clientOnly);
                     });
 
                     $imgClose.click(data, function (event){
-                        _clickActionClose(childTableDef, $imgClose, event.data, clientOnly);
+                        closeChildTable(childTableDef, $imgClose, event.data, clientOnly);
                     });    
 
-                    return _getClickImg(data, childTableDef, $imgChild, $imgClose);
+                    return getClickImg(data, childTableDef, $imgChild, $imgClose);
                 }
             },
             Baptism:{ 
@@ -221,22 +217,20 @@ function peopleTableDef(tableTitle, tablePath) {
                     var imgFile = "baptist.png";
                     var clientOnly = true;
                     var type = 0;
-                    var childTablePath = tablePath + "/" + saron.table.baptist.name;
 
-                    var childTableDef = baptistTableDef(childTableTitle, childTablePath); // PersonId point to childtable unic id   
+                    var childTableDef = baptistTableDef(childTableTitle, tablePath, data.record.Id); // PersonId point to childtable unic id   
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
                     var $imgClose = getImageCloseTag(data, childTableDef, type);
                         
                     $imgChild.click(data, function (event){
-                        event.data.record.ParentId = data.record.Id;
-                        _clickActionOpen(childTableDef, $imgChild, event.data, clientOnly);
+                        openChildTable(childTableDef, $imgChild, event.data, clientOnly);
                     });
 
                     $imgClose.click(data, function (event){
-                        _clickActionClose(childTableDef, $imgClose, event.data, clientOnly);
+                        closeChildTable(childTableDef, $imgClose, event.data, clientOnly);
                     });    
 
-                    return _getClickImg(data, childTableDef, $imgChild, $imgClose);
+                    return getClickImg(data, childTableDef, $imgChild, $imgClose);
 
                 }
             },
@@ -251,7 +245,6 @@ function peopleTableDef(tableTitle, tablePath) {
                     var childTableTitle = _setClassAndValueHeadline(data, 'Name', PERSON, 'Nyckelinnehav', 'Nyckelinnehav för ', '');;
                     var tooltip = 'NyckelInnehav';
                     var imgFile = "no_key.png";
-                    var childTablePath = tablePath + "/" + saron.table.key.name;
 
                     if(data.record.KeyToChurch > 1 || data.record.KeyToExp > 1)
                         imgFile = "key.png";
@@ -259,20 +252,19 @@ function peopleTableDef(tableTitle, tablePath) {
                     var clientOnly = false;
                     var type = 0;
 
-                    var childTableDef = keyTableDef(childTableTitle, childTablePath); // PersonId point to childtable unic id   
+                    var childTableDef = keyTableDef(childTableTitle, tablePath, data.record.Id); // PersonId point to childtable unic id   
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
                     var $imgClose = getImageCloseTag(data, childTableDef, type);
                         
                     $imgChild.click(data, function (event){
-                        event.data.record.ParentId = data.record.Id;
-                        _clickActionOpen(childTableDef, $imgChild, event.data, clientOnly);
+                        openChildTable(childTableDef, $imgChild, event.data, clientOnly);
                     });
 
                     $imgClose.click(data, function (event){
-                        _clickActionClose(childTableDef, $imgClose, event.data, clientOnly);
+                        closeChildTable(childTableDef, $imgClose, event.data, clientOnly);
                     });    
 
-                    return _getClickImg(data, childTableDef, $imgChild, $imgClose); 
+                    return getClickImg(data, childTableDef, $imgChild, $imgClose); 
                 }
             },            
             Engagements:{
@@ -284,9 +276,8 @@ function peopleTableDef(tableTitle, tablePath) {
                     var childTableTitle = data.record.Name + ' har nedanstående uppdrag';
                     var tooltip = "";
                     var imgFile = "";
-                    var childTablePath = tablePath + "/" + saron.table.engagements.name;
 
-                    var childTableDef = engagementsTableDef(childTableTitle, childTablePath); // PersonId point to childtable unic id   
+                    var childTableDef = engagementsTableDef(childTableTitle, tablePath, data.record.Id); // PersonId point to childtable unic id   
 
                     if(data.record.Engagement ===  '0'){
                         var $imgEmpty = getImageTag(data, "empty.png", tooltip, childTableDef, -1);
@@ -304,15 +295,14 @@ function peopleTableDef(tableTitle, tablePath) {
                     var $imgClose = getImageCloseTag(data, childTableDef, type);
                         
                     $imgChild.click(data, function (event){
-                        event.data.record.ParentId = data.record.Id;
-                        _clickActionOpen(childTableDef, $imgChild, event.data, clientOnly);
+                        openChildTable(childTableDef, $imgChild, event.data, clientOnly);
                     });
 
                     $imgClose.click(data, function (event){
-                        _clickActionClose(childTableDef, $imgClose, event.data, clientOnly);
+                        closeChildTable(childTableDef, $imgClose, event.data, clientOnly);
                     });    
 
-                    return _getClickImg(data, childTableDef, $imgChild, $imgClose);
+                    return getClickImg(data, childTableDef, $imgChild, $imgClose);
                 }
             },
             HomeId: {
@@ -490,14 +480,7 @@ function peopleTableDef(tableTitle, tablePath) {
             }
         },        
         recordsLoaded: function(event, data) {
-            var addButton = $(event.target).find('.jtable-toolbar-item-add-record');
-
-            if(data.serverResponse.user_role === saron.userrole.editor){
-                var rootElement = getRootElementFromTablePath(data.records[0].AppCanvasPath);
-                if(rootElement === saron.table.people.name){
-                    addButton.show();
-                }
-            }
+            alowedToAddRecords(event, data, tableDef);            
         },        
         formCreated: function (event, data){
             var headLine;
@@ -531,6 +514,30 @@ function peopleTableDef(tableTitle, tablePath) {
                 data.row[0].style.backgroundColor = '';
         }
     };
+    if(tableTitle !== null)
+        tableDef.title = tableTitle;
+    
+    configUnitTableDef(tableDef);
+    
+    return tableDef;
+}
+
+
+function configUnitTableDef(tableDef){
+
+    var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
+
+    if(tablePathRoot === saron.table.unittree.name){
+    }
+    if(tablePathRoot === saron.table.unitlist.name 
+            || tablePathRoot === saron.table.unittype.name 
+            || tablePathRoot === saron.table.role.name 
+            || tablePathRoot === saron.table.statistics.name){ 
+        //tableDef.fields.ParentTreeNode_FK.list = true; 
+        //tableDef.fields.OrgPath.list = true; NOT IMPLEMENTED YET
+        tableDef.actions.updateAction  = null;
+        tableDef.actions.createAction  = null;
+    }    
 }
 
 

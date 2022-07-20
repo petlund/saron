@@ -8,15 +8,16 @@ POS_ENABLED
     
 "use strict";    
 
-function unitTableDef(tableTitle, tablePath){
-    var title = 'Organisatoriska enheter';
-    if(tableTitle !== null)
-        title = tableTitle;
-    
-    return {
-        appCanvasName: saron.table.unit.name,
+function unitTableDef(tableTitle, parentTablePath, parentId){
+    var tableName = saron.table.unit.name;
+    var tablePath = getChildTablePath(parentTablePath, tableName);
+
+    var tableDef = {
+        parentId: parentId,
+        tableName: tableName,
+        tablePath: tablePath,
         showCloseButton: false,
-        title: title,
+        title: 'Organisatoriska enheter',
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
@@ -36,7 +37,7 @@ function unitTableDef(tableTitle, tablePath){
                 list: false
             },
             ParentId:{
-                defaultValue: -1,
+                defaultValue: parentId,
                 type: 'hidden'
             },
             AppCanvasName:{
@@ -45,7 +46,7 @@ function unitTableDef(tableTitle, tablePath){
             },
             AppCanvasPath:{
                 type: 'hidden',
-                defaultValue: saron.table.unit.name
+                defaultValue: tablePath
             },
             SubUnitEnabled: {
                 title: '',
@@ -54,17 +55,14 @@ function unitTableDef(tableTitle, tablePath){
                 edit: false,
                 create: false,
                 delete: false,
-                list: function(data){
-                    return includedIn (saron.table.unittree.name, data.record.AppCanvasPath);
-                },
+                list: true,
                 display: function (data) {
                     var childTableTitle = 'Enhetstypen "' + data.record.Name + '" har följande underenheter';
                     var tooltip = "";
                     var imgFile = "";
                     var type = 0;
                     var clientOnly = true;
-                    var childTablePath = tablePath + "/" + saron.table.unit.name;
-
+                    
                     if(data.record.SubUnitEnabled === SUBUNIT_ENABLED){
                         if(data.record.HasSubUnit === '0' || data.record.statusSubProposal === null  || data.record.statusSubVacant === null){
                             tooltip = "Inga underorganisationer";
@@ -89,20 +87,19 @@ function unitTableDef(tableTitle, tablePath){
                             }
                         }
 
-                        var childTableDef = unitTableDef(childTableTitle, childTablePath); // PersonId point to childtable unic id   
+                        var childTableDef = unitTableDef(childTableTitle, tablePath, data.record.Id); // PersonId point to childtable unic id   
                         var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
                         var $imgClose = getImageCloseTag(data, childTableDef, type);
 
                         $imgChild.click(data, function (event){
-                            event.data.record.ParentId = data.record.Id;
-                            _clickActionOpen(childTableDef, $imgChild, event.data, clientOnly);
+                            openChildTable(childTableDef, $imgChild, event.data, clientOnly);
                         });
 
                         $imgClose.click(data, function (event){
-                            _clickActionClose(childTableDef, $imgClose, event.data, clientOnly);
+                            closeChildTable(childTableDef, $imgClose, event.data, clientOnly);
                         });    
 
-                        return _getClickImg(data, childTableDef, $imgChild, $imgClose);
+                        return getClickImg(data, childTableDef, $imgChild, $imgClose);
                     }
                     return null;
                 }
@@ -120,7 +117,6 @@ function unitTableDef(tableTitle, tablePath){
                     var imgFile = "";         
                     var type = 0;
                     var clientOnly = true;
-                    var childTablePath = tablePath + "/" + saron.table.pos.name;
                     
                     if(data.record.PosEnabled === POS_ENABLED){
                         if(data.record.HasPos === '0'){
@@ -145,45 +141,44 @@ function unitTableDef(tableTitle, tablePath){
                             }
                         }
 
-                        var childTableDef = posTableDef(childTableTitle, childTablePath); // PersonId point to childtable unic id   
+                        var childTableDef = posTableDef(childTableTitle, tablePath, data.record.Id); // PersonId point to childtable unic id   
 
                         var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
                         var $imgClose = getImageCloseTag(data, childTableDef, type);
 
                         $imgChild.click(data, function (event){
-                            event.data.record.ParentId = data.record.Id;
-                            _clickActionOpen(childTableDef, $imgChild, event.data, clientOnly);
+                            openChildTable(childTableDef, $imgChild, event.data, clientOnly);
                         });
 
                         $imgClose.click(data, function (event){
-                            _clickActionClose(childTableDef, $imgClose, event.data, clientOnly);
+                            closeChildTable(childTableDef, $imgClose, event.data, clientOnly);
                         });    
 
-                        return _getClickImg(data, childTableDef, $imgChild, $imgClose);
+                        return getClickImg(data, childTableDef, $imgChild, $imgClose);
                     }
                     return null;
                 }
             },
             ParentTreeNode_FK:{
-                list: false, //includedIn(mainTableViewId, saron.table.unitlist.nameId),
+                list: false,
                 edit: true, 
-                create: function(data){
-                    var appCanvasRoot = getRootElementFromTablePath(data.record.AppCanvasPath);
-                    return !includedIn(appCanvasRoot, saron.table.unittree.name);
-                },
+                create: true,
                 title: 'Överordna verksamhet',
+                defaultValue: parentId,
                 options: function(data) {
                     var url = saron.root.webapi + "listOrganizationUnit.php";
                     var field = "ParentTreeNode_FK";                    
-                    var parameters = getOptionsUrlParameters(data, saron.table.unit.name, data.record.ParentId, data.record.AppCanvasPath, field);                    
+                    var parentId = null;
+//                    var parameters = getOptionsUrlParameters(data, saron.table.unit.name, data.record.ParentId, data.record.AppCanvasPath, field);                    
+                    var parameters = getOptionsUrlParameters(data, saron.table.unit.name, parentId, null, field);                    
                     return url + parameters;
                 }                
             },
             Prefix: {
                 width: '1%',
                 title: 'Prefix',
-                listClass: 'saron-number'
-                
+                listClass: 'saron-number',
+                list: true
             },
             Name: {
                 width: '10%',
@@ -193,10 +188,7 @@ function unitTableDef(tableTitle, tablePath){
                 title: "Sökväg",
                 create: false,
                 edit: false,
-                list: function(data){
-                    var appCanvasRoot = getRootElementFromTablePath(data.record.AppCanvasPath);
-                    return includedIn(appCanvasRoot, saron.table.role.name + saron.table.unittype.name + saron.table.unitlist.name);
-                }
+                list: false
             },
             Description: {
                 width: '15%',
@@ -210,7 +202,8 @@ function unitTableDef(tableTitle, tablePath){
                 options: function (data){
                     var field = null;                    
                     var url = saron.root.webapi + 'listOrganizationUnitType.php';
-                    var parameters = getOptionsUrlParameters(data, data.record.AppCanvasName, data.record.ParentId, data.record.AppCanvasPath, field);                    
+                    var parameters = getOptionsUrlParameters(data, saron.table.unit.name, null, null, field);                    
+//                    var parameters = getOptionsUrlParameters(data, data.record.AppCanvasName, data.record.ParentId, data.record.AppCanvasPath, field);                    
                     return url + parameters;
                 }
             },
@@ -241,31 +234,23 @@ function unitTableDef(tableTitle, tablePath){
         },  
         rowInserted: function(event, data){
             data.row.addClass("Id_" + data.record.Id); 
-            if (data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org'){
-                data.row.find('.jtable-edit-command-button').hide();
-                data.row.find('.jtable-delete-command-button').hide();
-            }
+            
             if(data.record.HasSubUnit !== '0' || data.record.HasPos !== '0')
                 data.row.find('.jtable-delete-command-button').hide();
             else
                 data.row.find('.jtable-delete-command-button').show();
 
+            if (data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org'){
+                data.row.find('.jtable-edit-command-button').hide();
+                data.row.find('.jtable-delete-command-button').hide();
+            }
+
             addDialogDeleteListener(data);
         },        
         recordsLoaded: function(event, data) {
-            var addButton = $(event.target).find('.jtable-toolbar-item-add-record');
-
-            if(includedIn(data.records[0].AppCanvasName, saron.table.unittree.nameId + saron.table.unitlist.nameId))
-                if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org') 
-                    addButton.show();
+            alowedToAddRecords(event, data, tableDef);
         },        
         loadingRecords: function(event, data) {
-//            var addButton = $(event.target).find('.jtable-toolbar-item-add-record');
-//
-//            if(includedIn(data.record.AppCanvasName, saron.table.unittree.nameId + saron.table.unitlist.nameId))
-//                addButton.show();
-//            else
-//                addButton.hide();
         },
         formCreated: function (event, data){
             if(data.formType === saron.formtype.edit){
@@ -275,6 +260,11 @@ function unitTableDef(tableTitle, tablePath){
             }
             else{
                 data.form.find('select[name=OrgUnitType_FK]')[0].disabled=false;
+                data.form.find('select[name=ParentTreeNode_FK]')[0].disabled=true;
+ 
+//                var dbox = document.getElementsByClassName('ui-dialog-title');            
+//                for(var i=0; i<dbox.length; i++)
+//                    dbox[i].innerHTML='Lägg till en ny organisatorisk enhet ' + event.data.record.Name ;
             }
 
             data.form.css('width','600px');
@@ -286,4 +276,29 @@ function unitTableDef(tableTitle, tablePath){
                 data.row[0].style.backgroundColor = '';
         }
     };
+    
+    if(tableTitle !== null)
+        tableDef.title = tableTitle;
+    
+    configUnitTableDef(tableDef);
+    
+    return tableDef;
 }    
+
+
+
+function configUnitTableDef(tableDef){
+
+    var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
+
+    if(tablePathRoot === saron.table.unittree.name){
+    }
+    else if(tablePathRoot === saron.table.unitlist.name || tablePathRoot === saron.table.unittype.name || tablePathRoot === saron.table.role.name){ 
+        //tableDef.fields.ParentTreeNode_FK.list = true; 
+        //tableDef.fields.OrgPath.list = true; NOT IMPLEMENTED YET
+        tableDef.fields.SubUnitEnabled.list = false;
+        tableDef.fields.Prefix.list = false;
+        tableDef.actions.createAction = null;
+        tableDef.fields.Prefix.update = false;
+    }    
+}

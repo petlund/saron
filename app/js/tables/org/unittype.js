@@ -11,23 +11,25 @@ RECORD, OPTIONS
 
 $(document).ready(function () {
     var tablePlaceHolder = $(saron.table.unittype.nameId);
-    tablePlaceHolder.jtable(unitTypeTableDef(null, saron.table.unittype.name));
+    tablePlaceHolder.jtable(unitTypeTableDef(null, null, null));
     var postData = getPostData(null, saron.table.unittype.name, null, saron.table.unittype.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', postData);
-    tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
+
+    var addButton = tablePlaceHolder.find('.jtable-toolbar-item-add-record');
+    addButton.hide();    
 });
 
 
-function unitTypeTableDef(tableTitle, tablePath){
-    var title = 'Organisatoriska enhetertyper'; 
-    if(tableTitle !== null)
-        title = tableTitle;
+function unitTypeTableDef(tableTitle, parentTablePath, parentId){
+    var tableName = saron.table.unittype.name;
+    var tablePath = getChildTablePath(parentTablePath, tableName);
     
-    
-    return {
-        appCanvasName: saron.table.unittype.name,
+    var tableDef = {
+        parentId: parentId,
+        tablePath: tablePath,
+        tableName: tableName,
         showCloseButton: false,
-        title: title,        
+        title: 'Organisatoriska enhetertyper',        
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
@@ -64,33 +66,28 @@ function unitTypeTableDef(tableTitle, tablePath){
                 edit: false,
                 sorting: false,
                 create: false,
-                list: function(data){
-                    return includedIn (saron.table.unittype.name, data.record.AppCanvasPath);
-                },
+                list: true,
                 display: function(data){
                     var childTableTitle = 'Enhetstypen "' + data.record.Name + '" används för nedanstående organisatoriska enheter';                            
                     var tooltip = "Enhetstypen används inom följande organisatoriska enheter";
                     var imgFile = "unit.png";
-                    var url = 'listOrganizationUnitType.php';
                     var type = 0;
                     var clientOnly = true;
-                    var childTablePath = tablePath + "/" + saron.table.unit.name;
                     
                     if(data.record.UsedInUnit ===  "1"){                        
-                        var childTableDef = unitTableDef(childTableTitle, childTablePath); // PersonId point to childtable unic id   
+                        var childTableDef = unitTableDef(childTableTitle, tablePath, data.record.Id); // PersonId point to childtable unic id   
                         var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
                         var $imgClose = getImageCloseTag(data, childTableDef, type);
 
                         $imgChild.click(data, function (event){
-                            event.data.record.ParentId = data.record.Id;
-                            _clickActionOpen(childTableDef, $imgChild, event.data, url.data, clientOnly);
+                            openChildTable(childTableDef, $imgChild, event.data, url.data, clientOnly);
                         });
 
                         $imgClose.click(data, function (event){
-                            _clickActionClose(childTableDef, $imgClose, event.data, url, clientOnly);
+                            closeChildTable(childTableDef, $imgClose, event.data, url, clientOnly);
                         });    
 
-                        return _getClickImg(data, childTableDef, $imgChild, $imgClose);
+                        return getClickImg(data, childTableDef, $imgChild, $imgClose);
                     }
                     return null;
                 }
@@ -101,16 +98,13 @@ function unitTypeTableDef(tableTitle, tablePath){
                 create: false,
                 sorting: false,
                 edit: false,   
-                list: function(data){
-                    return includedIn (saron.table.unittype.name, data.record.AppCanvasPath);
-                },
+                list: true,
                 display: function(data){
                     var childTableTitle = 'Enhetstypen "' + data.record.Name + '" har följande roller';
                     var tooltip = "";
                     var imgFile = "";
                     var type = 0;
                     var clientOnly = true;
-                    var childTablePath = tablePath + "/" + saron.table.role_unittype.name;
 
                     if(data.record.PosEnabled ===  POS_ENABLED){
 
@@ -123,20 +117,19 @@ function unitTypeTableDef(tableTitle, tablePath){
                             tooltip = "Enhetstypen har roller";
                         }
                         
-                        var childTableDef = role_role_unitType_TableDef(childTableTitle, childTablePath);    
+                        var childTableDef = role_role_unitType_TableDef(childTableTitle, tablePath, data.record.Id);    
                         var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
                         var $imgClose = getImageCloseTag(data, childTableDef, type);
 
                         $imgChild.click(data, function (event){
-                            event.data.record.ParentId = data.record.Id;
-                            _clickActionOpen(childTableDef, $imgChild, event.data, clientOnly);
+                            openChildTable(childTableDef, $imgChild, event.data, clientOnly);
                         });
 
                         $imgClose.click(data, function (event){
-                            _clickActionClose(childTableDef, $imgClose, event.data, clientOnly);
+                            closeChildTable(childTableDef, $imgClose, event.data, clientOnly);
                         });    
 
-                        return _getClickImg(data, childTableDef, $imgChild, $imgClose);
+                        return getClickImg(data, childTableDef, $imgChild, $imgClose);
                     }
                     return null;
                 }
@@ -215,11 +208,7 @@ function unitTypeTableDef(tableTitle, tablePath){
                     data.row.find('.jtable-delete-command-button').show();
         },        
         recordsLoaded: function(event, data) {
-            var addButton = $(event.target).find('.jtable-toolbar-item-add-record');
-
-            if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
-                addButton.show();
-            }
+            alowedToAddRecords(event, data, tableDef);
         },        
         formCreated: function (event, data){
             if(data.formType === saron.formtype.edit)
@@ -245,7 +234,21 @@ function unitTypeTableDef(tableTitle, tablePath){
                 data.row[0].style.backgroundColor = '';
         }
     };    
+    var title = "Alla roller";
+
+    if(tableTitle !== null)
+        title = tableTitle;
+
+    tableDef.title = title;
+    
+    
+    configUnitTypeTableDef(tableDef, parentTablePath);
+
+    return tableDef;
 }
 
 
 
+function  configUnitTypeTableDef(parentTablePath){
+    
+}

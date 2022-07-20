@@ -8,7 +8,12 @@ saron.table.org_role_status.nameId, saron.table.org_role_status.name
     
 $(document).ready(function () {
 
-    $(saron.table.org_role_status.nameId).jtable(statusTableDef(null, saron.table.org_role_status.name));
+    var tablePlaceHolder = $(saron.table.org_role_status.nameId);
+    tablePlaceHolder.jtable(statusTableDef(null, saron.table.org_role_status.name));
+
+    var addButton = tablePlaceHolder.find('.jtable-toolbar-item-add-record');
+    addButton.hide();
+
     $(saron.table.org_role_status.nameId).jtable('load');
     }
 );
@@ -72,9 +77,6 @@ function statusTableDef(tableTitle, tablePath){
                 data.row.find('.jtable-delete-command-button').hide();
         },        
         recordsLoaded: function(event, data) {
-            if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
-                $(saron.table.status.nameId).find('.jtable-toolbar-item-add-record').show();
-            }
         },        
         formCreated: function (event, data){
             if(data.formType === saron.formtype.edit)

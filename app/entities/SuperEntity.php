@@ -39,9 +39,7 @@ class SuperEntity {
 // Only urlParamterData
     protected $field;
 
-//  
-    protected $tableView;
-
+    
     protected function __construct($db, $saronUser) {
         $this->db = $db;
         $this->saronUser = $saronUser;
@@ -107,11 +105,11 @@ class SuperEntity {
     protected function getSortSql(){
         $sqlOrderBy = "";
         if($this->groupId === 2 and 
-                ($this->tableView === TABLE_NAME_PEOPLE or 
-                $this->tableView === TABLE_NAME_MEMBER or 
-                $this->tableView === TABLE_NAME_BAPTIST or 
-                $this->tableView === TABLE_NAME_KEYS or
-                $this->tableView === TABLE_NAME_TOTAL)
+                ($this->appCanvasName === TABLE_NAME_PEOPLE or 
+                $this->appCanvasName === TABLE_NAME_MEMBER or 
+                $this->appCanvasName === TABLE_NAME_BAPTIST or 
+                $this->appCanvasName === TABLE_NAME_KEYS or
+                $this->appCanvasName === TABLE_NAME_TOTAL)
             ){
             $sqlOrderBy = "ORDER BY Updated desc ";            
         }

@@ -34,6 +34,7 @@
     <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("util/", "timeout.js");?>"></script>     
     <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("util/", "util.js");?>"></script>     
     <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("util/", "tableNavigationUtil.js");?>"></script>     
+    <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("util/", "security.js");?>"></script>     
     
     <link rel="stylesheet" type="text/css" href="/<?php echo SARON_URI;?>app/css/saron.css" />
 
@@ -113,7 +114,7 @@
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_UNITLIST, "Organisationslista");?></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_POS, "Positioner");?></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_ROLE, "Roller");?></li>
-                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_UNITTYPE, "Organisatoriska enhetstype");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_UNITTYPE, "Organisatoriska enhetstyper");?></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_ORG_ROLE_STATUS, "Bemanningsstatus");?></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_ORG_MEMBER_STATE, "Medlemsstatus");?></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_ORGVERSION, "Beslut om organisation");?></li>

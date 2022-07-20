@@ -14,7 +14,7 @@ require_once SARON_ROOT . 'app/entities/News.php';
         $db = new db();
         $db->transaction_begin();
         $saronUser = new SaronUser($db);
-        $saronUser->hasValidSaronSession(REQUIRE_EDITOR_ROLE, REQUIRE_ORG_VIEWER_ROLE);
+        $saronUser->hasValidSaronSession(REQUIRE_VIEWER_ROLE, REQUIRE_ORG_VIEWER_ROLE);
         $news = new News($db, $saronUser);
         $respons = $news->update();        
         $db->transaction_end();

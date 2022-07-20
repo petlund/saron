@@ -50,14 +50,14 @@ $(document).ready(function () {
                         
                         $imgChild.click(data, function (event){
                             var childTableDef = test(mainTablePlaceHolder, title + ' + ');
-                            _clickActionOpen(mainTablePlaceHolder, childTableDef, childTableName, $imgChild, event, url, clientOnly);
+                            openChildTable(mainTablePlaceHolder, childTableDef, childTableName, $imgChild, event, url, clientOnly);
                         });
 
                         $imgClose.click(data, function (event){
-                            _clickActionClose(mainTablePlaceHolder, $imgClose, event, url, clientOnly);
+                            closeChildTable(mainTablePlaceHolder, $imgClose, event, url, clientOnly);
                         });    
 
-                        return _getClickImg(data, childTableName, $imgChild, $imgClose);
+                        return getClickImg(data, childTableName, $imgChild, $imgClose);
                     }       
                 },
                 display_name:{

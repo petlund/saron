@@ -113,11 +113,10 @@ class OrganizationPos extends SuperEntity{
                 case TABLE_NAME_UNITTREE . "/" . TABLE_NAME_POS:            
                     $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
                     break;
-                case TABLE_NAME_PEOPLE . "/" . TABLE_NAME_ENGAGEMENTS:            
-                    $where = "WHERE pCur.Id = ". $this->parentId . " "; 
- //                    $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
-                    break;
                 case TABLE_NAME_UNITTREE . "/" . TABLE_NAME_UNIT . "/" . TABLE_NAME_POS:            
+                    $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
+                    break;
+                case TABLE_NAME_UNITLIST . "/" . TABLE_NAME_POS:            
                     $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
                     break;
                 case TABLE_NAME_ROLE . "/" . TABLE_NAME_UNIT . "/" . TABLE_NAME_POS:            
@@ -132,6 +131,9 @@ class OrganizationPos extends SuperEntity{
                 case TABLE_NAME_ENGAGEMENT . "/" . TABLE_NAME_ENGAGEMENTS:    
                     $where = "WHERE Pos.People_FK = ". $this->parentId . " Or SuperPos.People_FK = ". $this->parentId . " "; 
                     //return $this->selectPersonEngagement();            
+                    break;
+                case TABLE_NAME_PEOPLE . "/" . TABLE_NAME_ENGAGEMENTS:            
+                    $where = "WHERE pCur.Id = ". $this->parentId . " "; 
                     break;
                 case TABLE_NAME_STATISTICS . "/" . TABLE_NAME_STATISTICS_DETAIL . "/" . TABLE_NAME_PEOPLE . "/" . TABLE_NAME_ENGAGEMENTS:            
                     $where = "WHERE pCur.Id = ". $this->parentId . " "; 
@@ -192,8 +194,8 @@ class OrganizationPos extends SuperEntity{
     }
     
     
-    function insert(){
-            $this->checkEngagementData();
+    function insertNewPos(){
+        $this->checkEngagementData();
         $sqlInsert = "INSERT INTO Org_Pos (People_FK, Function_FK, Comment, OrgPosStatus_FK, OrgSuperPos_FK, OrgRole_FK, OrgTree_FK, Updater) ";
         $sqlInsert.= "VALUES (";
         $sqlInsert.= "'" . $this->people_FK . "', ";
@@ -208,6 +210,18 @@ class OrganizationPos extends SuperEntity{
         $id = $this->db->insert($sqlInsert, "Org_Pos", "Id");
         
         $result = $this->select($id);
+        return $result;
+    }
+    
+    function insert(){
+        switch ($this->appCanvasPath) {
+        case TABLE_NAME_ENGAGEMENT . "/" . TABLE_NAME_ENGAGEMENTS:
+            $this->people_FK = $this->parentId;
+            $result = $this->addPerson();   
+            break;
+        default: 
+            $result = $this->insertNewPos();
+        }
         return $result;
     }
     
@@ -265,7 +279,7 @@ class OrganizationPos extends SuperEntity{
         $set.= "Updater=" . $this->saronUser->WP_ID . " ";
         $where = "WHERE Id=" . $this->id;
         $response = $this->db->update($update, $set, $where);
-        
+                
         return $this->select($this->id);
     }
 

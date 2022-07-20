@@ -7,22 +7,23 @@ saron
  
 "use strict";
 
-function role_role_unitType_TableDef(newTableTitle, tablePath){
+function role_role_unitType_TableDef(tableTitle, parentTablePath, parentId){
+    var tableName = saron.table.role_unittype.name;
+    var tablePath = getChildTablePath(parentTablePath, tableName, null);
 
-    var title = "Alla kopplingar mellan roller och enhetstyper";
-    
-    
-    return {
-        appCanvasName: saron.table.role_unittype,
+    var tableDef =  {
+        parentId: parentId,
+        tablePath: tablePath,
+        tableName: tableName,
         showCloseButton: false,
-        title: title,
+        title: "Alla kopplingar mellan roller och enhetstyper",
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
         sorting: true, //Enable sorting
         multiSorting: true,
-        defaultSorting: getDefaultSorting(mainTableViewId),   
-        messages: getMessageAddNewRecord(mainTableViewId),
+        defaultSorting: 'OrgUnitType_FK',   
+        messages: null,
         deleteConfirmation: function(data) {
             var message = "Raderar koppling mellan enhetstyp och roll. <br>Kan inte ångras.";
             data.deleteConfirmMessage = message;
@@ -46,15 +47,15 @@ function role_role_unitType_TableDef(newTableTitle, tablePath){
             },
             AppCanvasName:{
                 type: 'hidden',
-                defaultValue: saron.table.people.name
+                defaultValue: saron.table.role_unittype.name
             },
             AppCanvasPath:{
                 type: 'hidden',
-                defaultValue: saron.table.people.name
+                defaultValue: saron.table.role_unittype.name
             },
             OrgUnitType_FK: {
-                list: mainTableViewId.includes(saron.table.role.nameId),
-                create: mainTableViewId.includes(saron.table.role.nameId),
+                list: true, //config
+                create: true,
                 edit: false,
                 title: 'Enhetstyp',
                 width: '50%',
@@ -62,13 +63,13 @@ function role_role_unitType_TableDef(newTableTitle, tablePath){
                 options: function(data){
                     var url = saron.root.webapi + 'listOrganizationUnitType.php';
                     var field = null;
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, data.record.ParentId, data.record.AppCanvasPath, field);                    
+                    var parameters = getOptionsUrlParameters(data, saron.table.role_unittype.name, parentId, tableDef.tablePath, field);                    
                     return url + parameters;
                 }
             },
             OrgRole_FK: {
-                list: mainTableViewId.includes(saron.table.unittype.nameId),
-                create: mainTableViewId.includes(saron.table.unittype.nameId),
+                list: true,
+                create: true,
                 edit: false,
                 title: 'Roll',
                 width: '50%',
@@ -76,14 +77,14 @@ function role_role_unitType_TableDef(newTableTitle, tablePath){
                 options: function(data){
                     var url = saron.root.webapi + 'listOrganizationRole.php';
                     var field = null;
-                    var parameters = getOptionsUrlParameters(data, mainTableViewId, data.record.ParentId, data.record.AppCanvasPath, field);                    
+                    var parameters = getOptionsUrlParameters(data, saron.table.role_unittype.name, parentId, tableDef.tablePath, field);                    
                     return url + parameters;
                 }
             },
             SortOrder: {
-                list: mainTableViewId.includes(saron.table.unittype.nameId),
-                edit: mainTableViewId.includes(saron.table.unittype.nameId),
-                create: mainTableViewId.includes(saron.table.unittype.nameId),
+                list: true,
+                edit: true,
+                create: true,
                 title: 'Sortering',
                 width: '5%',
                 display: function (data){
@@ -107,32 +108,14 @@ function role_role_unitType_TableDef(newTableTitle, tablePath){
             }
         },
         recordUpdated(event, data){
-            if(mainTableViewId.includes(saron.table.role.nameId))
-                data.row.find('.jtable-edit-command-button').hide();
-
-            if (data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org'){
-                data.row.find('.jtable-edit-command-button').hide();
-                data.row.find('.jtable-delete-command-button').hide();
-            }            
         },
         rowInserted: function(event, data){
-            if(mainTableViewId.includes(saron.table.role.nameId))
-                data.row.find('.jtable-edit-command-button').hide();
-
-            if (data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org'){
-                data.row.find('.jtable-edit-command-button').hide();
-                data.row.find('.jtable-delete-command-button').hide();
-            }
-            
+            alowedToUpdateOrDelete(event, data, tableDef);
             addDialogDeleteListener(data);
             
         },        
         recordsLoaded: function(event, data) {
-            var addButton = $(event.target).find('.jtable-toolbar-item-add-record');
-
-            if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
-                addButton.show();
-            }
+            alowedToAddRecords(event, data, tableDef);
         },        
         formCreated: function (event, data){
             if(data.formType === saron.formtype.edit)
@@ -146,20 +129,41 @@ function role_role_unitType_TableDef(newTableTitle, tablePath){
                 data.row[0].style.backgroundColor = '';
         }
     };
+    
+    if(tableTitle !== null)
+        tableDef.title = tableTitle;
+    
+    configRole_UnitTypeTableDef(tableDef);
+    
+    return tableDef;
 }
 
 
-function getDefaultSorting(mainTableViewId){
-    if(mainTableViewId.includes(saron.table.unittype.nameId))
-        return 'SortOrder';
-    else
-        return 'OrgUnitType_FK';                    
+
+function configRole_UnitTypeTableDef(tableDef){
+    var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
+
+    if(tablePathRoot === saron.table.unittype.name){ // && appCanvasLast === tableDef.appCanvasName
+        tableDef.fields.OrgUnitType_FK.list = false;
+        tableDef.defaultSorting = 'SortOrder';
+        tableDef.fields.OrgUnitType_FK.create = false;
+        tableDef.messages =  {addNewRecord: 'Koppla roll till enhetstypen'};
+    }
+    else if(tablePathRoot === saron.table.role.name ){ //&& appCanvasLast === tableDef.appCanvasName
+        tableDef.fields.OrgRole_FK.list = false;
+        tableDef.fields.SortOrder.list = false;
+        tableDef.fields.SortOrder.create = false;
+        tableDef.fields.SortOrder.edit = false;
+        tableDef.fields.OrgRole_FK.create = false;
+        tableDef.messages =  {addNewRecord: 'Koppla enhetstyp till rollen'};
+    }    
 }
 
 
-function getMessageAddNewRecord(tableName){
-    if(tableName.includes(saron.table.unittype.name))
-        return {addNewRecord: 'Koppla roll till enhetstypen'};
-    if(tableName.includes(saron.table.role.name))
-        return {addNewRecord: 'Koppla enhetstyp till rollen'};
-}
+
+
+
+
+
+
+

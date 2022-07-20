@@ -8,21 +8,22 @@ PERSON, inputFormWidth, inputFormFieldWidth
 $(document).ready(function () {
     var tablePlaceHolder = $(saron.table.keys.nameId);
     var table = keyTableDef(null, saron.table.keys.name);
-    table.paging = true;
     tablePlaceHolder.jtable(table);
-    tablePlaceHolder.jtable('load');
+    var postData = getPostData(null, saron.table.keys.name, null, saron.table.keys.name, saron.source.list, saron.responsetype.records);
+    tablePlaceHolder.jtable('load', postData);
 });  
 
-function keyTableDef(tableTitle, tablePath){
-    var title = 'Nyckelinnehav'; 
-    if(tableTitle !== null)
-        title = tableTitle; 
-    
-    return {
-        appCanvasName: saron.table.keys.name,
-        title: title,
+function keyTableDef(tableTitle, parentTablePath, parentId){
+    var tableName = saron.table.keys.name;
+    var tablePath = getChildTablePath(parentTablePath, tableName);
+
+    var tableDef = {
+        parentId: parentId,
+        tableName: tableName,
+        tablePath: tablePath,
+        title: 'Nyckelinnehav',
         showCloseButton: false,        
-        paging: false,
+        paging: true,
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
         sorting: true, //Enable sorting
@@ -52,9 +53,7 @@ function keyTableDef(tableTitle, tablePath){
             Name: {
                 title: 'Namn',
                 width: '10%',
-                list: function(data){
-                    return includedIn (saron.table.keys.name, data.record.AppCanvasPath);
-                },
+                list: true,
                 create: false,
                 edit: false,
                 display: function (data){
@@ -63,9 +62,7 @@ function keyTableDef(tableTitle, tablePath){
             },
             DateOfBirth: {
                 title: 'Född',
-                list: function(data){
-                    return includedIn (saron.table.keys.name, data.record.AppCanvasPath);
-                },
+                list: true,
                 edit: false,
                 width: '5%',
                 type: 'date',
@@ -77,9 +74,7 @@ function keyTableDef(tableTitle, tablePath){
             MemberState:{
                 edit: false,
                 create: false,
-                list: function(data){
-                    return includedIn (saron.table.keys.name, data.record.AppCanvasPath);
-                },
+                list: true,
                 title: 'Status',
                 width: '5%',                
             },
@@ -111,10 +106,7 @@ function keyTableDef(tableTitle, tablePath){
             }
         },
         rowInserted: function(event, data){
-            if (data.record.user_role !== saron.userrole.editor)
-                data.row.find('.jtable-edit-command-button').hide();
-            else
-                data.row.find('.jtable-delete-command-button').hide();
+            alowedToUpdateOrDelete(event, data, tableDef);
         },        
         formCreated: function (event, data){
             if(data.formType === saron.formtype.edit){
@@ -129,5 +121,27 @@ function keyTableDef(tableTitle, tablePath){
                 data.row[0].style.backgroundColor = '';
         }
     };
-}
 
+    if(tableTitle !== null)
+        tableDef.title = tableTitle;
+    
+    
+    configKeysTableDef(tableDef);
+
+    return tableDef;
+}
+    
+
+function configKeysTableDef(tableDef){
+    var appCanvasRoot = getRootElementFromTablePath(tableDef.tablePath);
+
+    if(appCanvasRoot !== saron.table.keys.name){
+        tableDef.fields.Name.list = false;
+        tableDef.fields.DateOfBirth.list = false;
+        tableDef.fields.MemberState.list = false;        
+        tableDef.paging = false;
+    }    
+    if(appCanvasRoot === saron.table.statistics.name){
+        tableDef.actions.updateAction = null;
+    }
+}

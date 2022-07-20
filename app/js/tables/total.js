@@ -14,15 +14,15 @@ $(document).ready(function () {
 
 });
 
-function totalTableDef(tableTitle, tablePath){
-    var title = 'Översikt per person';
-
-    if(tableTitle !== null)
-        title = tableTitle; 
-        
-    return{
-        appCanvasName:  saron.table.total.name,
-        title: title,
+function totalTableDef(tableTitle, parentTablePath, parentId){
+    var tableName = saron.table.total.name;
+    var tablePath = getChildTablePath(parentTablePath, tableName);
+    
+    var tableDef = {
+        parentId: parentId,
+        tableName: tableName,
+        tablePath: tablePath,
+        title: 'Översikt per person',
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
@@ -101,20 +101,15 @@ function totalTableDef(tableTitle, tablePath){
             }
         },
         rowInserted: function(event, data){
-            if (data.record.user_role !== saron.formtype.edit){
-                data.row.find('.jtable-edit-command-button').hide();
-                data.row.find('.jtable-delete-command-button').hide();
-            }
+            alowedToUpdateOrDelete(event, data, tableDef);
             addDialogDeleteListener(data);            
         }
     };
+    if(tableTitle !== null)
+        tableDef.title = tableTitle;
+    
+    return tableDef;
 }
     
-
-    var deleteButtons = document.getElementsByClassName('jtable-delete-command-button');
-    for(var i=0; i<deleteButtons.length; i++){
-        deleteButtons[i].addEventListener("click", deleteButtonClicked(this),false);
-        deleteButtons[i].attr('onclick', 'deleteButtonClicked(this);');
-    }
 
     

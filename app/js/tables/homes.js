@@ -6,7 +6,7 @@ RECORD, OPTIONS
 
 $(document).ready(function () {
     var tablePlaceHolder = $(saron.table.homes.nameId);
-    var table = homeTableDef(null, saron.table.homes.name);
+    var table = homeTableDef(null, null, null);
     table.paging = true;
     tablePlaceHolder.jtable(table);
     var options = getPostData(null, saron.table.homes.name, null, saron.table.homes.name, saron.source.list, saron.responsetype.records);
@@ -30,14 +30,15 @@ function filterHomes(viewId, reload, tableName){
 }
 
 
-function homeTableDef(tableTitle, tablePath){
-    var title = 'Hem';
-    if(tableTitle !== null)
-        title = tableTitle;
+function homeTableDef(tableTitle, parentTablePath, parentId){
+    var tableName = saron.table.homes.name;
+    var tablePath = getChildTablePath(parentTablePath, tableName);
     
-    return {
-        appCanvasName: saron.table.homes.name,
-        title:title,
+    var tableDef = {
+        parentId: parentId,
+        tableName: tableName,
+        tablePath: tablePath,
+        title: 'Hem',
         showCloseButton: false,        
         paging: false,
         pageList: 'minimal',
@@ -138,10 +139,7 @@ function homeTableDef(tableTitle, tablePath){
             }
         },
         rowInserted: function(event, data){
-            if (data.record.user_role !== saron.userrole.editor){
-                data.row.find('.jtable-edit-command-button').hide();
-                data.row.find('.jtable-delete-command-button').hide();
-            }
+            alowedToUpdateOrDelete(event, data, tableDef);
         },        
         formCreated: function (event, data){
             data.row[0].style.backgroundColor = "yellow";
@@ -164,8 +162,31 @@ function homeTableDef(tableTitle, tablePath){
         }
 
     };
+    if(tableTitle !== null)
+        tableDef.title = tableTitle;
+    
+    configHomesTableDef(tableDef);
+    
+    return tableDef;
 }
 
+function configHomesTableDef(tableDef){
+
+    var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
+
+    if(tablePathRoot === saron.table.homes.name){
+    }
+    else if(tablePathRoot === saron.table.unitlist.name || tablePathRoot === saron.table.unittype.name || tablePathRoot === saron.table.role.name){ 
+        //tableDef.fields.ParentTreeNode_FK.list = true; 
+        //tableDef.fields.OrgPath.list = true; NOT IMPLEMENTED YET
+        tableDef.fields.SubUnitEnabled.list = false;
+        tableDef.fields.Prefix.list = false;
+        tableDef.fields.Prefix.update = false;
+    }    
+    if(tablePathRoot === saron.table.statistics.name){
+        tableDef.actions.updateAction = null;
+    }
+}
 
 
 

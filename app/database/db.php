@@ -59,7 +59,7 @@ class db {
     public function delete($sqlDelete){
         if(!$listResult = $this->connection->query($sqlDelete)){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
-            $this->php_dev_error_log("delete", $sqlDelete);
+//            $this->php_dev_error_log("delete", $sqlDelete);
             throw new Exception($this->jsonErrorMessage("Exception in delete function", null, $technicalErrMsg));
         }
         else{

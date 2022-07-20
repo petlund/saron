@@ -158,12 +158,13 @@ class OrganizationUnitType extends SuperEntity{
     
     function insert(){
         $this->checkUnitTypeData();
-        $sqlInsert = "INSERT INTO Org_UnitType (Name, Description, PosEnabled, SubUnitEnabled, Updater) ";
+        $sqlInsert = "INSERT INTO Org_UnitType (Name, Description, PosEnabled, SubUnitEnabled, UpdaterName, Updater) ";
         $sqlInsert.= "VALUES (";
         $sqlInsert.= "'" . $this->name . "', ";
         $sqlInsert.= "'" . $this->description . "', ";
         $sqlInsert.= "'" . $this->posEnabled . "', ";
         $sqlInsert.= "'" . $this->subUnitEnabled . "', ";
+        $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "', ";
         $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
         
         $id = $this->db->insert($sqlInsert, "Org_UnitType", "Id");

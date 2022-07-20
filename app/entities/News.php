@@ -25,8 +25,28 @@ class News extends SuperEntity{
             return $result;
         }
     }
+    function checkNewData(){
+        $error = array();
+        $error["Result"] = "OK";
+        $error["Message"] = "";
+
+        if(strlen($this->information) < 5){
+            $error["Message"] = "Glöm inte att skriva ett meddelande om minst fem tecken!";
+        }
+        
+        if(strlen($error["Message"])>0){
+            $error["Result"] = "ERROR";
+            return json_encode($error);
+        }
+        
+        return true;
+    }
 
     function insert(){
+        $checkResult = $this->checkNewData();
+        if($checkResult!==true){
+            return $checkResult;
+        }
         $sqlInsert = "INSERT INTO News (information, severity, writer) ";
         $sqlInsert.= "VALUES (";
         $sqlInsert.= "'" . $this->information . "', ";
@@ -40,6 +60,10 @@ class News extends SuperEntity{
     
     
     function update(){
+        $checkResult = $this->checkNewData();
+        if($checkResult!==true){
+            return $checkResult;
+        }
         $update = "UPDATE News ";
         $set = "SET ";        
         $set.= "information='" . $this->information . "', ";        

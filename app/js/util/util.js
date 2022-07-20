@@ -311,18 +311,18 @@ function addDialogDeleteListener(data){
 }
 
 
-function filterPeople(viewId, reloaded, tableName){
+function filterPeople(appCanvasName, reloaded){
     if(reloaded)
         $('#searchString').val('');
 
     var options = {searchString: $('#searchString').val(), 
                     groupId: $('#groupId').val(), 
-                    TableViewId: viewId, 
-                    AppCanvasName: tableName, 
+                    AppCanvasName: appCanvasName, 
+                    AppCanvasPath: appCanvasName, 
                     ResultType: saron.responsetype.records
                 };
 
-    $('#' + viewId).jtable('load', options);
+    $('#' + appCanvasName).jtable('load', options);
 }
 
 
@@ -333,6 +333,7 @@ function includedIn(currentTableId, requiredTableId){
 
     return false;
 }
+
 
 
 
@@ -500,7 +501,7 @@ function getOptionsUrlParameters(data, appCanvasName, parentId, appCanvasPath, f
 
 function getImageTag(data, imgFile, title, childTableDef, type){
     var src = '"' + saron.root.images + imgFile + '" title="' + title + '"';
-    var imageTag = _setImageClass(data, childTableDef.appCanvasName, src, type);
+    var imageTag = _setImageClass(data, childTableDef.tableName, src, type);
     return $(imageTag);
 }
 

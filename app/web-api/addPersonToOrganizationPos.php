@@ -11,7 +11,7 @@ require_once SARON_ROOT . 'app/entities/OrganizationPos.php';
     try{
         $db = new db();
         $saronUser = new SaronUser($db);
-        $saronUser->hasValidSaronSession(REQUIRE_EDITOR_ROLE, REQUIRE_ORG_VIEWER_ROLE);
+        $saronUser->hasValidSaronSession(REQUIRE_VIEWER_ROLE, REQUIRE_ORG_VIEWER_ROLE);
         $org = new OrganizationPos($db, $saronUser);
         $db->transaction_begin();
         $result = $org->addPerson();

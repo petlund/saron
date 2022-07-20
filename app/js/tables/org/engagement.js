@@ -9,24 +9,27 @@ RECORD, OPTIONS
 $(document).ready(function () {
 
     var tablePlaceHolder = $(saron.table.engagement.nameId);
-    tablePlaceHolder.jtable(peopleEngagementTableDef(null, saron.table.engagement.name));
+    tablePlaceHolder.jtable(peopleEngagementTableDef(null, null, null));
     var postData = getPostData(null, saron.table.engagement.name, null, saron.table.engagement.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', postData);
-    tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
+
+    var addButton = tablePlaceHolder.find('.jtable-toolbar-item-add-record');
+    addButton.hide();
+
 });
 
 
 
-function peopleEngagementTableDef(tableTitle, tablePath){
-    var title = 'Ansvarsuppgifter per person';
-    if(tableTitle !== null)
-        title = tableTitle; 
-    
+function peopleEngagementTableDef(tableTitle, parentTablePath, parentId){
+    var tableName = saron.table.engagement.name;
+    var tablePath = getChildTablePath(parentTablePath, tableName);
 
-    return {
-        appCanvasName: saron.table.engagement.name,
+    var tableDef = {
+        parentId: parentId,
+        tableName: tableName,
+        tablePath: tablePath,
         showCloseButton: false,
-        title: title,
+        title: 'Ansvarsuppgifter per person',
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
@@ -56,7 +59,6 @@ function peopleEngagementTableDef(tableTitle, tablePath){
                     var imgFile = "";
                     var clientOnly = true;
                     var type = 0;
-                    var childTablePath = tablePath + "/" + saron.table.role.name;
                     
                     if(data.record.Engagement ===  null){
                         tooltip = 'Inga uppdrag';
@@ -67,20 +69,20 @@ function peopleEngagementTableDef(tableTitle, tablePath){
                         imgFile = "haspos.png";
                     }                    
 
-                    var childTableDef = engagementsTableDef(childTableTitle, childTablePath); // PersonId point to childtable unic id   
+                    var childTableDef = engagementsTableDef(childTableTitle, tablePath, data.record.Id);
+                    childTableDef.parentTableDef = tableDef;
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
                     var $imgClose = getImageCloseTag(data, childTableDef, type);
                         
                     $imgChild.click(data, function (event){
-                        event.data.record.ParentId = data.record.Id;
-                        _clickActionOpen(childTableDef, $imgChild, event.data, clientOnly);
+                        openChildTable(childTableDef, $imgChild, event.data, clientOnly);
                     });
 
                     $imgClose.click(data, function (event){
-                        _clickActionClose(childTableDef, $imgClose, event.data, clientOnly);
+                        closeChildTable(childTableDef, $imgClose, event.data, clientOnly);
                     });    
 
-                    return _getClickImg(data, childTableDef, $imgChild, $imgClose);
+                    return getClickImg(data, childTableDef, $imgChild, $imgClose);
 
                 }
             },
@@ -116,17 +118,12 @@ function peopleEngagementTableDef(tableTitle, tablePath){
             }
         },
         rowInserted: function(event, data){
-            if (data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org'){
-                data.row.find('.jtable-edit-command-button').hide();
-                data.row.find('.jtable-delete-command-button').hide();
-            }
+            alowedToUpdateOrDelete(event, data, tableDef);
             if(data.record.OrgRole_FK !==  null)
-                data.row.find('.jtable-delete-command-button').hide();
+                data.row.find('.jtable-delete-command-button').hide();        
         },        
         recordsLoaded: function(event, data) {
-            if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
-                $(saron.table.engagement.nameId).find('.jtable-toolbar-item-add-record').show();
-            }
+            alowedToAddRecords(event, data, tableDef);
         },        
         formCreated: function (event, data){
             if(data.formType === saron.formtype.edit)
@@ -140,21 +137,34 @@ function peopleEngagementTableDef(tableTitle, tablePath){
                 data.row[0].style.backgroundColor = '';
         }
     };  
+    if(tableTitle !== null)
+        tableDef.title = tableTitle;
+    
+    configEngagementsTableDef(tableDef);
+    
+    return tableDef;    
 }
 
 
+function configEngagementsTableDef(tableDef){
+    var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
 
-function engagementsTableDef(tableTitle, tablePath){
-    
-    var title = "Ansvarsuppgifter";
-    if(tableTitle !== null)
-        title = tableTitle; 
-    
+    if(tablePathRoot !== saron.table.engagement.name){
+        
+    }
+}
 
-    return {
-        appCanvasName: saron.table.engagements.name,
+
+function engagementsTableDef(tableTitle, parentTablePath, parentId){
+    var tableName = saron.table.engagements.name;
+    var tablePath = getChildTablePath(parentTablePath, tableName);
+
+    var tableDef = {
+        parentId: parentId,
+        tableName: tableName,
+        tablePath: tablePath,
         showCloseButton: false,
-        title: title,        
+        title: "Ansvarsuppgifter",        
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
@@ -164,7 +174,7 @@ function engagementsTableDef(tableTitle, tablePath){
         messages: {addNewRecord: 'Tilldela ett vakant uppdrag'},
         actions: {
             listAction:   saron.root.webapi + 'listOrganizationPos.php',
-            createAction: saron.root.webapi + 'addPersonToOrganizationPos.php',
+            createAction: saron.root.webapi + 'createOrganizationPos.php',
             updateAction: saron.root.webapi + 'updateOrganizationPos.php'
         },
         fields: {
@@ -176,14 +186,17 @@ function engagementsTableDef(tableTitle, tablePath){
                 options: function (data){
                     var url = saron.root.webapi + 'listOrganizationPos.php';
                     var field = "Id";
-                    var parentId = data.record.ParentId;
-                    var parameters = getOptionsUrlParameters(data, saron.table.engagements.name, data.record.ParentId, data.record.AppCanvasPath, field);
+                        var parameters = getOptionsUrlParameters(data, saron.table.engagements.name, parentId, tableDef.tablePath, field);
                     return  url + parameters;
                 }
             },
             AppCanvasName:{
                 type: 'hidden',
-                defaultValue: saron.table.engagements.name
+                defaultValue: tableName
+            },    
+            AppCanvasPath:{
+                type: 'hidden',
+                defaultValue: tablePath
             },    
             People_FK:{
                 type: 'hidden',
@@ -191,7 +204,7 @@ function engagementsTableDef(tableTitle, tablePath){
             },
             ParentId:{
                 type: 'hidden',
-                defaultValue: -1
+                defaultValue: parentId
             },
             OrgTree_FK:{
                 type: 'hidden'
@@ -206,7 +219,7 @@ function engagementsTableDef(tableTitle, tablePath){
                 options: function (data){
                     var url = saron.root.webapi + 'listOrganizationPosStatus.php';
                     var field = "OrgPosStatus_FK";
-                    var parameters = getOptionsUrlParameters(data, saron.table.engagement.name, data.record.ParentId, data.record.AppCanvasPath, field);
+                    var parameters = getOptionsUrlParameters(data, saron.table.engagement.name, parentId, tableDef.tablePath, field);
                     return  url + parameters;
                 }
             },            
@@ -233,32 +246,19 @@ function engagementsTableDef(tableTitle, tablePath){
             }            
         },
         recordUpdated: function(event, data){
-            updatePersonEngagementRecord(data.record.ParentId);
+            updateParentRow(event, data, tableDef);
+            
             if(data.record.OrgPosStatus_FK > 3){ // set vacancy
                 var childTable = event.target.closest('div.jtable-child-table-container');
                 $(childTable).jtable("deleteRecord",{key: data.record.Id, clientOnly:true, animationsEnabled:true});
             }
         },
-        recordAdded(event, data){
-            updatePersonEngagementRecord(data.record.ParentId);            
-        },
-        recordsLoaded: function(event, data) {
-            if(!data.records[0].AppCanvasPath.includes(saron.table.people.name)){
-                if(data.serverResponse.user_role === saron.userrole.editor || data.serverResponse.user_role === 'org'){ 
-                    $(saron.table.engagements.nameId).find('.jtable-toolbar-item-add-record').show();
-                }
-            }
-            else{
-                $(saron.table.engagements.nameId).find('.jtable-toolbar-item-add-record').hide();
-            }
+        recordsLoaded: function(event, data) {            
+            updateParentRow(event, data, tableDef);
+            alowedToAddRecords(event, data, tableDef);
         },        
         rowInserted: function(event, data){
-            data.row.find('.jtable-delete-command-button').hide();
-            if ((data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org') 
-                    || 
-                    data.record.AppCanvasPath.includes(saron.table.people.name)){
-                data.row.find('.jtable-edit-command-button').hide();
-            }
+            alowedToUpdateOrDelete(event, data, tableDef);
             addDialogDeleteListener(data);            
         },        
         formCreated: function (event, data){
@@ -274,13 +274,37 @@ function engagementsTableDef(tableTitle, tablePath){
                 data.row[0].style.backgroundColor = '';
         },
     };    
+    if(tableTitle !== null)
+        tableDef.title = tableTitle;
+    
+    configEngagementstTableDef(tableDef);
+    
+    return tableDef;    
+}
+
+
+function configEngagementstTableDef(tableDef){
+    var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
+
+    if(tablePathRoot === saron.table.statistics.name){
+        tableDef.actions.updateAction  = null;
+        tableDef.actions.createAction  = null;        
+    }
 }
 
 
 
-function updatePersonEngagementRecord(Id){
-    var url = saron.root.webapi + 'listEngagement.php';
-    var options = {record:{"Id": Id}, "clientOnly": false, "url":url};
-    $(saron.table.engagement.nameId).jtable('updateRecord', options);
+function updateParentRow(event, data, tableDef){
+    var parentTableName = tableDef.parentTableDef.tableName;
+    var parentTablePath = tableDef.parentTableDef.tablePath;
+    var parentListUrl = tableDef.parentTableDef.actions.listAction;
+    var parentPostData = getPostData(tableDef.parentId, parentTableName, null, parentTablePath, null, saron.responsetype.record);
+
+    var parentPlaceHolder = getParentTablePlaceHolderFromChild(event.target, tableDef.tablePath);
+    var record = parentPostData;
+    record.OpenChildTable = tableDef.tableName;
+    
+    var options = {record, "clientOnly": false, "url":parentListUrl};
+    parentPlaceHolder.jtable('updateRecord', options);
 }
 

@@ -7,23 +7,23 @@ saron.table.baptist.nameId, saron.table.baptist.name
 
 $(document).ready(function () {
     var tablePlaceHolder = $(saron.table.baptist.nameId);
-    var table = baptistTableDef(null, saron.table.baptist.name);
-    table.paging = true;
+    var table = baptistTableDef(null, null, null);
     tablePlaceHolder.jtable(table);
     var options = getPostData(null, saron.table.baptist.name, null, saron.table.baptist.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
 });  
     
-function baptistTableDef(tableTitle, tablePath){
-    var title = 'Dopuppgifter';
-    if(tableTitle !== null)
-        title = tableTitle;
-    
-    return {
-        appCanvasName: saron.table.baptist.name,
-        title:title,
+function baptistTableDef(tableTitle, parentTablePath, parentId){
+    var tableName = saron.table.baptist.name;
+    var tablePath = getChildTablePath(parentTablePath, tableName);
+
+    var tableDef = {
+        parentId: parentId,
+        tableName: tableName,
+        tablePath: tablePath,
+        title:'Dopuppgifter',
         showCloseButton: false,
-        paging: false,
+        paging: true,
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
         sorting: true, //Enable sorting
@@ -111,10 +111,7 @@ function baptistTableDef(tableTitle, tablePath){
             }
         },
         rowInserted: function(event, data){
-            if (data.record.user_role !== saron.userrole.editor){
-                data.row.find('.jtable-edit-command-button').hide();
-                data.row.find('.jtable-delete-command-button').hide();
-            }
+            alowedToUpdateOrDelete(event, data, tableDef);
         },        
         formCreated: function (event, data){
             data.row[0].style.backgroundColor = "yellow";
@@ -126,14 +123,35 @@ function baptistTableDef(tableTitle, tablePath){
 
             var dbox = document.getElementsByClassName('ui-dialog-title');            
             for(var i=0; i<dbox.length; i++)
-                dbox[i].innerHTML='Uppdatera uppgifter för: ' + data.record.FirstName + ' ' + data.record.LastName;
+                dbox[0].innerHTML='Uppdatera uppgifter för: ' + data.record.FirstName + ' ' + data.record.LastName;
         },
         formClosed: function (event, data){
             data.row[0].style.backgroundColor = '';
         }
     };
-};
 
+    if(tableTitle !== null)
+        tableDef.title = tableTitle;
+    
+    configBaptistTableDef(tableDef);
+    
+    return tableDef;    
+}
+
+
+function configBaptistTableDef(tableDef){
+    var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
+
+    if(tablePathRoot !== saron.table.baptist.name){
+        tableDef.fields.Name.list = false;
+        tableDef.fields.DateOfBirth.list = false;
+        tableDef.fields.MemberState.list = false;        
+        tableDef.paging = false;
+    }    
+    if(tablePathRoot === saron.table.statistics.name){
+        tableDef.actions.updateAction = null;
+    }
+}
 
                                 
     
