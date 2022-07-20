@@ -23,7 +23,7 @@ $(document).ready(function () {
     tablePlaceHolder.jtable('load', options);
 });
 
-function peopleTableDef(tableTitle, parentTablePath, parentId) {
+function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
     var tableName = saron.table.people.name;
     var tablePath = getChildTablePath(parentTablePath, tableName);
 

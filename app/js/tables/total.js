@@ -14,7 +14,7 @@ $(document).ready(function () {
 
 });
 
-function totalTableDef(tableTitle, parentTablePath, parentId){
+function totalTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
     var tableName = saron.table.total.name;
     var tablePath = getChildTablePath(parentTablePath, tableName);
     

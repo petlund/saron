@@ -21,7 +21,7 @@ $(document).ready(function () {
 });
 
 
-function posTableDef(tableTitle, parentTablePath, parentId){
+function posTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
     var tableName = saron.table.pos.name;
     var tablePath = getChildTablePath(parentTablePath, tableName);
     

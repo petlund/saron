@@ -13,7 +13,7 @@ $(document).ready(function () {
     tablePlaceHolder.jtable('load', options);
 });  
 
-function memberTableDef(tableTitle, parentTablePath, parentId){
+function memberTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
     var tableName = saron.table.member.name;
     var tablePath = getChildTablePath(parentTablePath, tableName);
 

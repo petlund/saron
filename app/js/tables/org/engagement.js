@@ -20,7 +20,7 @@ $(document).ready(function () {
 
 
 
-function peopleEngagementTableDef(tableTitle, parentTablePath, parentId){
+function peopleEngagementTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
     var tableName = saron.table.engagement.name;
     var tablePath = getChildTablePath(parentTablePath, tableName);
 
@@ -155,7 +155,7 @@ function configEngagementsTableDef(tableDef){
 }
 
 
-function engagementsTableDef(tableTitle, parentTablePath, parentId){
+function engagementsTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
     var tableName = saron.table.engagements.name;
     var tablePath = getChildTablePath(parentTablePath, tableName);
 

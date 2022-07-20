@@ -10,7 +10,7 @@ $(document).ready(function () {
 });
 
 
-function newsTableDef(tableTitle, parentTablePath, parentId){
+function newsTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
     var tableName = saron.table.news.name;
     var tablePath = getChildTablePath(parentTablePath, tableName);
 

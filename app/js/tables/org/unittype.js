@@ -20,7 +20,7 @@ $(document).ready(function () {
 });
 
 
-function unitTypeTableDef(tableTitle, parentTablePath, parentId){
+function unitTypeTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
     var tableName = saron.table.unittype.name;
     var tablePath = getChildTablePath(parentTablePath, tableName);
     

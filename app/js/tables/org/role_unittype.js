@@ -7,7 +7,7 @@ saron
  
 "use strict";
 
-function role_role_unitType_TableDef(tableTitle, parentTablePath, parentId){
+function role_role_unitType_TableDef(tableTitle, parentTablePath, parentId, parentTableDef){
     var tableName = saron.table.role_unittype.name;
     var tablePath = getChildTablePath(parentTablePath, tableName, null);
 

@@ -13,7 +13,7 @@ $(document).ready(function () {
     tablePlaceHolder.jtable('load', postData);
 });  
 
-function keyTableDef(tableTitle, parentTablePath, parentId){
+function keyTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
     var tableName = saron.table.keys.name;
     var tablePath = getChildTablePath(parentTablePath, tableName);
 

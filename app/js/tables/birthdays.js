@@ -12,7 +12,7 @@ RECORD, OPTIONS
     });
     
 
-    function birthdayTableDef(tableTitle, parentTablePath, parentId) {
+    function birthdayTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
     var tableName = saron.table.birthday.name;
     var tablePath = getChildTablePath(parentTablePath, tableName);
 

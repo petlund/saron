@@ -6,7 +6,7 @@
     
 $(document).ready(function () {
     var tablePlaceHolder = $(saron.table.orgversion.nameId)
-    tablePlaceHolder.jtable(orgVersionTableDef(null, saron.table.orgversion.name));
+    tablePlaceHolder.jtable(orgVersionTableDef(null, saron.table.orgversion.name, null));
 
     var addButton = tablePlaceHolder.find('.jtable-toolbar-item-add-record');
     addButton.hide();
@@ -15,7 +15,7 @@ $(document).ready(function () {
 });
 
 
-function orgVersionTableDef(tableTitle, tablePath){
+function orgVersionTableDef(tableTitle, tablePath, parentId, parentTableDef){
     return {
         title: 'Beslutslog över organisatationsförändringar',
         paging: true, //Enable paging

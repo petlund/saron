@@ -8,7 +8,7 @@ POS_ENABLED
     
 "use strict";    
 
-function unitTableDef(tableTitle, parentTablePath, parentId){
+function unitTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
     var tableName = saron.table.unit.name;
     var tablePath = getChildTablePath(parentTablePath, tableName);
 

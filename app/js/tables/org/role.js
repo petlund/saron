@@ -20,7 +20,7 @@ $(document).ready(function () {
 
 
 
-function roleTableDef(tableTitle, parentTablePath, parentId){
+function roleTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
     var tableName = saron.table.role.name;
     var tablePath = getChildTablePath(parentTablePath, tableName);
 

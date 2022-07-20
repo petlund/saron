@@ -30,7 +30,7 @@ function filterHomes(viewId, reload, tableName){
 }
 
 
-function homeTableDef(tableTitle, parentTablePath, parentId){
+function homeTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
     var tableName = saron.table.homes.name;
     var tablePath = getChildTablePath(parentTablePath, tableName);
     

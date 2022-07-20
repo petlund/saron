@@ -13,7 +13,7 @@ $(document).ready(function () {
     tablePlaceHolder.jtable('load', options);
 });  
     
-function baptistTableDef(tableTitle, parentTablePath, parentId){
+function baptistTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
     var tableName = saron.table.baptist.name;
     var tablePath = getChildTablePath(parentTablePath, tableName);
 

@@ -12,7 +12,7 @@ $(document).ready(function () {
 
 
 
-function memberstateTableDef(tableTitle, parentTablePath, parentId){
+function memberstateTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
     var tableName = saron.table.org_member_state.name;
     var tablePath = getChildTablePath(parentTablePath, tableName);
 

@@ -18,7 +18,7 @@ $(document).ready(function () {
     }
 );
 
-function statusTableDef(tableTitle, tablePath){
+function statusTableDef(tableTitle, tablePath, parentId, parentTableDef){
     return {
         title: 'Status',
         paging: true, //Enable paging

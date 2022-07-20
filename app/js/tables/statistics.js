@@ -19,7 +19,7 @@ $(document).ready(function () {
     tablePlaceHolder.jtable('load', options);
 });
 
-function statisticTableDef(tableTitle, parentTablePath, parentId){
+function statisticTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
     var tableName = saron.table.statistics.name;
     var tablePath = getChildTablePath(parentTablePath, tableName);
 
@@ -182,7 +182,7 @@ function configStatisticTableDef(tableDef){
 }
 
 
-function statisticsDetailTableDef(tableTitle, parentTablePath, parentId){
+function statisticsDetailTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
     var tableName = saron.table.statistics_detail.name;
     var tablePath = getChildTablePath(parentTablePath, tableName);
 
