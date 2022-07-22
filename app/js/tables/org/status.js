@@ -14,7 +14,8 @@ $(document).ready(function () {
     var addButton = tablePlaceHolder.find('.jtable-toolbar-item-add-record');
     addButton.hide();
 
-    $(saron.table.org_role_status.nameId).jtable('load');
+    var postData = getPostData(null, saron.table.org_role_status.name, null, saron.table.org_role_status.name, saron.source.list, saron.responsetype.records);
+    $(saron.table.org_role_status.nameId).jtable('load', postData);
     }
 );
 

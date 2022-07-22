@@ -10,12 +10,12 @@ saron
 $(document).ready(function () {
     var tablePlaceHolder = $(saron.table.role.nameId);
     tablePlaceHolder.jtable(roleTableDef(null, null, null, null));
-    var postData = getPostData(null, saron.table.role.name, null, saron.table.role.name, saron.source.list, saron.responsetype.records);
-    tablePlaceHolder.jtable('load', postData);
 
     var addButton = tablePlaceHolder.find('.jtable-toolbar-item-add-record');
     addButton.hide();
-
+    
+    var postData = getPostData(null, saron.table.role.name, null, saron.table.role.name, saron.source.list, saron.responsetype.records);
+    tablePlaceHolder.jtable('load', postData);
 });
 
 
@@ -86,7 +86,7 @@ function roleTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                         tooltip = "Organisatoriska enheter";
                     }
 
-                    var childTableDef = unitTableDef(childTableTitle, tablePath, data.record.Id, childTableDef); // PersonId point to childtable unic id   
+                    var childTableDef = unitTableDef(childTableTitle, tablePath, data.record.Id, tableDef); // PersonId point to childtable unic id   
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
                     var $imgClose = getImageCloseTag(data, childTableDef, type);
 
@@ -125,7 +125,7 @@ function roleTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                         imgFile = "used_unittype.png";
                         tooltip = "Organisatoriska enhetstyper";
                     }
-                    var childTableDef = role_role_unitType_TableDef(childTableTitle, tablePath, data.record.Id, childTableDef);  
+                    var childTableDef = role_role_unitType_TableDef(childTableTitle, tablePath, data.record.Id, tableDef);  
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableName, type);
                     var $imgClose = getImageCloseTag(data, childTableName, type);
 

@@ -12,11 +12,12 @@ $(document).ready(function () {
     var table = posTableDef(null, saron.table.pos.name, null, null);
     table.defaultSorting = "OrgTree_FK, SortOrder";
     tablePlaceHolder.jtable(table);
-    var postData = getPostData(null, saron.table.pos.name, null, saron.table.pos.name, saron.source.list, saron.responsetype.records);
-    tablePlaceHolder.jtable('load', postData);
 
     var addButton = tablePlaceHolder.find('.jtable-toolbar-item-add-record');
     addButton.hide();
+
+    var postData = getPostData(null, saron.table.pos.name, null, saron.table.pos.name, saron.source.list, saron.responsetype.records);
+    tablePlaceHolder.jtable('load', postData);
 
 });
 

@@ -36,8 +36,7 @@ function openChildTable(childTableDef, img, data, clientOnly){
 
         callBackData.childTable.jtable('load', postData, function(childData){
         });
-        
-        _updateAfterClickAction(tablePlaceHolder, data, childTableName, childTableDef.actions.listAction, clientOnly);            
+        _updateAfterOpenCloseAction(tablePlaceHolder, childTableDef.parentTableDef, data, childTableName, clientOnly);            
     });
 }
 
@@ -51,18 +50,18 @@ function closeChildTable(childTableDef, img, data, clientOnly){
     $(tablePlaceHolder).jtable('closeChildTable', tr, function(callBackData){
         var openChild = false;
     
-        _updateAfterClickAction(tablePlaceHolder, data, openChild, childTableDef.actions.listAction, clientOnly);
+        _updateAfterOpenCloseAction(tablePlaceHolder, childTableDef.parentTableDef, data, openChild, clientOnly);
     });
 }
 
 
 
-function _updateAfterClickAction(tablePlaceHolder, data, openChild, url, clientOnly){
-    var options = {url:url, clientOnly:clientOnly, animationsEnabled:false};
-    options.record = {Id: data.record.Id, OpenChildTable: openChild}; 
+function _updateAfterOpenCloseAction(tablePlaceHolder, tableDef, data, openChild, clientOnly){
+    var options = {url:tableDef.actions.listAction, clientOnly:clientOnly, animationsEnabled:false};
+    options.record = getPostData(data.record.Id, tableDef.tableName, null, tableDef.tablePath, saron.source.list, saron.responsetype.record);
+    options.record.OpenChildTable = openChild; 
 
-    if(tablePlaceHolder !== null)
-        $(tablePlaceHolder).jtable('updateRecord', options); //update icon
+    $(tablePlaceHolder).jtable('updateRecord', options); //update icon
 }
 
 
@@ -89,6 +88,21 @@ function getParentTablePlaceHolderFromChild(childPlaceHolder, appCanvasPath){
     return placeHolder;   
 }
 
+
+
+function updateParentRow(event, data, tableDef){
+    var parentTableName = tableDef.parentTableDef.tableName;
+    var parentTablePath = tableDef.parentTableDef.tablePath;
+    var parentListUrl = tableDef.parentTableDef.actions.listAction;
+    var parentPostData = getPostData(tableDef.parentId, parentTableName, null, parentTablePath, null, saron.responsetype.record);
+
+    var parentPlaceHolder = getParentTablePlaceHolderFromChild(event.target, tableDef.tablePath);
+    var record = parentPostData;
+    record.OpenChildTable = tableDef.tableName;
+    
+    var options = {record, "clientOnly": false, "url":parentListUrl};
+    parentPlaceHolder.jtable('updateRecord', options);
+}
 
 
 function getChildTablePath(parentTablePath, childTableName){

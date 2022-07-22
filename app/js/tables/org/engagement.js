@@ -10,11 +10,13 @@ $(document).ready(function () {
 
     var tablePlaceHolder = $(saron.table.engagement.nameId);
     tablePlaceHolder.jtable(peopleEngagementTableDef(null, null, null, null));
+    
+    var addButton = tablePlaceHolder.find('.jtable-toolbar-item-add-record');
+    addButton.hide();
+
     var postData = getPostData(null, saron.table.engagement.name, null, saron.table.engagement.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', postData);
 
-    var addButton = tablePlaceHolder.find('.jtable-toolbar-item-add-record');
-    addButton.hide();
 
 });
 
@@ -70,7 +72,7 @@ function peopleEngagementTableDef(tableTitle, parentTablePath, parentId, parentT
                         imgFile = "haspos.png";
                     }                    
 
-                    var childTableDef = engagementsTableDef(childTableTitle, tablePath, data.record.Id, childTableDef);
+                    var childTableDef = engagementsTableDef(childTableTitle, tablePath, data.record.Id, tableDef);
                     childTableDef.parentTableDef = tableDef;
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
                     var $imgClose = getImageCloseTag(data, childTableDef, type);
@@ -274,7 +276,7 @@ function engagementsTableDef(tableTitle, parentTablePath, parentId, parentTableD
         formClosed: function (event, data){
             if(data.formType === saron.formtype.edit)
                 data.row[0].style.backgroundColor = '';
-        },
+        }
     };    
     if(tableTitle !== null)
         tableDef.title = tableTitle;
@@ -296,17 +298,4 @@ function configEngagementstTableDef(tableDef){
 
 
 
-function updateParentRow(event, data, tableDef){
-    var parentTableName = tableDef.parentTableDef.tableName;
-    var parentTablePath = tableDef.parentTableDef.tablePath;
-    var parentListUrl = tableDef.parentTableDef.actions.listAction;
-    var parentPostData = getPostData(tableDef.parentId, parentTableName, null, parentTablePath, null, saron.responsetype.record);
-
-    var parentPlaceHolder = getParentTablePlaceHolderFromChild(event.target, tableDef.tablePath);
-    var record = parentPostData;
-    record.OpenChildTable = tableDef.tableName;
-    
-    var options = {record, "clientOnly": false, "url":parentListUrl};
-    parentPlaceHolder.jtable('updateRecord', options);
-}
 

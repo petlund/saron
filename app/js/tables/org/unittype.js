@@ -12,11 +12,13 @@ RECORD, OPTIONS
 $(document).ready(function () {
     var tablePlaceHolder = $(saron.table.unittype.nameId);
     tablePlaceHolder.jtable(unitTypeTableDef(null, null, null, null));
-    var postData = getPostData(null, saron.table.unittype.name, null, saron.table.unittype.name, saron.source.list, saron.responsetype.records);
-    tablePlaceHolder.jtable('load', postData);
 
     var addButton = tablePlaceHolder.find('.jtable-toolbar-item-add-record');
     addButton.hide();    
+
+    var postData = getPostData(null, saron.table.unittype.name, null, saron.table.unittype.name, saron.source.list, saron.responsetype.records);
+    tablePlaceHolder.jtable('load', postData);
+
 });
 
 
@@ -76,7 +78,7 @@ function unitTypeTableDef(tableTitle, parentTablePath, parentId, parentTableDef)
                     var clientOnly = true;
                     
                     if(data.record.UsedInUnit ===  "1"){                        
-                        var childTableDef = unitTableDef(childTableTitle, tablePath, data.record.Id, childTableDef); // PersonId point to childtable unic id   
+                        var childTableDef = unitTableDef(childTableTitle, tablePath, data.record.Id, tableDef); // PersonId point to childtable unic id   
                         var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
                         var $imgClose = getImageCloseTag(data, childTableDef, type);
 
@@ -118,7 +120,7 @@ function unitTypeTableDef(tableTitle, parentTablePath, parentId, parentTableDef)
                             tooltip = "Enhetstypen har roller";
                         }
                         
-                        var childTableDef = role_role_unitType_TableDef(childTableTitle, tablePath, data.record.Id, childTableDef);    
+                        var childTableDef = role_role_unitType_TableDef(childTableTitle, tablePath, data.record.Id, tableDef);    
                         var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
                         var $imgClose = getImageCloseTag(data, childTableDef, type);
 

@@ -8,7 +8,7 @@ $(document).ready(function () {
 
     
     var url = {url: saron.root.webapi + 'listStatistics.php'};
-    var postData = getPostData(null, saron.list.email.name, null, saron.graph.timeseries.name, saron.source.list, saron.responsetype.records);
+    var postData = getPostData(null, saron.list.email.name, null, saron.list.email.name, saron.source.list, saron.responsetype.records);
     $.post(url, postData
     ).then(function(json) {    
         var data = JSON.parse(json);

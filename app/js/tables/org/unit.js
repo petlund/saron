@@ -88,7 +88,7 @@ function unitTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                             }
                         }
 
-                        var childTableDef = unitTableDef(childTableTitle, tablePath, data.record.Id, childTableDef); // PersonId point to childtable unic id   
+                        var childTableDef = unitTableDef(childTableTitle, tablePath, data.record.Id, tableDef); // PersonId point to childtable unic id   
                         var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
                         var $imgClose = getImageCloseTag(data, childTableDef, type);
 
@@ -97,7 +97,7 @@ function unitTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                         });
 
                         $imgClose.click(data, function (event){
-                            closeChildTable(childTableDef, $imgClose, event.data, clientOnly);
+                            closeChildTable(childTableDef, $imgClose, event.data, !clientOnly);
                         });    
 
                         return getClickImg(data, childTableDef, $imgChild, $imgClose);
@@ -142,7 +142,7 @@ function unitTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                             }
                         }
 
-                        var childTableDef = posTableDef(childTableTitle, tablePath, data.record.Id, childTableDef); // PersonId point to childtable unic id   
+                        var childTableDef = posTableDef(childTableTitle, tablePath, data.record.Id, tableDef); // PersonId point to childtable unic id   
 
                         var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
                         var $imgClose = getImageCloseTag(data, childTableDef, type);
@@ -152,7 +152,7 @@ function unitTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                         });
 
                         $imgClose.click(data, function (event){
-                            closeChildTable(childTableDef, $imgClose, event.data, clientOnly);
+                            closeChildTable(childTableDef, $imgClose, event.data, !clientOnly);
                         });    
 
                         return getClickImg(data, childTableDef, $imgChild, $imgClose);

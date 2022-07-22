@@ -6,8 +6,12 @@ DATE_FORMAT
 $(document).ready(function () {
     var tablePlaceHolder = $(saron.table.news.nameId);
     tablePlaceHolder.jtable(newsTableDef(null, saron.table.news.name, null, null));
-    tablePlaceHolder.find('.jtable-toolbar-item-add-record').hide();
-    tablePlaceHolder.jtable('load');
+    
+    var addButton = tablePlaceHolder.find('.jtable-toolbar-item-add-record');
+    addButton.hide();
+    
+    var postData = getPostData(null, saron.table.news.name, null, saron.table.news.name, saron.source.list, saron.responsetype.records);
+    tablePlaceHolder.jtable('load', postData);
 });
 
 
@@ -72,11 +76,11 @@ function newsTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
             }
         },
         rowInserted: function(event, data){
-            alowedToUpdateOrDelete(event, data, tableDef)
+            alowedToUpdateOrDelete(event, data, tableDef);
             addDialogDeleteListener(data);
         },        
         recordsLoaded: function(event, data) {
-            alowedToAddRecords(event, data, tableDef)
+            alowedToAddRecords(event, data, tableDef);
         },        
         formCreated: function (event, data){
             if(data.formType === saron.formtype.edit)

@@ -119,6 +119,16 @@ h3 {
   border-collapse: collapse;
 }
 
+.input-text-field-long {
+    width: 580px;
+}
+
+
+.input-text-field-short {
+    width: 250px;
+}
+
+
 .saronHtmlTable.row {
   padding-bottom: 8px;  
   padding-top: 8px;  

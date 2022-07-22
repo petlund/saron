@@ -5,9 +5,10 @@ saron
 "use strict";
 
 $(document).ready(function () {
-    tablePlaceHolder = $(saron.table.users.nameId);
+    var tablePlaceHolder = $(saron.table.users.nameId);
     tablePlaceHolder.jtable(usersTableDef(null, saron.table.users.name, null, null));
-    tablePlaceHolder.jtable('load');
+    var postData = getPostData(null, saron.table.users.name, null, saron.table.users.name, saron.source.list, saron.responsetype.records);
+    tablePlaceHolder.jtable('load', postData);
 });
         
 function usersTableDef(tableTitle, tablePath, parentId, parentTableDef){

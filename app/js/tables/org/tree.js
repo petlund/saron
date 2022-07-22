@@ -9,11 +9,11 @@ $(document).ready(function () {
     var table = unitTableDef(null, saron.table.unittree.name, null, null);
     table.defaultSorting = "Prefix, Name";
     tablePlaceHolder.jtable(table);
-    var options = getPostData(null, saron.table.unittree.name, null, saron.table.unittree.name, saron.source.list, saron.responsetype.records);
     
     var addButton = tablePlaceHolder.find('.jtable-toolbar-item-add-record');
     addButton.hide();
 
+    var options = getPostData(null, saron.table.unittree.name, null, saron.table.unittree.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
 });
 

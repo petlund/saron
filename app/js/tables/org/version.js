@@ -11,7 +11,8 @@ $(document).ready(function () {
     var addButton = tablePlaceHolder.find('.jtable-toolbar-item-add-record');
     addButton.hide();
     
-    $(saron.table.orgversion.nameId).jtable('load');
+    var postData = getPostData(null, saron.table.orgversion.name, null, saron.table.orgversion.name, saron.source.list, saron.responsetype.records);
+    $(saron.table.orgversion.nameId).jtable('load', postData);
 });
 
 
