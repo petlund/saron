@@ -21,7 +21,7 @@ header("Cache-Control: no-cache, must-revalidate");
             <tr class='saronSmallText saronFilter'>
                 <td class="saronFilter">
                     Söksträng:
-                    <input type="text" name="searchString" id="searchString" oninput="filterPeople('<?php echo getAppCanvasName(); ECHO '\', false, \'';?>');"/>
+                    <input type="text" name="searchString" id="searchString" oninput="filter('<?php echo getAppCanvasName(); ECHO '\', false, \'';?>');"/>
                 </TD>
         </table>
         <div id="<?php echo getAppCanvasName();?>"></div>

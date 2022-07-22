@@ -14,22 +14,6 @@ $(document).ready(function () {
 });
 
 
-
-function filterHomes(viewId, reload, tableName){
-    if(reload)
-        $('#searchString').val('');
-
-    var options = {searchString: $('#searchString').val(), 
-                    groupId: $('#groupId').val(), 
-                    TableViewId: saron.table.homes.nameId, 
-                    AppCanvasName: saron.table.homes.name,
-                    ResultType: saron.responsetype.records
-                };
-            
-    $(saron.table.homes.nameId).jtable('load', options);
-}
-
-
 function homeTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
     var tableName = saron.table.homes.name;
     var tablePath = getChildTablePath(parentTablePath, tableName);

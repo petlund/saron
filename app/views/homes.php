@@ -25,7 +25,7 @@ require_once SARON_ROOT . "app/util/AppCanvasName.php";
                 <td   class="saronFilter">
                     <form class="forms" id="mainfilter">
                         Grupp:          
-                        <select id="groupId" name="groupId" onchange="filterHomes('<?php echo getAppCanvasName(); ECHO '\', false, \'' . TABLE_NAME_HOMES;?>');" >
+                        <select id="groupId" name="groupId" onchange="filter('<?php echo getAppCanvasName(); ECHO '\', false, \'' . TABLE_NAME_HOMES;?>');" >
                             <option selected="selected" value="0">Alla hem</option>
                             <option value="1">Hem utan mail- och mobiluppgifter</option>
                             <option value="2">Hem med brevutskick</option>
@@ -34,7 +34,7 @@ require_once SARON_ROOT . "app/util/AppCanvasName.php";
                 </td>
                 <td   class="saronFilter">
                     Söksträng:
-                    <input type="text" name="searchString" id="searchString" oninput="filterHomes('<?php echo getAppCanvasName();?>');"/>
+                    <input type="text" name="searchString" id="searchString" oninput="filter('<?php echo getAppCanvasName();?>');"/>
                 </td>
             </tr>
         </table>    

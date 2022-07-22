@@ -311,7 +311,7 @@ function addDialogDeleteListener(data){
 }
 
 
-function filterPeople(appCanvasName, reloaded){
+function filter(appCanvasName, reloaded){
     if(reloaded)
         $('#searchString').val('');
 
@@ -324,7 +324,6 @@ function filterPeople(appCanvasName, reloaded){
 
     $('#' + appCanvasName).jtable('load', options);
 }
-
 
 
 function includedIn(currentTableId, requiredTableId){
