@@ -258,7 +258,7 @@ function engagementsTableDef(tableTitle, parentTablePath, parentId, parentTableD
             }
         },
         recordsLoaded: function(event, data) {            
-            updateParentRow(event, data, tableDef);
+            updateParentRow(event, data, tableDef); //after insert
             alowedToAddRecords(event, data, tableDef);
         },        
         rowInserted: function(event, data){
