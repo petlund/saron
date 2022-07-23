@@ -100,7 +100,7 @@ function updateParentRow(event, data, tableDef){
     var record = parentPostData;
     record.OpenChildTable = tableDef.tableName;
     
-    var options = {record, "clientOnly": false, "url":parentListUrl};
+    var options = {record, "clientOnly": false, "url":parentListUrl, animationsEnabled:false};
     parentPlaceHolder.jtable('updateRecord', options);
 }
 
