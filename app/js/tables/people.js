@@ -534,8 +534,6 @@ function configUnitTableDef(tableDef){
             || tablePathRoot === saron.table.unittype.name 
             || tablePathRoot === saron.table.role.name 
             || tablePathRoot === saron.table.statistics.name){ 
-        //tableDef.fields.ParentTreeNode_FK.list = true; 
-        //tableDef.fields.OrgPath.list = true; NOT IMPLEMENTED YET
         tableDef.actions.updateAction  = null;
         tableDef.actions.createAction  = null;
     }    

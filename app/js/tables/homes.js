@@ -7,7 +7,6 @@ RECORD, OPTIONS
 $(document).ready(function () {
     var tablePlaceHolder = $(saron.table.homes.nameId);
     var table = homeTableDef(null, null, null, null);
-    table.paging = true;
     tablePlaceHolder.jtable(table);
     var options = getPostData(null, saron.table.homes.name, null, saron.table.homes.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', options);
@@ -25,7 +24,7 @@ function homeTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
         parentTableDef: parentTableDef,
         title: 'Hem',
         showCloseButton: false,        
-        paging: false,
+        paging: true,
         pageList: 'minimal',
         sorting: true, //Enable sorting
         multiSorting: true,
@@ -161,12 +160,9 @@ function configHomesTableDef(tableDef){
 
     if(tablePathRoot === saron.table.homes.name){
     }
-    else if(tablePathRoot === saron.table.unitlist.name || tablePathRoot === saron.table.unittype.name || tablePathRoot === saron.table.role.name){ 
-        //tableDef.fields.ParentTreeNode_FK.list = true; 
-        //tableDef.fields.OrgPath.list = true; NOT IMPLEMENTED YET
-        tableDef.fields.SubUnitEnabled.list = false;
-        tableDef.fields.Prefix.list = false;
-        tableDef.fields.Prefix.update = false;
+    else{ 
+        tableDef.paging = false;
+        tableDef.sorting = false;
     }    
     if(tablePathRoot === saron.table.statistics.name){
         tableDef.actions.updateAction = null;
