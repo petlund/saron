@@ -141,6 +141,7 @@ function configKeysTableDef(tableDef){
         tableDef.fields.DateOfBirth.list = false;
         tableDef.fields.MemberState.list = false;        
         tableDef.paging = false;
+        tableDef.sorting = false;
     }    
     if(appCanvasRoot === saron.table.statistics.name){
         tableDef.actions.updateAction = null;
