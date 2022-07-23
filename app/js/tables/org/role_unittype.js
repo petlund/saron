@@ -154,9 +154,9 @@ function configRole_UnitTypeTableDef(tableDef){
         tableDef.fields.OrgRole_FK.list = false;
         tableDef.fields.SortOrder.list = false;
         tableDef.fields.SortOrder.create = false;
-        tableDef.fields.SortOrder.edit = false;
         tableDef.fields.OrgRole_FK.create = false;
         tableDef.messages =  {addNewRecord: 'Koppla enhetstyp till rollen'};
+        tableDef.actions.updateAction = null;
     }    
 }
 
