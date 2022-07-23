@@ -83,11 +83,11 @@ function unitTypeTableDef(tableTitle, parentTablePath, parentId, parentTableDef)
                         var $imgClose = getImageCloseTag(data, childTableDef, type);
 
                         $imgChild.click(data, function (event){
-                            openChildTable(childTableDef, $imgChild, event.data, url.data, clientOnly);
+                            openChildTable(childTableDef, $imgChild, event.data, clientOnly);
                         });
 
                         $imgClose.click(data, function (event){
-                            closeChildTable(childTableDef, $imgClose, event.data, url, clientOnly);
+                            closeChildTable(childTableDef, $imgClose, event.data, clientOnly);
                         });    
 
                         return getClickImg(data, childTableDef, $imgChild, $imgClose);
