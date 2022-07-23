@@ -77,29 +77,25 @@ function roleTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                     var type = 0;
                     var clientOnly = false;
 
-                    if(data.record.UsedInUnit === '0'){
-                        imgFile = "unit_empty.png";
-                        tooltip = "Inga organisatoriska enheter";
-                    }
-                    else{
+                    if(data.record.UsedInUnit !== '0'){
                         imgFile = "unit.png";
                         tooltip = "Organisatoriska enheter";
+
+                        var childTableDef = unitTableDef(childTableTitle, tablePath, data.record.Id, tableDef); // PersonId point to childtable unic id   
+                        var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
+                        var $imgClose = getImageCloseTag(data, childTableDef, type);
+
+                        $imgChild.click(data, function (event){
+                            openChildTable(childTableDef, $imgChild, event.data, clientOnly);
+                        });
+
+                        $imgClose.click(data, function (event){
+                            closeChildTable(childTableDef, $imgClose, event.data, clientOnly);
+                        });    
+
+                        return getClickImg(data, childTableDef, $imgChild, $imgClose);
                     }
-
-                    var childTableDef = unitTableDef(childTableTitle, tablePath, data.record.Id, tableDef); // PersonId point to childtable unic id   
-                    var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
-                    var $imgClose = getImageCloseTag(data, childTableDef, type);
-
-                    $imgChild.click(data, function (event){
-                        event.data.record.ParentId = data.record.Id;
-                        openChildTable(childTableDef, $imgChild, event.data, clientOnly);
-                    });
-
-                    $imgClose.click(data, function (event){
-                        closeChildTable(childTableDef, $imgClose, event.data, clientOnly);
-                    });    
-
-                    return getClickImg(data, childTableDef, $imgChild, $imgClose);
+                    return null;
                 }               
             },
             UsedInUnitType:{
