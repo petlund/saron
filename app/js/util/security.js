@@ -119,6 +119,16 @@ function alowedToUpdateOrDelete(event, data, tableDef){
             deleteButton.hide();           
         }
         break;
+    case saron.table.baptist.name:
+        if(isUserEditor(userRole)){ 
+            editButton.show();
+            deleteButton.show();
+        }
+        else{
+            editButton.hide();
+            deleteButton.hide();           
+        }
+        break;
     case saron.table.keys.name:
         if(isUserEditor(userRole)){ 
             editButton.show();
