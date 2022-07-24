@@ -251,6 +251,7 @@ function engagementsTableDef(tableTitle, parentTablePath, parentId, parentTableD
         },
         recordUpdated: function(event, data){
             updateParentRow(event, data, tableDef);
+            alowedToUpdateOrDelete(event, data, tableDef);
             
             if(data.record.OrgPosStatus_FK > 3){ // set vacancy
                 var childTable = event.target.closest('div.jtable-child-table-container');

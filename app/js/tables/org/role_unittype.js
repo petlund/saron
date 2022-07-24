@@ -9,7 +9,7 @@ saron
 
 function role_role_unitType_TableDef(tableTitle, parentTablePath, parentId, parentTableDef){
     var tableName = saron.table.role_unittype.name;
-    var tablePath = getChildTablePath(parentTablePath, tableName, null);
+    var tablePath = getChildTablePath(parentTablePath, tableName);
 
     var tableDef =  {
         parentId: parentId,
@@ -43,16 +43,48 @@ function role_role_unitType_TableDef(tableTitle, parentTablePath, parentId, pare
                 create: false
             },
             ParentId:{
-                defaultValue: -1,
+                defaultValue: parentId,
                 type: 'hidden'
             },
             AppCanvasName:{
                 type: 'hidden',
-                defaultValue: saron.table.role_unittype.name
+                defaultValue: tableName
             },
             AppCanvasPath:{
                 type: 'hidden',
-                defaultValue: saron.table.role_unittype.name
+                defaultValue: tablePath
+            },
+            Instances:{
+                title: 'Instanser',
+                width: '3%',
+                edit: false,
+                sorting: false,
+                create: false,
+                list: true,
+                display: function(data){
+                    var childTableTitle = 'Instansiserade positioner ';                            
+                    var tooltip = "Enhetstypen används inom följande organisatoriska enheter";
+                    var imgFile = "unit.png";
+                    var type = 0;
+                    var clientOnly = true;
+                    
+                    if(data.record.Amount !==  "0"){                        
+                        var childTableDef = posInstancesTableDef(childTableTitle, tablePath, data.record.Id, tableDef); // PersonId point to childtable unic id   
+                        var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
+                        var $imgClose = getImageCloseTag(data, childTableDef, type);
+
+                        $imgChild.click(data, function (event){
+                            openChildTable(childTableDef, $imgChild, event.data, clientOnly);
+                        });
+
+                        $imgClose.click(data, function (event){
+                            closeChildTable(childTableDef, $imgClose, event.data, clientOnly);
+                        });    
+
+                        return getClickImg(data, childTableDef, $imgChild, $imgClose);
+                    }
+                    return null;
+                },
             },
             OrgUnitType_FK: {
                 list: true, //config
@@ -82,6 +114,11 @@ function role_role_unitType_TableDef(tableTitle, parentTablePath, parentId, pare
                     return url + parameters;
                 }
             },
+            Amount: {
+                edit: false,
+                create: false,
+                title: 'Antal positioner'
+            },
             SortOrder: {
                 list: true,
                 edit: true,
@@ -109,10 +146,19 @@ function role_role_unitType_TableDef(tableTitle, parentTablePath, parentId, pare
             }
         },
         recordUpdated(event, data){
+            updateParentRow(event, data, tableDef);
+            alowedToUpdateOrDelete(event, data, tableDef);
+
+            if(data.record.Amount !== '0' )
+                data.row.find('.jtable-delete-command-button').hide();
+            
         },
         rowInserted: function(event, data){
             alowedToUpdateOrDelete(event, data, tableDef);
             addDialogDeleteListener(data);
+
+            if(data.record.Amount !== '0' )
+                data.row.find('.jtable-delete-command-button').hide();
             
         },        
         recordsLoaded: function(event, data) {
@@ -161,10 +207,66 @@ function configRole_UnitTypeTableDef(tableDef){
 }
 
 
+function posInstancesTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
+    var tableName = saron.table.posinstances.name;
+    var tablePath = getChildTablePath(parentTablePath, tableName);
+
+    var tableDef =  {
+        parentId: parentId,
+        tablePath: tablePath,
+        tableName: tableName,
+        parentTableDef: parentTableDef,
+        showCloseButton: false,
+        title: "Har följande positioner",
+        paging: true, //Enable paging
+        pageSize: 10, //Set page size (default: 10)
+        pageList: 'minimal',
+        sorting: true, //Enable sorting
+        multiSorting: true,
+        defaultSorting: "UnitTypeName",   
+        actions: {            
+            listAction:   saron.root.webapi + 'listOrganizationRole-UnitType.php'
+        },
+        fields: {
+            Id: {
+                key: true,
+                list: false,
+                edit: false,
+                create: false
+            },
+            UnitTypeName:{
+                title: 'Namn på enhetstypen'
+            },            
+            RoleName:{
+                title: 'Rollnamn'                
+            },            
+            UnitName:{
+                title: 'Enhhetsnamn'                
+            },            
+            Amount:{
+                title: 'Antal positioner'
+            }            
+        }
+    };
+    
+    if(tableTitle !== null)
+        tableDef.title = tableTitle;
+    
+    configPosInstancesTableDef(tableDef);
+    
+    return tableDef;
+}
 
 
+function configPosInstancesTableDef(tableDef){
+    var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
 
+    if(tablePathRoot === saron.table.unittype.name){ // && appCanvasLast === tableDef.appCanvasName
 
+    }
+    else if(tablePathRoot === saron.table.role.name ){ //&& appCanvasLast === tableDef.appCanvasName
+    }    
+}
 
 
 

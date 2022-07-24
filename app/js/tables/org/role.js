@@ -63,45 +63,10 @@ function roleTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 type: 'hidden',
                 defaultValue: saron.table.role.name
             },
-            UsedInUnit:{
-                width: '5%',
-                create: false,
-                title: "Används",
-                edit: false,
-                list: true,
-                sorting: false,
-                display: function(data){
-                    var childTableTitle = 'Rollen "' + data.record.Name + '" ingår i följande organisatoriska enheter';
-                    var tooltip = "";
-                    var imgFile = "";
-                    var type = 0;
-                    var clientOnly = false;
-
-                    if(data.record.UsedInUnit !== '0'){
-                        imgFile = "unit.png";
-                        tooltip = "Organisatoriska enheter";
-
-                        var childTableDef = unitTableDef(childTableTitle, tablePath, data.record.Id, tableDef); // PersonId point to childtable unic id   
-                        var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
-                        var $imgClose = getImageCloseTag(data, childTableDef, type);
-
-                        $imgChild.click(data, function (event){
-                            openChildTable(childTableDef, $imgChild, event.data, clientOnly);
-                        });
-
-                        $imgClose.click(data, function (event){
-                            closeChildTable(childTableDef, $imgClose, event.data, clientOnly);
-                        });    
-
-                        return getClickImg(data, childTableDef, $imgChild, $imgClose);
-                    }
-                    return null;
-                }               
-            },
             UsedInUnitType:{
                 width: '5%',
                 create: false,
-                title: "Ingår i",
+                title: "Enhetstyper",
                 edit: false,
                 list: true,
                 sorting: false,
@@ -126,7 +91,6 @@ function roleTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                     var $imgClose = getImageCloseTag(data, childTableName, type);
 
                     $imgChild.click(data, function (event){
-                        event.data.record.ParentId = data.record.Id;
                         openChildTable(childTableDef, $imgChild, event.data, clientOnly);
                     });
 
@@ -176,21 +140,16 @@ function roleTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
             }
         },
         recordUpdated(event, data){
-            if (data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org'){
-                data.row.find('.jtable-edit-command-button').hide();
+            alowedToUpdateOrDelete(event, data, tableDef);
+
+            if (data.record.UsedInUnitType !== '0')
                 data.row.find('.jtable-delete-command-button').hide();
-            }
-            else
-                if (data.record.HasChild === '0')
-                    data.row.find('.jtable-delete-command-button').show();
-                else
-                    data.row.find('.jtable-delete-command-button').hide();
             
         },
         rowInserted: function(event, data){
             alowedToUpdateOrDelete(event, data, tableDef);
 
-            if (data.record.PosOccurrency !== '0')
+            if (data.record.UsedInUnitType !== '0')
                 data.row.find('.jtable-delete-command-button').hide();
             
             addDialogDeleteListener(data);
@@ -224,4 +183,12 @@ function roleTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
 
 
 function configRoleTableDef(tableDef){
+
+    var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
+
+    if(tablePathRoot === saron.table.unittype.name){
+    }
+    else if(tablePathRoot === saron.table.unittype.name){ 
+        tableDef.actions.createAction = null;
+    }   
 }

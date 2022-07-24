@@ -292,7 +292,15 @@ function configPosTableDef(tableDef){
     } 
     else{
         tableDef.defaultSorting = 'SortOrder';        
-        tableDef.fields.OrgTree_FK.list = false;
+        if(tablePathRoot !== saron.table.role.name) 
+            tableDef.fields.OrgTree_FK.list = false;
+    
+        if(tablePathRoot !== saron.table.unitlist.name 
+            && tablePathRoot !== saron.table.unittree.name){ 
+            tableDef.actions.createAction = null;
+            tableDef.actions.deleteAction = null;
+            tableDef.actions.updateAction = null;
+        }
     }
 }
 

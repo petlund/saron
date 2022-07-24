@@ -32,7 +32,7 @@ function unitTypeTableDef(tableTitle, parentTablePath, parentId, parentTableDef)
         tableName: tableName,
         parentTableDef: parentTableDef,
         showCloseButton: false,
-        title: 'Organisatoriska enhetertyper',        
+        title: 'Organisatoriska enhetstyper',        
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
@@ -63,39 +63,7 @@ function unitTypeTableDef(tableTitle, parentTablePath, parentId, parentTableDef)
                 type: 'hidden',
                 defaultValue: saron.table.unittype.name
             },
-            UsedInUnit: {
-                title: 'Används',
-                width: '3%',
-                edit: false,
-                sorting: false,
-                create: false,
-                list: true,
-                display: function(data){
-                    var childTableTitle = 'Enhetstypen "' + data.record.Name + '" används för nedanstående organisatoriska enheter';                            
-                    var tooltip = "Enhetstypen används inom följande organisatoriska enheter";
-                    var imgFile = "unit.png";
-                    var type = 0;
-                    var clientOnly = true;
-                    
-                    if(data.record.UsedInUnit ===  "1"){                        
-                        var childTableDef = unitTableDef(childTableTitle, tablePath, data.record.Id, tableDef); // PersonId point to childtable unic id   
-                        var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
-                        var $imgClose = getImageCloseTag(data, childTableDef, type);
-
-                        $imgChild.click(data, function (event){
-                            openChildTable(childTableDef, $imgChild, event.data, clientOnly);
-                        });
-
-                        $imgClose.click(data, function (event){
-                            closeChildTable(childTableDef, $imgClose, event.data, clientOnly);
-                        });    
-
-                        return getClickImg(data, childTableDef, $imgChild, $imgClose);
-                    }
-                    return null;
-                }
-            },            
-            HasPos:{
+            ChildTableRole:{
                 width: '3%',
                 title: 'Roller',
                 create: false,
@@ -107,11 +75,11 @@ function unitTypeTableDef(tableTitle, parentTablePath, parentId, parentTableDef)
                     var tooltip = "";
                     var imgFile = "";
                     var type = 0;
-                    var clientOnly = true;
+                    var clientOnly = false;
 
                     if(data.record.PosEnabled ===  POS_ENABLED){
 
-                        if(data.record.HasPos === '0'){
+                        if(data.record.HasRoles === '0'){
                             imgFile = "pos.png";
                             tooltip = "Inga roller";
                         }
@@ -137,6 +105,46 @@ function unitTypeTableDef(tableTitle, parentTablePath, parentId, parentTableDef)
                     return null;
                 }
             },
+            ChildTableUnitType:{
+                width: '3%',
+                title: 'Enheter',
+                create: false,
+                sorting: false,
+                edit: false,   
+                list: true,
+                display: function(data){
+                    var childTableTitle = 'Kopplade enheter';
+                    var tooltip = "";
+                    var imgFile = "";
+                    var type = 0;
+                    var clientOnly = false;
+
+                    if(data.record.HasUnits === '0'){
+                        imgFile = "unit_empty.png";
+                        tooltip = "Inga roller";
+                    }
+                    else{
+                        imgFile = "unit.png";
+                        tooltip = "Kopplade enheter";
+                    }
+
+                    var childTableDef = unitTableDef(childTableTitle, tablePath, data.record.Id, tableDef);    
+                    var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
+                    var $imgClose = getImageCloseTag(data, childTableDef, type);
+
+                    $imgChild.click(data, function (event){
+                        openChildTable(childTableDef, $imgChild, event.data, clientOnly);
+                    });
+
+                    $imgClose.click(data, function (event){
+                        closeChildTable(childTableDef, $imgClose, event.data, clientOnly);
+                    });    
+
+                    return getClickImg(data, childTableDef, $imgChild, $imgClose);
+
+                    return null;
+                }
+            },
             Name: {
                 title: 'Benämning',
                 width: '15%'
@@ -144,24 +152,15 @@ function unitTypeTableDef(tableTitle, parentTablePath, parentId, parentTableDef)
             SubUnitEnabled: {
                 title: 'Kan ha underenheter',
                 width: '15%',                
-                options: function(data){
-                    
-                    if(data.source !== "create"){    
-                        var val = data.record.UseChild;
-                        if(val === null)
-                            val = 0;
-                        return {"1":"Nej", "2":"Ja (" + val + " underenheter)"};
-                    }
-                    return {"1":"Nej", "2":"Ja"};
-                }
+                options: {"1":"Nej", "2":"Ja"}
             },
             PosEnabled: {
                 title: 'Kan ha bemanning',
                 width: '15%',
-                options: function(data){
+                options: function(data){                   
                    
                     if(data.source !== "create"){
-                        var val = data.record.UseRole;
+                        var val = data.record.HasPos;
                         if(val === null)
                             val = 0;
                         return {"1":"Nej", "2":"Ja (" + val + " positioner)"};
@@ -189,26 +188,19 @@ function unitTypeTableDef(tableTitle, parentTablePath, parentId, parentTableDef)
             }
         },
         rowInserted: function(event, data){
-            if (data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org'){
-                data.row.find('.jtable-edit-command-button').hide();
-                data.row.find('.jtable-delete-command-button').hide();
-            }
-            if(data.record.UsedInUnit > 0 || data.record.HasPos > 0)
+            alowedToUpdateOrDelete(event, data, tableDef);
+
+            if(data.record.HasRoles !== '0' || data.record.HasUnits !== '0')
                 data.row.find('.jtable-delete-command-button').hide();
 
             addDialogDeleteListener(data);
                         
         },        
-        rowUpdated: function(event, data){
-            if (data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org'){
-                data.row.find('.jtable-edit-command-button').hide();
+        recordUpdated: function(event, data){
+            alowedToUpdateOrDelete(event, data, tableDef);
+
+            if(data.record.HasRoles !== '0' || data.record.HasUnits !== '0')
                 data.row.find('.jtable-delete-command-button').hide();
-            }
-            else
-                if(data.record.UsedInUnit !== '0')
-                    data.row.find('.jtable-delete-command-button').hide();
-                else
-                    data.row.find('.jtable-delete-command-button').show();
         },        
         recordsLoaded: function(event, data) {
             alowedToAddRecords(event, data, tableDef);
@@ -218,12 +210,12 @@ function unitTypeTableDef(tableTitle, parentTablePath, parentId, parentTableDef)
                 data.row[0].style.backgroundColor = "yellow";
 
             if(data.formType !== "create"){
-                if(data.record.UseChild > 0){
+                if(data.record.HasUnits > 0){
                     var inp = data.form.find('select[name=SubUnitEnabled]');            
                     inp[0].disabled=true;            
                 }
 
-                if(data.record.UseRole > 0){
+                if(data.record.HasRole > 0){
                     var inp = data.form.find('select[name=PosEnabled]');            
                     inp[0].disabled=true;            
                 }
@@ -237,21 +229,24 @@ function unitTypeTableDef(tableTitle, parentTablePath, parentId, parentTableDef)
                 data.row[0].style.backgroundColor = '';
         }
     };    
-    var title = "Alla roller";
-
     if(tableTitle !== null)
-        title = tableTitle;
+        tableDef.title = tableTitle;
 
-    tableDef.title = title;
-    
-    
-    configUnitTypeTableDef(tableDef, parentTablePath);
+    configUnitTypeTableDef(tableDef);
 
     return tableDef;
 }
 
 
 
-function  configUnitTypeTableDef(parentTablePath){
+function  configUnitTypeTableDef(tableDef){
+
+    var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
+
+    if(tablePathRoot === saron.table.unittype.name){
+    }
+    else if(tablePathRoot === saron.table.role.name){ 
+        tableDef.actions.createAction = null;
+    }    
     
 }

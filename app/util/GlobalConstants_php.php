@@ -51,6 +51,8 @@
 
     Define("TABLE_NAME_POS",  "pos");
 
+    Define("TABLE_NAME_POS_INSTANCES",  "pos_instances");
+
     Define("TABLE_NAME_UNIT", "unit");
 
     Define("TABLE_NAME_UNITLIST", "unitlist");

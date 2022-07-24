@@ -99,6 +99,7 @@ function updateParentRow(event, data, tableDef){
     var parentPlaceHolder = getParentTablePlaceHolderFromChild(event.target, tableDef.tablePath);
     var record = parentPostData;
     record.OpenChildTable = tableDef.tableName;
+    record.user_role = data.user_role;
     
     var options = {record, "clientOnly": false, "url":parentListUrl, animationsEnabled:false};
     parentPlaceHolder.jtable('updateRecord', options);

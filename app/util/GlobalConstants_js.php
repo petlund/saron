@@ -111,6 +111,10 @@ $saron->table->pos = (object)array();
 $saron->table->pos->nameId = "#" . TABLE_NAME_POS ;
 $saron->table->pos->name = TABLE_NAME_POS ;
 
+$saron->table->posinstances = (object)array();
+$saron->table->posinstances->nameId = "#" . TABLE_NAME_POS_INSTANCES ;
+$saron->table->posinstances->name = TABLE_NAME_POS_INSTANCES ;
+
 $saron->table->unittype = (object)array();
 $saron->table->unittype->nameId = "#" . TABLE_NAME_UNITTYPE ;
 $saron->table->unittype->name = TABLE_NAME_UNITTYPE ;

@@ -22,16 +22,12 @@ class OrganizationRole extends SuperEntity{
     }
 
 
-    function select(){
+    function select($id = -1){
         switch ($this->resultType){
         case OPTIONS:
             return $this->selectOptions();       
-        case RECORDS:
-            return $this->selectDefault();       
-        case RECORD:
-            return $this->selectDefault();       
         default:
-            return $this->selectDefault();
+            return $this->selectDefault($id);
         }
     }
 
@@ -109,7 +105,7 @@ class OrganizationRole extends SuperEntity{
         $select.= $this->getAppCanvasSql();
         $select.= "(Select count(*) from Org_Pos as Pos WHERE Pos.OrgRole_FK = Role.Id) as UsedInUnit, ";
         $select.= "(Select count(*) from `Org_Role-UnitType` as RUT WHERE RUT.OrgRole_FK = Role.Id) as UsedInUnitType, ";
-        $select.= "(Select count(*) from Org_Pos as Pos WHERE Pos.OrgRole_FK=Role.Id) as PosOccurrency, ";
+        $select.= "(Select count(*) from Org_Pos as Pos WHERE Pos.OrgRole_FK = Role.Id) as PosOccurrency, ";
         $select.= $this->saronUser->getRoleSql(false) . " ";
         $from = "FROM Org_Role as Role ";
         $where = "";

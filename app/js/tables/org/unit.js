@@ -224,27 +224,18 @@ function unitTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
             }
         },
         recordUpdated: function (event, data){
-            if(data.record.HasSubUnit !== '0' || data.record.HasPos !== '0')
-                data.row.find('.jtable-delete-command-button').hide();
-            else
-                data.row.find('.jtable-delete-command-button').show();
+            alowedToUpdateOrDelete(event, data, tableDef);
             
             if(data.record.parentNodeChange !== '0')
                 $(saron.table.unittype.nameId).jtable('load');
 
         },  
         rowInserted: function(event, data){
-            data.row.addClass("Id_" + data.record.Id); 
+            //data.row.addClass("Id_" + data.record.Id); 
+            alowedToUpdateOrDelete(event, data, tableDef);
             
             if(data.record.HasSubUnit !== '0' || data.record.HasPos !== '0')
                 data.row.find('.jtable-delete-command-button').hide();
-            else
-                data.row.find('.jtable-delete-command-button').show();
-
-            if (data.record.user_role !== saron.userrole.editor && data.record.user_role !== 'org'){
-                data.row.find('.jtable-edit-command-button').hide();
-                data.row.find('.jtable-delete-command-button').hide();
-            }
 
             addDialogDeleteListener(data);
         },        
@@ -292,14 +283,20 @@ function configUnitTableDef(tableDef){
 
     var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
 
-    if(tablePathRoot === saron.table.unittree.name){
-    }
-    else if(tablePathRoot === saron.table.unitlist.name || tablePathRoot === saron.table.unittype.name || tablePathRoot === saron.table.role.name){ 
+    if(tablePathRoot === saron.table.unitlist.name 
+            || tablePathRoot === saron.table.unittype.name 
+            || tablePathRoot === saron.table.role.name){ 
         //tableDef.fields.ParentTreeNode_FK.list = true; 
         //tableDef.fields.OrgPath.list = true; NOT IMPLEMENTED YET
         tableDef.fields.SubUnitEnabled.list = false;
         tableDef.fields.Prefix.list = false;
         tableDef.actions.createAction = null;
+        tableDef.actions.deleteAction = null;
+        tableDef.actions.updateAction = null;
         tableDef.fields.Prefix.update = false;
     }    
+
+    if(tablePathRoot === saron.table.unittype.name)
+        tableDef.fields.PosEnabled.list = false;             
+
 }

@@ -122,6 +122,9 @@ class OrganizationPos extends SuperEntity{
                 case TABLE_NAME_ROLE . "/" . TABLE_NAME_UNIT . "/" . TABLE_NAME_POS:            
                     $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
                     break;
+                case TABLE_NAME_ROLE . "/" . TABLE_NAME_POS:            
+                    $where.= "WHERE OrgRole_FK = " . $this->parentId . " ";            
+                    break;
                 case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_UNIT . "/" . TABLE_NAME_POS:            
                     $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
                     break;

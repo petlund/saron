@@ -31,61 +31,108 @@ class OrganizationRoleUnitType extends SuperEntity{
 
     function select($id = -1){
         switch ($this->appCanvasPath){
+            case TABLE_NAME_ROLE . "/" . TABLE_NAME_ROLE_UNITTYPE . "/" . TABLE_NAME_POS_INSTANCES:
+                return $this->selectPosInstances();
+            case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_ROLE_UNITTYPE . "/" . TABLE_NAME_POS_INSTANCES:
+                return $this->selectPosInstances();
         default:
             return $this->selectDefault($id);
         }
     }
-
+  
     
-    
-    function selectDefault($id){
+    function selectPosInstances(){
         $resultType = RECORDS;
         
         $select = "SELECT * , ";
         $select.= $this->getAppCanvasSql();
         $select.= $this->saronUser->getRoleSql(false) . " ";
-        $from = "FROM `Org_Role-UnitType`";
+        $from = "from `Org_Role-UnitType` as RUT right outer join  
+	(Select 
+	UnitType.Id as UnitTypeId, UnitType.Name as UnitTypeName, Role.Id as RoleId, Role.Name as RoleName, Tree.Id as TreeId, Tree.Name as UnitName, 
+	count(*) as Amount
+	FROM Org_Pos as Pos 
+		inner join Org_Role Role on Pos.OrgRole_FK = Role.Id 
+		inner join Org_Tree as Tree on Tree.Id = Pos.OrgTree_FK 
+		inner join Org_UnitType as UnitType on Tree.OrgUnitType_FK = UnitType.Id
+	group by 
+	   UnitType.Id, UnitType.Name, Role.Id, Tree.Id, Tree.Name, Role.Name) as Instances
+        on RUT.OrgRole_FK = Instances.RoleId and RUT.OrgUnitType_FK = Instances.UnitTypeId ";
 
-        if($id < 0){
-            switch ($this->appCanvasPath){
-            case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_ROLE_UNITTYPE:
-                $where = "WHERE OrgUnitType_FK = " . $this->parentId . " ";
-                break;
-            case TABLE_NAME_ROLE . "/" . TABLE_NAME_ROLE_UNITTYPE:
-                $where = "WHERE OrgRole_FK = " . $this->parentId . " ";
-                break;
-            }
-        }
-        else{
-            $resultType = RECORD;
-            $where = "WHERE Id = " . $id . " ";
-        }
+        $where = "WHERE Id = " . $this->parentId . " ";
         
         $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $resultType);    
         return $result;        
     }
     
 
-    function selectRole($id){
-        $select = "SELECT * ";
+    function selectDefault($id){
+        $resultType = RECORDS;
+        $subSelect = "(Select 
+	count(*) as Amount
+	FROM Org_Pos as Pos 
+		inner join Org_Role Role on Pos.OrgRole_FK = Role.Id 
+		inner join Org_Tree as Tree on Tree.Id = Pos.OrgTree_FK 
+		inner join Org_UnitType as UnitType on Tree.OrgUnitType_FK = UnitType.Id
+                WHERE RUT.OrgUnitType_FK = Tree.OrgUnitType_FK AND RUT.OrgRole_FK = Pos.OrgRole_FK 
+            ) as Amount, ";
+        
+        $select = "SELECT *, ";
+        $select.= $subSelect;
         $select.= $this->getAppCanvasSql();
         $select.= $this->saronUser->getRoleSql(false) . " ";
-        $from = "FROM Org_Role-UnitType";
-        $where = "WHERE OrgRole_FK = ";
+        $from = "FROM `Org_Role-UnitType` as RUT ";
+        $where = "";
+        
+        if($id < 0){
+            switch ($this->appCanvasPath){
+            case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_ROLE_UNITTYPE:
+                $where = "WHERE RUT.OrgUnitType_FK = " . $this->parentId . " ";
+                break;
+            case TABLE_NAME_ROLE . "/" . TABLE_NAME_ROLE_UNITTYPE:
+                $where = "WHERE RUT.OrgRole_FK = " . $this->parentId . " ";
+                break;
+            }
+        }
+        else{
+            $resultType = RECORD;
+            $where = "WHERE RUT.Id = " . $id . " ";
+        }
 
-        $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $this->resultType);    
+        $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $resultType);    
         return $result;        
     }
     
 
+//    function selectRole($id){
+//        $select = "SELECT * ";
+//        $select.= $this->getAppCanvasSql();
+//        $select.= $this->saronUser->getRoleSql(false) . " ";
+//        $from = "FROM Org_Role-UnitType";
+//        $where = "WHERE OrgRole_FK = ";
+//
+//        $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $this->resultType);    
+//        return $result;        
+//    }
+//    
+//
 
     function checkData(){
         $error = array();
 
-        if($this->orgRole_FK < 1){
-            $error["Result"] = "ERROR";
-            $error["Message"] = "Du måste ange en roll eller avbryta.";
-            throw new Exception(json_encode($error));
+        switch ($this->appCanvasPath){
+            case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_ROLE_UNITTYPE:
+                if($this->parentId < 1){
+                    $error["Result"] = "ERROR";
+                    $error["Message"] = "Du måste ange en organisatorisk enhet eller avbryta.";
+                    throw new Exception(json_encode($error));
+                }
+            case TABLE_NAME_ROLE . "/" . TABLE_NAME_ROLE_UNITTYPE:
+                if($this->parentId < 1){
+                    $error["Result"] = "ERROR";
+                    $error["Message"] = "Du måste ange en roll eller avbryta.";
+                    throw new Exception(json_encode($error));
+                }
         }
     }
 
