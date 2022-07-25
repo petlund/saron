@@ -63,6 +63,14 @@ function _updateAfterOpenCloseAction(tablePlaceHolder, tableDef, data, openChild
 
     $(tablePlaceHolder).jtable('updateRecord', options); //update icon
 }
+//function _updateAfterClickAction(tablePlaceHolder, data, tablePathOpenChild, uri, clientOnly){
+//    var url = '/' + saron.uri.saron + uri;
+//    var options = {url:url, clientOnly:clientOnly, animationsEnabled:false};
+//    options.record = {Id: data.record.Id, OpenChildTable: tablePathOpenChild}; 
+//
+//    if(tablePlaceHolder !== null)
+//        $(tablePlaceHolder).jtable('updateRecord', options); //update icon
+//}
 
 
 

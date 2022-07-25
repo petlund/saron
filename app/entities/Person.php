@@ -377,6 +377,7 @@ class Person extends People{
         $home = new Home($this->db, $this->saronUser);
         $sqlSelect = SQL_STAR_PEOPLE . ", " . $this->saronUser->getRoleSql(true);
         $sqlSelect.= DATES_AS_ALISAS_MEMBERSTATES . ", ";
+        $sqlSelect.= $this->getAppCanvasSql(true);
         $sqlSelect.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
         $sqlSelect.= $home->getHomeSelectSql(ALIAS_CUR_HOMES, $this->HomeId, true);
         $sqlSelect.= $home->getHomeSelectSql(ALIAS_OLD_HOMES, $this->OldHomeId, true);

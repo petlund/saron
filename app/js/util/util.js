@@ -391,7 +391,6 @@ function getURLParameters(id, appCanvasName, parentId, appCanvasPath, source, re
             parameter+= "&";
         
         parameter+= 'AppCanvasName=' + appCanvasName;
-//        parameter+= 'TableView=' + getTableView(tableViewId);
     }
     
     
@@ -469,16 +468,6 @@ function getURLParameters(id, appCanvasName, parentId, appCanvasPath, source, re
 
 
 
-function getInitParametes(mainTableViewId, tablePath, parentId){
-    var initParameters = {MainTableViewId:mainTableViewId, 
-                            TablePath:tablePath, 
-                            ParentId:parentId
-                        };
-    return initParameters;
-    
-}
-
-
 function getOptionsUrlParameters(data, appCanvasName, parentId, appCanvasPath, field){
     var parameters = "";
     
@@ -531,7 +520,3 @@ function getRespons(data){
     return data;    
 }
 
-
-function getTableView(tableViewId){
-    return tableViewId.substring(1, tableViewId.length);
-}

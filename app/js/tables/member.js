@@ -115,7 +115,7 @@ function memberTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 options: function (data){
                     var url =  saron.root.webapi + 'listPeople.php';
                     var field = "MembershipNo";
-                    var parameters = getOptionsUrlParameters(data, saron.table.member.name, data.record.ParentId, data.record.appCanvasPath, field);
+                    var parameters = getOptionsUrlParameters(data, tableName, parentId, tablePath, field);                    
                     return url + parameters;
                 }
             },

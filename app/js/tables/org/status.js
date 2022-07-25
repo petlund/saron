@@ -19,8 +19,15 @@ $(document).ready(function () {
     }
 );
 
-function statusTableDef(tableTitle, tablePath, parentId, parentTableDef){
-    return {
+function statusTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
+    var tableName = saron.table.role.name;
+    var tablePath = getChildTablePath(parentTablePath, tableName);
+
+    var tableDef = {
+        parentId: parentId,
+        tableName: tableName,
+        tablePath: tablePath,
+        parentTableDef: parentTableDef,
         title: 'Status',
         parentTableDef: parentTableDef,
         paging: true, //Enable paging
@@ -92,4 +99,9 @@ function statusTableDef(tableTitle, tablePath, parentId, parentTableDef){
                 data.row[0].style.backgroundColor = '';
         }
     };
+
+    if(tableTitle !== null)
+        tableDef.title = tableTitle;
+
+    return tableDef;
 }

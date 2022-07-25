@@ -55,7 +55,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                                 var groupId = 12;
                                 $("#groupId").val(groupId);
                                 $("#searchString").val(data.Record.LastName);
-                                var options = {searchString: data.Record.LastName, groupId:groupId, TableView: getTableView(saron.table.people.nameId), AppCanvasName: tableName};
+                                var options = {searchString: data.Record.LastName, groupId:groupId, AppCanvasName: tableName, AppCanvasPath: tableName};
 
                                 $(saron.table.people.nameId).jtable('load', options, function (){
                                 });
@@ -92,25 +92,24 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                                 if(move && isChildRowOpen){
                                     var options = getPostData(null, tableName, parentId, tablePath, saron.source.list, saron.responsetype.records);
                                     var clientOnly = true;
-                                    var url = saron.root.webapi + 'listPeople.php';
                                     var childTableDef = homeTableDef(childTableTitle, tablePath, data.record.HomeId, tableDef);
                                     var tablePlaceHolder = $(saron.table.people.nameId);
 
                                     tablePlaceHolder.jtable('closeChildTable', $selectedRow, function(){
 
                                         var tablePathOpenChild = false;                                
-                                        _updateAfterClickAction(tableName, data, tablePathOpenChild, url, clientOnly);            
-
+                                        _updateAfterOpenCloseAction(tablePlaceHolder, tableDef, data, tablePathOpenChild, clientOnly);
                                         if(parentId > 0){
                                             tablePlaceHolder.jtable('openChildTable', $selectedRow, childTableDef, function(callBackData){
                                                 callBackData.childTable.jtable('load', options, function(){
                                                     var tablePathOpenChild = _getClassNameOpenChild(data, tablePath);                                
-                                                    _updateAfterClickAction(tableName, data, tablePathOpenChild, url, clientOnly);                                                   
+                                                    _updateAfterOpenCloseAction(tablePlaceHolder, tableDef, data, tablePathOpenChild, clientOnly);
                                                 });
                                             });
                                         }
                                     });
                                 }
+                                _updateHomeFields(data);
                             }
                             else
                                 $dfd.resolve(successData);
@@ -314,7 +313,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                 options: function(data){
                     var url = saron.root.webapi + 'listHomes.php';
                     var field = null;
-                    var parameters = getOptionsUrlParameters(data, saron.table.people.name, data.record.ParentId, data.record.appCanvasPath, field);                    
+                    var parameters = getOptionsUrlParameters(data, tableName, parentId, tablePath, field);                    
                     return url + parameters;
                 }
             },
@@ -422,7 +421,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                 options: function (data){
                     var url = saron.root.webapi + 'listPeople.php';
                     var field = "MembershipNo";
-                    var parameters = getOptionsUrlParameters(data, saron.table.people.name, data.record.ParentId, data.record.AppCanvasPath, field, url);
+                    var parameters = getOptionsUrlParameters(data, tableName, parentId, tablePath, field);                    
                     return url + parameters;
                 }
             },
@@ -541,12 +540,9 @@ function configUnitTableDef(tableDef){
 
 
 function _updatePeopleFields(data){
-//    _updateFields(data, "LongHomeName", HOME);                                                
     _updateFields(data, "LongHomeName", PERSON);                                                
     _updateFields(data, "Residents", HOME);                                                
     _updateFields(data, "Residents", OLD_HOME);                                                
-//    _updateFields(data, "Letter", HOME);                                                
-//    _updateFields(data, "Phone", HOME);                                                
     _updateFields(data, "Name", PERSON);                                                
     _updateFields(data, "DateOfBirth", PERSON);                                                
     _updateFields(data, "DateOfMembershipEnd", PERSON);                                                

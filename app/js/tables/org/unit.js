@@ -43,7 +43,7 @@ function unitTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
             },
             AppCanvasName:{
                 type: 'hidden',
-                defaultValue: saron.table.unit.name
+                defaultValue: tableName
             },
             AppCanvasPath:{
                 type: 'hidden',
@@ -170,8 +170,7 @@ function unitTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                     var url = saron.root.webapi + "listOrganizationUnit.php";
                     var field = "ParentTreeNode_FK";                    
                     var parentId = null;
-//                    var parameters = getOptionsUrlParameters(data, saron.table.unit.name, data.record.ParentId, data.record.AppCanvasPath, field);                    
-                    var parameters = getOptionsUrlParameters(data, saron.table.unit.name, parentId, null, field);                    
+                    var parameters = getOptionsUrlParameters(data, tableName, parentId, null, field);                    
                     return url + parameters;
                 }                
             },
@@ -203,8 +202,7 @@ function unitTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 options: function (data){
                     var field = null;                    
                     var url = saron.root.webapi + 'listOrganizationUnitType.php';
-                    var parameters = getOptionsUrlParameters(data, saron.table.unit.name, null, null, field);                    
-//                    var parameters = getOptionsUrlParameters(data, data.record.AppCanvasName, data.record.ParentId, data.record.AppCanvasPath, field);                    
+                    var parameters = getOptionsUrlParameters(data, tableName, parentId, null, field);                    
                     return url + parameters;
                 }
             },

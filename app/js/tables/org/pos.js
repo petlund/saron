@@ -9,7 +9,7 @@ RECORD, OPTIONS
 
 $(document).ready(function () {
     var tablePlaceHolder = $(saron.table.pos.nameId);
-    var table = posTableDef(null, saron.table.pos.name, null, null);
+    var table = posTableDef(null, null, null, null);
     table.defaultSorting = "OrgTree_FK, SortOrder";
     tablePlaceHolder.jtable(table);
 
@@ -54,7 +54,7 @@ function posTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 edit: false
             },         
             ParentId:{
-                defaultValue: -1,
+                defaultValue: parentId,
                 type: 'hidden'
             },
             AppCanvasName:{
@@ -115,7 +115,7 @@ function posTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 options: function(data){
                     var url = saron.root.webapi + 'listOrganizationUnit.php';
                     var field = "OrgTree_FK";
-                    var parameters = getOptionsUrlParameters(data, saron.table.pos.name,  parentId, tableDef.tablePath, field);
+                    var parameters = getOptionsUrlParameters(data, saron.table.unit.name,  parentId, tableDef.tablePath, field);
                     return url + parameters;
                 }                
             },            
@@ -125,7 +125,7 @@ function posTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 options: function(data){
                     var url = saron.root.webapi + 'listOrganizationRole.php';      
                     var field = 'OrgRole_FK';
-                    var parameters = getOptionsUrlParameters(data, saron.table.pos.name, parentId, tableDef.tablePath, field);                    
+                    var parameters = getOptionsUrlParameters(data, saron.table.role.name, parentId, tableDef.tablePath, field);                    
                     return url + parameters;
                 }
             },
@@ -136,7 +136,7 @@ function posTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 options: function(data){                    
                     var url = saron.root.webapi + 'listOrganizationPosStatus.php';
                     var field = "OrgPosStatus_FK";
-                    var parameters = getOptionsUrlParameters(data, saron.table.pos.name,  parentId, tableDef.tablePath, field);                    
+                    var parameters = getOptionsUrlParameters(data, saron.table.org_role_status.name,  parentId, tableDef.tablePath, field);                    
                     return url + parameters;
                 }
             },

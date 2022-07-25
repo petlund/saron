@@ -57,7 +57,7 @@ function baptistTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 width: '15%',
                 edit: false,
                 list: function(data){
-                    return includedIn (saron.table.baptist.name, data.record.AppCanvasPath);
+                    return includedIn (saron.table.baptist.name, tablePath);
                 },
                 display: function (data){
                     return _setClassAndValue(data, "Name", PERSON);
@@ -68,7 +68,7 @@ function baptistTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 width: '7%',
                 type: 'date',
                 list: function(data){
-                    return includedIn (saron.table.baptist.name, data.record.AppCanvasPath);
+                    return includedIn (saron.table.baptist.name, tablePath);
                 },
                 displayFormat: DATE_FORMAT,
                 edit: false,

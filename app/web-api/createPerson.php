@@ -17,7 +17,7 @@ require_once SARON_ROOT . 'app/entities/Person.php';
         $person = new Person($db, $saronUser);
 
         $personCheckResult = $person->checkPersonData();
-        $db->php_dev_error_log(__FILE__, $personCheckResult);
+        //$db->php_dev_error_log(__FILE__, $personCheckResult);
 
         if($personCheckResult !== true){
             echo $personCheckResult;

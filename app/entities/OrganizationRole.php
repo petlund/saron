@@ -133,13 +133,16 @@ class OrganizationRole extends SuperEntity{
     
     
     function selectOptions(){
+        
         $sql = "Select * from ( ";
-        $sql.= "SELECT Role.Id  as Value, Concat('<u>', Role.Name, '</u>') as DisplayText FROM Org_Role as Role WHERE Role.RoleType = 1 ";
+        $sql.= "SELECT Role.Id  as Value, Concat('<u>', Role.Name, '</u>') as DisplayText from Org_Role as Role WHERE Role.RoleType = 1 ";
         $sql.= "UNION "; 
         $sql.= "Select null as Value, '-' as DisplayText ";
         $sql.= "UNION "; 
-        $sql.= "SELECT Role.Id  as Value, Role.Name as DisplayText FROM Org_Role as Role WHERE Role.RoleType = 0 ";
+        $sql.= "SELECT Role.Id  as Value, Role.Name as DisplayText from Org_Role as Role WHERE Role.RoleType = 0 ";
         $sql.= ") as options "; 
+        $sql.= "inner join `Org_Role-UnitType` as RUT on RUT.OrgRole_FK = value ";
+        $sql.= "inner join `Org_Tree` as Tree on RUT.OrgUnitType_FK = Tree.OrgUnitType_FK ";
 
         switch ($this->appCanvasPath){
             case TABLE_NAME_ROLE:
@@ -169,16 +172,16 @@ class OrganizationRole extends SuperEntity{
                 }
                 break;    
             case TABLE_NAME_UNITTREE . "/" . TABLE_NAME_UNIT . "/" . TABLE_NAME_POS:
-                $sql.= "";
+                $sql.= "WHERE Tree.Id = " . $this->parentId;
             break;
             case TABLE_NAME_UNITLIST . "/" . TABLE_NAME_UNIT . "/" . TABLE_NAME_POS:
-                $sql.= "";
+                $sql.= "WHERE Tree.Id = " . $this->parentId;
             break;
             case TABLE_NAME_POS:
                 $sql.= "";
             break;
             default:
-                $sql.= "";
+                $sql.= "WHERE FALSE";
             break;
         }
             
