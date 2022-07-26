@@ -35,7 +35,7 @@
 
     $sql =SQL_STAR_PEOPLE;
     $sql.=" from People ";
-    $sql.="where ((DateOfMembershipStart is not null or CongregationOfBaptismThis = 2) and DateOfDeath is null) and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' "; 
+    $sql.="where ((DateOfMembershipStart is not null or CongregationOfBaptismThis = 2) and DateOfDeath is null) and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' "; //Memberstatelogic
     $sql.="order by ";
     $sql.=DECRYPTED_LASTNAME;
     $sql.=", "; 

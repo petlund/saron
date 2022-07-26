@@ -49,6 +49,7 @@ class Person extends People{
         $this->FirstName = (String)filter_input(INPUT_POST, "FirstName", FILTER_SANITIZE_STRING);
         $this->DateOfBirth = (String)filter_input(INPUT_POST, "DateOfBirth", FILTER_SANITIZE_STRING);
         $this->DateOfDeath = (String)filter_input(INPUT_POST, "DateOfDeath", FILTER_SANITIZE_STRING);
+        $this->DateOfFriendshipStart = (String)filter_input(INPUT_POST, "DateOfFriendshipStart", FILTER_SANITIZE_STRING);
         $this->Gender = (int)filter_input(INPUT_POST, "Gender", FILTER_SANITIZE_NUMBER_INT);
         $this->Email = (String)filter_input(INPUT_POST, "Email", FILTER_SANITIZE_EMAIL);
         $this->Mobile = (String)filter_input(INPUT_POST, "Mobile", FILTER_SANITIZE_STRING);
@@ -78,7 +79,7 @@ class Person extends People{
     }
     
 
-    function checkPersonData(){
+    function checkPersonData(){//Memberstatelogic
         $error = array();
         $error["Result"] = "OK";
         $error["Message"] = "";
@@ -122,7 +123,8 @@ class Person extends People{
         return true;
     }
     
-    function checkMembershipData(){
+
+    function checkMembershipData(){//Memberstatelogic    
         $error = array();
         $error["Result"] = "OK";
         $error["Message"] = "";
@@ -209,11 +211,12 @@ class Person extends People{
    
     
     function insert(){
-        $sqlInsert = "INSERT INTO People (LastNameEncrypt, FirstNameEncrypt, DateOfBirth, Gender, EmailEncrypt, MobileEncrypt, DateOfMembershipStart, MembershipNo, VisibleInCalendar, CommentEncrypt, Inserter, HomeId) ";
+        $sqlInsert = "INSERT INTO People (LastNameEncrypt, FirstNameEncrypt, DateOfBirth, DateOfFriendshipStart, Gender, EmailEncrypt, MobileEncrypt, DateOfMembershipStart, MembershipNo, VisibleInCalendar, CommentEncrypt, Inserter, HomeId) ";
         $sqlInsert.= "VALUES (";
         $sqlInsert.= $this->getEncryptedSqlString($this->LastName) . ", ";
         $sqlInsert.= $this->getEncryptedSqlString($this->FirstName) . ", ";
         $sqlInsert.= $this->getSqlDateString($this->DateOfBirth) . ", ";
+        $sqlInsert.= $this->getSqlDateString($this->DateOfFriendshipStart) . ", ";
         $sqlInsert.= $this->Gender . ", ";
         $sqlInsert.= $this->getEncryptedSqlString($this->Email) . ", ";
         $sqlInsert.= $this->getEncryptedSqlString($this->Mobile) . ", ";
@@ -306,6 +309,7 @@ class Person extends People{
         $sqlSet.= "LastNameEncrypt=" . $this->getEncryptedSqlString($this->LastName) . ", ";
         $sqlSet.= "FirstNameEncrypt=" . $this->getEncryptedSqlString($this->FirstName) . ", ";
         $sqlSet.= "DateOfBirth=" . $this->getSqlDateString($this->DateOfBirth) . ", ";
+        $sqlSet.= "DateOfFriendshipStart=" . $this->getSqlDateString($this->DateOfFriendshipStart) . ", ";
         $sqlSet.= "Gender=" . $this->Gender . ", ";
         if($this->VisibleInCalendar > 0 ){
             $sqlSet.= "VisibleInCalendar=" . $this->VisibleInCalendar . ", ";

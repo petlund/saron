@@ -76,7 +76,7 @@ class Statistics extends SuperEntity{
     }
 
     
-    function selectStatisicsDetails($idFromCreate = -1){
+    function selectStatisicsDetails($idFromCreate = -1){//Memberstatelogic
    
         $id = $this->getId($idFromCreate, $this->id);
 
@@ -168,7 +168,7 @@ class Statistics extends SuperEntity{
     }
     
     
-    private function getIntervalSql($minAge, $maxAge){
+    private function getIntervalSql($minAge, $maxAge){ //Memberstatelogic
         $sqlInterval="";
         $ageAlias = " as AgeInterval, ";
         $sqlWhereInterval = "and extract(year from now())-extract(year from DateOfBirth) "; 
@@ -206,7 +206,7 @@ class Statistics extends SuperEntity{
     }
     
     
-    function selectDemographicHistogram(){
+    function selectDemographicHistogram(){//Memberstatelogic
 
         $sqlSelect = "SELECT Gender, count(*) as amount, ";
         $sqlFrom = "FROM People ";
@@ -301,7 +301,7 @@ class Statistics extends SuperEntity{
         $this->db->insert($sqlInsert, "Statistics", "Year");
     }
 
-    private function update($statisticYear, $statisticTimeStamp){
+    private function update($statisticYear, $statisticTimeStamp){//Memberstatelogic
 
         $sqlUpdate = "update Statistics ";
         

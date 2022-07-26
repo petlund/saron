@@ -33,7 +33,6 @@
     define ("HEADER_FOOTER_FONT_SIZE", 10);
     define ("FONT", 'times');
 
-
     $sql =SQL_ALL_FIELDS . ", SortList.GroupName, ";
     $sql.="(select count(*) from People as pp where pp.HomeId=Homes.Id) as fam_member_count ";
     $sql.="from "; 
@@ -42,7 +41,7 @@
     $sql.="WHERE  DateOfMembershipStart is not null and DateOfMembershipEnd is null and DateOfDeath is null and VisibleInCalendar=2 group by HomeId, SortName) as SortList "; 
     $sql.="inner join People on People.HomeId=SortList.HomeId) "; 
     $sql.="left outer join Homes on People.HomeId = Homes.Id ";  
-    $sql.="where DateOfMembershipStart is not null and  DateOfMembershipEnd is null and DateOfDeath is null and VisibleInCalendar=2 "; 
+    $sql.="where DateOfMembershipStart is not null and  DateOfMembershipEnd is null and DateOfDeath is null and VisibleInCalendar=2 "; //Memberstatelogic
     $sql.="order by SortList.GroupName, " . DECRYPTED_ADDRESS . ", Homes.Id, People.DateOfBirth"; 
 
     // create new PDF document

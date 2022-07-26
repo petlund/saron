@@ -62,7 +62,7 @@
 
     $sql =SQL_STAR_HOMES;
     $sql.=", ";
-    $sql.="(SELECT GROUP_CONCAT(" . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . " SEPARATOR '\n') FROM People as r where Homes.Id = r.HomeId AND DateOfMembershipStart is not null AND DateOfMembershipEnd is null and DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' order by DateOfBirth) as Residents ";
+    $sql.="(SELECT GROUP_CONCAT(" . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . " SEPARATOR '\n') FROM People as r where Homes.Id = r.HomeId AND DateOfMembershipStart is not null AND DateOfMembershipEnd is null and DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' order by DateOfBirth) as Residents "; //Memberstatelogic
     $sql.="from Homes ";
     $sql.="where "; 
     $sql.="letter=1 ";

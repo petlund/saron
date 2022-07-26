@@ -31,7 +31,7 @@ class PeopleViews {
     
     
     function selectPeople(){
-        $sql = SQL_STAR_PEOPLE . ", ";
+        $sql = SQL_STAR_PEOPLE . ", DateOfFriendshipStart, ";
         $sql.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
         $sql.= getLongHomeNameSql(ALIAS_CUR_HOMES, "LongHomeName", true);
         $sql.= DECRYPTED_ALIAS_PHONE . ", ";

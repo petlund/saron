@@ -402,7 +402,14 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                     return _setClassAndValue(data, "Phone", HOME);
                 }                  
             },
-            DateOfMembershipStart: {
+            DateOfFriendshipStart:{
+                list: false,
+                displayFormat: DATE_FORMAT,
+                type: 'date',
+                title: 'Vänkontakt start',
+                inputTitle: 'Sätt datum för start av vänkontakt - Förstadium till medlemskap. Mailfunktionen stämmer av behovet om ett år.'
+            },
+            DateOfMembershipStart:{
                 create: true,
                 edit: true,
                 list: false,

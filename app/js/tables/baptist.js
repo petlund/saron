@@ -114,6 +114,9 @@ function baptistTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
         rowInserted: function(event, data){
             alowedToUpdateOrDelete(event, data, tableDef);
         },        
+        recordUpdated(data, event){
+            _updateFields(event, "MemberState", PERSON);                                                
+        },
         formCreated: function (event, data){
             data.row[0].style.backgroundColor = "yellow";
             data.form.css('width', inputFormWidth);

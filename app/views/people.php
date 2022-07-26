@@ -45,10 +45,11 @@ require_once SARON_ROOT . "app/util/AppCanvasName.php";
                         <option value="11">Avlidna <?php include('../util/PrevYear.php');?></option>
                         <option value="12">Hela registret</option>
                         <option value="13">Medlemmar utanför Norrköping</option>
-                        <option value="14">Ej medlem</option>
-                        <option value="15">Underlag för anonymisering under <?php include('../util/CurrentYear.php');?></option>
-                        <option value="16">Anonymiserade</option>
-                        <option value="17">Medhjälpare</option>
+                        <option value="14">Församlingens vänner</option>
+                        <option value="15">Ej medlem</option>
+                        <option value="16">Underlag för anonymisering under <?php include('../util/CurrentYear.php');?></option>
+                        <option value="17">Anonymiserade</option>
+                        <option value="18">Medhjälpare</option>
                         </select>     
                    </form>
                 </td>

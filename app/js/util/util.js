@@ -156,7 +156,7 @@ function _getId(data, type){
     else if(type === OLD_HOME)
         return 'H' + data.record[OLD_HOME_PREFIX + 'HomeId'];
     else if(type === PERSON)
-        if(data.record.AppCanvasName.includes(saron.table.people.name))
+        if(data.record.AppCanvasPath.includes(saron.table.people.name))
             return 'P' + data.record.Id;
         else
             return 'X' + data.record.Id;
@@ -230,6 +230,7 @@ function _keyOptions(){
 }
 
 
+
 function baptistFormAuto(data, selectedValue){
     var inp = data.form.find('input[name=CongregationOfBaptism]');
     if(selectedValue === '0'){
@@ -239,7 +240,7 @@ function baptistFormAuto(data, selectedValue){
     else if(selectedValue === '1'){
         inp[0].value = "";                                                                              
         inp[0].disabled=false;
-    }
+}
     else{
         inp[0].value = saron.name.full_name; 
         inp[0].disabled=true;

@@ -5,7 +5,16 @@
     define ("PKEY", "'" . $privkey . "'");
     define("SALT_LENGTH", 13);
     define("MAX_STR_LEN", 250);
-
+    
+    
+    define("MEMBER_STATE_NULL", 0);
+    define("MEMBER_STATE_", 1);
+    define("MEMBER_STATE_MEMBER", 2);
+    define("MEMBER_STATE_3", 3);
+    define("MEMBER_STATE_4", 4);
+    define("MEMBER_STATE_5", 5);
+    define("MEMBER_STATE_6", 6);
+    define("MEMBER_STATE_FRIEND", 7);
 
     define("DATE_FORMAT", "'%Y-%m-%d'");
     define("DATE_OF_BIRTH", "DATE_FORMAT(DateOfBirth, " . DATE_FORMAT . ")");
@@ -74,8 +83,9 @@
 
     define("SQL_FROM_PEOPLE_LEFT_JOIN_HOMES", "FROM People left outer join Homes on People.HomeId=Homes.Id "); 
     define("SQL_WHERE", "Where ");  
-    define("SQL_WHERE_MEMBER", "DateOfMembershipStart is not null and DateOfMembershipEnd is null and DateOfDeath is null and " . DECRYPTED_LASTNAME . " not like '" . ANONYMOUS . "' ");  
-    define("SQL_WHERE_NOT_MEMBER", "DateOfMembershipStart is null and DateOfMembershipEnd is null and DateOfDeath is null and " . DECRYPTED_LASTNAME . " not like '" . ANONYMOUS . "' ");  
+    
+    define("SQL_WHERE_MEMBER", "DateOfMembershipStart is not null and DateOfMembershipEnd is null and DateOfDeath is null and " . DECRYPTED_LASTNAME . " not like '" . ANONYMOUS . "' ");  //Memberstatelogic
+    define("SQL_WHERE_NOT_MEMBER", "DateOfMembershipStart is null and DateOfMembershipEnd is null and DateOfDeath is null and " . DECRYPTED_LASTNAME . " not like '" . ANONYMOUS . "' ");  //Memberstatelogic
 
     define("FORMATTED_EMAILADDRESS", "if(" . DECRYPTED_EMAIL . " not like \"\", concat(\"<p class='Email'><a href='mailto:\"," . DECRYPTED_EMAIL . ",\"'>\", " . DECRYPTED_EMAIL . ", \"</a></p>\"),'') ");
     define("CONTACTS_ALIAS_RESIDENTS", "(SELECT GROUP_CONCAT('<b>', " . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . ", ':</b> ', " . getMemberStateSql("People", null, true) . "IF(" . DECRYPTED_EMAIL . " is NULL, '', CONCAT(', ', " . DECRYPTED_EMAIL . ")), IF(" . DECRYPTED_MOBILE . " is NULL, '', CONCAT(', ', " . DECRYPTED_MOBILE . ")) SEPARATOR '<BR>') FROM People where Homes.Id = HomeId  AND DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' order by DateOfBirth) as Residents ");
@@ -130,7 +140,7 @@
 
 
     
-    function getMemberStateSql($tableAlias = "People", $fieldAlias ="", $continue=false){
+    function getMemberStateSql($tableAlias = "People", $fieldAlias ="", $continue=false){//Memberstatelogic
         $sql ="(SELECT MemberState.Name FROM MemberState Where MemberState.Id = ";
         $sql.=getMemberStateIndexSql($tableAlias, null, false);
         $sql.=") ";
@@ -148,13 +158,14 @@
     }
     
 
-    function getMemberStateIndexSql($tableAlias = "People", $fieldAlias="", $continue=false){
+    function getMemberStateIndexSql($tableAlias = "People", $fieldAlias="", $continue=false){//Memberstatelogic
         $sql="Case ";
         $sql.="WHEN " . $tableAlias . ".Id is null Then 0 ";
         $sql.="WHEN " . $tableAlias . ".DateOfDeath > 0 Then 5 ";
         $sql.="WHEN " . $tableAlias . ".DateOfMembershipStart > 0 AND " . $tableAlias . ".DateOfMembershipEnd is null Then 2 ";
         $sql.="WHEN UPPER(CONVERT(BINARY " . getFieldSql($tableAlias, null, "LastNameEncrypt", null, true, false) . " USING utf8)) like '%" . ANONYMOUS . "%' THEN 4 ";
         $sql.="WHEN (SELECT Count(*) from Org_Pos Where " . $tableAlias . ".Id = Org_Pos.People_FK) > 0 then 6 ";
+        $sql.="WHEN " . $tableAlias . ".DateOfFriendshipStart > 0 Then 7 ";
         $sql.="WHEN " . $tableAlias . ".DateOfBaptism > 0  OR (" . $tableAlias . ".DateOfMembershipStart > 0 AND " . $tableAlias . ".DateOfMembershipEnd > 0) Then 3 ";
         $sql.="else 1 ";
         $sql.="END";
@@ -173,7 +184,8 @@
     
     
     
-    function getFilteredMemberStateSql($tableAlias = "People", $fieldAlias, $continue, $source){
+
+    function getFilteredMemberStateSql($tableAlias = "People", $fieldAlias, $continue, $source){ //Memberstatelogic
         
         $sql1 = "";
         if($source === SOURCE_EDIT){
