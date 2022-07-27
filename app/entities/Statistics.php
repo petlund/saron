@@ -59,7 +59,7 @@ class Statistics extends SuperEntity{
         $sqlSelect ="SELECT DateOfMembershipStart, DateOfMembershipEnd, DateOfBaptism, DateOfDeath, ";
         $sqlSelect.= DECRYPTED_ALIAS_LASTNAME . ", " . DECRYPTED_ALIAS_FIRSTNAME . ", " . DECRYPTED_ALIAS_COMMENT . ", DateOfBirth, ";
         $sqlSelect.= $this->getAppCanvasSql(true);
-        $sqlSelect.= getPersonSql("p", "Name", TRUE);
+        $sqlSelect.= $this->getPersonSql("p", "Name", TRUE);
         $sqlSelect.=$subSelect;
         $sqlFrom ="FROM People as p ";  
         $sqlWhere ="WHERE ";
@@ -138,7 +138,7 @@ class Statistics extends SuperEntity{
         $sqlSelect.=$this->getAppCanvasSql(true);
 //        $sqlSelect.=DECRYPTED_ALIAS_LASTNAME . ", " . DECRYPTED_ALIAS_FIRSTNAME . ", ";
 //        $sqlSelect.="DateOfBirth, ";
-        $sqlSelect.= getPersonSql("p", "Name", TRUE);
+        $sqlSelect.= $this->getPersonSql("p", "Name", TRUE);
         $sqlSelect.=DECRYPTED_ALIAS_COMMENT . ", ";
         
         return $sqlSelect;

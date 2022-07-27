@@ -12,10 +12,15 @@ class Engagement extends SuperEntity{
     private $people_FK;
     protected $uppercaseSearchString;
     protected $filterType;
+    private $memberState;
+    private $peopleFilter;
  
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
         $this->filterType = (String)filter_input(INPUT_GET, "filterType", FILTER_SANITIZE_STRING);
+        $this->peopleFilter = new PeopleFilter($db, $saronUser);
+
+        $this->memberState = new MemberState($db, $saronUser);
 
         $this->nodeId = (int)filter_input(INPUT_GET, "NodeId", FILTER_SANITIZE_NUMBER_INT);
         $this->orgRole_FK = (int)filter_input(INPUT_POST, "OrgRole_FK", FILTER_SANITIZE_NUMBER_INT);
@@ -42,15 +47,15 @@ class Engagement extends SuperEntity{
         $subFrom.= "left outer join (select Pos.Id, Pos.People_FK from Org_Pos as Pos inner join Org_Role as Role on Pos.OrgRole_FK=Role.Id where Role.RoleType=1) as SuperPos on Pos.OrgSuperPos_FK=SuperPos.Id ";
 
         $subWhere = "where (Pos.People_FK = p.Id or SuperPos.People_FK = p.Id) and Stat.Id < 3 "; // Only proposal and committed
-        $subGroupBy ="";
+        $subGroupBy ="";    
         $subOrderBy = "Order by EngagementList) as Engagement, ";
         $subQuery1 = $subSelect1 . $subFrom . $subWhere . $subGroupBy . $subOrderBy;
         $subQuery2 = $subSelect2 . $subFrom . $subWhere . $subGroupBy . ") as Cnt, ";
         
-        $select = "SELECT p.Id, p.DateOfMembershipStart, " . getPersonSql(null, "Name", true);
-        $select.= getMemberStateSql("p", "MemberState", true);
+        $select = "SELECT p.Id, p.DateOfMembershipStart, " . $this->getPersonSql(null, "Name", true);
+        $select.= $this->memberState->getMemberStateSql("p", "MemberState", true);
         $select.= DECRYPTED_ALIAS_EMAIL . ", ";
-        $select.= getFieldSql(null, "Mobile", "MobileEncrypt", "", true, true);
+        $select.= $this->getFieldSql(null, "Mobile", "MobileEncrypt", "", true, true);
         $select.= $this->getAppCanvasSql();
         $select.= $subQuery1; 
         $select.= $subQuery2;        
@@ -65,9 +70,11 @@ class Engagement extends SuperEntity{
             $where.= "WHERE p.Id = " . $this->id . " ";
         }
         else{
-            $gf = new PeopleFilter();
-            $where = "WHERE (" . SQL_WHERE_NOT_MEMBER . " OR " . SQL_WHERE_MEMBER . " OR p.Id in (Select max(People_FK) from Org_Pos GROUP BY People_FK)) ";
-            $where.= $gf->getSearchFilterSql($this->uppercaseSearchString);            
+            $where = "WHERE (" . $this->memberState->getIsMemberSQL("p") . " OR " .
+                    $this->memberState->getIsRegistratedSQL("p") . " OR " .
+                    $this->memberState->getIsVolontaireSQL("p") . 
+                    ") " . 
+                    $this->peopleFilter->getSearchFilterSql($this->uppercaseSearchString) . " ";            
         }
         
         $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $rec);        

@@ -102,6 +102,67 @@ class SuperEntity {
     }
 
     
+    
+    function getFieldSql($tableAlias, $fieldAlias, $fieldName, $nullValue, $encrypt, $continue){
+        $sql = "";
+        IF(strlen($tableAlias) > 0){
+            $sqlField = $tableAlias . "." . $fieldName;
+        }
+        else{
+            $sqlField = $fieldName;
+        }
+        if($encrypt){
+            $sql = "SUBSTR(AES_DECRYPT(" . $sqlField . ", " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")";
+        }
+        else{
+            $sql = $sqlField;            
+        }
+        
+        if(strlen($nullValue) > 0){
+            $sql = "IF(" . $sql . " is null, '" . $nullValue . "', " . $sql . ")";
+        }
+
+        if(strlen($fieldAlias)>0){
+            if(strlen($tableAlias)>0 && $tableAlias !== ALIAS_CUR_HOMES){            
+                $sql.= " as " . $tableAlias . "_" . $fieldAlias;
+            }
+            else{
+                $sql.= " as " . $fieldAlias;                
+            }
+        }
+      
+        if($continue){
+           $sql.= ", "; 
+        }
+        else{
+           $sql.= " ";             
+        }
+        return $sql; 
+    }
+
+
+    
+    function getPersonSql($tableAlias, $fieldAlias, $continue){
+        $sql = "CONCAT(";
+        $sql.= $this->getFieldSql($tableAlias, null, "LastNameEncrypt", "", true, false);
+        $sql.= ", ' ', "; 
+        $sql.= $this->getFieldSql($tableAlias, null, "FirstNameEncrypt", "", true, false);
+        $sql.= ", ' ', "; 
+        $sql.= $this->getFieldSql($tableAlias, null, "DateOfBirth", "", false, false);
+        $sql.= ")";
+        if(strlen($fieldAlias) > 0){
+            $sql.= " AS " . $fieldAlias;
+        }
+        if($continue){
+            $sql.= ", ";
+        }
+        else{
+            $sql.= " ";            
+        }
+        return $sql;
+    }
+    
+
     protected function getSortSql(){
         $sqlOrderBy = "";
         if($this->groupId === 2 and 

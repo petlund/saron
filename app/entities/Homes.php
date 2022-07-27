@@ -68,7 +68,7 @@ class Homes extends SuperEntity{
         $sqlSelect = SQL_STAR_HOMES  . ", " .  $this->saronUser->getRoleSql(true);         
         $sqlSelect.= $this->getAppCanvasSql(true);
         $sqlSelect.= $this->getHomeSelectSql(ALIAS_CUR_HOMES, $TABLE_HOMES_AND_ID, false);
-        //$sqlSelect.= CONTACTS_ALIAS_RESIDENTS;
+
         $sqlWhere = "WHERE ";
 
         if($id < 0){            
@@ -100,16 +100,75 @@ class Homes extends SuperEntity{
 
 
     function getHomeSelectSql($tableAlias, $homesTableNameAndId, $continue){
-        $sql = getLongHomeNameSql($tableAlias, "LongHomeName", true);
-        $sql.= getFieldSql($tableAlias, "FamilyName", "FamilyNameEncrypt", "", true, true);
-        $sql.= getFieldSql($tableAlias, "Address", "AddressEncrypt", "", true, true);
-        $sql.= getFieldSql($tableAlias, "Zip", "Zip", "", false, true);
-        $sql.= getFieldSql($tableAlias, "City", "City", "", false, true);
-        $sql.= getFieldSql($tableAlias, "Country", "Country", "", false, true);
-        $sql.= getFieldSql($tableAlias, "Phone", "PhoneEncrypt", "", true, true);
-        $sql.= getFieldSql($tableAlias, "Letter", "Letter", "", false, true);
-        $sql.= getFieldSql($tableAlias, "HomeId", "Id", "", false, true);
-        $sql.= getResidentsSql($tableAlias, "Residents", $homesTableNameAndId, $continue); 
+        $sql = $this->getLongHomeNameSql($tableAlias, "LongHomeName", true);
+        $sql.= $this->getFieldSql($tableAlias, "FamilyName", "FamilyNameEncrypt", "", true, true);
+        $sql.= $this->getFieldSql($tableAlias, "Address", "AddressEncrypt", "", true, true);
+        $sql.= $this->getFieldSql($tableAlias, "Zip", "Zip", "", false, true);
+        $sql.= $this->getFieldSql($tableAlias, "City", "City", "", false, true);
+        $sql.= $this->getFieldSql($tableAlias, "Country", "Country", "", false, true);
+        $sql.= $this->getFieldSql($tableAlias, "Phone", "PhoneEncrypt", "", true, true);
+        $sql.= $this->getFieldSql($tableAlias, "Letter", "Letter", "", false, true);
+        $sql.= $this->getFieldSql($tableAlias, "HomeId", "Id", "", false, true);
+        $sql.= $this->getResidentsSql($tableAlias, "Residents", $homesTableNameAndId, $continue); 
+        return $sql;
+    }
+    
+    
+    function getResidentsSql($tableAlias, $fieldAlias, $homesTableNameAndId = "Homes.Id", $continue){
+        $memberState = new MemberState($this->db, $this->saronUser);
+
+        $sql = "(SELECT GROUP_CONCAT(";
+        $sql.= $this->getFieldSql($tableAlias . "Res", "", "FirstNameEncrypt", "", true, false);
+        $sql.= ", ' ', ";
+        $sql.= $this->getFieldSql($tableAlias . "Res", "", "LastNameEncrypt", "", true, false);
+        $sql.= ", ' - ', ";
+        $sql.= $memberState->getMemberStateSql($tableAlias . "Res", null, false);
+        $sql.= " SEPARATOR '<BR>') ";
+        $sql.= "FROM People as " . $tableAlias . "Res ";
+        $sql.= "where HomeId = ";
+        $sql.= $homesTableNameAndId . " "; 
+
+        $sql.= "AND DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' ";
+        $sql.= "order by DateOfBirth) as ";
+        
+        if(strlen($tableAlias)>0 && $tableAlias !== ALIAS_CUR_HOMES){
+            $sql.= $tableAlias . "_";
+        }
+        
+        $sql.= $fieldAlias;
+
+        if($continue){
+            $sql.= ", ";
+        }
+        else{
+            $sql.= " ";            
+        }
+        return $sql;
+    }
+
+    function getLongHomeNameSql($tableAlias, $fieldAlias, $continue){
+        $sql = "IF(" . $tableAlias . ".Id is null, 'Inget hem', ";
+        $sql.= "concat(";
+        $sql.= $this->getFieldSql($tableAlias, "", "FamilyNameEncrypt", "", true, false);
+        $sql.= ",' (',";
+        $sql.= $this->getFieldSql($tableAlias, "", "AddressEncrypt", "Adress saknas", true, false);
+        $sql.= ",', ', ";
+        $sql.= $this->getFieldSql($tableAlias, "", "City", "Stad saknas", false, false);
+        $sql.= ",') ')) as ";
+        
+        if(strlen($tableAlias)>0 && $tableAlias !== ALIAS_CUR_HOMES){
+            $sql.= $tableAlias . "_";
+        }
+        
+        $sql.= $fieldAlias;
+
+        if($continue){
+            $sql.= ", ";
+        }
+        else{
+            $sql.= " ";            
+        }
+
         return $sql;
     }
     
@@ -122,10 +181,10 @@ class Homes extends SuperEntity{
             $sql.= "Union "; 
             $sql.= "SELECT -1 as Value, '  Inget hem' as DisplayText ";
             $sql.= "Union "; 
-            $sql.= "select Id as Value, " . getLongHomeNameSql(ALIAS_CUR_HOMES, "DisplayText", false);
+            $sql.= "select Id as Value, " . $this->getLongHomeNameSql(ALIAS_CUR_HOMES, "DisplayText", false);
         }
         else{
-            $sql.= "select Id as Value, " . getLongHomeNameSql(ALIAS_CUR_HOMES, "DisplayText", false);
+            $sql.= "select Id as Value, " . $this->getLongHomeNameSql(ALIAS_CUR_HOMES, "DisplayText", false);
             $where = "WHERE Value=" . $this->HomeId;
         }
         $result = $this->db->select($this->saronUser, $sql, "FROM Homes ", $where, "ORDER BY DisplayText ", "", "Options");    

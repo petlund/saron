@@ -3,8 +3,12 @@
     require_once SARON_ROOT . 'app/entities/SaronUser.php';
     require_once SARON_ROOT . 'app/database/queries.php';
     require_once SARON_ROOT . 'app/database/db.php';
+    require_once SARON_ROOT . 'app/entities/Person.php';
     require_once THREE_PP_PATH . 'tcpdf/tcpdf.php';
-
+    
+    $db;
+    $saronUser;
+    $person;
 
 
     $type = (String)filter_input(INPUT_GET, "type", FILTER_SANITIZE_STRING);
@@ -14,15 +18,17 @@
         try{
             $saronUser = new SaronUser($db);
             $saronUser->hasValidSaronSession(REQUIRE_VIEWER_ROLE, REQUIRE_ORG_VIEWER_ROLE, TICKET_RENEWAL_CHECK);
-        }
+            $person = new Person($db, $saronUser);
+       }
         catch(Exception $ex){
             header("Location: /" . SARON_URI . LOGOUT_URI);
             exit();                                                
         }
-        setUpPdfDoc($db, $type);
+        setUpPdfDoc($db, $person, $type);
     }
+    exit();
     
-function setUpPdfDoc($db, $type){
+function setUpPdfDoc($db, $person, $type){
     define ("INNER", 1);
     define ("OUTER", 2);
     define ("BOOKLET_OUTER_MARGIN", 10);
@@ -79,23 +85,23 @@ function setUpPdfDoc($db, $type){
     switch ($type){
         case "server":
             $typ = "Beslutad";
-            $name = createOrganizationCalender($db, $pdf, $type);
+            $name = createOrganizationCalender($db, $pdf, $person, $type);
             $path = SARON_ROOT . 'data/Organisationskalender.pdf';
             $pdf->Output($path, 'F'); // F = File on server
             break;
         case "decided":
             $typ = "Beslutad";
-            $name = createOrganizationCalender($db, $pdf, $type);
+            $name = createOrganizationCalender($db, $pdf, $person, $type);
             $pdf->Output('Organisationskalender - ' . $typ . ' ' . date('Y-m-d', time()).'.pdf');
             break;
         case "vacancy":
             $typ = "Vakanser";
-            $name = createOrganizationCalender($db, $pdf, $type);
+            $name = createOrganizationCalender($db, $pdf, $person, $type);
             $pdf->Output('Organisationskalender - ' . $typ . ' ' . date('Y-m-d', time()).'.pdf');
             break;
         default:
             $typ = "Förslag";
-            $name = createOrganizationCalender($db, $pdf, $type);
+            $name = createOrganizationCalender($db, $pdf, $person, $type);
             $pdf->Output('Organisationskalender - ' . $typ . ' ' . date('Y-m-d', time()).'.pdf');
     }
     $pdf->close();
@@ -103,7 +109,7 @@ function setUpPdfDoc($db, $type){
     
 
 
-function createOrganizationCalender(db $db, TCPDF $pdf, String $type){
+function createOrganizationCalender(db $db, TCPDF $pdf, $person, String $type){
     define ("CELL_HIGHT", 5.5);
     define ("MAX_CELL_HIGHT", 5.5);
     define ("MAX_HEAD_CELL_HIGHT", 8.0);
@@ -119,7 +125,7 @@ function createOrganizationCalender(db $db, TCPDF $pdf, String $type){
 
     $longName = '';
     
-    $listResult = $db->sqlQuery(getSQL($type));
+    $listResult = $db->sqlQuery(getSQL($person, $type));
     if(!$listResult){
         exit();
     }
@@ -254,18 +260,19 @@ function createOrganizationCalender(db $db, TCPDF $pdf, String $type){
     return 'Organisationskalender - ' . $type;
 }
 
-function getSQL($type){
+function getSQL($person, $type){
+    
     $sql = "select LongName, Tree.Prefix as Tree_Prefix, Tree.Name as Tree_Name, Tree.Description as Info, Unit.Name as Unit_Name, Role.Name as Role_Name, Pos.Comment as Pos_Comment, "
             . "(Select SortOrder from `Org_Role-UnitType` as RUT WHERE  RUT.OrgRole_FK = Pos.OrgRole_FK and RUT.OrgUnitType_FK = Tree.OrgUnitType_FK) as SortOrder,  "
             . "PState.Name as State_Name, PState.Id as State_Id, Pos.People_FK as PersonId, "
             . "Pos.PrevPeople_FK as PrevPersonId, Unit.Name as Unit_Name, "; 
     $sql.= "(Select T.Name from Org_Tree as T Where T.Id = PrevFunction_FK) as FunctionRespons, ";
-    $sql.= getFieldSql("People", "Email", "EmailEncrypt", null, true, true);
-    $sql.= getFieldSql("People", "Mobile", "MobileEncrypt", null, true, true);
+    $sql.= $person->getFieldSql("People", "Email", "EmailEncrypt", null, true, true);
+    $sql.= $person->getFieldSql("People", "Mobile", "MobileEncrypt", null, true, true);
     $sql.= "IF(People.Id>0, CONCAT(";
-    $sql.= getFieldSql("People", null, "FirstNameEncrypt", null, true, false);
+    $sql.= $person->getFieldSql("People", null, "FirstNameEncrypt", null, true, false);
     $sql.= ", ' ', "; 
-    $sql.= getFieldSql("People", null, "LastNameEncrypt", null, true, false);
+    $sql.= $person->getFieldSql("People", null, "LastNameEncrypt", null, true, false);
     $sql.= "),";
     $sql.= "(Select Name from Org_Role Where Org_Role.Id = -People_FK)) as Person, ";
     $sql.= "QueryPath.Path, QueryPath.rel_depth as Head_Level ";

@@ -1,16 +1,27 @@
 <?php
 require_once 'config.php'; 
+require_once SARON_ROOT . 'app/entities/MemberState.php';
 require_once SARON_ROOT . 'app/database/queries.php'; 
 
-class PeopleFilter {
- 
+class PeopleFilter{
+
+    private $db;
+    private $saronUser;
+    private $memberState;
+    
+    function __construct($db, $saronUser){
+        $this->db = $db;
+        $this->saronUser = $saronUser;
+        $this->memberState = new MemberState($db, $saronUser);
+    }
+    
     function getPeopleFilterSql($groupId){ //Memberstatelogic
         switch ($groupId){
             case 0:
-                return getMemberStateIndexSql() . " = " . MEMBER_STATE_MEMBER . " ";
+                return $this->memberState->getIsMemberSQL();
             case 1:
                 //Dopregister
-                return "DateOfMembershipStart is not null and DateOfDeath is null and (" . DECRYPTED_LASTNAME . " not like '" . ANONYMOUS . "') ";
+                return $this->memberState->getIsBaptistSQL() ;
             case 2:
                 //Senast ändrade
                 return "true ";
@@ -34,7 +45,7 @@ class PeopleFilter {
                 return "EXTRACT(YEAR FROM NOW())-1=EXTRACT(YEAR FROM DateOfBaptism) ";
             case 9:
                 //Medlemmar som inte syns i adresskalendern
-                return getMemberStateIndexSql() . " = " . MEMBER_STATE_MEMBER . " and VisibleInCalendar != 2 ";
+                return $this->memberState->getIsMemberSQL() . " and VisibleInCalendar != 2 ";
             case 10:
                 //Medlemmar som dött
                 return "EXTRACT(YEAR FROM NOW())=EXTRACT(YEAR FROM DateOfDeath) and  DateOfMembershipStart is not null and " . DECRYPTED_LASTNAME . " not like '" . ANONYMOUS . "' ";
@@ -46,10 +57,10 @@ class PeopleFilter {
                 return "true ";
             case 13:
                 //Medlemmar utanför Norrköping
-                return getMemberStateIndexSql() . " = " . MEMBER_STATE_MEMBER . " and Zip not like '6%' ";
+                return $this->memberState->getIsMemberSQL() . " and Zip not like '6%' ";
             case 14:
                 //Församlingens vänner
-                return "DateOfMembershipStart is null and DateOfFriendshipStart is not null and DateOfDeath is null "; // Not implemented yet
+                return $this->memberState->getIsFriendSQL();
             case 15:
                 //ej medlem
                 return "((DateOfMembershipStart is null and DateOfMembershipEnd is null) or DateOfMembershipEnd is not null) and DateOfDeath is null and (" . DECRYPTED_LASTNAME . " NOT like '" . ANONYMOUS . "') ";
@@ -69,12 +80,12 @@ class PeopleFilter {
                 return $sqlWhere; 
             case 17:
                 //anonymiserade
-                return "(" . DECRYPTED_LASTNAME . " like '" . ANONYMOUS . "') ";
+                return $this->memberState->getIsAnonymizedSQL();
             case 18:
                 //Medhjälpare
-                return "(" . getMemberStateIndexSql("People", null, null) . " = 6) ";
+                return $this->memberState->getIsVolontaireSQL();
             default :
-                return getMemberStateIndexSql() . " = " . MEMBER_STATE_MEMBER . " "; 
+                return $this->memberState->getIsMemberSQL(); 
         }        
     }
     function getSearchFilterSql($uppercaseSearchString){        

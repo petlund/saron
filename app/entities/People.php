@@ -12,10 +12,15 @@ class People extends SuperEntity{
     protected $filter;
     protected $personId;
     protected $homes;
+    protected $peopleFilter;
+    protected $memberState;
 
     function __construct($db, $saronUser) {
         parent::__construct($db, $saronUser);
         $this->homes = new Homes($db, $saronUser);
+        $this->memberState = new MemberState($db, $saronUser);
+        $this->peopleFilter = new PeopleFilter($db, $saronUser);
+        
         $this->filter = (String)filter_input(INPUT_GET, "filter", FILTER_SANITIZE_STRING);
         $this->personId = (int)filter_input(INPUT_GET, "PersonId", FILTER_SANITIZE_NUMBER_INT);
         if($this->personId === 0){
@@ -51,7 +56,7 @@ class People extends SuperEntity{
     function selectPeople($idFromCreate = -1){
         $id = $this->getId($idFromCreate, $this->id);
 
-        $tw = new PeopleViews();
+        $tw = new PeopleViews($this->db, $this->saronUser);
         $sqlSelect = $tw->getPeopleViewSql($this->appCanvasName, $this->saronUser) .", ";
         $sqlSelect.= $this->homes->getHomeSelectSql(ALIAS_CUR_HOMES, "Homes.Id", false);
         
@@ -97,9 +102,8 @@ class People extends SuperEntity{
                     $sqlWhere.= "People.Id = " . $this->parentId . " ";
                     break;
                 default:
-                    $gf = new PeopleFilter();
-                    $sqlWhere.= $gf->getPeopleFilterSql($this->groupId);
-                    $sqlWhere.= $gf->getSearchFilterSql($this->uppercaseSearchString);
+                    $sqlWhere.= $this->peopleFilter->getPeopleFilterSql($this->groupId);
+                    $sqlWhere.= $this->peopleFilter->getSearchFilterSql($this->uppercaseSearchString);
             }
         }
         else{
@@ -147,11 +151,11 @@ class People extends SuperEntity{
 //        $select.= "Union "; 
         $select = "SELECT null as Value, '-' as DisplayText "; 
         $select.= "Union "; 
-        $select.= "select Id as Value, concat(" . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . ", ' (', " . getMemberStateSql() . ", ')') as DisplayText ";
+        $select.= "select Id as Value, concat(" . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . ", ' (', " . $this->memberState->getMemberStateSql() . ", ')') as DisplayText ";
         
         
         $where = "";
-        $where = "WHERE " . getFilteredMemberStateSql("People", null, false, $this->source);
+        $where = "WHERE " . $this->memberState->getFilteredMemberStateSql("People", null, false, $this->source);
         
         $from = "FROM People ";
         

@@ -1,8 +1,23 @@
 <?php
 require_once 'config.php'; 
 require_once SARON_ROOT . 'app/database/queries.php'; 
+require_once SARON_ROOT . 'app/entities/Homes.php';
+
 
 class PeopleViews {
+    private $db;
+    private $saronUser;
+    private $homes;
+    private $memberState;
+    
+    function __construct($db, $saronUser){
+        $this->db = $db;
+        $this->saronUser = $saronUser;        
+        $this->memberState = new MemberState($db, $saronUser);
+        $this->homes = new Homes($db, $saronUser);
+    }
+
+
     
     function getPeopleViewSql($appCanvasName, $saronUser){
         switch ($appCanvasName){
@@ -13,11 +28,11 @@ class PeopleViews {
         case TABLE_NAME_BIRTHDAY:
             return $this->selectBirthday();
         case TABLE_NAME_MEMBER:
-            return SQL_STAR_PEOPLE . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . DATES_AS_ALISAS_MEMBERSTATES . ", " . $saronUser->getRoleSql(false);
+            return SQL_STAR_PEOPLE . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . $this->memberState->getMemberStateSql("People", "MemberState", false) . ", " . $saronUser->getRoleSql(false);
         case TABLE_NAME_BAPTIST:
-            return SQL_STAR_PEOPLE . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . DATES_AS_ALISAS_MEMBERSTATES .  ", " . $saronUser->getRoleSql(false);
+            return SQL_STAR_PEOPLE . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . $this->memberState->getMemberStateSql("People", "MemberState", false) .  ", " . $saronUser->getRoleSql(false);
         case TABLE_NAME_KEYS:
-            return "Select People.Id as Id, KeyToExp, KeyToChurch, DateOfBirth, " . DECRYPTED_ALIAS_COMMENT_KEY . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . DATES_AS_ALISAS_MEMBERSTATES  . ", " . $saronUser->getRoleSql(false);
+            return "Select People.Id as Id, KeyToExp, KeyToChurch, DateOfBirth, " . DECRYPTED_ALIAS_COMMENT_KEY . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . $this->memberState->getMemberStateSql("People", "MemberState", false)  . ", " . $saronUser->getRoleSql(false);
         case TABLE_NAME_TOTAL:
             return $this->selectTotal() . ", " . $saronUser->getRoleSql(false);
         default:    
@@ -31,18 +46,18 @@ class PeopleViews {
     
     
     function selectPeople(){
-        $sql = SQL_STAR_PEOPLE . ", DateOfFriendshipStart, ";
+        $sql = SQL_STAR_PEOPLE . ", ";
         $sql.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
-        $sql.= getLongHomeNameSql(ALIAS_CUR_HOMES, "LongHomeName", true);
+        $sql.= $this->homes->getLongHomeNameSql(ALIAS_CUR_HOMES, "LongHomeName", true);
         $sql.= DECRYPTED_ALIAS_PHONE . ", ";
-        $sql.= DATES_AS_ALISAS_MEMBERSTATES;
+        $sql.= $this->memberState->getMemberStateSql("People", "MemberState", false);
         return $sql;
     }
 
 
     function selectBirthday(){
         $sql = SQL_ALL_FIELDS . ", ";
-        $sql.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . DATES_AS_ALISAS_MEMBERSTATES . ", ";
+        $sql.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . $this->memberState->getMemberStateSql("People", "MemberState", false) . ", ";
         $sql.= "DateOfBirth, ";
         $sql.= "extract(YEAR FROM NOW()) - extract(YEAR FROM DateOfBirth) as Age, ";
         $sql.= "STR_TO_DATE(Concat(extract(year from now()), '-',extract(Month from DateOfBirth),'-',extract(Day from DateOfBirth)),'%Y-%m-%d') as NextBirthday ";
@@ -51,7 +66,7 @@ class PeopleViews {
     }
 
     function selectTotal(){
-        $selectPerson = "select People.Id as Id, concat('<b>'," . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ", '<BR>Född: </b>', DateOfBirth, if(DateOfDeath is null,'', concat (' -- ', DateOfDeath)), '<BR><B>Status: </B>', " . DATES_AS_MEMBERSTATES. ") as Person, ";
+        $selectPerson = "select People.Id as Id, concat('<b>'," . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ", '<BR>Född: </b>', DateOfBirth, if(DateOfDeath is null,'', concat (' -- ', DateOfDeath)), '<BR><B>Status: </B>', " . $this->memberState->getMemberStateSql("People", null, false). ") as Person, ";
         $selectMember = "concat (";
         $selectMember.= "'<B>Medlemskap start: </B>', if(DateOfMembershipStart is null,'',DateOfMembershipStart), '<BR>', ";
         $selectMember.= "'<B>Medlemskap avslut: </B>', if(DateOfMembershipEnd is null, '',DateOfMembershipEnd ), '<BR>', ";

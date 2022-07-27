@@ -33,14 +33,18 @@ class SaronUser{
         $this->db = $db;
 
         $this->ticket = getTicketFromCookie();
+        try{
+            $attributes = $this->load($this->ticket);        
 
-        $attributes = $this->load($this->ticket);        
-
-        $this->editor = $attributes[0]["Editor"];
-        $this->org_editor = $attributes[0]["Org_Editor"];
-        $this->userDisplayName = $attributes[0]["UserDisplayName"];
-        $this->WP_ID = $attributes[0]["WP_ID"];
-        $this->timeStamp = $attributes[0]["Time_Stamp"];
+            $this->editor = $attributes[0]["Editor"];
+            $this->org_editor = $attributes[0]["Org_Editor"];
+            $this->userDisplayName = $attributes[0]["UserDisplayName"];
+            $this->WP_ID = $attributes[0]["WP_ID"];
+            $this->timeStamp = $attributes[0]["Time_Stamp"];
+        }
+        catch(Exception $error){
+            error_log($error . "\n\n");
+        }
     }
 
     
@@ -50,7 +54,7 @@ class SaronUser{
             $ticket = getTicketFromCookie();
             
             if(strlen($ticket) === 0){  
-                throw new Exception($this->getErrorMessage("(9) Your session is out of scope. " . $ex));
+                throw new Exception($this->getErrorMessage("(9) Your session is out of scope. "));
             }
                         
             $this->checkTicket($ticket, $requireEditor, $requireOrg);
@@ -160,7 +164,7 @@ class SaronUser{
             return $this->db->update("Update SaronUser ", "Set Last_Activity = Now() ", "where WP_ID=" . $this->WP_ID);
         }
         else{
-            throw new Exception($this->getErrorMessage("(7) Your session is out of scope. " . $ex));
+            throw new Exception($this->getErrorMessage("(7) Your session is out of scope. " ));
             
         }
     }
@@ -223,7 +227,7 @@ class SaronUser{
             return true;
         }
         else if($answer === '-1'){ // Not relevant with the new sql statement
-            throw new Exception($this->getErrorMessage("(6) Your session is out of scope. " . $ex));
+            throw new Exception($this->getErrorMessage("(6) Your session is out of scope. "));
         }
         return false;  // It is´t time yet          
 
@@ -233,7 +237,7 @@ class SaronUser{
     
     private function checkTicket($ticket, $editor, $org_editor){
         if(strlen($ticket) === 0){
-            throw new Exception($this->getErrorMessage("(5) Your session is out of scope. " . $ex));
+            throw new Exception($this->getErrorMessage("(5) Your session is out of scope. "));
         }
         
         $this->cleanSaronUser(-1);
@@ -247,7 +251,7 @@ class SaronUser{
     
         if(!$listResult = $this->db->sqlQuery($sql)){
             $this->php_dev_error_log("Exception in exist function", $sql);
-            throw new Exception($this->getErrorMessage("(4) Your session is out of scope. " . $ex));
+            throw new Exception($this->getErrorMessage("(4) Your session is out of scope. "));
         }
         
         $countRows = $listResult[0]["c"];
@@ -255,7 +259,7 @@ class SaronUser{
         if($countRows === '1'){
             return true;
         }
-        throw new Exception($this->getErrorMessage("(3) Your session is out of scope. " . $ex));
+        throw new Exception($this->getErrorMessage("(3) Your session is out of scope. "));
     }
     
     
@@ -278,7 +282,7 @@ class SaronUser{
                 }
             }
             else{
-                throw new Exception($this->getErrorMessage("(2) Your session is out of scope. " . $ex));
+                throw new Exception($this->getErrorMessage("(2) Your session is out of scope. "));
             }
 
             $update = "update SaronUser ";

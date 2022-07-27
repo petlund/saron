@@ -1,4 +1,6 @@
 <?php
+require_once SARON_ROOT . 'app/entities/MemberState.php';
+
 
     $res = openssl_pkey_get_private (PKEY_FILE);
     openssl_pkey_export($res, $privkey);
@@ -6,15 +8,6 @@
     define("SALT_LENGTH", 13);
     define("MAX_STR_LEN", 250);
     
-    
-    define("MEMBER_STATE_NULL", 0);
-    define("MEMBER_STATE_", 1);
-    define("MEMBER_STATE_MEMBER", 2);
-    define("MEMBER_STATE_3", 3);
-    define("MEMBER_STATE_4", 4);
-    define("MEMBER_STATE_5", 5);
-    define("MEMBER_STATE_6", 6);
-    define("MEMBER_STATE_FRIEND", 7);
 
     define("DATE_FORMAT", "'%Y-%m-%d'");
     define("DATE_OF_BIRTH", "DATE_FORMAT(DateOfBirth, " . DATE_FORMAT . ")");
@@ -52,15 +45,13 @@
     define("DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE", "concat(" . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ", ' ', " . DATE_OF_BIRTH . ") ");
     define("DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE_AS_APPIDENTITYNAME", DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . "as AppIdentityName ");
 
-    define("DATES_AS_MEMBERSTATES",  getMemberStateSql("People", null, false));
-    define("DATES_AS_ALISAS_MEMBERSTATES", getMemberStateSql("People", "MemberState", false));
     define("ALIAS_CUR_HOMES", "Homes");
     define("ALIAS_OLD_HOMES", "OldHome");
 
     $ALL_PEOPLE_FIELDS = "People.Id, ";
     $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_FIRSTNAME . ", ";
     $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_LASTNAME . ", ";
-    $ALL_PEOPLE_FIELDS.= DATE_OF_BIRTH_ALIAS_DATE_OF_BIRTH . ", DateOfDeath, PreviousCongregation, MembershipNo, VisibleInCalendar, DateOfMembershipStart, DateOfMembershipEnd, NextCongregation, DateOfBaptism, ";
+    $ALL_PEOPLE_FIELDS.= DATE_OF_BIRTH_ALIAS_DATE_OF_BIRTH . ", DateOfDeath, PreviousCongregation, MembershipNo, VisibleInCalendar, DateOfMembershipStart, DateOfMembershipEnd, NextCongregation, DateOfBaptism, DateOfFriendshipStart, ";
     $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_BAPTISTER . ", ";
     $ALL_PEOPLE_FIELDS.= "CongregationOfBaptism, CongregationOfBaptismThis, Gender, ";
     $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_EMAIL . ", ";
@@ -84,11 +75,7 @@
     define("SQL_FROM_PEOPLE_LEFT_JOIN_HOMES", "FROM People left outer join Homes on People.HomeId=Homes.Id "); 
     define("SQL_WHERE", "Where ");  
     
-    define("SQL_WHERE_MEMBER", "DateOfMembershipStart is not null and DateOfMembershipEnd is null and DateOfDeath is null and " . DECRYPTED_LASTNAME . " not like '" . ANONYMOUS . "' ");  //Memberstatelogic
-    define("SQL_WHERE_NOT_MEMBER", "DateOfMembershipStart is null and DateOfMembershipEnd is null and DateOfDeath is null and " . DECRYPTED_LASTNAME . " not like '" . ANONYMOUS . "' ");  //Memberstatelogic
-
     define("FORMATTED_EMAILADDRESS", "if(" . DECRYPTED_EMAIL . " not like \"\", concat(\"<p class='Email'><a href='mailto:\"," . DECRYPTED_EMAIL . ",\"'>\", " . DECRYPTED_EMAIL . ", \"</a></p>\"),'') ");
-    define("CONTACTS_ALIAS_RESIDENTS", "(SELECT GROUP_CONCAT('<b>', " . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . ", ':</b> ', " . getMemberStateSql("People", null, true) . "IF(" . DECRYPTED_EMAIL . " is NULL, '', CONCAT(', ', " . DECRYPTED_EMAIL . ")), IF(" . DECRYPTED_MOBILE . " is NULL, '', CONCAT(', ', " . DECRYPTED_MOBILE . ")) SEPARATOR '<BR>') FROM People where Homes.Id = HomeId  AND DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' order by DateOfBirth) as Residents ");
 
     define("EMBEDDED_SELECT_SUPERPOS", "if(Pos.OrgSuperPos_FK > 0, "
                                             . "concat(' i rollen som <u>', "
@@ -101,205 +88,12 @@
     define("NOW_TIME_STAMP_DIFF", "if(TO_DAYS(NOW()) - TO_DAYS(Time_Stamp) > 0, 86400, 0) + (TIME_TO_SEC(now()) - TIME_TO_SEC(Time_Stamp)) ");
     define("NOW_LAST_ACTIVITY_DIFF", "if(TO_DAYS(NOW()) - TO_DAYS(Last_Activity) > 0, 86400, 0) + (TIME_TO_SEC(now()) - TIME_TO_SEC(Last_Activity)) ");
    
-    function getFieldSql($tableAlias, $fieldAlias, $fieldName, $nullValue, $encrypt, $continue){
-        $sql = "";
-        IF(strlen($tableAlias) > 0){
-            $sqlField = $tableAlias . "." . $fieldName;
-        }
-        else{
-            $sqlField = $fieldName;
-        }
-        if($encrypt){
-            $sql = "SUBSTR(AES_DECRYPT(" . $sqlField . ", " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")";
-        }
-        else{
-            $sql = $sqlField;            
-        }
-        
-        if(strlen($nullValue) > 0){
-            $sql = "IF(" . $sql . " is null, '" . $nullValue . "', " . $sql . ")";
-        }
-
-        if(strlen($fieldAlias)>0){
-            if(strlen($tableAlias)>0 && $tableAlias !== ALIAS_CUR_HOMES){            
-                $sql.= " as " . $tableAlias . "_" . $fieldAlias;
-            }
-            else{
-                $sql.= " as " . $fieldAlias;                
-            }
-        }
-      
-        if($continue){
-           $sql.= ", "; 
-        }
-        else{
-           $sql.= " ";             
-        }
-        return $sql; 
-    }
+    
 
 
     
-    function getMemberStateSql($tableAlias = "People", $fieldAlias ="", $continue=false){//Memberstatelogic
-        $sql ="(SELECT MemberState.Name FROM MemberState Where MemberState.Id = ";
-        $sql.=getMemberStateIndexSql($tableAlias, null, false);
-        $sql.=") ";
-
-        if(strlen($fieldAlias) > 0){
-            $sql.= " AS " . $fieldAlias;
-        }
-        if($continue){
-            $sql.= ", ";
-        }
-        else{
-            $sql.= " ";            
-        }
-        return $sql;        
-    }
-    
-
-    function getMemberStateIndexSql($tableAlias = "People", $fieldAlias="", $continue=false){//Memberstatelogic
-        $sql="Case ";
-        $sql.="WHEN " . $tableAlias . ".Id is null Then 0 ";
-        $sql.="WHEN " . $tableAlias . ".DateOfDeath > 0 Then 5 ";
-        $sql.="WHEN " . $tableAlias . ".DateOfMembershipStart > 0 AND " . $tableAlias . ".DateOfMembershipEnd is null Then 2 ";
-        $sql.="WHEN UPPER(CONVERT(BINARY " . getFieldSql($tableAlias, null, "LastNameEncrypt", null, true, false) . " USING utf8)) like '%" . ANONYMOUS . "%' THEN 4 ";
-        $sql.="WHEN (SELECT Count(*) from Org_Pos Where " . $tableAlias . ".Id = Org_Pos.People_FK) > 0 then 6 ";
-        $sql.="WHEN " . $tableAlias . ".DateOfFriendshipStart > 0 Then 7 ";
-        $sql.="WHEN " . $tableAlias . ".DateOfBaptism > 0  OR (" . $tableAlias . ".DateOfMembershipStart > 0 AND " . $tableAlias . ".DateOfMembershipEnd > 0) Then 3 ";
-        $sql.="else 1 ";
-        $sql.="END";
-
-        if(strlen($fieldAlias) > 0){
-            $sql.= " AS " . $fieldAlias;
-        }
-        if($continue){
-            $sql.= ", ";
-        }
-        else{
-            $sql.= " ";            
-        }
-        return $sql;        
-    }    
-    
-    
-    
-
-    function getFilteredMemberStateSql($tableAlias = "People", $fieldAlias, $continue, $source){ //Memberstatelogic
-        
-        $sql1 = "";
-        if($source === SOURCE_EDIT){
-            $sql1 = "IF(MemberState.FilterUpdate = '1', true, false) AND ";
-        }
-        else{
-            $sql1 = "true AND ";            
-        }
-        
-        $sql2 = "";
-        if($source === SOURCE_CREATE){
-            $sql2 = "IF(MemberState.FilterCreate = '1', true, false) ";            
-        }
-        else{
-            $sql2 = "true ";            
-        }
-        
-        
-        $sql = "(SELECT ";
-        $sql.= $sql1;
-        $sql.= $sql2;
-        $sql.= "FROM MemberState Where MemberState.Id = ";
-        $sql.= getMemberStateIndexSql($tableAlias, null, false);
-        $sql.= ") ";
-
-        if(strlen($fieldAlias) > 0){
-            $sql.= " AS " . $fieldAlias;
-        }
-        if($continue){
-            $sql.= ", ";
-        }
-        else{
-            $sql.= " ";            
-        }
-        return $sql;        
-        
-    }
-    
-    function getPersonSql($tableAlias, $fieldAlias, $continue){
-        $sql = "CONCAT(";
-        $sql.= getFieldSql($tableAlias, null, "LastNameEncrypt", "", true, false);
-        $sql.= ", ' ', "; 
-        $sql.= getFieldSql($tableAlias, null, "FirstNameEncrypt", "", true, false);
-        $sql.= ", ' ', "; 
-        $sql.= getFieldSql($tableAlias, null, "DateOfBirth", "", false, false);
-        $sql.= ")";
-        if(strlen($fieldAlias) > 0){
-            $sql.= " AS " . $fieldAlias;
-        }
-        if($continue){
-            $sql.= ", ";
-        }
-        else{
-            $sql.= " ";            
-        }
-        return $sql;
-    }
-    
-    function getLongHomeNameSql($tableAlias, $fieldAlias, $continue){
-        $sql = "IF(" . $tableAlias . ".Id is null, 'Inget hem', ";
-        $sql.= "concat(";
-        $sql.= getFieldSql($tableAlias, "", "FamilyNameEncrypt", "", true, false);
-        $sql.= ",' (',";
-        $sql.= getFieldSql($tableAlias, "", "AddressEncrypt", "Adress saknas", true, false);
-        $sql.= ",', ', ";
-        $sql.= getFieldSql($tableAlias, "", "City", "Stad saknas", false, false);
-        $sql.= ",') ')) as ";
-        
-        if(strlen($tableAlias)>0 && $tableAlias !== ALIAS_CUR_HOMES){
-            $sql.= $tableAlias . "_";
-        }
-        
-        $sql.= $fieldAlias;
-
-        if($continue){
-            $sql.= ", ";
-        }
-        else{
-            $sql.= " ";            
-        }
-
-        return $sql;
-    }
  
     
     
-    function getResidentsSql($tableAlias, $fieldAlias, $homesTableNameAndId = "Homes.Id", $continue){
-        $sql = "(SELECT GROUP_CONCAT(";
-        $sql.= getFieldSql($tableAlias . "Res", "", "FirstNameEncrypt", "", true, false);
-        $sql.= ", ' ', ";
-        $sql.= getFieldSql($tableAlias . "Res", "", "LastNameEncrypt", "", true, false);
-        $sql.= ", ' - ', ";
-        $sql.= getMemberStateSql($tableAlias . "Res", null, false);
-        $sql.= " SEPARATOR '<BR>') ";
-        $sql.= "FROM People as " . $tableAlias . "Res ";
-        $sql.= "where HomeId = ";
-        $sql.= $homesTableNameAndId . " "; 
-
-        $sql.= "AND DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' ";
-        $sql.= "order by DateOfBirth) as ";
-        
-        if(strlen($tableAlias)>0 && $tableAlias !== ALIAS_CUR_HOMES){
-            $sql.= $tableAlias . "_";
-        }
-        
-        $sql.= $fieldAlias;
-
-        if($continue){
-            $sql.= ", ";
-        }
-        else{
-            $sql.= " ";            
-        }
-        return $sql;
-    }
     
  

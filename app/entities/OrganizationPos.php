@@ -12,10 +12,11 @@ class OrganizationPos extends SuperEntity{
     private $orgRole_FK;
     private $orgTree_FK;
     private $orgSuperPos_FK;
+    private $memberState;
 
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
-        
+        $this->memberState = new MemberState($db, $saronUser);        
         $this->orgSuperPos_FK = (int)filter_input(INPUT_POST, "OrgSuperPos_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->prevPeople_FK = (int)filter_input(INPUT_POST, "PrevPeople_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->comment = (String)filter_input(INPUT_POST, "Comment", FILTER_SANITIZE_STRING);
@@ -70,14 +71,14 @@ class OrganizationPos extends SuperEntity{
         
         $subSelectCur = "(case "
                     . "WHEN Pos.Function_FK > 0 THEN (Select concat('" . $prevTooltipString . "', F.Name, '" . $midTooltipString . "','Funktionsansvar','" . $postTooltipString . "') From Org_Tree as F Where F.Id = Pos.Function_FK) "
-                    . "WHEN Pos.OrgSuperPos_FK > 0 THEN (Select concat('" . $prevTooltipString . "', R.Name, '" . $midTooltipString . "'," . getPersonSql("pCur2", null, false) . "," . $statusSql . ",'" . $postTooltipString . "') From Org_Pos as P inner join Org_Role as R on R.Id=P.OrgRole_FK left outer join People as pCur2 on pCur2.Id=P.People_FK Where P.Id = Pos.OrgSuperPos_FK ) "
-                    . "ELSE " . getPersonSql("pCur", null, false) . " "
+                    . "WHEN Pos.OrgSuperPos_FK > 0 THEN (Select concat('" . $prevTooltipString . "', R.Name, '" . $midTooltipString . "'," . $this->getPersonSql("pCur2", null, false) . "," . $statusSql . ",'" . $postTooltipString . "') From Org_Pos as P inner join Org_Role as R on R.Id=P.OrgRole_FK left outer join People as pCur2 on pCur2.Id=P.People_FK Where P.Id = Pos.OrgSuperPos_FK ) "
+                    . "ELSE " . $this->getPersonSql("pCur", null, false) . " "
                 . "end) as Responsible , ";
 
         $subSelectPrev = "(case "
                     . "WHEN Pos.PrevFunction_FK > 0 THEN (Select concat('" . $prevTooltipString . "', F.Name, '" . $midTooltipString . "','Funktionsansvar','" . $postTooltipString . "') From Org_Tree as F Where F.Id = Pos.Function_FK) "
-                    . "WHEN Pos.PrevOrgSuperPos_FK > 0 THEN (Select concat('" . $prevTooltipString . "', R.Name, '" . $midTooltipString . "'," . getPersonSql("pPrev2", null, false) . ",'" . $postTooltipString . "') From Org_Pos as P inner join Org_Role as R on R.Id=P.OrgRole_FK left outer join People as pPrev2 on pPrev2.Id=P.People_FK Where P.Id = Pos.OrgSuperPos_FK) "
-                    . "ELSE " . getPersonSql("pPrev", null, false) . " "
+                    . "WHEN Pos.PrevOrgSuperPos_FK > 0 THEN (Select concat('" . $prevTooltipString . "', R.Name, '" . $midTooltipString . "'," . $this->getPersonSql("pPrev2", null, false) . ",'" . $postTooltipString . "') From Org_Pos as P inner join Org_Role as R on R.Id=P.OrgRole_FK left outer join People as pPrev2 on pPrev2.Id=P.People_FK Where P.Id = Pos.OrgSuperPos_FK) "
+                    . "ELSE " . $this->getPersonSql("pPrev", null, false) . " "
                 . "end) as PrevResponsible , ";
 
         $subSelectCurIndex = "(case "
@@ -96,9 +97,9 @@ class OrganizationPos extends SuperEntity{
         $select.= $subSelectPrev;
         $select.= "Role.Name as RoleName, ";
         $select.= $this->parentId . " as ParentId, ";
-        $select.= getMemberStateSql("pCur", "MemberState", true);
-        $select.= getFieldSql("pCur", "Email", "EmailEncrypt", "", true, true);
-        $select.= getFieldSql("pCur", "Mobile", "MobileEncrypt", "", true, true);
+        $select.= $this->memberState->getMemberStateSql("pCur", "MemberState", true);
+        $select.= $this->getFieldSql("pCur", "Email", "EmailEncrypt", "", true, true);
+        $select.= $this->getFieldSql("pCur", "Mobile", "MobileEncrypt", "", true, true);
         $select.= $this->saronUser->getRoleSql(false) . " ";
         
         $from = "FROM Org_Pos as Pos inner join Org_Role Role on Pos.OrgRole_FK = Role.Id ";

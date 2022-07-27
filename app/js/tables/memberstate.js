@@ -43,6 +43,12 @@ function memberstateTableDef(tableTitle, parentTablePath, parentId, parentTableD
                 title: 'Namn',
                 width: '10%',
             },
+            Amount: {
+                edit: false,
+                create: false, 
+                title: 'Antal personer',
+                width: '5%'
+            },
             Description: {
                 edit: true,
                 title: 'Beskrivning',

@@ -34,10 +34,12 @@ class Person extends People{
     protected $KeyToExp;
     protected $Comment;
     protected $CommentKey;
+    protected $memberState;
     
     
     function __construct($db, $saronUser) {
         parent::__construct($db, $saronUser);
+        $this->memberState = new MemberState($db, $saronUser);
         
         $this->HomeId = (int)filter_input(INPUT_POST, "HomeId", FILTER_SANITIZE_NUMBER_INT);
         
@@ -380,7 +382,7 @@ class Person extends People{
     function selectPersonAfterUpdate($id){
         $home = new Home($this->db, $this->saronUser);
         $sqlSelect = SQL_STAR_PEOPLE . ", " . $this->saronUser->getRoleSql(true);
-        $sqlSelect.= DATES_AS_ALISAS_MEMBERSTATES . ", ";
+        $sqlSelect.= $this->memberState->getMemberStateSql("People", "MemberState", false) . ", ";
         $sqlSelect.= $this->getAppCanvasSql(true);
         $sqlSelect.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
         $sqlSelect.= $home->getHomeSelectSql(ALIAS_CUR_HOMES, $this->HomeId, true);
