@@ -62,6 +62,7 @@ class SaronUser{
                 if($this->isItTimeToReNewTicket($ticket)){
                     $newTicket = $this->renewTicket($ticket);
                     setSaronCookie($newTicket);
+                    $this->db->php_dev_error_log("saronUser->hasValidSaronSession", getTicketFromCookie());
                 }
             }
             $this->sessionOK=true;
@@ -299,6 +300,7 @@ class SaronUser{
             foreach($result2 as $aRow){
                 $ticket = $aRow["AccessTicket"];
             }
+            $this->db->php_dev_error_log("saronUser->renewTicket", $ticket);
             $this->db->transaction_end();
 
             return $ticket;
