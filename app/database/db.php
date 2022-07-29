@@ -195,6 +195,10 @@ class db {
     
     
     public function sqlQuery($sql){
+        if(TEST_ENV === true){
+            $this->php_dev_error_log("sqlQuery", "INFO SQL: " . $sql . "\r\n");
+            //syslog(LOG_INFO, "INFO SQL: " . $sql . "\r\n");
+        }
         $listResult = $this->connection->query($sql);
         if(!$listResult){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
@@ -215,7 +219,7 @@ class db {
         $error["Message"] = "";
         
         $errMsg = $appErrorMsg;
-        if(TEST_ENV){
+        if(TEST_ENV === true){
             if($connectionError !== null){
                 $errMsg.= "Error in connection.<BR>File: " . $connectionError->getFile();
                 $errMsg.= ", Line: " . $connectionError->getLine();
@@ -291,7 +295,7 @@ class db {
             error_log("**** DB: " . $method . " *****");
             if(strlen($msg)>0){
                 error_log($msg . "\n\n");
-            }
+            }            
         }
     }
     
