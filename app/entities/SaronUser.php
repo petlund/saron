@@ -208,7 +208,7 @@ class SaronUser{
         return json_encode($error);
     }
     
-    
+
     
     private function isItTimeToReNewTicket($ticket){
         $sql = "select if(" . NOW_TIME_STAMP_DIFF . " > " . TICKET_RENEWIAL_PERIOD_IN_SEC . ","
