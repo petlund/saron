@@ -204,7 +204,7 @@ class People extends SuperEntity{
     function selectMobile(){
         $select = "Select " . DECRYPTED_FIRSTNAME_LASTNAME_AS_NAME_FL . ", " . DECRYPTED_ALIAS_MOBILE . " ";
         $from = "FROM People ";
-        $where = "WHERE " . SQL_WHERE_MEMBER . " and " . DECRYPTED_MOBILE . " is not null and "; 
+        $where = "WHERE " .  $this->memberState->getIsMemberSQL() . " and " . DECRYPTED_MOBILE . " is not null and "; 
         $where.= "(Select count(*) from People as p where People.HomeId=p.HomeId and " . DECRYPTED_EMAIL . " like '%@%')  = 0 ";        
 
         $result = $this->db->select($this->saronUser, $select, $from, $where, "", "", RECORDS);    
