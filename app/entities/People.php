@@ -42,8 +42,14 @@ class People extends SuperEntity{
             switch ($this->appCanvasName){
                 case LIST_MOBILE_INSTEAD_OF_EMAIL:
                     return $this->selectMobile();       
-                case LIST_EMAIL:
-                    return $this->selectEmail();       
+                case LIST_EMAIL_MEMBER:
+                    return $this->selectEmail(LIST_EMAIL_MEMBER);       
+                case LIST_EMAIL_FRIENDSHIP:
+                    return $this->selectEmail(LIST_EMAIL_FRIENDSHIP);       
+                case LIST_EMAIL_ENDING_FRIENDSHIP:
+                    return $this->selectEmail(LIST_EMAIL_ENDING_FRIENDSHIP);       
+                case LIST_EMAIL_VOLONTAIRES:
+                    return $this->selectEmail(LIST_EMAIL_VOLONTAIRES);       
                 default:
                     return $this->selectPeople();       
             }
@@ -167,12 +173,28 @@ class People extends SuperEntity{
     
     function selectEmail(){
         $select = "select ";
-        $select.= DECRYPTED_ALIAS_EMAIL;
         $from = " from People ";
         $where = "where " . DECRYPTED_EMAIL . " like '%@%' ";
-        $where.= "and " . SQL_WHERE_MEMBER . " ";
-        $orderby = "group by Email ";
-        $orderby.= "order by Email"; 
+        switch($this->appCanvasName){
+            case LIST_EMAIL_MEMBER:
+                $select.= DECRYPTED_EMAIL . " as entry ";
+                $where.= "and " . $this->memberState->getIsMemberSQL() . " ";
+            break;
+            case LIST_EMAIL_ENDING_FRIENDSHIP:
+                $select.= "Concat(" . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . ", ' - ', " . DECRYPTED_EMAIL . ")  as entry ";
+                $where.= "and " . $this->memberState->getIsEndingFriendshipSQL() . " ";
+            break;
+            case LIST_EMAIL_FRIENDSHIP:
+                $select.= DECRYPTED_EMAIL . " as entry ";
+                $where.= "and " . $this->memberState->getIsFriendSQL() . " ";
+            break;
+            case LIST_EMAIL_VOLONTAIRES:
+                $select.= DECRYPTED_EMAIL . " as entry ";
+                $where.= "and " . $this->memberState->getIsVolontaireSQL() . " ";
+            break;
+        }
+        $orderby = "group by entry ";
+        $orderby.= "order by entry"; 
 
         $result = $this->db->select($this->saronUser, $select, $from, $where, $orderby, "", RECORDS);    
         return $result;

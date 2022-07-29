@@ -36,6 +36,12 @@ class MemberState extends SuperEntity{
         return $sql;        
     }
     
+    function getIsEndingFriendshipSQL($tableAlias = "People"){
+        $sql = $this->getIsFriendSQL($tableAlias);
+        $sql.= "AND DateOfFriendshipStart > DATE_SUB(NOW(),INTERVAL 1 YEAR)";
+        return $sql;                
+    }
+    
     
     function getIsBaptistSQL($tableAlias = "People"){
         $sql = "(" . $tableAlias . ".DateOfBaptism is not null "

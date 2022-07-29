@@ -42,6 +42,10 @@
 
     define("LIST_MOBILE_INSTEAD_OF_EMAIL", "list_mobile_instead_of_email");
     define("LIST_EMAIL", "list_email");
+    define("LIST_EMAIL_MEMBER", "list_email_member");
+    define("LIST_EMAIL_VOLONTAIRES", "list_email_volontaires");
+    define("LIST_EMAIL_FRIENDSHIP", "list_email_friendship");
+    define("LIST_EMAIL_ENDING_FRIENDSHIP", "list_email_ending_friendship");
     
 //Organisation
     Define("TABLE_NAME_ROLE",  "role");

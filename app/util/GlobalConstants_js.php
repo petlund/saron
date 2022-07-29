@@ -160,4 +160,20 @@ $saron->list->email =  (object)array();
 $saron->list->email->name = LIST_EMAIL;
 $saron->list->email->nameId = "#" . LIST_EMAIL;
 
+$saron->list->email_member =  (object)array();
+$saron->list->email_member->name = LIST_EMAIL_MEMBER;
+$saron->list->email_member->nameId = "#" . LIST_EMAIL_MEMBER;
+
+$saron->list->email_volontaires =  (object)array();
+$saron->list->email_volontaires->name = LIST_EMAIL_VOLONTAIRES;
+$saron->list->email_volontaires->nameId = "#" . LIST_EMAIL_VOLONTAIRES;
+
+$saron->list->email_friendship =  (object)array();
+$saron->list->email_friendship->name = LIST_EMAIL_FRIENDSHIP;
+$saron->list->email_friendship->nameId = "#" . LIST_EMAIL_FRIENDSHIP;
+
+$saron->list->email_ending_friendship =  (object)array();
+$saron->list->email_ending_friendship->name = LIST_EMAIL_ENDING_FRIENDSHIP;
+$saron->list->email_ending_friendship->nameId = "#" . LIST_EMAIL_ENDING_FRIENDSHIP;
+
 $saronJSON = json_encode($saron);
