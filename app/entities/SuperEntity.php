@@ -144,11 +144,11 @@ class SuperEntity {
     
     function getPersonSql($tableAlias, $fieldAlias, $continue){
         $sql = "CONCAT(";
-        $sql.= $this->getFieldSql($tableAlias, null, "LastNameEncrypt", "", true, false);
+        $sql.= $this->getFieldSql($tableAlias, null, "LastNameEncrypt", " ", true, false);
         $sql.= ", ' ', "; 
-        $sql.= $this->getFieldSql($tableAlias, null, "FirstNameEncrypt", "", true, false);
+        $sql.= $this->getFieldSql($tableAlias, null, "FirstNameEncrypt", " ", true, false);
         $sql.= ", ' ', "; 
-        $sql.= $this->getFieldSql($tableAlias, null, "DateOfBirth", "", false, false);
+        $sql.= $this->getFieldSql($tableAlias, null, "DateOfBirth", " ", false, false);
         $sql.= ")";
         if(strlen($fieldAlias) > 0){
             $sql.= " AS " . $fieldAlias;

@@ -72,6 +72,7 @@ class Engagement extends SuperEntity{
         else{
             $where = "WHERE (" . $this->memberState->getIsMemberSQL("p") . " OR " .
                     $this->memberState->getIsRegistratedSQL("p") . " OR " .
+                    $this->memberState->getIsFriendSQL("p") . " OR " .
                     $this->memberState->getIsVolontaireSQL("p") . 
                     ") " . 
                     $this->peopleFilter->getSearchFilterSql($this->uppercaseSearchString) . " ";            
