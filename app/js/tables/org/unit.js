@@ -1,7 +1,7 @@
 /* global DATE_FORMAT,
 saron, 
 SUBUNIT_ENABLED, 
-ORG, TABLE,
+ORG, ORG_UNIT, TABLE,
 RECORD, OPTIONS,
 POS_ENABLED
  */
@@ -222,15 +222,17 @@ function unitTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
             }
         },
         recordUpdated: function (event, data){
+            if(data.record.ParentTreeNode_FK !== parentId)
+                moveOrgUnit(data);
+            
             alowedToUpdateOrDelete(event, data, tableDef);
             
-            if(data.record.parentNodeChange !== '0')
-                $(saron.table.unittype.nameId).jtable('load');
-
         },  
         rowInserted: function(event, data){
-            //data.row.addClass("Id_" + data.record.Id); 
             alowedToUpdateOrDelete(event, data, tableDef);
+            var tr = data.row.closest("tr");
+            var list = tr[0].classList;
+            list.add(saron.table.unit.name + '_' + data.record.Id);
             
             if(data.record.HasSubUnit !== '0' || data.record.HasPos !== '0')
                 data.row.find('.jtable-delete-command-button').hide();
@@ -251,10 +253,6 @@ function unitTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
             else{
                 data.form.find('select[name=OrgUnitType_FK]')[0].disabled=false;
                 data.form.find('select[name=ParentTreeNode_FK]')[0].disabled=true;
- 
-//                var dbox = document.getElementsByClassName('ui-dialog-title');            
-//                for(var i=0; i<dbox.length; i++)
-//                    dbox[i].innerHTML='Lägg till en ny organisatorisk enhet ' + event.data.record.Name ;
             }
 
             data.form.css('width','600px');
@@ -297,4 +295,31 @@ function configUnitTableDef(tableDef){
     if(tablePathRoot === saron.table.unittype.name)
         tableDef.fields.PosEnabled.list = false;             
 
+}
+
+
+function moveOrgUnit(data){
+    // clone data?
+    var childTablePlaceholder_From = getChildTablePlaceHolderFromTag(data.row, data.record.AppCanvasPath);
+    childTablePlaceholder_From.jtable("deleteRecord",{key: data.record.Id, clientOnly:true, animationsEnabled:true});
+
+    var table_To;
+    if(data.record.ParentTreeNode_FK !== null){
+        var parentTableRow_To = $('tr.jtable-data-row.' + saron.table.unit.name + '_' + data.record.ParentTreeNode_FK);
+        if(parentTableRow_To.length > 0){
+            var parentTable_To = getParentTablePlaceHolderFromChild(parentTableRow_To, data.record.AppCanvasPath);
+            var childOpen = parentTable_To.jtable('isChildRowOpen', parentTableRow_To);
+            if(childOpen){
+                var childRow_To = parentTable_To.jtable('getChildRow', parentTableRow_To);
+                var tables_To = childRow_To.find("div.jtable-main-container");
+                table_To = getChildTablePlaceHolderFromTag(tables_To, data.record.AppCanvasPath);
+                table_To.jtable('reload', );
+            }
+            //update parent
+        }
+    }
+    else{
+        table_To = getMainTablePlaceHolderFromTablePath(data.record.AppCanvasPath);
+        table_To.jtable('reload');                    
+    }
 }

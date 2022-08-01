@@ -171,6 +171,10 @@ class db {
     
     
     public function selectSeparate($saronUser, $sqlSelect, $sqlCount, $responstype=RECORDS){
+        if(TEST_ENV === true){
+            $this->php_dev_error_log("selectSeparate", "INFO SQL: " . $sqlSelect . "\r\n");
+            //syslog(LOG_INFO, "INFO SQL: " . $sql . "\r\n");
+        }
 
         $listResult = $this->connection->query($sqlSelect);
         if(!$listResult){

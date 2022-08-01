@@ -24,7 +24,7 @@ function openChildTable(childTableDef, img, data, clientOnly){
     var childTableName = childTableDef.tableName;
     var tablePath = childTableDef.tablePath;;
     var tablePathRoot = getRootElementFromTablePath(tablePath);
-    var tablePlaceHolder = _getChildTablePlaceHolderFromImg(img, tablePathRoot);
+    var tablePlaceHolder = getChildTablePlaceHolderFromTag(img, tablePathRoot);
             
     var source = saron.source.list;
     var resultType = saron.responsetype.records;        
@@ -45,7 +45,7 @@ function openChildTable(childTableDef, img, data, clientOnly){
 function closeChildTable(childTableDef, img, data, clientOnly){
     var tr = img.closest('.jtable-data-row');
     var tableRootElement = getRootElementFromTablePath(data.record.AppCanvasPath);
-    var tablePlaceHolder = _getChildTablePlaceHolderFromImg(img, tableRootElement);
+    var tablePlaceHolder = getChildTablePlaceHolderFromTag(img, tableRootElement);
     
     $(tablePlaceHolder).jtable('closeChildTable', tr, function(callBackData){
         var openChild = false;
@@ -63,20 +63,12 @@ function _updateAfterOpenCloseAction(tablePlaceHolder, tableDef, data, openChild
 
     $(tablePlaceHolder).jtable('updateRecord', options); //update icon
 }
-//function _updateAfterClickAction(tablePlaceHolder, data, tablePathOpenChild, uri, clientOnly){
-//    var url = '/' + saron.uri.saron + uri;
-//    var options = {url:url, clientOnly:clientOnly, animationsEnabled:false};
-//    options.record = {Id: data.record.Id, OpenChildTable: tablePathOpenChild}; 
-//
-//    if(tablePlaceHolder !== null)
-//        $(tablePlaceHolder).jtable('updateRecord', options); //update icon
-//}
 
 
 
-function _getChildTablePlaceHolderFromImg(img, appCanvasName){
-    if(img !== null){
-        var tablePlaceHolder = img.closest('div.jtable-child-table-container');
+function getChildTablePlaceHolderFromTag(tag, appCanvasName){
+    if(tag !== null){
+        var tablePlaceHolder = tag.closest('div.jtable-child-table-container');
         if(tablePlaceHolder.length > 0)
             return tablePlaceHolder;
     }
@@ -92,8 +84,13 @@ function getParentTablePlaceHolderFromChild(childPlaceHolder, appCanvasPath){
         if(tablePlaceHolder.length > 0)
             return tablePlaceHolder;
     }
-    var placeHolder = $("#" + getRootElementFromTablePath(appCanvasPath)); 
+    var placeHolder =  getMainTablePlaceHolderFromTablePath(appCanvasPath);
     return placeHolder;   
+}
+
+
+function getMainTablePlaceHolderFromTablePath(appCanvasPath){
+    return $("#" + getRootElementFromTablePath(appCanvasPath));
 }
 
 
@@ -149,57 +146,6 @@ function getLastElementFromTablePath(appCanvasPath){
         return appCanvasPath.substring(p+1, appCanvasPath.length);
 }
 
-
-
-//function _updateCurrentRow(data, table, listParentRowUri){
-//    var url = '/' + saron.uri.saron + listParentRowUri;
-//    var options = {record:{Id:data.record.Id, AppCanvasName:data.record.AppCanvasName}, clientOnly: false, url:url};
-//
-//    table.jtable('updateRecord', options);
-//    
-//}
-
-
-
-
-//function _getImageCloseTag(data, childTableName, type){
-//    var src = '"/' + saron.uri.saron + saron.uri.images + 'cross.png "title="Stäng"';
-//    var imageTag = _setImageClass(data, childTableName, src, type);
-//    return $(imageTag);
-//}
-//
-//
-//
-//function _getAllClassNameOpenChild(data){
-//    var className = _getClassNameOpenChild(data, saron.table.unit.name);
-//        className+= _getClassNameOpenChild(data, saron.table.unittype.name);
-//        className+= _getClassNameOpenChild(data, saron.table.unitlist.name);
-//        className+= _getClassNameOpenChild(data, saron.table.unittree.name);
-//        className+= _getClassNameOpenChild(data, saron.table.role.name);
-//        className+= _getClassNameOpenChild(data, saron.table.pos.name);
-//        className+= _getClassNameOpenChild(data, saron.table.engagement.name);
-//        className+= _getClassNameOpenChild(data, saron.table.engagements.name);
-//        className+= _getClassNameOpenChild(data, saron.table.people.name);
-//        className+= _getClassNameOpenChild(data, saron.table.member.name);
-//        className+= _getClassNameOpenChild(data, saron.table.baptist.name);
-//        className+= _getClassNameOpenChild(data, saron.table.homes.name);
-//        className+= _getClassNameOpenChild(data, saron.table.keys.name);
-//        className+= _getClassNameOpenChild(data, saron.table.statistics.name);
-//        className+= _getClassNameOpenChild(data, saron.table.statistics_detail.name);
-//    return className;
-//    
-//}
-//
-//
-//
-//
-//
-//
-//
-//function _getClassNameOpenChild(data, tableName){
-//
-//    return tableName + is_open +  data.record.Id + ' ';
-//}
 
 
 

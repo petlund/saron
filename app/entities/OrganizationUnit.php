@@ -9,7 +9,8 @@ class OrganizationUnit extends SuperEntity{
     private $description;
     private $filter;
     private $parentTreeNode_FK;
-    private $newParentTreeNode_FK;
+    private $prevParentTreeNode_FK;
+    private $prevParentTreeNode;
     private $orgUnitType_FK;
     private $orgRole_FK;
     private $selectionId;
@@ -22,7 +23,8 @@ class OrganizationUnit extends SuperEntity{
         $this->description = (String)filter_input(INPUT_POST, "Description", FILTER_SANITIZE_STRING);
         $this->orgUnitType_FK = (int)filter_input(INPUT_POST, "OrgUnitType_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->orgRole_FK = (int)filter_input(INPUT_POST, "OrgRole_FK", FILTER_SANITIZE_NUMBER_INT);
-        $this->newParentTreeNode_FK = (int)filter_input(INPUT_POST, "ParentTreeNode_FK", FILTER_SANITIZE_NUMBER_INT);
+        $this->prevParentTreeNode = (int)filter_input(INPUT_POST, "PrevParentTreeNode", FILTER_SANITIZE_NUMBER_INT);
+        $this->prevParentTreeNode_FK = (int)filter_input(INPUT_POST, "PrevParentTreeNode_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->parentTreeNode_FK = (int)filter_input(INPUT_POST, "ParentTreeNode_FK", FILTER_SANITIZE_NUMBER_INT);
 
         $this->filter = (String)filter_input(INPUT_GET, "filter", FILTER_SANITIZE_STRING);
@@ -76,17 +78,11 @@ class OrganizationUnit extends SuperEntity{
         //filter all nodes witch not have childs and all child below curret node
         
         $select = "Select stat.*, Tree.OrgUnitType_FK, Typ.PosEnabled, Tree.Name, Tree.ParentTreeNode_FK, Tree.Prefix, Tree.Description, Typ.Id as TypeId, Tree.Id, Typ.SubUnitEnabled, Tree.UpdaterName, Tree.Updated, ";
+//        $select.= $this->prevParentTreeNode . " as PrevParentTreeNode_FK, ParentTreeNode_FK as PrevParentTreeNode, ";
         $select.= $this->getAppCanvasSql();
         $select.= "(Select count(*) from Org_Tree as Tree1 where Tree1.ParentTreeNode_FK = Tree.Id) as HasSubUnit, ";
         $select.= "(Select count(*) from Org_Pos as Pos1 where Tree.Id = Pos1.OrgTree_FK) as HasPos, ";
-        
-        IF($this->newParentTreeNode_FK !== $this->parentTreeNode_FK){
-            $select.= "'1' as parentNodeChange, ";            
-        }
-        else{
-            $select.= "'0' as parentNodeChange, ";                        
-        }
-        
+                
         $select.= $this->saronUser->getRoleSql(false);
         
         $from = "from Org_Tree as Tree ";
@@ -212,8 +208,8 @@ class OrganizationUnit extends SuperEntity{
         if($this->orgUnitType_FK > 0){ // On edit OrgUnitType_FK === 0
             $set.= "OrgUnitType_FK='" . $this->orgUnitType_FK . "', ";   
         }
-        if($this->newParentTreeNode_FK >= 0){
-            $set.= "ParentTreeNode_FK='" . $this->newParentTreeNode_FK . "', ";        
+        if($this->parentTreeNode_FK >= 0){
+            $set.= "ParentTreeNode_FK='" . $this->parentTreeNode_FK . "', ";        
         }
         else{
             $set.= "ParentTreeNode_FK=null, ";        

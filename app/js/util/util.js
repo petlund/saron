@@ -11,6 +11,7 @@ const PERSON = 2;
 const PERSON_AND_HOME = 4;
 const NEWS = 5;
 const ORG = 10;
+const ORG_UNIT = 11;
 const TABLE = 100;
 const EVENT_TYPE = 200;
 const NEW_HOME_ID = 'newHomeId';
@@ -164,6 +165,8 @@ function _getId(data, type){
         return 'N' + data.record.Id;
     else if(type === ORG)
         return 'Org_' + data.record.Id;
+    else if(type === ORG_UNIT)
+        return 'Org_Unit_' + data.record.Id;
     else if(type === TABLE)
         return '_' + data.record.Id;
     else 

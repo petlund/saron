@@ -3,20 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/pdf/DirectoryReport.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/baptist.js</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/pdf/BaptistDirectoryReport.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/web-api/updatePerson.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/web-api/updateOrganizationPos.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/web-api/createPerson.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/Person.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/db.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/pdf/AddressLabels.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/web-api/updateNews.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/db_delta/dev/delta_6.sql</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/org/engagement.js</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/web-api/updateSaronUser.php</file>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/lists/email.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/people.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationPos.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/org/unit.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationUnit.php</file>
         </group>
     </open-files>
 </project-private>
