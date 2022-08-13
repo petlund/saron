@@ -23,8 +23,7 @@ function openChildTable(childTableDef, img, data, clientOnly){
     var parentId = childTableDef.parentId;
     var childTableName = childTableDef.tableName;
     var tablePath = childTableDef.tablePath;;
-    var tablePathRoot = getRootElementFromTablePath(tablePath);
-    var tablePlaceHolder = getChildTablePlaceHolderFromTag(img, tablePathRoot);
+    var tablePlaceHolder = getChildTablePlaceHolderFromTag(img, tablePath);
             
     var source = saron.source.list;
     var resultType = saron.responsetype.records;        
@@ -44,8 +43,7 @@ function openChildTable(childTableDef, img, data, clientOnly){
 
 function closeChildTable(childTableDef, img, data, clientOnly){
     var tr = img.closest('.jtable-data-row');
-    var tableRootElement = getRootElementFromTablePath(data.record.AppCanvasPath);
-    var tablePlaceHolder = getChildTablePlaceHolderFromTag(img, tableRootElement);
+    var tablePlaceHolder = getChildTablePlaceHolderFromTag(img, data.record.AppCanvasPath);
     
     $(tablePlaceHolder).jtable('closeChildTable', tr, function(callBackData){
         var openChild = false;
@@ -66,13 +64,14 @@ function _updateAfterOpenCloseAction(tablePlaceHolder, tableDef, data, openChild
 
 
 
-function getChildTablePlaceHolderFromTag(tag, appCanvasName){
+function getChildTablePlaceHolderFromTag(tag, appCanvasPath){
     if(tag !== null){
         var tablePlaceHolder = tag.closest('div.jtable-child-table-container');
         if(tablePlaceHolder.length > 0)
             return tablePlaceHolder;
     }
-    var placeHolder = $("#" + appCanvasName); 
+    var appCanvasRoot = getRootElementFromTablePath(appCanvasPath);
+    var placeHolder = $("#" + appCanvasRoot); 
     return placeHolder;   
 }
 

@@ -74,6 +74,14 @@ $saron->table->birthday->nameId = "#" . TABLE_NAME_BIRTHDAY ;
 $saron->table->birthday->name = TABLE_NAME_BIRTHDAY ;
 
 $saron->table->total = (object)array();
+$saron->table->member_state->nameId = "#" . TABLE_NAME_MEMBER_STATE ;
+$saron->table->member_state->name = TABLE_NAME_MEMBER_STATE ;
+
+$saron->table->total = (object)array();
+$saron->table->member_state_report->nameId = "#" . TABLE_NAME_MEMBER_STATE_REPORT ;
+$saron->table->member_state_report->name = TABLE_NAME_MEMBER_STATE_REPORT ;
+
+$saron->table->total = (object)array();
 $saron->table->total->nameId = "#" . TABLE_NAME_TOTAL ;
 $saron->table->total->name = TABLE_NAME_TOTAL ;
 

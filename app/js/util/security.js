@@ -65,7 +65,15 @@ function alowedToAddRecords(event, data, tableDef){
     case saron.table.role_unittype.name:
         if(isUserEditorOrOrgEditor(userRole)) 
             addButton.show();
-    break;
+        break;
+    case saron.table.memeber_state.name:
+        if(isUserEditorOrOrgEditor(userRole)) 
+            addButton.show();
+        break;
+    case saron.table.member_state.name:
+        if(isUserEditorOrOrgEditor(userRole)) 
+            addButton.show();
+        break;
     default:
           console.log("--> " + tableDef.tableName + " is missing in alowedToAddRecords");
     } 
@@ -217,6 +225,22 @@ function alowedToUpdateOrDelete(event, data, tableDef){
         else{
             editButton.hide();
             deleteButton.hide();            
+        }
+        break;
+    case saron.table.member_state_report.name:
+        if(isUserEditorOrOrgEditor(userRole)){ 
+            editButton.show();
+        }
+        else{
+            editButton.hide();
+        }
+        break;
+    case saron.table.member_state.name:
+        if(isUserEditorOrOrgEditor(userRole)){ 
+            editButton.show();
+        }
+        else{
+            editButton.hide();
         }
         break;
       default:

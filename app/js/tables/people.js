@@ -305,6 +305,19 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                     return getClickImg(data, childTableDef, $imgChild, $imgClose);
                 }
             },
+            PDF: {
+                title: '',
+                width: '1%',
+                sorting: false,
+                display: function (data) {
+                    var tooltip = "Skapa personakt PDF";
+                    var $imgPdf = getImageTag(data, "pdf.png", tooltip, null, -1);
+                    $imgPdf.click(function () {                        
+                        window.open(saron.root.pdf + 'DossierReport.php?Id=' + data.record.Id, '_blank');
+                    });                
+                return $imgPdf;
+                }
+            },
             HomeId: {
                 create: true,
                 edit: true,

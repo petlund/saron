@@ -8,6 +8,11 @@ require_once SARON_ROOT . 'app/entities/MemberState.php';
     define("SALT_LENGTH", 13);
     define("MAX_STR_LEN", 250);
     
+    define("DOSSIER_REPORT", "DossierReport");
+    define("DIRECTORY_REPORT", "DirectoryReport");
+    define("BAPTIST_DIRECTORY_REPORT", "BaptistDirectoryReport");
+    define("SEND_MESSAGES", "SendMessages");
+    define("POTENTIAL_VOLONTAIRE", "PotentialVolontaire");
 
     define("DATE_FORMAT", "'%Y-%m-%d'");
     define("DATE_OF_BIRTH", "DATE_FORMAT(DateOfBirth, " . DATE_FORMAT . ")");
@@ -51,7 +56,7 @@ require_once SARON_ROOT . 'app/entities/MemberState.php';
     $ALL_PEOPLE_FIELDS = "People.Id, ";
     $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_FIRSTNAME . ", ";
     $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_LASTNAME . ", ";
-    $ALL_PEOPLE_FIELDS.= DATE_OF_BIRTH_ALIAS_DATE_OF_BIRTH . ", DateOfDeath, PreviousCongregation, MembershipNo, VisibleInCalendar, DateOfMembershipStart, DateOfMembershipEnd, NextCongregation, DateOfBaptism, DateOfFriendshipStart, ";
+    $ALL_PEOPLE_FIELDS.= DATE_OF_BIRTH_ALIAS_DATE_OF_BIRTH . ", DateOfDeath, PreviousCongregation, MembershipNo, VisibleInCalendar, DateOfMembershipStart, DateOfFriendshipStart, DateOfMembershipEnd, NextCongregation, DateOfBaptism, DateOfFriendshipStart, ";
     $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_BAPTISTER . ", ";
     $ALL_PEOPLE_FIELDS.= "CongregationOfBaptism, CongregationOfBaptismThis, Gender, ";
     $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_EMAIL . ", ";

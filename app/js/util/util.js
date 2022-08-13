@@ -493,7 +493,11 @@ function getOptionsUrlParameters(data, appCanvasName, parentId, appCanvasPath, f
 
 function getImageTag(data, imgFile, title, childTableDef, type){
     var src = '"' + saron.root.images + imgFile + '" title="' + title + '"';
-    var imageTag = _setImageClass(data, childTableDef.tableName, src, type);
+    var imageTag; 
+    if(childTableDef !== null)
+        imageTag = _setImageClass(data, childTableDef.tableName, src, type);
+    else
+        imageTag = _setImageClass(data, "report", src, type);
     return $(imageTag);
 }
 

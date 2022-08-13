@@ -95,6 +95,8 @@
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"users.php", TABLE_NAME_USERS, "Användare");?></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/AddressLabels.php?type=9x3" target="_empty">Adressetiketter 9x3 (pdf-fil)</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/AddressLabels.php?type=6x3" target="_empty">Adressetiketter 6x3 (pdf-fil)</a></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_MEMBER_STATE_REPORT, "Medlemsstatus och rapporter");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_MEMBER_STATE, "Medlemsstatus");?></li>
                             </ul>
                         </li>
                         <li>
@@ -117,7 +119,6 @@
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_ROLE, "Roller");?></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_UNITTYPE, "Organisatoriska enhetstyper");?></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_ORG_ROLE_STATUS, "Bemanningsstatus");?></li>
-                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_ORG_MEMBER_STATE, "Medlemsstatus");?></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_ORGVERSION, "Beslut om organisation");?></li>
                             <!-- 
                                 <li><?php //echo getMenyLink(SARON_VIEW_URI,"organization.php", ORG_GRAPH, " --Grafisk presentation");?></li>

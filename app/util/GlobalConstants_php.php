@@ -12,6 +12,15 @@
     define ("SOURCE_EDIT", "edit");
     
 // From this file
+// People_State
+    Define("PEOPLE_STATE_MEMBER",  "member");
+    Define("PEOPLE_STATE_VOLONTAIRE",  "volontaire");
+    Define("PEOPLE_STATE_DEATH",  "death");
+    Define("PEOPLE_STATE_FRIEND",  "friendship");
+    Define("PEOPLE_STATE_REGISTRATED",  "registrated");
+    Define("PEOPLE_STATE_BAPTIST",  "baptist");
+    Define("PEOPLE_STATE_ANONYMiZED",  "anonymized");
+
 // People    
     Define("TABLE_NAME_PEOPLE",  "people");
 
@@ -71,6 +80,8 @@
 
     Define("TABLE_NAME_ORG_ROLE_STATUS", "org_role_status");
 
-    Define("TABLE_NAME_ORG_MEMBER_STATE", "org_memeber_state");
+    Define("TABLE_NAME_MEMBER_STATE", "memeber_state");
+
+    Define("TABLE_NAME_MEMBER_STATE_REPORT", "memeber_state_report");
 
     

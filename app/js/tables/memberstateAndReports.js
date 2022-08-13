@@ -5,16 +5,16 @@ saron
 
     
 $(document).ready(function () {
-    var tablePlaceHolder = $(saron.table.member_state.nameId);
-    tablePlaceHolder.jtable(memberstateTableDef(null, saron.table.member_state.name));
-    var postData = getPostData(null, saron.table.member_state.name, null, saron.table.member_state.name, saron.source.list, saron.responsetype.records);
+    var tablePlaceHolder = $(saron.table.member_state_report.nameId);
+    tablePlaceHolder.jtable(memberstateReportTableDef(null, saron.table.member_state_report.name));
+    var postData = getPostData(null, saron.table.member_state_report.name, null, saron.table.member_state_report.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', postData);
 });
 
 
 
-function memberstateTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
-    var tableName = saron.table.member_state.name;
+function memberstateReportTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
+    var tableName = saron.table.member_state_report.name;
     var tablePath = getChildTablePath(parentTablePath, tableName);
 
     var tableDef = {
@@ -22,7 +22,7 @@ function memberstateTableDef(tableTitle, parentTablePath, parentId, parentTableD
         tableName: tableName,
         tablePath: tablePath,
         parentTableDef: parentTableDef,
-        title: 'Medlemsstatus',
+        title: 'Medlemsstatus och rapporter',
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
@@ -56,53 +56,29 @@ function memberstateTableDef(tableTitle, parentTablePath, parentId, parentTableD
                 title: 'Beskrivning',
                 width: '30%'
             },
-            Inserted: {
+            DossierReport: {
                 edit: false,
-                title: 'Datum för registrering',
+                title: 'Samtyckesunderlag',
                 width: '5%',
-                options: {"0":"Nej", "1":"Ja"}
+                options: {"0":"-", "1":"Ja"}
             },
-            DateOfMembershipStart: {
+            DirectoryReport: {
                 edit: false,
-                title: 'Medlemskap startdatum',
+                title: 'Medlemskalender',
                 width: '5%',
-                options: {"0":"Nej", "1":"Ja"}
+                options: {"0":"-", "1":"Ja"}
             },
-            DateOfMembershipEnd: {
+            BaptistDirectoryReport: {
                 edit: false,
-                title: 'Medlemskap avslutsdatum',
+                title: 'Dopregister',
                 width: '5%',
-                options: {"0":"Nej", "1":"Ja"}
+                options: {"0":"-", "1":"Ja"}
             },
-            DateOfBaptism: {
+            SendMessages: {
                 edit: false,
-                title: 'Dopdatum',
+                title: 'Utskick',
                 width: '5%',
-                options: {"0":"Nej", "1":"Ja"}
-            },
-            DateOfDeath: {
-                edit: false,
-                title: 'Datum för dödsfall',
-                width: '5%',
-                options: {"0":"Nej", "1":"Ja"}
-            },
-            DateOfFriendshipStart: {
-                edit: false,
-                title: 'Datum för vänkontakt start',
-                width: '5%',
-                options: {"0":"Nej", "1":"Ja, yngre än ett år"}
-            },
-            HasEngagement: {
-                edit: false,
-                title: 'Har uppdrag',
-                width: '5%',
-                options: {"0":"Nej", "1":"Ja"}
-            },
-            DateOfAnonymization: {
-                edit: false,
-                title: 'Datum för anonymisering',
-                width: '5%',
-                options: {"0":"Nej", "1":"Ja"}
+                options: {"0":"-", "1":"Ja"}
             },
             UpdaterName: {
                 edit: false,
@@ -146,7 +122,7 @@ function memberstateTableDef(tableTitle, parentTablePath, parentId, parentTableD
 function configMemberStateTableDef(tableDef){
     var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
 
-    if(tablePathRoot !== saron.table.member_state.name){
+    if(tablePathRoot !== saron.table.member_state_report.name){
         
     }
 }

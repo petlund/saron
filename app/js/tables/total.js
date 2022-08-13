@@ -60,7 +60,7 @@ function totalTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
             },
             PDF: {
                 title: 'Pdf',
-                width: '5%',
+                width: '1%',
                 sorting: false,
                 display: function (data) {
                     var $imgPdf = $('<img src="' + saron.root.images + 'pdf.png" title="Skapa personakt PDF" />');

@@ -153,6 +153,8 @@ function createDossier(TCPDF $pdf, $id){
         $pdf->MultiCell($rightColWidt, 5, "", 0, 'L', 0, 1, '', '', true, 0, false, true, 10, 'T'); 
         $pdf->MultiCell($rightColWidt, 5, "Övrigt", 0, 'L', 0, 1, '', '', true, 0, false, true, 10, 'T'); 
         $pdf->SetFont($FONT_FAMILY, '', 12);
+        $pdf->MultiCell($leftColWidth, 5, "Vänkontakt start", 0, 'L', 0, 0, '', '', true, 0, false, true, 10, 'T'); 
+        $pdf->MultiCell($rightColWidt, 5, $aRow['DateOfFriendshipStart'], 0, 'L', 0, 1, '', '', true, 0, false, true, 10, 'T'); 
         $pdf->MultiCell($leftColWidth, 5, "Synlig i adresskalender", 0, 'L', 0, 0, '', '', true, 0, false, true, 10, 'T'); 
         $VisibleInCalendar="Nej";
         if($aRow['VisibleInCalendar'] == 2){
@@ -197,11 +199,13 @@ function createDossier(TCPDF $pdf, $id){
         $pdf->MultiCell($rightColWidt, 5, "", 0, 'L', 0, 1, '', '', true, 0, false, true, 10, 'T'); 
         $pdf->MultiCell($rightColWidt, 5, "Godkännande", 0, 'L', 0, 1, '', '', true, 0, false, true, 10, 'T'); 
         $pdf->SetFont($FONT_FAMILY, '', 12);
-        $pdf->MultiCell($leftColWidth, 50, "", 0, 'L', 0, 0, '', '', true, 0, false, true, 10, 'T'); 
-        $pdf->MultiCell($rightColWidt, 50, APPROVAL, 0, 'L', 0, 1, '', '', true, 0, false, true, 10, 'T', true); 
-        $pdf->MultiCell($leftColWidth, 5, "", 0, 'L', 0, 0, '', '', true, 0, false, true, 10, 'T'); 
+//        $pdf->MultiCell($leftColWidth, 50, "", 0, 'L', 0, 0, '', '', true, 0, false, true, 10, 'T'); 
+        $pdf->SetFont($FONT_FAMILY, '', 10);
+        $pdf->MultiCell(180, 50, APPROVAL, 0, 'L', 0, 1, '', '', true, 0, false, true, 10, 'T', true); 
+        $pdf->SetFont($FONT_FAMILY, '', 12);
+//        $pdf->MultiCell($leftColWidth, 5, "", 0, 'L', 0, 0, '', '', true, 0, false, true, 10, 'T'); 
         $pdf->MultiCell($rightColWidt, 5, '..............................................................................', 0, 'L', 0, 1, '', '', true, 0, false, true, 10, 'T'); 
-        $pdf->MultiCell($leftColWidth, 5, "", 0, 'L', 0, 0, '', '', true, 0, false, true, 10, 'T'); 
+//        $pdf->MultiCell($leftColWidth, 5, "", 0, 'L', 0, 0, '', '', true, 0, false, true, 10, 'T'); 
         $pdf->MultiCell($rightColWidt, 5, $aRow['FirstName'] . ' ' . $aRow['LastName'], 0, 'L', 0, 1, '', '', true, 0, false, true, 10, 'T');             
     }
     if($id === 0){

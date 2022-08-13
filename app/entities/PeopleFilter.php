@@ -63,7 +63,8 @@ class PeopleFilter{
                 return $this->memberState->getIsFriendSQL();
             case 15:
                 //ej medlem
-                return "((DateOfMembershipStart is null and DateOfMembershipEnd is null) or DateOfMembershipEnd is not null) and DateOfDeath is null and (" . DECRYPTED_LASTNAME . " NOT like '" . ANONYMOUS . "') ";
+                return " NOT " . $this->memberState->getIsMemberSQL();
+//                return "((DateOfMembershipStart is null and DateOfMembershipEnd is null) or DateOfMembershipEnd is not null) and DateOfDeath is null and (" . DECRYPTED_LASTNAME . " NOT like '" . ANONYMOUS . "') ";
             case 16:
                 //underlag för anonymisering nästa år
                 $sqlWhere = DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "%' AND DateOfDeath is null AND NOT (";

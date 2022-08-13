@@ -1,6 +1,7 @@
 <?php
     require_once 'config.php';
     require_once SARON_ROOT . 'app/entities/SaronUser.php';
+    require_once SARON_ROOT . 'app/entities/PeopleFilter.php';
     require_once SARON_ROOT . 'app/database/queries.php';
     require_once SARON_ROOT . 'app/database/db.php';
 
@@ -32,10 +33,10 @@
     define ("HEADER_FOOTER_FONT_SIZE", 10);
     define ("FONT", 'times');
 
-
+    $peopleFilter = new PeopleFilter($db, $saronUser);
     $sql =SQL_STAR_PEOPLE;
     $sql.=" from People ";
-    $sql.="where ((DateOfMembershipStart is not null or CongregationOfBaptismThis = 2) and DateOfDeath is null) and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' "; //Memberstatelogic
+    $sql.="where " . $peopleFilter->getPeopleFilterSql(1); 
     $sql.="order by ";
     $sql.=DECRYPTED_LASTNAME;
     $sql.=", "; 

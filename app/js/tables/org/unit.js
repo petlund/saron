@@ -224,9 +224,11 @@ function unitTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
         recordUpdated: function (event, data){
             if(data.record.ParentTreeNode_FK !== parentId)
                 moveOrgUnit(data);
-            
+
             alowedToUpdateOrDelete(event, data, tableDef);
-            
+
+            if(data.record.HasSubUnit !== '0' || data.record.HasPos !== '0')
+                data.row.find('.jtable-delete-command-button').hide();                        
         },  
         rowInserted: function(event, data){
             alowedToUpdateOrDelete(event, data, tableDef);
@@ -313,13 +315,18 @@ function moveOrgUnit(data){
                 var childRow_To = parentTable_To.jtable('getChildRow', parentTableRow_To);
                 var tables_To = childRow_To.find("div.jtable-main-container");
                 table_To = getChildTablePlaceHolderFromTag(tables_To, data.record.AppCanvasPath);
-                table_To.jtable('reload', );
+                table_To.jtable('reload');
             }
+            else
+                return;
             //update parent
         }
+        else
+            return;
     }
     else{
         table_To = getMainTablePlaceHolderFromTablePath(data.record.AppCanvasPath);
-        table_To.jtable('reload');                    
+        var options = {'record': data.record, 'clientOnly': true, 'url': null, 'animationsEnabled': true };
+        table_To.jtable('addRecord', options);                    
     }
 }

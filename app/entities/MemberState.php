@@ -20,7 +20,8 @@ class MemberState extends SuperEntity{
     function getIsMemberSQL($tableAlias = "People"){
         $sql = "(" . $tableAlias . ".DateOfMembershipStart is not null AND " . 
                $tableAlias . ".DateOfDeath is null AND " .
-               $tableAlias . ".DateOfMembershipEnd is null) ";
+               $tableAlias . ".DateOfMembershipEnd is null AND NOT " .
+               $this->getIsAnonymizedSQL($tableAlias) . ") ";
         
         return $sql;
     }
@@ -74,8 +75,8 @@ class MemberState extends SuperEntity{
         $sql = "(" . $tableAlias . ".DateOfDeath is null AND " . 
                $tableAlias . ".DateOfBaptism is null AND " .
                $tableAlias . ".DateOfMembershipStart is null AND " .
-               $tableAlias . ".DateOfMembershipEnd is null AND " .
-               "UPPER(CONVERT(BINARY " . $this->getFieldSql($tableAlias, null, "LastNameEncrypt", null, true, false) . " USING utf8)) NOT like '%" . ANONYMOUS . "%' AND " .
+               $tableAlias . ".DateOfMembershipEnd is null AND NOT " .
+               $this->getIsAnonymizedSQL($tableAlias) . " AND " .
                $tableAlias . ".DateOfFriendshipStart is null AND " .
                "(SELECT Count(*) from Org_Pos as Pos Where " . $tableAlias . ".Id = Pos.People_FK) = 0) ";
         return $sql;
@@ -191,18 +192,66 @@ class MemberState extends SuperEntity{
     
     
     function selectDefault($id){
-        $select = "SELECT MemberState.*, Amount, " . $this->saronUser->getRoleSql(false) ;
-        $from = "FROM MemberState right outer join (select count(*) as Amount, " . $this->getMemberStateIndexSql() 
-                . "as MemberStateId from People GROUP BY MemberStateId) as MemberStates on Id = MemberStateId  ";
+        $select = "SELECT MemberState.*, Amount, ";
+        $select.= $this->saronUser->getRoleSql(false) ;
+
+        $from = "FROM MemberState ";
+        $from.= "right outer join (select count(*) as Amount, ";
+        $from.= $this->getMemberStateIndexSql();
+        $from.= "as MemberStateId from People GROUP BY MemberStateId) as MemberStates on Id = MemberStateId  ";
+        
+        switch($this->appCanvasPath){
+            case TABLE_NAME_MEMBER_STATE_REPORT:
+                $select.= ", "; 
+                $select.= $this->getIncludedInReport(DIRECTORY_REPORT, true);
+                $select.= $this->getIncludedInReport(BAPTIST_DIRECTORY_REPORT, true);
+                $select.= $this->getIncludedInReport(DOSSIER_REPORT, true);
+                $select.= $this->getIncludedInReport(SEND_MESSAGES, false);
+            break;
+        }
    
         if($id < 0){
             $result = $this->db->select($this->saronUser, $select , $from, "", $this->getSortSql(), $this->getPageSizeSql(), RECORDS);    
             return $result;
         }
         else{
-            $result = $this->db->select($this->saronUser, $select , "FROM MemberState ", "WHERE Id = " . $id . " ", $this->getSortSql(), $this->getPageSizeSql(), RECORD);        
+            $result = $this->db->select($this->saronUser, $select , $from, "WHERE Id = " . $id . " ", $this->getSortSql(), $this->getPageSizeSql(), RECORD);        
             return $result;
         }
+    }
+    
+    
+    
+    function getIncludedInReport($reportName, $continiue = false){
+        $sqlIn = "";
+        switch($reportName){
+            case DIRECTORY_REPORT: 
+                $sqlIn = "(2)";
+            break;
+            case BAPTIST_DIRECTORY_REPORT: 
+                $sqlIn = "(2,3)";
+            break;
+            case DOSSIER_REPORT: 
+                $sqlIn = "(1,2,3,4,5, 6, 7)";
+            break;
+            case SEND_MESSAGES: 
+                $sqlIn = "(2,6,7)";
+            break;
+            case POTENTIAL_VOLONTAIRE: 
+                $sqlIn = "(1,7)";
+            break;
+            default:
+            $sqlIn = "(-1)";
+        }
+        $sql = "(select IF(MemberState.Id in " . $sqlIn . ", 1, 0)) as " . $reportName;
+        
+        if($continiue){
+            $sql.= ", ";
+        }
+        else{
+            $sql.= " ";            
+        }
+        return $sql;
     }
     
     

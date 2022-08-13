@@ -3,8 +3,17 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/people.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/util/security.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/views/organization.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/util/GlobalConstants_js.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/MemberState.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/database/queries.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/memberstateAndReports.js</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationPos.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/memberstate.js</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/util/GlobalConstants_php.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/menu.php</file>
+            <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/people.js</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/js/tables/org/unit.js</file>
             <file>file:/Users/peter/Dropbox/Peter/dev/project-saron/saron/app/entities/OrganizationUnit.php</file>
         </group>
