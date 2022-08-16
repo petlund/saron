@@ -31,33 +31,42 @@ class MemberState extends SuperEntity{
         $sql = "(" . $tableAlias . ".DateOfMembershipStart is null OR (" . 
                $tableAlias . ".DateOfMembershipStart is not null AND " .
                $tableAlias . ".DateOfMembershipEnd is not null)) AND " .
-               $tableAlias . ".DateOfDeath is null AND " .
-               "UPPER(CONVERT(BINARY " . $this->getFieldSql($tableAlias, null, "LastNameEncrypt", null, true, false) . " USING utf8)) NOT like '%" . ANONYMOUS . "%' AND " .
+               $tableAlias . ".DateOfDeath is null AND NOT " .
+               $this->getIsAnonymizedSQL($tableAlias) . " AND " .
                $tableAlias . ".DateOfFriendshipStart is not null ";
         return $sql;        
     }
     
-    function getIsEndingFriendshipSQL($tableAlias = "People"){
+    function getIsEndedFriendshipSQL($tableAlias = "People"){
         $sql = $this->getIsFriendSQL($tableAlias);
         $sql.= "AND DateOfFriendshipStart > DATE_SUB(NOW(),INTERVAL 1 YEAR)";
         return $sql;                
     }
     
     
+    function getIsEndedMembershipSQL($tableAlias = "People"){
+        $sql = "(" . $tableAlias . ".DateOfMembershipStart is not null AND " . 
+               $tableAlias . ".DateOfDeath is null AND " .
+               $tableAlias . ".DateOfMembershipEnd is NOT null AND NOT " .
+               $this->getIsAnonymizedSQL($tableAlias) . ") ";
+
+        return $sql;                
+    }
+    
+    
     function getIsBaptistSQL($tableAlias = "People"){
-        $sql = "(" . $tableAlias . ".DateOfBaptism is not null "
-                . "OR (" . $tableAlias . ".DateOfMembershipStart is not null AND " . $tableAlias . ".DateOfMembershipEnd is not null)) "
-                . "AND UPPER(CONVERT(BINARY " . $this->getFieldSql($tableAlias, null, "LastNameEncrypt", null, true, false) . " USING utf8)) NOT like '%" . ANONYMOUS . "%' "
+        $sql = "((" . $tableAlias . ".DateOfBaptism is not null "
+                . "OR (" . $tableAlias . ".DateOfMembershipStart is not null AND " . $tableAlias . ".DateOfMembershipEnd is not null)) AND NOT "
+                . $this->getIsAnonymizedSQL($tableAlias)
                 . "AND " . $tableAlias . ".DateOfDeath is null " 
-                . "AND " . $tableAlias . ".DateOfFriendshipStart is null ";
+                . "AND " . $tableAlias . ".DateOfFriendshipStart is null) ";
         return $sql;        
     }
     
     
     function getIsVolontaireSQL($tableAlias = "People"){
-        $sql = "(" . $tableAlias . ".DateOfMembershipStart is null AND " . 
-               //$tableAlias . ".DateOfMembershipEnd is null AND " .  
-               "UPPER(CONVERT(BINARY " . $this->getFieldSql($tableAlias, null, "LastNameEncrypt", null, true, false) . " USING utf8)) NOT like '%" . ANONYMOUS . "%' AND " .
+        $sql = "(" . $tableAlias . ".DateOfMembershipStart is null AND NOT " . 
+               $this->getIsAnonymizedSQL($tableAlias) . " AND " .
                $tableAlias . ".DateOfDeath is null AND " .
                $tableAlias . ".DateOfFriendshipStart is null AND " .
                "(SELECT Count(*) from Org_Pos as Pos Where " . $tableAlias . ".Id = Pos.People_FK) > 0) ";
@@ -123,6 +132,7 @@ class MemberState extends SuperEntity{
         $sql.="WHEN " . $this->getIsAnonymizedSQL($tableAlias) . " THEN 4 ";
         $sql.="WHEN " . $this->getIsVolontaireSQL($tableAlias) . " then 6 ";
         $sql.="WHEN " . $this->getIsFriendSQL($tableAlias) . " Then 7 ";
+        $sql.="WHEN " . $this->getIsEndedMembershipSQL($tableAlias) . " Then 8 ";
         $sql.="WHEN " . $this->getIsBaptistSQL($tableAlias) . " Then 3 ";
         $sql.="else -1 ";
         $sql.="END";
@@ -229,10 +239,10 @@ class MemberState extends SuperEntity{
                 $sqlIn = "(2)";
             break;
             case BAPTIST_DIRECTORY_REPORT: 
-                $sqlIn = "(2,3)";
+                $sqlIn = "(2,3, 8)";
             break;
             case DOSSIER_REPORT: 
-                $sqlIn = "(1,2,3,4,5, 6, 7)";
+                $sqlIn = "(1,2,3,4,5, 6, 7, 8)";
             break;
             case SEND_MESSAGES: 
                 $sqlIn = "(2,6,7)";

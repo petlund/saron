@@ -4,6 +4,7 @@
     require_once SARON_ROOT . 'app/database/queries.php';
     require_once SARON_ROOT . 'app/database/db.php';
     require_once SARON_ROOT . 'app/entities/SaronUser.php';
+    require_once SARON_ROOT . 'app/entities/MemberState.php';
     require_once THREE_PP_PATH . 'tcpdf/tcpdf.php';
 
     $db = new db();
@@ -33,12 +34,13 @@
     define ("HEADER_FOOTER_FONT_SIZE", 10);
     define ("FONT", 'times');
 
+    $memberState = new MemberState($db, $saronUsers);
     $sql =SQL_ALL_FIELDS . ", SortList.GroupName, ";
     $sql.="(select count(*) from People as pp where pp.HomeId=Homes.Id) as fam_member_count ";
     $sql.="from "; 
     $sql.="((Select HomeId, HomeId as hid, substr(" . DECRYPTED_LASTNAME . ", 1, 5) as SortName, ";
     $sql.="(select max(" . DECRYPTED_LASTNAME . ") from People where hid=HomeId and substr(" . DECRYPTED_LASTNAME . ", 1, 5)=SortName and length(" . DECRYPTED_LASTNAME . ")=(select min(length(" . DECRYPTED_LASTNAME . ")) from People where hid=HomeId and substr(" . DECRYPTED_LASTNAME . ", 1, 5)=SortName)) as GroupName from People ";
-    $sql.="WHERE  DateOfMembershipStart is not null and DateOfMembershipEnd is null and DateOfDeath is null and VisibleInCalendar=2 group by HomeId, SortName) as SortList "; 
+    $sql.="WHERE  " . $memberState->getIsMemberSQL(); 
     $sql.="inner join People on People.HomeId=SortList.HomeId) "; 
     $sql.="left outer join Homes on People.HomeId = Homes.Id ";  
     $sql.="where DateOfMembershipStart is not null and  DateOfMembershipEnd is null and DateOfDeath is null and VisibleInCalendar=2 "; //Memberstatelogic

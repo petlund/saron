@@ -61,7 +61,6 @@ class PeopleViews {
         $sql.= "DateOfBirth, ";
         $sql.= "extract(YEAR FROM NOW()) - extract(YEAR FROM DateOfBirth) as Age, ";
         $sql.= "STR_TO_DATE(Concat(extract(year from now()), '-',extract(Month from DateOfBirth),'-',extract(Day from DateOfBirth)),'%Y-%m-%d') as NextBirthday ";
-        //$sql.= "concat(extract(year from now()),'-', DATE_FORMAT( STR_TO_DATE(extract(Month from DateOfBirth), '%m' ) , '%m' ),'-',DATE_FORMAT(STR_TO_DATE(extract(day from DateOfBirth), '%d' ) , '%d' )) as NextBirthday ";
         return $sql;
     }
 

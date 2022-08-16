@@ -21,7 +21,7 @@ class PeopleFilter{
                 return $this->memberState->getIsMemberSQL();
             case 1:
                 //Dopregister
-                return $this->memberState->getIsBaptistSQL() ;
+                return $this->memberState->getIsBaptistSQL() . " OR " . $this->memberState->getIsMemberSQL();
             case 2:
                 //Senast ändrade
                 return "true ";
@@ -63,20 +63,25 @@ class PeopleFilter{
                 return $this->memberState->getIsFriendSQL();
             case 15:
                 //ej medlem
-                return " NOT " . $this->memberState->getIsMemberSQL();
-//                return "((DateOfMembershipStart is null and DateOfMembershipEnd is null) or DateOfMembershipEnd is not null) and DateOfDeath is null and (" . DECRYPTED_LASTNAME . " NOT like '" . ANONYMOUS . "') ";
-            case 16:
+                return " NOT (" . $this->memberState->getIsMemberSQL() . " OR " . 
+                        $this->memberState->getIsAnonymizedSQL() . " OR " . 
+                        $this->memberState->getIsDeathSQL() . ") ";
+            case 16:    
                 //underlag för anonymisering nästa år
-                $sqlWhere = DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "%' AND DateOfDeath is null AND NOT (";
+                $sqlWhere = "NOT (";
+                $sqlWhere.= $this->memberState->getIsAnonymizedSQL();
+                $sqlWhere.= " OR ";
+                $sqlWhere.= $this->memberState->getIsDeathSQL() ;
+                $sqlWhere.= " OR ";
                 $sqlWhere.= "if(DateOfMembershipEnd is null, false, EXTRACT(YEAR FROM DateOfMembershipEnd) = EXTRACT(YEAR FROM Now())) ";
                 $sqlWhere.= "OR ";
                 $sqlWhere.= "if(DateOfBaptism is null, false, EXTRACT(YEAR FROM DateOfBaptism) = EXTRACT(YEAR FROM Now())) ";
                 $sqlWhere.= "OR ";
-                $sqlWhere.= "if(DateOfFriendshipStart is null, false, DateOfFriendshipStart - Now() > 365) ";
+                $sqlWhere.= "if(DateOfFriendshipStart is null, false, DateOfFriendshipStart > DATE_SUB(NOW(),INTERVAL 1 YEAR)) ";
                 $sqlWhere.= "OR ";
-                $sqlWhere.= "(Select count(*) from Org_Pos Where People_FK = People.Id) > 0 ";
+                $sqlWhere.= $this->memberState->getIsVolontaireSQL();
                 $sqlWhere.= "OR ";
-                $sqlWhere.= "(DateOfMembershipStart is NOT null and DateOfMembershipEnd is null) ";
+                $sqlWhere.= $this->memberState->getIsMemberSQL();
                 $sqlWhere.= ") ";
                 return $sqlWhere; 
             case 17:

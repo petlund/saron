@@ -213,11 +213,16 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                 delete: false,            
                 display: function (data) {
                     var childTableTitle = _setClassAndValueHeadline(data, 'Name', PERSON, 'Dopuppgifter', 'Dopuppgifter för ', '');;
-                    var tooltip = 'Dopuppgifter';
-                    var imgFile = "baptist.png";
-                    var clientOnly = true;
+                    var tooltip = 'Dopuppgifter saknas';
+                    var imgFile = "not_baptist.png";
+                    var clientOnly = false;
                     var type = 0;
-
+                    
+                    if(data.record.DateOfBaptism !== null){
+                        imgFile = "baptist.png";
+                        tooltip = 'Dopuppgifter saknas';
+                    }
+                    
                     var childTableDef = baptistTableDef(childTableTitle, tablePath, data.record.Id, tableDef); // PersonId point to childtable unic id   
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
                     var $imgClose = getImageCloseTag(data, childTableDef, type);
@@ -306,6 +311,8 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                 }
             },
             PDF: {
+                create: false,
+                edit: false,
                 title: '',
                 width: '1%',
                 sorting: false,

@@ -182,7 +182,7 @@ class People extends SuperEntity{
             break;
             case LIST_EMAIL_ENDING_FRIENDSHIP:
                 $select.= "Concat(" . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . ", ' - ', " . DECRYPTED_EMAIL . ")  as entry ";
-                $where.= "and " . $this->memberState->getIsEndingFriendshipSQL() . " ";
+                $where.= "and " . $this->memberState->getIsEndedFriendshipSQL() . " ";
             break;
             case LIST_EMAIL_FRIENDSHIP:
                 $select.= DECRYPTED_EMAIL . " as entry ";
