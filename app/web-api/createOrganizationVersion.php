@@ -7,6 +7,7 @@ require_once 'config.php';
 
 require_once SARON_ROOT . 'app/database/db.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
+require_once SARON_ROOT . 'app/entities/Person.php';
 require_once SARON_ROOT . 'app/entities/OrganizationVersion.php';
 require_once SARON_ROOT . 'app/pdf/OrganizationReport.php';
 
@@ -19,8 +20,8 @@ require_once SARON_ROOT . 'app/pdf/OrganizationReport.php';
         $orgVersion = new OrganizationVersion($db, $saronUser);
         $result = $orgVersion->insert();
         $db->transaction_end();   
-
-        setUpPdfDoc($db, "server");
+        $person = new Person($db, $saronUser);
+        setUpPdfDoc($db, $person, "server");
 
         echo $result;
         

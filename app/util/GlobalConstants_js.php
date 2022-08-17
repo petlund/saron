@@ -73,11 +73,11 @@ $saron->table->birthday = (object)array();
 $saron->table->birthday->nameId = "#" . TABLE_NAME_BIRTHDAY ;
 $saron->table->birthday->name = TABLE_NAME_BIRTHDAY ;
 
-$saron->table->total = (object)array();
+$saron->table->member_state = (object)array();
 $saron->table->member_state->nameId = "#" . TABLE_NAME_MEMBER_STATE ;
 $saron->table->member_state->name = TABLE_NAME_MEMBER_STATE ;
 
-$saron->table->total = (object)array();
+$saron->table->member_state_report = (object)array();
 $saron->table->member_state_report->nameId = "#" . TABLE_NAME_MEMBER_STATE_REPORT ;
 $saron->table->member_state_report->name = TABLE_NAME_MEMBER_STATE_REPORT ;
 
@@ -150,10 +150,6 @@ $saron->table->orgversion->name = TABLE_NAME_ORGVERSION ;
 $saron->table->org_role_status = (object)array();
 $saron->table->org_role_status->nameId = "#" . TABLE_NAME_ORG_ROLE_STATUS ;
 $saron->table->org_role_status->name = TABLE_NAME_ORG_ROLE_STATUS ;
-
-$saron->table->org_member_state = (object)array();
-$saron->table->org_member_state->nameId = "#" . TABLE_NAME_ORG_MEMBER_STATE ;
-$saron->table->org_member_state->name = TABLE_NAME_ORG_MEMBER_STATE ;
 
 $saron->table->users = (object)array();
 $saron->table->users->nameId = "#" . TABLE_NAME_USERS ;

@@ -550,22 +550,22 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
 }
 
 
-function configUnitTableDef(tableDef){
-
-    var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
-
-    if(tablePathRoot === saron.table.unittree.name){
-    }
-    if(tablePathRoot === saron.table.unitlist.name 
-            || tablePathRoot === saron.table.unittype.name 
-            || tablePathRoot === saron.table.role.name 
-            || tablePathRoot === saron.table.statistics.name){ 
-        tableDef.actions.updateAction  = null;
-        tableDef.actions.createAction  = null;
-    }    
-}
-
-
+//function configUnitTableDef(tableDef){
+//
+//    var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
+//
+//    if(tablePathRoot === saron.table.unittree.name){
+//    }
+//    if(tablePathRoot === saron.table.unitlist.name 
+//            || tablePathRoot === saron.table.unittype.name 
+//            || tablePathRoot === saron.table.role.name 
+//            || tablePathRoot === saron.table.statistics.name){ 
+//        tableDef.actions.updateAction  = null;
+//        tableDef.actions.createAction  = null;
+//    }    
+//}
+//
+//
 function _updatePeopleFields(data){
     _updateFields(data, "LongHomeName", PERSON);                                                
     _updateFields(data, "Residents", HOME);                                                

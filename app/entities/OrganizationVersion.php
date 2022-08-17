@@ -6,12 +6,14 @@ class OrganizationVersion extends SuperEntity{
     
     private $decision_date;
     private $information;
+    private $memberState;
             
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
         
         $this->information = (String)filter_input(INPUT_POST, "information", FILTER_SANITIZE_STRING);
         $this->decision_date = (String)filter_input(INPUT_POST, "decision_date", FILTER_SANITIZE_STRING);
+        $this->memberState = new MemberState($db, $saronUser);
     }
     
     function select($id = -1, $rec=RECORDS){
@@ -29,9 +31,9 @@ class OrganizationVersion extends SuperEntity{
     function checkVersionData(){
         $error = array();
 
-        if(strlen($this->information) < 10){
+        if(strlen($this->information) < 5){
             $error["Result"] = "ERROR";
-            $error["Message"] = "Du behöver ge en lite längre förklaring till varför du skapar en ny version av organisationen. ";
+            $error["Message"] = "Namnge beslutsmötet. ";
             throw new Exception(json_encode($error));
         }
          
@@ -53,6 +55,17 @@ class OrganizationVersion extends SuperEntity{
         $where = "WHERE OrgPosStatus_FK in (1, 4, 5, 6)";
         $this->db->update($update, $set, $where);
     }
+    
+    
+    function updatFriendshipDateForPeopleWidthEngagement(){
+        
+        $sqlUpdate = "update People ";
+        $sqlSet   = "set DateOfFriendshipStart = Now() ";
+        $sqlWhere = "where ";
+        $sqlWhere.= $this->memberState->getHasEngagement();  
+        $sqlWhere.="AND DateOfFriendshipStart is not null ";
+        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
+    }
 
 
     function  update(){ // TBD
@@ -72,6 +85,7 @@ class OrganizationVersion extends SuperEntity{
     function insert(){
         $this->checkVersionData();
         $this->update_Org();
+        $this->updatFriendshipDateForPeopleWidthEngagement();
 
         $sqlInsert = "INSERT INTO Org_Version (decision_date, information, UpdaterName) ";
         $sqlInsert.= "VALUES (";

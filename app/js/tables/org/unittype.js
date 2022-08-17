@@ -141,8 +141,6 @@ function unitTypeTableDef(tableTitle, parentTablePath, parentId, parentTableDef)
                     });    
 
                     return getClickImg(data, childTableDef, $imgChild, $imgClose);
-
-                    return null;
                 }
             },
             Name: {

@@ -5,7 +5,7 @@
 
     
 $(document).ready(function () {
-    var tablePlaceHolder = $(saron.table.orgversion.nameId)
+    var tablePlaceHolder = $(saron.table.orgversion.nameId);
     tablePlaceHolder.jtable(orgVersionTableDef(null, saron.table.orgversion.name, null, null));
 
     var addButton = tablePlaceHolder.find('.jtable-toolbar-item-add-record');
@@ -16,10 +16,16 @@ $(document).ready(function () {
 });
 
 
-function orgVersionTableDef(tableTitle, tablePath, parentId, parentTableDef){
-    return {
-        title: 'Beslutslog över organisatationsförändringar',
+function orgVersionTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
+    var tableName = saron.table.orgversion.name;
+    var tablePath = getChildTablePath(parentTablePath, tableName);
+
+    var tableDef = {
+        parentId: parentId,
+        tableName: tableName,
+        tablePath: tablePath,
         parentTableDef: parentTableDef,
+        title: 'Beslutslog över organisatationsförändringar',
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
@@ -77,7 +83,8 @@ function orgVersionTableDef(tableTitle, tablePath, parentId, parentTableDef){
             }
         },        
         recordsLoaded: function(event, data) {
-            alowedToAddRecords(event, data, tableDef);        },        
+            alowedToAddRecords(event, data, tableDef);        
+        },        
         formCreated: function (event, data){
             if(data.formType === saron.formtype.edit)
                 data.row[0].style.backgroundColor = "yellow";
@@ -99,5 +106,9 @@ function orgVersionTableDef(tableTitle, tablePath, parentId, parentTableDef){
                 data.row[0].style.backgroundColor = '';
         }
     };
+    if(tableTitle !== null)
+        tableDef.title = tableTitle;
+    
+    return tableDef;
 
 };

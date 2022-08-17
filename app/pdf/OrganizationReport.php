@@ -19,14 +19,13 @@
             $saronUser = new SaronUser($db);
             $saronUser->hasValidSaronSession(REQUIRE_VIEWER_ROLE, REQUIRE_ORG_VIEWER_ROLE, TICKET_RENEWAL_CHECK);
             $person = new Person($db, $saronUser);
-       }
+        }
         catch(Exception $ex){
             header("Location: /" . SARON_URI . LOGOUT_URI);
             exit();                                                
         }
         setUpPdfDoc($db, $person, $type);
     }
-    exit();
     
 function setUpPdfDoc($db, $person, $type){
     define ("INNER", 1);

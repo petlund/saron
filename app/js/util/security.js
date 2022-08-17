@@ -66,11 +66,15 @@ function alowedToAddRecords(event, data, tableDef){
         if(isUserEditorOrOrgEditor(userRole)) 
             addButton.show();
         break;
-    case saron.table.memeber_state.name:
+    case saron.table.member_state_report.name:
         if(isUserEditorOrOrgEditor(userRole)) 
             addButton.show();
         break;
     case saron.table.member_state.name:
+        if(isUserEditorOrOrgEditor(userRole)) 
+            addButton.show();
+        break;
+    case saron.table.orgversion.name:
         if(isUserEditorOrOrgEditor(userRole)) 
             addButton.show();
         break;
@@ -144,7 +148,7 @@ function alowedToUpdateOrDelete(event, data, tableDef){
         }
         else{
             editButton.hide();
-            deleteButton.hide()            
+            deleteButton.hide();            
         }
         break;
     case saron.table.total.name:
@@ -154,7 +158,7 @@ function alowedToUpdateOrDelete(event, data, tableDef){
         }
         else{
             editButton.hide();
-            deleteButton.hide()            
+            deleteButton.hide();            
         }
         break;
     case saron.table.engagement.name:
@@ -236,6 +240,14 @@ function alowedToUpdateOrDelete(event, data, tableDef){
         }
         break;
     case saron.table.member_state.name:
+        if(isUserEditorOrOrgEditor(userRole)){ 
+            editButton.show();
+        }
+        else{
+            editButton.hide();
+        }
+        break;
+    case saron.table.orgversion.name:
         if(isUserEditorOrOrgEditor(userRole)){ 
             editButton.show();
         }
