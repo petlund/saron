@@ -17,50 +17,64 @@ class MemberState extends SuperEntity{
         $this->filterCreate = (int)filter_input(INPUT_POST, "FilterCreate", FILTER_SANITIZE_NUMBER_INT);
     }
     
-    function getIsMemberSQL($tableAlias = "People"){
+// ======== STATE SQL =========
+
+    function hasStateFriendshipSQL($tableAlias = "People"){
+        $sql = "DateOfFriendshipStart < DATE_SUB(NOW(),INTERVAL 400 DAY)";
+        return $sql;                
+    }
+
+
+    function hasStateMemberSQL($tableAlias = "People"){
         $sql = "(" . $tableAlias . ".DateOfMembershipStart is not null AND " . 
-               $tableAlias . ".DateOfDeath is null AND " .
-               $tableAlias . ".DateOfMembershipEnd is null AND NOT " .
-               $this->getIsAnonymizedSQL($tableAlias) . ") ";
-        
+               $tableAlias . ".DateOfMembershipEnd is null) ";        
         return $sql;
     }
     
     
-    function getIsFriendSQL($tableAlias = "People"){
-        $sql = "(" . $tableAlias . ".DateOfMembershipStart is null OR (" . 
-               $tableAlias . ".DateOfMembershipStart is not null AND " .
-               $tableAlias . ".DateOfMembershipEnd is not null)) AND " .
-               $tableAlias . ".DateOfDeath is null AND NOT " .
-               $this->getIsAnonymizedSQL($tableAlias) . " AND " .
-               $tableAlias . ".DateOfFriendshipStart is not null ";
-        return $sql;        
-    }
-    
-    function getIsEndedFriendshipSQL($tableAlias = "People"){
-        $sql = $this->getIsFriendSQL($tableAlias);
-        $sql.= "AND DateOfFriendshipStart > DATE_SUB(NOW(),INTERVAL 1 YEAR)";
-        return $sql;                
-    }
-    
-    
-    function getIsEndedMembershipSQL($tableAlias = "People"){
+    function hasStateMembershipEndedSQL($tableAlias = "People"){
         $sql = "(" . $tableAlias . ".DateOfMembershipStart is not null AND " . 
-               $tableAlias . ".DateOfDeath is null AND " .
-               $tableAlias . ".DateOfMembershipEnd is NOT null AND NOT " .
-               $this->getIsAnonymizedSQL($tableAlias) . ") ";
+               $tableAlias . ".DateOfMembershipEnd is NOT null) ";
 
         return $sql;                
     }
+
+    function hasStateRegistratedSQL($tableAlias = "People"){
+        $sql = "NOT (" . 
+               $this->hasStateFriendshipSQL($tableAlias) . " OR " .  
+               $this->hasStateMemberSQL($tableAlias) . " OR " .
+               $this->hasStateMembershipEndedSQL($tableAlias) . 
+               ") "; 
+
+        return $sql;
+    }
     
+    
+// ======== STATE SQL END ======
+ 
+    function getIsDeadSQL($tableAlias = "People"){
+        $sql = $tableAlias . ".DateOfDeath is not null ";
+        return $sql;        
+    }
+
+    
+    function getIsEndedFriendshipSQL($tableAlias = "People"){
+        $sql = "DateOfFriendshipStart > DATE_SUB(NOW(),INTERVAL 365 DAY)";
+        return $sql;                
+    }
+    
+    
+       
     
     function getIsBaptistSQL($tableAlias = "People"){
-        $sql = "((" . $tableAlias . ".DateOfBaptism is not null "
-                . "OR (" . $tableAlias . ".DateOfMembershipStart is not null AND " . $tableAlias . ".DateOfMembershipEnd is not null)) AND NOT "
-                . $this->getIsAnonymizedSQL($tableAlias)
-                . "AND " . $tableAlias . ".DateOfDeath is null " 
-                . "AND " . $tableAlias . ".DateOfFriendshipStart is null) ";
+        $sql = $tableAlias . ".DateOfBaptism is not null ";
         return $sql;        
+    }
+    
+    
+    function getHasEngagement($tableAlias = "People"){
+        return "(SELECT Count(*) from Org_Pos as Pos Where " . $tableAlias . ".Id = Pos.People_FK > 0) ";
+        
     }
     
     
@@ -69,28 +83,10 @@ class MemberState extends SuperEntity{
                $this->getIsAnonymizedSQL($tableAlias) . " AND " .
                $tableAlias . ".DateOfDeath is null AND " .
                $tableAlias . ".DateOfFriendshipStart is null AND " .
-               "(SELECT Count(*) from Org_Pos as Pos Where " . $tableAlias . ".Id = Pos.People_FK) > 0) ";
+               $this->getHasEngagement($tableAlias). ") ";
         return $sql;        
     }
-    
-    
-    function getIsDeathSQL($tableAlias = "People"){
-        $sql = $tableAlias . ".DateOfDeath is not null ";
-        return $sql;        
-    }
-    
-    
-    function getIsRegistratedSQL($tableAlias = "People"){
-        $sql = "(" . $tableAlias . ".DateOfDeath is null AND " . 
-               $tableAlias . ".DateOfBaptism is null AND " .
-               $tableAlias . ".DateOfMembershipStart is null AND " .
-               $tableAlias . ".DateOfMembershipEnd is null AND NOT " .
-               $this->getIsAnonymizedSQL($tableAlias) . " AND " .
-               $tableAlias . ".DateOfFriendshipStart is null AND " .
-               "(SELECT Count(*) from Org_Pos as Pos Where " . $tableAlias . ".Id = Pos.People_FK) = 0) ";
-        return $sql;
-    }
-    
+
     
     function getIsAnonymizedSQL($tableAlias = "People"){
         $sql = "UPPER(CONVERT(BINARY " . $this->getFieldSql($tableAlias, null, "LastNameEncrypt", null, true, false) . " USING utf8)) like '%" . ANONYMOUS . "%'";
@@ -125,15 +121,15 @@ class MemberState extends SuperEntity{
 
     function getMemberStateIndexSql($tableAlias = "People", $fieldAlias="", $continue=false){//Memberstatelogic
         $sql="Case ";
-        $sql.="WHEN " . $this->getIsNullStateSQL($tableAlias) . " Then 0 ";
-        $sql.="WHEN " . $this->getIsRegistratedSQL($tableAlias) . " Then 1 ";
-        $sql.="WHEN " . $this->getIsDeathSQL($tableAlias) . " Then 5 ";
-        $sql.="WHEN " . $this->getIsMemberSQL($tableAlias) . " Then 2 ";
+        $sql.="WHEN " . $this->hasStateRegistratedSQL($tableAlias) . " Then 1 ";
+        $sql.="WHEN " . $this->hasStateMemberSQL($tableAlias) . " Then 2 ";
+        $sql.="WHEN " . $this->hasStateFriendshipSQL($tableAlias) . " Then 7 ";
+        $sql.="WHEN " . $this->hasStateMembershipEndedSQL($tableAlias) . " Then 8 ";
         $sql.="WHEN " . $this->getIsAnonymizedSQL($tableAlias) . " THEN 4 ";
-        $sql.="WHEN " . $this->getIsVolontaireSQL($tableAlias) . " then 6 ";
-        $sql.="WHEN " . $this->getIsFriendSQL($tableAlias) . " Then 7 ";
-        $sql.="WHEN " . $this->getIsEndedMembershipSQL($tableAlias) . " Then 8 ";
+        $sql.="WHEN " . $this->getIsVolontaireSQL($tableAlias) . " THEN 6 ";
+        $sql.="WHEN " . $this->getIsDeadSQL($tableAlias) . " Then 5 ";
         $sql.="WHEN " . $this->getIsBaptistSQL($tableAlias) . " Then 3 ";
+        $sql.="WHEN " . $this->getIsNullStateSQL($tableAlias) . " Then 0 ";
         $sql.="else -1 ";
         $sql.="END";
 
