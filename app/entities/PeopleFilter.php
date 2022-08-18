@@ -16,12 +16,20 @@ class PeopleFilter{
     }
     
     function getPeopleFilterSql($groupId){ //Memberstatelogic
+        
         switch ($groupId){
             case 0:
-                return $this->memberState->getIsMemberSQL();
+                return $this->memberState->hasStateMemberSQL();
             case 1:
                 //Dopregister
-                return $this->memberState->getIsBaptistSQL() . " OR " . $this->memberState->getIsMemberSQL();
+                return " (" . 
+                    $this->memberState->getIsBaptistSQL() . " OR " . 
+                    $this->memberState->hasStateMemberSQL() . " OR " . 
+                    $this->memberState->hasStateMembershipEndedSQL() . ") AND NOT ( " .
+                    $this->memberState->getIsAnonymizedSQL() . " OR " . 
+                    $this->memberState->getIsDeadSQL() .
+                    ") ";
+                            
             case 2:
                 //Senast ändrade
                 return "true ";
@@ -45,7 +53,7 @@ class PeopleFilter{
                 return "EXTRACT(YEAR FROM NOW())-1=EXTRACT(YEAR FROM DateOfBaptism) ";
             case 9:
                 //Medlemmar som inte syns i adresskalendern
-                return $this->memberState->getIsMemberSQL() . " and VisibleInCalendar != 2 ";
+                return $this->memberState->hasStateMemberSQL() . " and VisibleInCalendar != 2 ";
             case 10:
                 //Medlemmar som dött
                 return "EXTRACT(YEAR FROM NOW())=EXTRACT(YEAR FROM DateOfDeath) and  DateOfMembershipStart is not null and " . DECRYPTED_LASTNAME . " not like '" . ANONYMOUS . "' ";
@@ -57,41 +65,36 @@ class PeopleFilter{
                 return "true ";
             case 13:
                 //Medlemmar utanför Norrköping
-                return $this->memberState->getIsMemberSQL() . " and Zip not like '6%' ";
+                return $this->memberState->hasStateMemberSQL() . " and Zip not like '6%' ";
             case 14:
                 //Församlingens vänner
-                return $this->memberState->getIsFriendSQL();
+                return $this->memberState->hasStateFriendshipSQL();
             case 15:
                 //ej medlem
-                return " NOT (" . $this->memberState->getIsMemberSQL() . " OR " . 
+                return " NOT (" . $this->memberState->hasStateMemberSQL() . " OR " . 
                         $this->memberState->getIsAnonymizedSQL() . " OR " . 
-                        $this->memberState->getIsDeathSQL() . ") ";
+                        $this->memberState->getIsDeadSQL() . ") ";
             case 16:    
                 //underlag för anonymisering nästa år
                 $sqlWhere = "NOT (";
                 $sqlWhere.= $this->memberState->getIsAnonymizedSQL();
                 $sqlWhere.= " OR ";
-                $sqlWhere.= $this->memberState->getIsDeathSQL() ;
+                $sqlWhere.= $this->memberState->getIsDeadSQL();
                 $sqlWhere.= " OR ";
                 $sqlWhere.= "if(DateOfMembershipEnd is null, false, EXTRACT(YEAR FROM DateOfMembershipEnd) = EXTRACT(YEAR FROM Now())) ";
                 $sqlWhere.= "OR ";
                 $sqlWhere.= "if(DateOfBaptism is null, false, EXTRACT(YEAR FROM DateOfBaptism) = EXTRACT(YEAR FROM Now())) ";
                 $sqlWhere.= "OR ";
-                $sqlWhere.= "if(DateOfFriendshipStart is null, false, DateOfFriendshipStart > DATE_SUB(NOW(),INTERVAL 1 YEAR)) ";
+                $sqlWhere.= $this->memberState->hasStateFriendshipSQL();
                 $sqlWhere.= "OR ";
-                $sqlWhere.= $this->memberState->getIsVolontaireSQL();
-                $sqlWhere.= "OR ";
-                $sqlWhere.= $this->memberState->getIsMemberSQL();
+                $sqlWhere.= $this->memberState->hasStateMemberSQL();
                 $sqlWhere.= ") ";
                 return $sqlWhere; 
             case 17:
                 //anonymiserade
                 return $this->memberState->getIsAnonymizedSQL();
-            case 18:
-                //Medhjälpare
-                return $this->memberState->getIsVolontaireSQL();
             default :
-                return $this->memberState->getIsMemberSQL(); 
+                return $this->memberState->hasStateMemberSQL(); 
         }        
     }
     function getSearchFilterSql($uppercaseSearchString){        

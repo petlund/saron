@@ -49,7 +49,6 @@ require_once SARON_ROOT . "app/util/AppCanvasName.php";
                         <option value="15">Ej medlem</option>
                         <option value="16">Underlag för anonymisering under <?php include('../util/CurrentYear.php');?></option>
                         <option value="17">Anonymiserade</option>
-                        <option value="18">Medhjälpare</option>
                         </select>     
                    </form>
                 </td>

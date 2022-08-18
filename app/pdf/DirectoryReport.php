@@ -40,7 +40,7 @@
     $sql.="from "; 
     $sql.="((Select HomeId, HomeId as hid, substr(" . DECRYPTED_LASTNAME . ", 1, 5) as SortName, ";
     $sql.="(select max(" . DECRYPTED_LASTNAME . ") from People where hid=HomeId and substr(" . DECRYPTED_LASTNAME . ", 1, 5)=SortName and length(" . DECRYPTED_LASTNAME . ")=(select min(length(" . DECRYPTED_LASTNAME . ")) from People where hid=HomeId and substr(" . DECRYPTED_LASTNAME . ", 1, 5)=SortName)) as GroupName from People ";
-    $sql.="WHERE  " . $memberState->getIsMemberSQL(); 
+    $sql.="WHERE  " . $memberState->hasStateFriendshipSQL(); 
     $sql.="inner join People on People.HomeId=SortList.HomeId) "; 
     $sql.="left outer join Homes on People.HomeId = Homes.Id ";  
     $sql.="where DateOfMembershipStart is not null and  DateOfMembershipEnd is null and DateOfDeath is null and VisibleInCalendar=2 "; //Memberstatelogic

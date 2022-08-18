@@ -149,7 +149,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                     var childTableTitle = _setClassAndValueHeadline(data, 'LongHomeName', HOME, 'Hem', 'Hem för ', '');;
                     var tooltip = 'Adressuppgifter';
                     var imgFile = "home.png";
-                    var clientOnly = true;
+                    var clientOnly = false;
                     var type = 0;
 
                     var childTableDef = homeTableDef(childTableTitle, tablePath, data.record.HomeId, tableDef); // PersonId point to childtable unic id   
@@ -186,7 +186,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                     var childTableTitle = _setClassAndValueHeadline(data, 'Name', PERSON, 'Medlemsuppgifter', 'Medlemsuppgifter för ', '');;
                     var tooltip = 'Medlemsuppgifter';
                     var imgFile = "member.png";
-                    var clientOnly = true;
+                    var clientOnly = false;
                     var type = 0;
 
                     var childTableDef = memberTableDef(childTableTitle, tablePath, data.record.Id, tableDef); // PersonId point to childtable unic id   
@@ -544,28 +544,28 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
     if(tableTitle !== null)
         tableDef.title = tableTitle;
     
-    configUnitTableDef(tableDef);
+    configPeopleTableDef(tableDef);
     
     return tableDef;
 }
 
 
-//function configUnitTableDef(tableDef){
-//
-//    var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
-//
-//    if(tablePathRoot === saron.table.unittree.name){
-//    }
-//    if(tablePathRoot === saron.table.unitlist.name 
-//            || tablePathRoot === saron.table.unittype.name 
-//            || tablePathRoot === saron.table.role.name 
-//            || tablePathRoot === saron.table.statistics.name){ 
-//        tableDef.actions.updateAction  = null;
-//        tableDef.actions.createAction  = null;
-//    }    
-//}
-//
-//
+function configPeopleTableDef(tableDef){
+
+    var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
+
+    if(tablePathRoot === saron.table.unittree.name){
+    }
+    if(tablePathRoot === saron.table.unitlist.name 
+            || tablePathRoot === saron.table.unittype.name 
+            || tablePathRoot === saron.table.role.name 
+            || tablePathRoot === saron.table.statistics.name){ 
+        tableDef.actions.updateAction  = null;
+        tableDef.actions.createAction  = null;
+    }    
+}
+
+
 function _updatePeopleFields(data){
     _updateFields(data, "LongHomeName", PERSON);                                                
     _updateFields(data, "Residents", HOME);                                                

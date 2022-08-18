@@ -36,7 +36,7 @@
     $memberState = new MemberState($db, $saronUser);
     $sql =SQL_STAR_PEOPLE;
     $sql.=" from People ";
-    $sql.="where " . $memberState->getIsBaptistSQL() . " OR " . $memberState->getIsMemberSQL() . " "; 
+    $sql.="where " . $memberState->getIsBaptistSQL() . " OR " . $memberState->hasStateFriendshipSQL() . " "; 
     $sql.="order by ";
     $sql.=DECRYPTED_LASTNAME;
     $sql.=", "; 
