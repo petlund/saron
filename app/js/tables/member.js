@@ -97,6 +97,12 @@ function memberTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 title: 'Kommit från församling',
                 width: '15%'
             },
+            DateOfFriendshipStart:{
+                displayFormat: DATE_FORMAT,
+                type: 'date',
+                title: 'Vänkontakt start',
+                inputTitle: 'Sätt datum för start av vänkontakt - Förstadium till medlemskap. Mailfunktionen stämmer av behovet om ett år.'
+            },
             DateOfMembershipStart: {
                 width: '7%',
                 type: 'date',
@@ -135,7 +141,13 @@ function memberTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
             MemberState:{
                 width: '7',
                 edit: false,
-                title: 'Status'    
+                title: 'Status',    
+                options: function (data){
+                    var url = saron.root.webapi + 'listMemberState.php';
+                    var field = "MemberState";
+                    var parameters = getOptionsUrlParameters(data, tableName, parentId, tablePath, field);                    
+                    return url + parameters;
+                }
             },
             VisibleInCalendar: {
                 edit: 'true',

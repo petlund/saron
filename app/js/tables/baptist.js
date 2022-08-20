@@ -103,7 +103,13 @@ function baptistTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
             MemberState:{
                 title: 'Status',
                 width: '7%',
-                edit: false
+                edit: false,
+                options: function (data){
+                    var url = saron.root.webapi + 'listMemberState.php';
+                    var field = "MemberState";
+                    var parameters = getOptionsUrlParameters(data, tableName, parentId, tablePath, field);                    
+                    return url + parameters;
+                }
             },
             Comment: {
                 width: '34%',

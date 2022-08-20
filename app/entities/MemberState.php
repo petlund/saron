@@ -6,26 +6,22 @@ require_once SARON_ROOT . 'app/database/queries.php';
 class MemberState extends SuperEntity{
     
     private $description;
-    private $filterUpdate;
-    private $filterCreate;
     
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
         
         $this->description = (String)filter_input(INPUT_POST, "Description", FILTER_SANITIZE_STRING);
-        $this->filterUpdate = (int)filter_input(INPUT_POST, "FilterUpdate", FILTER_SANITIZE_NUMBER_INT);
-        $this->filterCreate = (int)filter_input(INPUT_POST, "FilterCreate", FILTER_SANITIZE_NUMBER_INT);
     }
     
 // ======== STATE SQL =========
 
     function hasStateFriendshipSQL($tableAlias = "People"){
-        $sql = "DateOfFriendshipStart < DATE_SUB(NOW(),INTERVAL 400 DAY)";
+        $sql = $tableAlias . ".DateOfFriendshipStart > DATE_SUB(NOW(),INTERVAL 400 DAY)";
         return $sql;                
     }
 
 
-    function hasStateMemberSQL($tableAlias = "People"){
+    function hasStateMembershipSQL($tableAlias = "People"){
         $sql = "(" . $tableAlias . ".DateOfMembershipStart is not null AND " . 
                $tableAlias . ".DateOfMembershipEnd is null) ";        
         return $sql;
@@ -40,11 +36,9 @@ class MemberState extends SuperEntity{
     }
 
     function hasStateRegistratedSQL($tableAlias = "People"){
-        $sql = "NOT (" . 
-               $this->hasStateFriendshipSQL($tableAlias) . " OR " .  
-               $this->hasStateMemberSQL($tableAlias) . " OR " .
-               $this->hasStateMembershipEndedSQL($tableAlias) . 
-               ") "; 
+        $sql = "(" . $tableAlias . ".DateOfMembershipStart is null AND " . 
+               $tableAlias . ".DateOfMembershipEnd is null AND " .
+               $tableAlias . ".DateOfBaptism is null) ";
 
         return $sql;
     }
@@ -59,13 +53,11 @@ class MemberState extends SuperEntity{
 
     
     function getIsEndedFriendshipSQL($tableAlias = "People"){
-        $sql = "DateOfFriendshipStart > DATE_SUB(NOW(),INTERVAL 365 DAY)";
+        $sql = $tableAlias . ".DateOfFriendshipStart < DATE_SUB(NOW(),INTERVAL 365 DAY)";
         return $sql;                
     }
     
-    
-       
-    
+        
     function getIsBaptistSQL($tableAlias = "People"){
         $sql = $tableAlias . ".DateOfBaptism is not null ";
         return $sql;        
@@ -121,16 +113,17 @@ class MemberState extends SuperEntity{
 
     function getMemberStateIndexSql($tableAlias = "People", $fieldAlias="", $continue=false){//Memberstatelogic
         $sql="Case ";
-        $sql.="WHEN " . $this->hasStateRegistratedSQL($tableAlias) . " Then 1 ";
-        $sql.="WHEN " . $this->hasStateMemberSQL($tableAlias) . " Then 2 ";
-        $sql.="WHEN " . $this->hasStateFriendshipSQL($tableAlias) . " Then 7 ";
-        $sql.="WHEN " . $this->hasStateMembershipEndedSQL($tableAlias) . " Then 8 ";
         $sql.="WHEN " . $this->getIsAnonymizedSQL($tableAlias) . " THEN 4 ";
-        $sql.="WHEN " . $this->getIsVolontaireSQL($tableAlias) . " THEN 6 ";
         $sql.="WHEN " . $this->getIsDeadSQL($tableAlias) . " Then 5 ";
+        $sql.="WHEN " . $this->hasStateFriendshipSQL($tableAlias) . " Then 7 ";
+        $sql.="WHEN " . $this->hasStateMembershipSQL($tableAlias) . " Then 2 ";
+        $sql.="WHEN " . $this->hasStateMembershipEndedSQL($tableAlias) . " Then 8 ";
         $sql.="WHEN " . $this->getIsBaptistSQL($tableAlias) . " Then 3 ";
-        $sql.="WHEN " . $this->getIsNullStateSQL($tableAlias) . " Then 0 ";
-        $sql.="else -1 ";
+        $sql.="WHEN " . $this->hasStateRegistratedSQL($tableAlias) . " Then 1 ";
+//        $sql.="WHEN " . $this->getIsVolontaireSQL($tableAlias) . " THEN 6 ";
+//        $sql.="WHEN " . $this->getIsBaptistSQL($tableAlias) . " Then 3 ";
+//        $sql.="WHEN " . $this->getIsNullStateSQL($tableAlias) . " Then 0 ";
+        $sql.="else 1 ";
         $sql.="END";
 
         if(strlen($fieldAlias) > 0){
@@ -273,8 +266,6 @@ class MemberState extends SuperEntity{
         $update = "UPDATE MemberState ";
         $set = "SET ";        
         $set.= "Description='" . $this->description . "', ";        
-        $set.= "FilterCreate=" . $this->filterCreate . ", ";        
-        $set.= "FilterUpdate=" . $this->filterUpdate . ", ";        
         $set.= "Updater='" . $this->saronUser->WP_ID . "', ";        
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "' ";        
         $where = "WHERE Id=" . $this->id;

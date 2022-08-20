@@ -19,12 +19,12 @@ class PeopleFilter{
         
         switch ($groupId){
             case 0:
-                return $this->memberState->hasStateMemberSQL();
+                return $this->memberState->hasStateMembershipSQL();
             case 1:
                 //Dopregister
                 return " (" . 
                     $this->memberState->getIsBaptistSQL() . " OR " . 
-                    $this->memberState->hasStateMemberSQL() . " OR " . 
+                    $this->memberState->hasStateMembershipSQL() . " OR " . 
                     $this->memberState->hasStateMembershipEndedSQL() . ") AND NOT ( " .
                     $this->memberState->getIsAnonymizedSQL() . " OR " . 
                     $this->memberState->getIsDeadSQL() .
@@ -53,7 +53,7 @@ class PeopleFilter{
                 return "EXTRACT(YEAR FROM NOW())-1=EXTRACT(YEAR FROM DateOfBaptism) ";
             case 9:
                 //Medlemmar som inte syns i adresskalendern
-                return $this->memberState->hasStateMemberSQL() . " and VisibleInCalendar != 2 ";
+                return $this->memberState->hasStateMembershipSQL() . " and VisibleInCalendar != 2 ";
             case 10:
                 //Medlemmar som dött
                 return "EXTRACT(YEAR FROM NOW())=EXTRACT(YEAR FROM DateOfDeath) and  DateOfMembershipStart is not null and " . DECRYPTED_LASTNAME . " not like '" . ANONYMOUS . "' ";
@@ -65,13 +65,13 @@ class PeopleFilter{
                 return "true ";
             case 13:
                 //Medlemmar utanför Norrköping
-                return $this->memberState->hasStateMemberSQL() . " and Zip not like '6%' ";
+                return $this->memberState->hasStateMembershipSQL() . " and Zip not like '6%' ";
             case 14:
                 //Församlingens vänner
                 return $this->memberState->hasStateFriendshipSQL();
             case 15:
                 //ej medlem
-                return " NOT (" . $this->memberState->hasStateMemberSQL() . " OR " . 
+                return " NOT (" . $this->memberState->hasStateMembershipSQL() . " OR " . 
                         $this->memberState->getIsAnonymizedSQL() . " OR " . 
                         $this->memberState->getIsDeadSQL() . ") ";
             case 16:    
@@ -87,14 +87,14 @@ class PeopleFilter{
                 $sqlWhere.= "OR ";
                 $sqlWhere.= $this->memberState->hasStateFriendshipSQL();
                 $sqlWhere.= "OR ";
-                $sqlWhere.= $this->memberState->hasStateMemberSQL();
+                $sqlWhere.= $this->memberState->hasStateMembershipSQL();
                 $sqlWhere.= ") ";
                 return $sqlWhere; 
             case 17:
                 //anonymiserade
                 return $this->memberState->getIsAnonymizedSQL();
             default :
-                return $this->memberState->hasStateMemberSQL(); 
+                return $this->memberState->hasStateMembershipSQL(); 
         }        
     }
     function getSearchFilterSql($uppercaseSearchString){        

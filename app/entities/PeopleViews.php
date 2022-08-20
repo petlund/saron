@@ -28,11 +28,11 @@ class PeopleViews {
         case TABLE_NAME_BIRTHDAY:
             return $this->selectBirthday();
         case TABLE_NAME_MEMBER:
-            return SQL_STAR_PEOPLE . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . $this->memberState->getMemberStateSql("People", "MemberState", false) . ", " . $saronUser->getRoleSql(false);
+            return SQL_STAR_PEOPLE . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . $this->memberState->getMemberStateIndexSql("People", "MemberState", false) . ", " . $saronUser->getRoleSql(false);
         case TABLE_NAME_BAPTIST:
-            return SQL_STAR_PEOPLE . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . $this->memberState->getMemberStateSql("People", "MemberState", false) .  ", " . $saronUser->getRoleSql(false);
+            return SQL_STAR_PEOPLE . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . $this->memberState->getMemberStateIndexSql("People", "MemberState", false) .  ", " . $saronUser->getRoleSql(false);
         case TABLE_NAME_KEYS:
-            return "Select People.Id as Id, KeyToExp, KeyToChurch, DateOfBirth, " . DECRYPTED_ALIAS_COMMENT_KEY . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . $this->memberState->getMemberStateSql("People", "MemberState", false)  . ", " . $saronUser->getRoleSql(false);
+            return "Select People.Id as Id, KeyToExp, KeyToChurch, DateOfBirth, " . DECRYPTED_ALIAS_COMMENT_KEY . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . $this->memberState->getMemberStateIndexSql("People", "MemberState", false)  . ", " . $saronUser->getRoleSql(false);
         case TABLE_NAME_TOTAL:
             return $this->selectTotal() . ", " . $saronUser->getRoleSql(false);
         default:    
@@ -50,7 +50,7 @@ class PeopleViews {
         $sql.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
         $sql.= $this->homes->getLongHomeNameSql(ALIAS_CUR_HOMES, "LongHomeName", true);
         $sql.= DECRYPTED_ALIAS_PHONE . ", ";
-        $sql.= $this->memberState->getMemberStateSql("People", "MemberState", false);
+        $sql.= $this->memberState->getMemberStateIndexSql("People", "MemberState", false);
         return $sql;
     }
 

@@ -21,6 +21,7 @@ class Person extends People{
     protected $Email;
     protected $Mobile;
     protected $DateOfBaptism;
+    protected $DateOfFriendshipStart;
     protected $Baptister;
     protected $CongregationOfBaptism;
     protected $CongregationOfBaptismThis;
@@ -96,10 +97,17 @@ class Person extends People{
             $error["Message"] = "En avliden person ska inte vara kopplad till något hem.<BR><BR>Välj: 'Inget hem'.";
         }
         
+
+        if((strlen($this->DateOfMembershipStart) > 0 or strlen($this->DateOfMembershipEnd) > 0) and strlen($this->DateOfFriendshipStart) > 0){
+            $error["Message"] = "En medlem eller före detta medlem ska inte ha ett datum för start av vänkontakt.";
+        }
+
+
         if(strlen($error["Message"])>0){
             $error["Result"] = "ERROR";
             return json_encode($error);
         }
+
         
         //Adjustments
         if(strlen($this->DateOfDeath) > 0){
@@ -148,6 +156,12 @@ class Person extends People{
                 $error["Message"] = "Endast medlemmar ska vara synliga i adresskalendern.";
             }
         }
+
+
+        if((strlen($this->DateOfMembershipStart) > 0 or strlen($this->DateOfMembershipEnd) > 0) and strlen($this->DateOfFriendshipStart) > 0){
+            $error["Message"] = "En medlem eller före detta medlem ska inte ha ett datum för start av vänkontakt.";
+        }
+
 
         if($this->MembershipNo > 0 and strlen($this->DateOfMembershipStart)===0){
             $error["Message"] = "Personen har inget datum för start av medlemskap men har ett medlemsnummer. Ange en korrekt kombination av uppgifter.";
@@ -335,6 +349,7 @@ class Person extends People{
         $sqlSet = "SET ";
         $sqlSet.= "PreviousCongregation=" . $this->getSqlString($this->PreviousCongregation)  . ", ";
         $sqlSet.= "DateOfMembershipStart=" . $this->getSqlDateString($this->DateOfMembershipStart) . ", ";         
+        $sqlSet.= "DateOfFriendshipStart=" . $this->getSqlDateString($this->DateOfFriendshipStart) . ", ";
         $sqlSet.= "MembershipNo=" . $this->getZeroToNull($this->MembershipNo)  . ", ";
         $sqlSet.= "VisibleInCalendar=" . $this->VisibleInCalendar . ", ";
         $sqlSet.= "DateOfMembershipEnd=" . $this->getSqlDateString($this->DateOfMembershipEnd) . ", ";        

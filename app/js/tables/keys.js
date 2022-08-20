@@ -78,6 +78,12 @@ function keyTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 list: true,
                 title: 'Status',
                 width: '5%',                
+                options: function (data){
+                    var url = saron.root.webapi + 'listMemberState.php';
+                    var field = "MemberState";
+                    var parameters = getOptionsUrlParameters(data, tableName, parentId, tablePath, field);                    
+                    return url + parameters;
+                }
             },
             KeyToChurch: {
                 edit: true,

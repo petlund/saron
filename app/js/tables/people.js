@@ -457,9 +457,15 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                 edit: false,
                 create: false,
                 width: '4%',
-                display: function (data){
-                    return _setClassAndValue(data, "MemberState", PERSON);
-                }       
+//                display: function (data){
+//                    return _setClassAndValue(data, "MemberState", PERSON);
+//                },
+                options: function (data){
+                    var url = saron.root.webapi + 'listMemberState.php';
+                    var field = "MemberState";
+                    var parameters = getOptionsUrlParameters(data, tableName, parentId, tablePath, field);                    
+                    return url + parameters;
+                }
             },
             VisibleInCalendar: {
                 edit: false,
@@ -522,6 +528,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
             var dbox = document.getElementsByClassName('ui-dialog-title');            
             for(var i=0; i<dbox.length; i++){
                 dbox[i].innerHTML=headLine;
+                dbox[i].css('width',inputFormWidth);
             }
 
             data.form.css('width',inputFormWidth);
