@@ -72,18 +72,15 @@ function keyTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                     return _setClassAndValue(data, "DateOfBirth", PERSON);
                 }       
             },
-            MemberState:{
+            MemberStateName: {
+                title: 'Status',
                 edit: false,
                 create: false,
-                list: true,
-                title: 'Status',
-                width: '5%',                
-                options: function (data){
-                    var url = saron.root.webapi + 'listMemberState.php';
-                    var field = "MemberState";
-                    var parameters = getOptionsUrlParameters(data, tableName, parentId, tablePath, field);                    
-                    return url + parameters;
+                width: '4%',
+                display: function (data){
+                    return _setClassAndValue(data, "MemberStateName", PERSON);
                 }
+
             },
             KeyToChurch: {
                 edit: true,
@@ -144,8 +141,8 @@ function configKeysTableDef(tableDef){
 
     if(appCanvasRoot !== saron.table.keys.name){
         tableDef.fields.Name.list = false;
-        tableDef.fields.DateOfBirth.list = false;
-        tableDef.fields.MemberState.list = false;        
+        tableDef.fields.DateOfBirth.list = false;       
+        tableDef.fields.MemberStateName.list = false;        
         tableDef.paging = false;
         tableDef.sorting = false;
     }    

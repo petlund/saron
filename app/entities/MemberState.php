@@ -81,7 +81,7 @@ class MemberState extends SuperEntity{
 
     
     function getIsAnonymizedSQL($tableAlias = "People"){
-        $sql = "UPPER(CONVERT(BINARY " . $this->getFieldSql($tableAlias, null, "LastNameEncrypt", null, true, false) . " USING utf8)) like '%" . ANONYMOUS . "%'";
+        $sql = $tableAlias . ".DateOfAnonymization is not null ";
         return $sql;
     }
     
@@ -93,91 +93,91 @@ class MemberState extends SuperEntity{
     
     
     
-    function getMemberStateSql($tableAlias = "People", $fieldAlias ="", $continue=false){//Memberstatelogic
-        $sql ="(SELECT MemberState.Name FROM MemberState Where MemberState.Id = ";
-        $sql.=$this->getMemberStateIndexSql($tableAlias, null, false);
-        $sql.=") ";
-
-        if(strlen($fieldAlias) > 0){
-            $sql.= " AS " . $fieldAlias;
-        }
-        if($continue){
-            $sql.= ", ";
-        }
-        else{
-            $sql.= " ";            
-        }
-        return $sql;        
-    }
-    
-
-    function getMemberStateIndexSql($tableAlias = "People", $fieldAlias="", $continue=false){//Memberstatelogic
-        $sql="Case ";
-        $sql.="WHEN " . $this->getIsAnonymizedSQL($tableAlias) . " THEN 4 ";
-        $sql.="WHEN " . $this->getIsDeadSQL($tableAlias) . " Then 5 ";
-        $sql.="WHEN " . $this->hasStateFriendshipSQL($tableAlias) . " Then 7 ";
-        $sql.="WHEN " . $this->hasStateMembershipSQL($tableAlias) . " Then 2 ";
-        $sql.="WHEN " . $this->hasStateMembershipEndedSQL($tableAlias) . " Then 8 ";
-        $sql.="WHEN " . $this->getIsBaptistSQL($tableAlias) . " Then 3 ";
-        $sql.="WHEN " . $this->hasStateRegistratedSQL($tableAlias) . " Then 1 ";
-//        $sql.="WHEN " . $this->getIsVolontaireSQL($tableAlias) . " THEN 6 ";
+//    function getMemberStateSql($tableAlias = "People", $fieldAlias ="", $continue=false){//Memberstatelogic
+//        $sql ="(SELECT MemberState.Name FROM MemberState Where MemberState.Id = ";
+//        $sql.=$this->getMemberStateIndexSql($tableAlias, null, false);
+//        $sql.=") ";
+//
+//        if(strlen($fieldAlias) > 0){
+//            $sql.= " AS " . $fieldAlias;
+//        }
+//        if($continue){
+//            $sql.= ", ";
+//        }
+//        else{
+//            $sql.= " ";            
+//        }
+//        return $sql;        
+//    }
+//    
+//
+//    function getMemberStateIndexSql($tableAlias = "People", $fieldAlias="", $continue=false){//Memberstatelogic
+//        $sql="Case ";
+//        $sql.="WHEN " . $this->getIsAnonymizedSQL($tableAlias) . " THEN 4 ";
+//        $sql.="WHEN " . $this->getIsDeadSQL($tableAlias) . " Then 5 ";
+//        $sql.="WHEN " . $this->hasStateFriendshipSQL($tableAlias) . " Then 7 ";
+//        $sql.="WHEN " . $this->hasStateMembershipSQL($tableAlias) . " Then 2 ";
+//        $sql.="WHEN " . $this->hasStateMembershipEndedSQL($tableAlias) . " Then 8 ";
 //        $sql.="WHEN " . $this->getIsBaptistSQL($tableAlias) . " Then 3 ";
-//        $sql.="WHEN " . $this->getIsNullStateSQL($tableAlias) . " Then 0 ";
-        $sql.="else 1 ";
-        $sql.="END";
-
-        if(strlen($fieldAlias) > 0){
-            $sql.= " AS " . $fieldAlias;
-        }
-        if($continue){
-            $sql.= ", ";
-        }
-        else{
-            $sql.= " ";            
-        }
-        return $sql;        
-    }    
-    
-       
-
-    function getFilteredMemberStateSql($tableAlias = "People", $fieldAlias, $continue, $source){ //Memberstatelogic
-        
-        $sql1 = "";
-        if($source === SOURCE_EDIT){
-            $sql1 = "IF(MemberState.FilterUpdate = '1', true, false) AND ";
-        }
-        else{
-            $sql1 = "true AND ";            
-        }
-        
-        $sql2 = "";
-        if($source === SOURCE_CREATE){
-            $sql2 = "IF(MemberState.FilterCreate = '1', true, false) ";            
-        }
-        else{
-            $sql2 = "true ";            
-        }
-        
-        
-        $sql = "(SELECT ";
-        $sql.= $sql1;
-        $sql.= $sql2;
-        $sql.= "FROM MemberState Where MemberState.Id = ";
-        $sql.= $this->getMemberStateIndexSql($tableAlias, null, false);
-        $sql.= ") ";
-
-        if(strlen($fieldAlias) > 0){
-            $sql.= " AS " . $fieldAlias;
-        }
-        if($continue){
-            $sql.= ", ";
-        }
-        else{
-            $sql.= " ";            
-        }
-        return $sql;        
-        
-    }
+//        $sql.="WHEN " . $this->hasStateRegistratedSQL($tableAlias) . " Then 1 ";
+////        $sql.="WHEN " . $this->getIsVolontaireSQL($tableAlias) . " THEN 6 ";
+////        $sql.="WHEN " . $this->getIsBaptistSQL($tableAlias) . " Then 3 ";
+////        $sql.="WHEN " . $this->getIsNullStateSQL($tableAlias) . " Then 0 ";
+//        $sql.="else 1 ";
+//        $sql.="END";
+//
+//        if(strlen($fieldAlias) > 0){
+//            $sql.= " AS " . $fieldAlias;
+//        }
+//        if($continue){
+//            $sql.= ", ";
+//        }
+//        else{
+//            $sql.= " ";            
+//        }
+//        return $sql;        
+//    }    
+//    
+//       
+//
+//    function getFilteredMemberStateSql($tableAlias = "People", $fieldAlias, $continue, $source){ //Memberstatelogic
+//        
+//        $sql1 = "";
+//        if($source === SOURCE_EDIT){
+//            $sql1 = "IF(MemberState.FilterUpdate = '1', true, false) AND ";
+//        }
+//        else{
+//            $sql1 = "true AND ";            
+//        }
+//        
+//        $sql2 = "";
+//        if($source === SOURCE_CREATE){
+//            $sql2 = "IF(MemberState.FilterCreate = '1', true, false) ";            
+//        }
+//        else{
+//            $sql2 = "true ";            
+//        }
+//        
+//        
+//        $sql = "(SELECT ";
+//        $sql.= $sql1;
+//        $sql.= $sql2;
+//        $sql.= "FROM MemberState Where MemberState.Id = ";
+//        $sql.= $this->getMemberStateIndexSql($tableAlias, null, false);
+//        $sql.= ") ";
+//
+//        if(strlen($fieldAlias) > 0){
+//            $sql.= " AS " . $fieldAlias;
+//        }
+//        if($continue){
+//            $sql.= ", ";
+//        }
+//        else{
+//            $sql.= " ";            
+//        }
+//        return $sql;        
+//        
+//    }
     
 
     function select($id = -1){

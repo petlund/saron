@@ -24,6 +24,14 @@ $saron->userrole->viewer = SARON_ROLE_VIEWER;
 $saron->userrole->editor = SARON_ROLE_EDITOR;
 $saron->userrole->org_editor = SARON_ROLE_ORG;
 
+$saron->memberstate = (object)array();
+$saron->memberstate->aononymized = PEOPLE_STATE_ANONYMiZED;
+$saron->memberstate->dead = PEOPLE_STATE_DEAD;
+$saron->memberstate->membership = PEOPLE_STATE_MEMBERSHIP;
+$saron->memberstate->membership_ended = PEOPLE_STATE_MEMBERSHIP_ENDED;
+$saron->memberstate->only_baptist = PEOPLE_STATE_ONLY_BAPTIST;
+$saron->memberstate->registrated = PEOPLE_STATE_REGISTRATED;
+
 $saron->formtype = (object)array();
 $saron->formtype->edit = 'edit';
 $saron->formtype->create = 'create';

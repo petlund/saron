@@ -149,7 +149,7 @@ class People extends SuperEntity{
     
     function selectPeopleOptions(){
         
-        $SELECT_PERSSON = "(SELECT " . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . " FROM People as P inner join Org_Pos as Pos on P.Id = Pos.People_FK WHERE Pos.OrgRole_FK = Role.Id) ";
+        $SELECT_PERSSON = "(SELECT Concat('" . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . "',' - ', '" . MemberStateName . "' FROM view_people_memberstate as P inner join Org_Pos as Pos on P.Id = Pos.People_FK WHERE Pos.OrgRole_FK = Role.Id) ";
         $SELECT_CONCAT = "concat(' ', Name , ' (', " . $SELECT_PERSSON . ", ')')";
         $SELECT_CONCAT_NULL = "concat(' ', Name , ' (-)')";
         
@@ -157,13 +157,12 @@ class People extends SuperEntity{
 //        $select.= "Union "; 
         $select = "SELECT null as Value, '-' as DisplayText "; 
         $select.= "Union "; 
-        $select.= "select Id as Value, concat(" . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . ", ' (', " . $this->memberState->getMemberStateSql() . ", ')') as DisplayText ";
+        $select.= "select Id as Value, concat(" . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . ", ' (', " . MemberStateName . ", ')') as DisplayText ";
         
         
-        $where = "";
-        $where = "WHERE " . $this->memberState->getFilteredMemberStateSql("People", null, false, $this->source);
+        $where = "WHERE MemberStateId in (" . PEOPLE_STATE_MEMBERSHIP . ", " . PEOPLE_STATE_FRIEND . ") " ;
         
-        $from = "FROM People ";
+        $from = "FROM view_people_memberstate as People ";
         
         $result = $this->db->select($this->saronUser, $select, $from, $where, "ORDER BY DisplayText ", "", "Options");    
         return $result;

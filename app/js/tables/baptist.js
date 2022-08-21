@@ -100,15 +100,13 @@ function baptistTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 width: '15%',
                 title: 'Dopförrättare'
             },
-            MemberState:{
+            MemberStateName: {
                 title: 'Status',
-                width: '7%',
                 edit: false,
-                options: function (data){
-                    var url = saron.root.webapi + 'listMemberState.php';
-                    var field = "MemberState";
-                    var parameters = getOptionsUrlParameters(data, tableName, parentId, tablePath, field);                    
-                    return url + parameters;
+                create: false,
+                width: '4%',
+                display: function (data){
+                    return _setClassAndValue(data, "MemberStateName", PERSON);
                 }
             },
             Comment: {
@@ -121,7 +119,7 @@ function baptistTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
             alowedToUpdateOrDelete(event, data, tableDef);
         },        
         recordUpdated(data, event){
-            _updateFields(event, "MemberState", PERSON);                                                
+            _updateFields(event, "MemberStateId", PERSON);                                                
         },
         formCreated: function (event, data){
             data.row[0].style.backgroundColor = "yellow";
@@ -155,7 +153,7 @@ function configBaptistTableDef(tableDef){
     if(tablePathRoot !== saron.table.baptist.name){
         tableDef.fields.Name.list = false;
         tableDef.fields.DateOfBirth.list = false;
-        tableDef.fields.MemberState.list = false;        
+        tableDef.fields.MemberStateName.list = false;        
         tableDef.paging = false;
         tableDef.sorting = false;
     }    

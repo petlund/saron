@@ -115,16 +115,15 @@ class Homes extends SuperEntity{
     
     
     function getResidentsSql($tableAlias, $fieldAlias, $homesTableNameAndId = "Homes.Id", $continue){
-        $memberState = new MemberState($this->db, $this->saronUser);
 
         $sql = "(SELECT GROUP_CONCAT(";
         $sql.= $this->getFieldSql($tableAlias . "Res", "", "FirstNameEncrypt", "", true, false);
         $sql.= ", ' ', ";
         $sql.= $this->getFieldSql($tableAlias . "Res", "", "LastNameEncrypt", "", true, false);
         $sql.= ", ' - ', ";
-        $sql.= $memberState->getMemberStateSql($tableAlias . "Res", null, false);
+        $sql.= $this->getFieldSql($tableAlias . "Res", "", "MemberStateName", "", false, false);
         $sql.= " SEPARATOR '<BR>') ";
-        $sql.= "FROM People as " . $tableAlias . "Res ";
+        $sql.= "FROM view_people_memberstate as " . $tableAlias . "Res ";
         $sql.= "where HomeId = ";
         $sql.= $homesTableNameAndId . " "; 
 

@@ -13,13 +13,13 @@
     
 // From this file
 // People_State
-    Define("PEOPLE_STATE_MEMBER",  "member");
-    Define("PEOPLE_STATE_VOLONTAIRE",  "volontaire");
-    Define("PEOPLE_STATE_DEATH",  "death");
-    Define("PEOPLE_STATE_FRIEND",  "friendship");
-    Define("PEOPLE_STATE_REGISTRATED",  "registrated");
-    Define("PEOPLE_STATE_BAPTIST",  "baptist");
-    Define("PEOPLE_STATE_ANONYMiZED",  "anonymized");
+    Define("PEOPLE_STATE_MEMBERSHIP",  2);
+    Define("PEOPLE_STATE_MEMBERSHIP_ENDED",  8);
+    Define("PEOPLE_STATE_DEAD",  5);
+    Define("PEOPLE_STATE_FRIEND",  7);
+    Define("PEOPLE_STATE_REGISTRATED",  1);
+    Define("PEOPLE_STATE_ONLY_BAPTIST",  3);
+    Define("PEOPLE_STATE_ANONYMiZED",  4);
 
 // People    
     Define("TABLE_NAME_PEOPLE",  "people");

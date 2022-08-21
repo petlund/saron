@@ -1,5 +1,5 @@
 /* global DATE_FORMAT,
-SUBUNIT_ENABLED, 
+SUBUNIT_ENABLED, PERSON, 
 ORG, POS_ENABLED, 
 saron, 
 RECORD, OPTIONS
@@ -200,11 +200,14 @@ function posTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 title: 'Förslag',
                 list: true,
             },
-            MemberState: {
-                title: 'Medlemsstatus',
+            MemberStateName: {
+                title: 'Status',
                 edit: false,
                 create: false,
-                width: '5%'                
+                width: '4%',
+                display: function (data){
+                    return _setClassAndValue(data, "MemberStateName", PERSON);
+                }             
             },
             pCur_Mobile: {
                 title: 'Mobil',

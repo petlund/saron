@@ -420,14 +420,23 @@ class Person extends People{
         $result = $this->db->select($this->saronUser, "Select Id ", "From People ", "Where DateOfMembershipStart is not null and DateOfMembershipEnd is null and Id = " . $this->id, "", "");
         $jResult = json_decode($result);
 
+            
+        if($jResult->TotalRecordCount !== '1'){
+            $error["Message"] = "Ingen anonymisering är genomförd. En enskild individ kan inte säkerställas.";
+        }
+        
+        if(strlen($error["Message"])>0){
+            $error["Result"] = "ERROR";
+            return json_encode($error);
+        }
+
         $sql = "update People set ";
         $sql.= "FirstNameEncrypt = " . $this->getEncryptedSqlString($Today)  . ", ";
         $sql.= "LastNameEncrypt = " . $this->getEncryptedSqlString(ANONYMOUS) . ", ";
         $sql.= "VisibleInCalendar = 0, ";
         $sql.= "EmailEncrypt = NULL, ";
-        if($jResult->TotalRecordCount ==='1'){
-            $sql.= "DateOfMembershipEnd = '" . $Today . "', ";
-        }
+        $sql.= "DateOfMembershipEnd = '" . $Today . "', ";
+        $sql.= "DateOfAnonymization = '" . $Today . "', ";
         $sql.= "MobileEncrypt = NULL, ";
         $sql.= "BaptisterEncrypt = NULL, ";
         $sql.= "CongregationOfBaptism = NULL, ";

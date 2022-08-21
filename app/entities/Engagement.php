@@ -3,6 +3,7 @@ require_once SARON_ROOT . 'app/entities/SuperEntity.php';
 require_once SARON_ROOT . 'app/entities/PeopleViews.php';
 require_once SARON_ROOT . 'app/entities/PeopleFilter.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
+require_once SARON_ROOT . 'app/entities/MemberState.php';
 
 class Engagement extends SuperEntity{
     private $nodeId;
@@ -14,6 +15,8 @@ class Engagement extends SuperEntity{
     protected $filterType;
     private $memberState;
     private $peopleFilter;
+    private $meberState; 
+
  
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
@@ -27,6 +30,7 @@ class Engagement extends SuperEntity{
         $this->orgPosStatus_FK = (int)filter_input(INPUT_POST, "OrgPosStatus_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->orgTreeNode_FK = (int)filter_input(INPUT_POST, "Org_Tree_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->people_FK = (int)filter_input(INPUT_POST, "People_FK", FILTER_SANITIZE_NUMBER_INT);
+        $this->meberState = new MemberState($db, $saronUser);
     }
 
 
@@ -52,8 +56,8 @@ class Engagement extends SuperEntity{
         $subQuery1 = $subSelect1 . $subFrom . $subWhere . $subGroupBy . $subOrderBy;
         $subQuery2 = $subSelect2 . $subFrom . $subWhere . $subGroupBy . ") as Cnt, ";
         
-        $select = "SELECT p.Id, p.DateOfMembershipStart, " . $this->getPersonSql(null, "Name", true);
-        $select.= $this->memberState->getMemberStateSql("p", "MemberState", true);
+        $select = "SELECT p.Id, p.DateOfMembershipStart, MemberStateName, ";
+        $select.= $this->getPersonSql(null, "Name", true);
         $select.= DECRYPTED_ALIAS_EMAIL . ", ";
         $select.= $this->getFieldSql(null, "Mobile", "MobileEncrypt", "", true, true);
         $select.= $this->getAppCanvasSql();
@@ -62,7 +66,7 @@ class Engagement extends SuperEntity{
         $select.= "CONCAT(Zip, ' ', City) AS Hosted, ";
         $select.= $this->saronUser->getRoleSql(false) . " ";
         
-        $from = "from People as p left outer join Homes as h on h.id = p.HomeId ";
+        $from = "from view_people_memberstate as p left outer join Homes as h on h.id = p.HomeId ";
         
         $where = "";
         if($this->id > 0){
@@ -70,12 +74,9 @@ class Engagement extends SuperEntity{
             $where.= "WHERE p.Id = " . $this->id . " ";
         }
         else{
-            $where = "WHERE (" . $this->memberState->hasStateMembershipSQL("p") . " OR " .
-                    $this->memberState->hasStateRegistratedSQL("p") . " OR " .
-                    $this->memberState->hasStateFriendshipSQL("p") . " OR " .
-                    $this->memberState->getIsVolontaireSQL("p") . 
-                    ") " . 
-                    $this->peopleFilter->getSearchFilterSql($this->uppercaseSearchString) . " ";            
+            $where = "WHERE (p.MemberStateId in (" . PEOPLE_STATE_MEMBERSHIP . ", " . PEOPLE_STATE_FRIEND . ") OR "; 
+            $where.= $this->meberState->getHasEngagement("p") . ")";            
+            $where.= $this->peopleFilter->getSearchFilterSql($this->uppercaseSearchString) . " ";            
         }
         
         $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $rec);        

@@ -138,16 +138,15 @@ function memberTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 width: '15%',
                 title: 'Flyttat till församling'
             },
-            MemberState:{
-                width: '7',
+            MemberStateName: {
+                title: 'Status',
                 edit: false,
-                title: 'Status',    
-                options: function (data){
-                    var url = saron.root.webapi + 'listMemberState.php';
-                    var field = "MemberState";
-                    var parameters = getOptionsUrlParameters(data, tableName, parentId, tablePath, field);                    
-                    return url + parameters;
+                create: false,
+                width: '4%',
+                display: function (data){
+                    return _setClassAndValue(data, "MemberStateName", PERSON);
                 }
+
             },
             VisibleInCalendar: {
                 edit: 'true',
@@ -166,7 +165,7 @@ function memberTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
             alowedToUpdateOrDelete(event, data, tableDef);
         },        
         recordUpdated(data, event){
-            _updateFields(event, "MemberState", PERSON);                                                
+            _updateFields(event, "MemberStateId", PERSON);                                                
             _updateFields(event, "VisibleInCalendar", PERSON);                                                
             _updateFields(event, "DateOfMembershipStart", PERSON);                                                
             _updateFields(event, "DateOfMembershipEnd", PERSON);                
@@ -204,7 +203,7 @@ function configMemberTableDef(tableDef, tablePath){
     else{
         tableDef.fields.Name.list = false;
         tableDef.fields.DateOfBirth.list = false;
-        tableDef.fields.MemberState.list = false;        
+        tableDef.fields.MemberStateName.list = false;        
         tableDef.paging = false;
         tableDef.sorting = false;
     }    

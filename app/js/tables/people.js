@@ -452,19 +452,13 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                     return url + parameters;
                 }
             },
-            MemberState: {
+            MemberStateName: {
                 title: 'Status',
                 edit: false,
                 create: false,
                 width: '4%',
-//                display: function (data){
-//                    return _setClassAndValue(data, "MemberState", PERSON);
-//                },
-                options: function (data){
-                    var url = saron.root.webapi + 'listMemberState.php';
-                    var field = "MemberState";
-                    var parameters = getOptionsUrlParameters(data, tableName, parentId, tablePath, field);                    
-                    return url + parameters;
+                display: function (data){
+                    return _setClassAndValue(data, "MemberStateName", PERSON);
                 }
             },
             VisibleInCalendar: {
@@ -580,7 +574,7 @@ function _updatePeopleFields(data){
     _updateFields(data, "Name", PERSON);                                                
     _updateFields(data, "DateOfBirth", PERSON);                                                
     _updateFields(data, "DateOfMembershipEnd", PERSON);                                                
-    _updateFields(data, "MemberState", PERSON);                                                
+    _updateFields(data, "MemberStateName", PERSON);                                                
     _updateFields(data, "VisibleInCalendar", PERSON);                                                
     _updateFields(data, "Comment", PERSON);                                                
     _updateFields(data, "Mobile", PERSON);

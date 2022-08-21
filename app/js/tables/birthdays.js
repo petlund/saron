@@ -69,9 +69,14 @@ RECORD, OPTIONS
                     return _setClassAndValue(data, "NextBirthday", PERSON);
                 }       
             },
-            MemberState: {
-                title: 'Status',               
-                width: '5%'
+            MemberStateName: {
+                title: 'Status',
+                edit: false,
+                create: false,
+                width: '4%',
+                display: function (data){
+                    return _setClassAndValue(data, "MemberStateName", PERSON);
+                }
             },
             Email: {
                 width: '13%',

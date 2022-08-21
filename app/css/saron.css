@@ -355,7 +355,7 @@ ul{
 }
 
 
-.Residents, .FamilyName, .Address, .City, .Country, .Co, .Letter, .PreviousCongregation, .NextCongregation, .VisibleInCalendar, .Comment, .CongregationOfBaptism, .Baptister, .Email, .user_email, .MemberState, .LongHomeName, .Gender, .event_type{    
+.Residents, .FamilyName, .Address, .City, .Country, .Co, .Letter, .PreviousCongregation, .NextCongregation, .VisibleInCalendar, .Comment, .CongregationOfBaptism, .Baptister, .Email, .user_email, .MemberState, .LongHomeName, .Gender, .event_type, .MemberStateName{    
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;

@@ -63,7 +63,7 @@ require_once SARON_ROOT . 'app/entities/MemberState.php';
     $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_MOBILE . ", ";
     $ALL_PEOPLE_FIELDS.= "KeyToChurch, KeyToExp, ";
     $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_COMMENT . ", ";
-    $ALL_PEOPLE_FIELDS.= "People.HomeId, People.HomeId as OldHomeId, Updated, Inserter, Inserted, " . DECRYPTED_ALIAS_COMMENT_KEY . " ";
+    $ALL_PEOPLE_FIELDS.= "People.HomeId, People.HomeId as OldHomeId, Updated, Inserter, Inserted, " . DECRYPTED_ALIAS_COMMENT_KEY . ", MemberStateId, MemberStateName ";
     
     define("SQL_STAR_PEOPLE", "Select " . $ALL_PEOPLE_FIELDS);
 
@@ -77,7 +77,7 @@ require_once SARON_ROOT . 'app/entities/MemberState.php';
     define("SQL_STAR_HOMES", "Select " . $ALL_HOME_FIELDS);
     define("SQL_ALL_FIELDS", "select " . $ALL_PEOPLE_FIELDS . ", " . $ALL_HOME_FIELDS);
 
-    define("SQL_FROM_PEOPLE_LEFT_JOIN_HOMES", "FROM People left outer join Homes on People.HomeId=Homes.Id "); 
+    define("SQL_FROM_PEOPLE_LEFT_JOIN_HOMES", "FROM view_people_memberstate as People left outer join Homes on People.HomeId=Homes.Id "); 
     define("SQL_WHERE", "Where ");  
     
     define("FORMATTED_EMAILADDRESS", "if(" . DECRYPTED_EMAIL . " not like \"\", concat(\"<p class='Email'><a href='mailto:\"," . DECRYPTED_EMAIL . ",\"'>\", " . DECRYPTED_EMAIL . ", \"</a></p>\"),'') ");

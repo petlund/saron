@@ -93,12 +93,19 @@ function peopleEngagementTableDef(tableTitle, parentTablePath, parentId, parentT
                 title: 'Namn',
                 width: '15%'
             },
-            MemberState: {
-                title: 'Status'
+            MemberStateName: {
+                title: 'Status',
+                edit: false,
+                create: false,
+                width: '4%',
+                display: function (data){
+                    return _setClassAndValue(data, "MemberStateName", PERSON);
+                }
+
             },
-            DateOfMembershipStart: {
-                title: 'Medlemskap Start'
-            },
+//            DateOfMembershipStart: {
+//                title: 'Medlemskap Start'
+//            },
             Email: {
                 title: 'Mail',
                 display: function (data){
