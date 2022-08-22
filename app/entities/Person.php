@@ -158,8 +158,8 @@ class Person extends People{
         }
 
 
-        if((strlen($this->DateOfMembershipStart) > 0 or strlen($this->DateOfMembershipEnd) > 0) and strlen($this->DateOfFriendshipStart) > 0){
-            $error["Message"] = "En medlem eller före detta medlem ska inte ha ett datum för start av vänkontakt.";
+        if(strlen($this->DateOfMembershipStart) > 0 and strlen($this->DateOfMembershipEnd) === 0 and strlen($this->DateOfFriendshipStart) > 0){
+            $error["Message"] = "En medlem medlem ska inte ha ett datum för start av vänkontakt.";
         }
 
 
@@ -397,14 +397,13 @@ class Person extends People{
     function selectPersonAfterUpdate($id){
         $home = new Home($this->db, $this->saronUser);
         $sqlSelect = SQL_STAR_PEOPLE . ", " . $this->saronUser->getRoleSql(true);
-        $sqlSelect.= $this->memberState->getMemberStateSql("People", "MemberState", false) . ", ";
         $sqlSelect.= $this->getAppCanvasSql(true);
         $sqlSelect.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
         $sqlSelect.= $home->getHomeSelectSql(ALIAS_CUR_HOMES, $this->HomeId, true);
         $sqlSelect.= $home->getHomeSelectSql(ALIAS_OLD_HOMES, $this->OldHomeId, true);
         $sqlSelect.= $this->getAppCanvasSql(false);                  
         
-        $sqlFrom ="FROM People left outer join Homes on People.HomeId=Homes.Id ";
+        $sqlFrom ="FROM view_people_memberstate as People left outer join Homes on People.HomeId=Homes.Id ";
         $sqlFrom.="left outer join Homes as " . ALIAS_OLD_HOMES . " on " .  ALIAS_OLD_HOMES . ".Id = " . $this->OldHomeId . " ";
         
         $sqlWhere = "WHERE ";

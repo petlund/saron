@@ -101,7 +101,7 @@ function memberTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 displayFormat: DATE_FORMAT,
                 type: 'date',
                 title: 'Vänkontakt start',
-                inputTitle: 'Sätt datum för start av vänkontakt - Förstadium till medlemskap. Mailfunktionen stämmer av behovet om ett år.'
+                inputTitle: 'Sätt datum för start av vänkontakt - Endast för icke medlemmar.'
             },
             DateOfMembershipStart: {
                 width: '7%',
