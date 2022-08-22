@@ -39,11 +39,12 @@
     $sql.="(select count(*) from People as pp where pp.HomeId=Homes.Id) as fam_member_count ";
     $sql.="from "; 
     $sql.="((Select HomeId, HomeId as hid, substr(" . DECRYPTED_LASTNAME . ", 1, 5) as SortName, ";
-    $sql.="(select max(" . DECRYPTED_LASTNAME . ") from People where hid=HomeId and substr(" . DECRYPTED_LASTNAME . ", 1, 5)=SortName and length(" . DECRYPTED_LASTNAME . ")=(select min(length(" . DECRYPTED_LASTNAME . ")) from People where hid=HomeId and substr(" . DECRYPTED_LASTNAME . ", 1, 5)=SortName)) as GroupName from People ";
-    $sql.="WHERE  " . $memberState->hasStateFriendshipSQL(); 
-    $sql.="inner join People on People.HomeId=SortList.HomeId) "; 
+    $sql.="(select max(" . DECRYPTED_LASTNAME . ") from People where hid=HomeId and substr(" . DECRYPTED_LASTNAME . ", 1, 5)=SortName and length(" . DECRYPTED_LASTNAME . ")=(select min(length(" . DECRYPTED_LASTNAME . ")) from view_people_memberstate as People where hid=HomeId and substr(" . DECRYPTED_LASTNAME . ", 1, 5)=SortName)) as GroupName ";
+    $sql.="FROM view_people_memberstate as People ";
+    $sql.="WHERE MemberStateId = " . PEOPLE_STATE_MEMBERSHIP . " ) as SortList "; 
+    $sql.="inner join view_people_memberstate as People on People.HomeId=SortList.HomeId) "; 
     $sql.="left outer join Homes on People.HomeId = Homes.Id ";  
-    $sql.="where DateOfMembershipStart is not null and  DateOfMembershipEnd is null and DateOfDeath is null and VisibleInCalendar=2 "; //Memberstatelogic
+    $sql.="WHERE MemberStateId = " . PEOPLE_STATE_MEMBERSHIP . " and VisibleInCalendar=2 "; //Memberstatelogic
     $sql.="order by SortList.GroupName, " . DECRYPTED_ADDRESS . ", Homes.Id, People.DateOfBirth"; 
 
     // create new PDF document
