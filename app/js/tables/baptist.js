@@ -119,7 +119,7 @@ function baptistTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
             alowedToUpdateOrDelete(event, data, tableDef);
         },        
         recordUpdated(data, event){
-            _updateFields(event, "MemberStateId", PERSON);                                                
+            _updateFields(event, "MemberStateName", PERSON);                                                
         },
         formCreated: function (event, data){
             data.row[0].style.backgroundColor = "yellow";

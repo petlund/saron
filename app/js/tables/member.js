@@ -165,7 +165,7 @@ function memberTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
             alowedToUpdateOrDelete(event, data, tableDef);
         },        
         recordUpdated(data, event){
-            _updateFields(event, "MemberStateId", PERSON);                                                
+            _updateFields(event, "MemberStateName", PERSON);                                                
             _updateFields(event, "VisibleInCalendar", PERSON);                                                
             _updateFields(event, "DateOfMembershipStart", PERSON);                                                
             _updateFields(event, "DateOfMembershipEnd", PERSON);                

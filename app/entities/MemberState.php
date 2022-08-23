@@ -195,9 +195,8 @@ class MemberState extends SuperEntity{
         $select.= $this->saronUser->getRoleSql(false) ;
 
         $from = "FROM MemberState ";
-        $from.= "right outer join (select count(*) as Amount, ";
-        $from.= $this->getMemberStateIndexSql();
-        $from.= "as MemberStateId from People GROUP BY MemberStateId) as MemberStates on Id = MemberStateId  ";
+        $from.= "right outer join (select count(*) as Amount, MemberStateId ";
+        $from.= "from view_people_memberstate as People GROUP BY MemberStateId) as MemberStates on Id = MemberStateId  ";
         
         switch($this->appCanvasPath){
             case TABLE_NAME_MEMBER_STATE_REPORT:

@@ -121,6 +121,9 @@ function createDossier(TCPDF $pdf, $id){
         $pdf->SetFont($FONT_FAMILY, '', 12);
 
 
+        $pdf->MultiCell($leftColWidth, 5, "Vänkontaktdatum", 0, 'L', 0, 0, '', '', true, 0, false, true, 10, 'T'); 
+        $pdf->MultiCell($rightColWidt, 5, $aRow['DateOfFriendshipStart'], 0, 'L', 0, 1, '', '', true, 0, false, true, 10, 'T'); 
+        
         $pdf->MultiCell($leftColWidth, 5, "Medlemskap", 0, 'L', 0, 0, '', '', true, 0, false, true, 10, 'T'); 
         $membership = $aRow['DateOfMembershipStart'] . ' - ' . $aRow['DateOfMembershipEnd'];
         $pdf->MultiCell($rightColWidt, 5, $membership, 0, 'L', 0, 1, '', '', true, 0, false, true, 10, 'T');    
@@ -215,7 +218,7 @@ function createDossier(TCPDF $pdf, $id){
 }
 
 function getSQL($id){
-    $sql = SQL_ALL_FIELDS . " FROM People left outer join Homes on People.homeid=Homes.Id ";
+    $sql = SQL_ALL_FIELDS . SQL_FROM_PEOPLE_LEFT_JOIN_HOMES;
     if ($id>0){
         $sql .= "where People.Id= " . $id;
     }

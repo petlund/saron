@@ -184,10 +184,20 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                 delete: false,            
                 display: function (data) {
                     var childTableTitle = _setClassAndValueHeadline(data, 'Name', PERSON, 'Medlemsuppgifter', 'Medlemsuppgifter för ', '');;
-                    var tooltip = 'Medlemsuppgifter';
-                    var imgFile = "member.png";
+                    var tooltip = 'Ej medlem';
+                    var imgFile = "notmember.png";
                     var clientOnly = false;
                     var type = 0;
+
+                    if(data.record.MemberStateId === "7"){ //Not Member
+                        tooltip = 'Vänkontakt';
+                        imgFile = "friendship.png";                        
+                    }
+                    else if(data.record.MemberStateId === "2"){ //Not Member
+                        tooltip = 'Medlem';
+                        imgFile = "member.png";                        
+                    }
+
 
                     var childTableDef = memberTableDef(childTableTitle, tablePath, data.record.Id, tableDef); // PersonId point to childtable unic id   
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
