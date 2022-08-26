@@ -86,31 +86,14 @@ class PeopleFilter{
                 return $this->getMemberStateWhereSQL($memberstates);
             case 15:
                 //ej medlem
-                $memberstates = array(PEOPLE_STATE_MEMBERSHIP);
-                return "NOT " . $this->getMemberStateWhereSQL($memberstates);
+                $memberstates = array(PEOPLE_STATE_FRIEND, PEOPLE_STATE_MEMBERSHIP_ENDED, PEOPLE_STATE_REGISTRATED, PEOPLE_STATE_ONLY_BAPTIST);
+                return $this->getMemberStateWhereSQL($memberstates);
             case 16:    
                 //underlag för anonymisering nästa år
 
                 return "MemberStateId = " . PEOPLE_STATE_MEMBERSHIP_ENDED . " AND EXTRACT(YEAR FROM DateOfMembershipEnd) < EXTRACT(YEAR FROM Now()) OR " . 
                        "MemberStateId = " . PEOPLE_STATE_REGISTRATED . " AND EXTRACT(YEAR FROM Created) < EXTRACT(YEAR FROM Now()) OR " . 
                        "MemberStateId = " . PEOPLE_STATE_ONLY_BAPTIST . " AND EXTRACT(YEAR FROM DateOfBaptism) < EXTRACT(YEAR FROM Now())"; 
-                        
-                
-
-//                $sqlWhere = "NOT (";
-//                $sqlWhere.= $this->memberState->getIsAnonymizedSQL();
-//                $sqlWhere.= " OR ";
-//                $sqlWhere.= $this->memberState->getIsDeadSQL();
-//                $sqlWhere.= " OR ";
-//                $sqlWhere.= "if(DateOfMembershipEnd is null, false, EXTRACT(YEAR FROM DateOfMembershipEnd) = EXTRACT(YEAR FROM Now())) ";
-//                $sqlWhere.= "OR ";
-//                $sqlWhere.= "if(DateOfBaptism is null, false, EXTRACT(YEAR FROM DateOfBaptism) = EXTRACT(YEAR FROM Now())) ";
-//                $sqlWhere.= "OR ";
-//                $sqlWhere.= $this->memberState->hasStateFriendshipSQL();
-//                $sqlWhere.= "OR ";
-//                $sqlWhere.= $this->memberState->hasStateMembershipSQL();
-//                $sqlWhere.= ") ";
-//                return $sqlWhere; 
             case 17:
                 //anonymiserade
                 $memberstates = array(PEOPLE_STATE_ANONYMiZED);

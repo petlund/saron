@@ -10,11 +10,6 @@ var mailgroups ={parameters:[
             listid: saron.list.email_member.nameId
         },        
         {
-            head:"Mailadresser till medhjälpare", 
-            listname: saron.list.email_volontaires.name, 
-            listid: saron.list.email_volontaires.nameId
-        },        
-        {
             head:"Mailadresser till församlingens vänner", 
             listname: saron.list.email_friendship.name, 
             listid: saron.list.email_friendship.nameId

@@ -63,7 +63,7 @@ class People extends SuperEntity{
         $id = $this->getId($idFromCreate, $this->id);
 
         $tw = new PeopleViews($this->db, $this->saronUser);
-        $sqlSelect = $tw->getPeopleViewSql($this->appCanvasName, $this->saronUser) .", ";
+        $sqlSelect = $tw->getPeopleViewSql($this->appCanvasName, $this->saronUser) . ", ";
         $sqlSelect.= $this->homes->getHomeSelectSql(ALIAS_CUR_HOMES, "Homes.Id", false);
         
         if(strlen($this->appCanvasPath) >0){
@@ -172,12 +172,12 @@ class People extends SuperEntity{
     
     function selectEmail(){
         $select = "select ";
-        $from = " from People ";
+        $from = " from view_people_memberstate as People ";
         $where = "where " . DECRYPTED_EMAIL . " like '%@%' ";
         switch($this->appCanvasName){
             case LIST_EMAIL_MEMBER:
                 $select.= DECRYPTED_EMAIL . " as entry ";
-                $where.= "and " . $this->memberState->hasStateMembershipSQL() . " ";
+                $where.= "and MemberStateId = " . PEOPLE_STATE_MEMBERSHIP . " ";
             break;
             case LIST_EMAIL_ENDING_FRIENDSHIP:
                 $select.= "Concat(" . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . ", ' - ', " . DECRYPTED_EMAIL . ")  as entry ";
@@ -185,11 +185,7 @@ class People extends SuperEntity{
             break;
             case LIST_EMAIL_FRIENDSHIP:
                 $select.= DECRYPTED_EMAIL . " as entry ";
-                $where.= "and " . $this->memberState->hasStateFriendshipSQL() . " ";
-            break;
-            case LIST_EMAIL_VOLONTAIRES:
-                $select.= DECRYPTED_EMAIL . " as entry ";
-                $where.= "and " . $this->memberState->getIsVolontaireSQL() . " ";
+                $where.= "and MemberStateId = " . PEOPLE_STATE_MEMBERSHIP . " ";
             break;
         }
         $orderby = "group by entry ";

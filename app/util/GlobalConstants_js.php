@@ -176,10 +176,6 @@ $saron->list->email_member =  (object)array();
 $saron->list->email_member->name = LIST_EMAIL_MEMBER;
 $saron->list->email_member->nameId = "#" . LIST_EMAIL_MEMBER;
 
-$saron->list->email_volontaires =  (object)array();
-$saron->list->email_volontaires->name = LIST_EMAIL_VOLONTAIRES;
-$saron->list->email_volontaires->nameId = "#" . LIST_EMAIL_VOLONTAIRES;
-
 $saron->list->email_friendship =  (object)array();
 $saron->list->email_friendship->name = LIST_EMAIL_FRIENDSHIP;
 $saron->list->email_friendship->nameId = "#" . LIST_EMAIL_FRIENDSHIP;
