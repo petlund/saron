@@ -92,24 +92,24 @@ class Statistics extends SuperEntity{
             $where = "AND Id =" . $id. " ";
         }
 
-        $sql =$this->getSelectSQL(0);  
+        $sql =$this->getSelectSQL(1);  
         $sql.="DateOfMembershipStart as 'event_date', 
             'Ny' as event_type, 1 as event_type_id, 1 as 'Diff' 
             FROM `People` as p  
             WHERE extract(YEAR from DateOfMembershipStart)=" . $curYear . " " . $where;
         $sql.=" UNION ";
-        $sql.=$this->getSelectSQL(0);  
+        $sql.=$this->getSelectSQL(2);  
         $sql.="DateOfMembershipEnd as 'event_date', 
             'Avslutad' as event_type, 2 as event_type_id, -1 as 'Diff' 
             FROM `People` as p  
             WHERE DateOfDeath is null and DateOfMembershipStart is not null and extract(YEAR from DateOfMembershipEnd)=" . $curYear . " " . $where;   
         $sql.=" UNION ";
-        $sql.=$this->getSelectSQL(0);  
+        $sql.=$this->getSelectSQL(3);  
         $sql.="DateOfBaptism as 'event_date', 'Döpt' as event_type, 3 as event_type_id, 0 as 'Diff' 
             FROM `People` as p  
             WHERE CongregationOfBaptismThis=2 and extract(YEAR from DateOfBaptism)=" . $curYear . " " . $where; 
         $sql.=" UNION ";
-        $sql.=$this->getSelectSQL(0);  
+        $sql.=$this->getSelectSQL(4);  
         $sql.="DateOfDeath as 'event_date', 'Avliden' as event_type, 4 as event_type_id, -1 as 'Diff' 
             FROM `People` as p  
             WHERE extract(YEAR from DateOfDeath)=" . $curYear . " " . $where;  
@@ -132,12 +132,10 @@ class Statistics extends SuperEntity{
 
     
     function getSelectSQL($offset){
-        $rowNumberSql = "(ROW_NUMBER() OVER (ORDER BY DateOfBirth) + " . $offset . ") AS Id";
+        //$rowNumberSql = "(ROW_NUMBER() OVER (ORDER BY DateOfBirth) + " . $offset . ") AS Id";
         
-        $sqlSelect="SELECT p.Id as PersonId, " . $rowNumberSql . ", ";
+        $sqlSelect="SELECT p.Id as PersonId, (p.Id * 100 + " . $offset . ") as Id, ";
         $sqlSelect.=$this->getAppCanvasSql(true);
-//        $sqlSelect.=DECRYPTED_ALIAS_LASTNAME . ", " . DECRYPTED_ALIAS_FIRSTNAME . ", ";
-//        $sqlSelect.="DateOfBirth, ";
         $sqlSelect.= $this->getPersonSql("p", "Name", TRUE);
         $sqlSelect.=DECRYPTED_ALIAS_COMMENT . ", ";
         

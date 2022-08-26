@@ -284,30 +284,6 @@ function statisticsDetailTableDef(tableTitle, parentTablePath, parentId, parentT
                     return _setClassAndValueWidthEventType(data, "DateOfBirth", PERSON);
                 }       
             },
-//            DateOfBaptism: {
-//                title: 'Dopdatum',
-//                display: function (data){
-//                    return _setClassAndValue(data, "DateOfBaptism", PERSON);
-//                }       
-//            },
-//            DateOfMembershipStart: {
-//                title: 'Medlemskap start',
-//                display: function (data){
-//                    return _setClassAndValue(data, "DateOfMembershipStart", PERSON);
-//                }       
-//            },
-//            DateOfMembershipEnd: {
-//                title: 'Medlemskap avslut',
-//                display: function (data){
-//                    return _setClassAndValue(data, "DateOfMembershipEnd", PERSON);
-//                }       
-//            },
-//            DateOfDeath: {
-//                title: 'Avliden',
-//                display: function (data){
-//                    return _setClassAndValue(data, "DateOfDeth", PERSON);
-//                }       
-//            },
             Comment: {
                 title: 'Notering',
                 width: '30%',
