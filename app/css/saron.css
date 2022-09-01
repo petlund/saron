@@ -84,10 +84,10 @@ h3 {
 
   .tooltip .tooltiptext {
     visibility: hidden;
-    width: 120px;
+    width: 180px;
     background-color: yellow;
     color: #000;
-    text-align: center;
+    text-align: left;
     border-radius: 6px;
     padding: 5px 0;
 
@@ -95,7 +95,7 @@ h3 {
     position: absolute;
     z-index: 1;
     top: -5px;
-    left: 105%;
+    right: 105%;
   }
 
   .tooltip:hover .tooltiptext {

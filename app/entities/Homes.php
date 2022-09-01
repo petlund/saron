@@ -65,7 +65,7 @@ class Homes extends SuperEntity{
         $TABLE_HOMES_AND_ID = "Homes.Id";    
         
         $filter = new HomesFilter();
-        $sqlSelect = SQL_STAR_HOMES  . ", " .  $this->saronUser->getRoleSql(true);         
+        $sqlSelect = SQL_STAR_HOMES . ", " .  $this->saronUser->getRoleSql(true);         
         $sqlSelect.= $this->getAppCanvasSql(true);
         $sqlSelect.= $this->getHomeSelectSql(ALIAS_CUR_HOMES, $TABLE_HOMES_AND_ID, false);
 

@@ -103,9 +103,6 @@ function peopleEngagementTableDef(tableTitle, parentTablePath, parentId, parentT
                 }
 
             },
-//            DateOfMembershipStart: {
-//                title: 'Medlemskap Start'
-//            },
             Email: {
                 title: 'Mail',
                 display: function (data){
@@ -241,20 +238,15 @@ function engagementsTableDef(tableTitle, parentTablePath, parentId, parentTableD
                 title: 'Kommentar',
                 inputTitle: 'Kommentar kopplat till uppdraget ej person'
             },
-            UpdaterName: {
-                edit: false,
-                create: false, 
-                title: 'Uppdaterare',
-                width: '5%'
-            },
-            Updated: {
-                edit: false,
-                create: false, 
+            UpdateInfo:{
                 title: 'Uppdaterad',
-                type: 'date',
-                displayFormat: DATE_FORMAT,
-                width: '5%'
-            }            
+                width: '5%',
+                create: false,
+                edit: false,
+                display: function (data){
+                    return getUpdateInfo(data);
+                }
+            }
         },
         recordUpdated: function(event, data){
             updateParentRow(event, data, tableDef);

@@ -93,11 +93,20 @@ function totalTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
             Engagement: {
                 title: 'Förtroendeuppdrag',
                 width: '15%',
+                create: false,
+                edit: false,
                 display: function(data){
                     if(data.record.Engagement > 0)
                         return "Personen har " + data.record.Engagement + " uppdrag kopplat till sig.";
 
                     return null;
+                }
+            },
+            UpdateInfo:{
+                title: 'Uppdaterad',
+                width: '5%',
+                display: function (data){
+                    return getUpdateInfo(data);
                 }
             }
         },

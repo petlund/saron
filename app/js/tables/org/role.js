@@ -124,19 +124,14 @@ function roleTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 width: '10%',
                 options:  { '0' : 'Verksamhetsroll', '1' : 'Organisationsroll [Org]' }
             },
-            UpdaterName: {
-                edit: false,
-                create: false, 
-                title: 'Uppdaterare',
-                width: '5%'
-            },
-            Updated: {
-                edit: false,
-                create: false, 
+            UpdateInfo:{
                 title: 'Uppdaterad',
-                type: 'date',
-                displayFormat: DATE_FORMAT,
-                width: '5%'
+                width: '5%',
+                create: false,
+                edit: false,
+                display: function (data){
+                    return getUpdateInfo(data);
+                }
             }
         },
         recordUpdated(event, data){

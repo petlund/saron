@@ -32,7 +32,7 @@ class PeopleViews {
         case TABLE_NAME_BAPTIST:
             return SQL_STAR_PEOPLE . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", "  . $saronUser->getRoleSql(false);
         case TABLE_NAME_KEYS:
-            return "Select People.Id as Id, KeyToExp, KeyToChurch, DateOfBirth, " . DECRYPTED_ALIAS_COMMENT_KEY . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . $saronUser->getRoleSql(false);
+            return "Select People.Id as Id, KeyToExp, KeyToChurch, DateOfBirth, People.UpdaterName, People.Updated, People.InserterName, People.Inserted, " . DECRYPTED_ALIAS_COMMENT_KEY . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . $saronUser->getRoleSql(false);
         case TABLE_NAME_TOTAL:
             return $this->selectTotal() . ", " . $saronUser->getRoleSql(false);
         default:    
@@ -113,7 +113,7 @@ class PeopleViews {
         $selectEngagement.= "'<B>Kön: </B>', IF(Gender=0,'-', IF(Gender=1,'Man','Kvinna')) ";
         $selectEngagement.= ") as Engagement ";  
            //
-        return $selectPerson . $selectMember . $selectBaptist . $selectAddress  . $selectOther. $this->selectNoOfEngagements();    
+        return $selectPerson . $selectMember . $selectBaptist . $selectAddress  . $selectOther . $this->selectNoOfEngagements() . ", People.Inserted, People.InserterName, People.UpdaterName, People.Updated " ;    
     }
     
 }

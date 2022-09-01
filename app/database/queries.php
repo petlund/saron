@@ -63,7 +63,7 @@ require_once SARON_ROOT . 'app/entities/MemberState.php';
     $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_MOBILE . ", ";
     $ALL_PEOPLE_FIELDS.= "KeyToChurch, KeyToExp, ";
     $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_COMMENT . ", ";
-    $ALL_PEOPLE_FIELDS.= "People.HomeId, People.HomeId as OldHomeId, Updated, Inserter, Inserted, " . DECRYPTED_ALIAS_COMMENT_KEY . ", MemberStateId, MemberStateName ";
+    $ALL_PEOPLE_FIELDS.= "People.HomeId, People.HomeId as OldHomeId, People.Updater, People.Updated, People.UpdaterName, People.Inserter, People.Inserted, People.InserterName, " . DECRYPTED_ALIAS_COMMENT_KEY . ", MemberStateId, MemberStateName ";
     
     define("SQL_STAR_PEOPLE", "Select " . $ALL_PEOPLE_FIELDS);
 
@@ -73,7 +73,7 @@ require_once SARON_ROOT . 'app/entities/MemberState.php';
     $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_CO . ", ";
     $ALL_HOME_FIELDS.= "City, Zip, Country,  ";
     $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_PHONE . ", ";
-    $ALL_HOME_FIELDS.= "Letter  ";    
+    $ALL_HOME_FIELDS.= "Letter, Homes.Inserted, Homes.Inserter, Homes.InserterName, Homes.Updater, Homes.UpdaterName, Homes.Updated ";    
     define("SQL_STAR_HOMES", "Select " . $ALL_HOME_FIELDS);
     define("SQL_ALL_FIELDS", "select " . $ALL_PEOPLE_FIELDS . ", " . $ALL_HOME_FIELDS);
 

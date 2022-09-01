@@ -159,6 +159,15 @@ function memberTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 type: 'textarea',
                 width: '46%',
                 title: 'Not'
+            },
+            UpdateInfo:{
+                title: 'Uppdaterad',
+                width: '5%',
+                create: false,
+                edit: false,
+                display: function (data){
+                    return getUpdateInfo(data);
+                }
             }
         },
         rowInserted: function(event, data){

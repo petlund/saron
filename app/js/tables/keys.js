@@ -107,6 +107,15 @@ function keyTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 list: true,
                 title: 'Not - Nycklar',
                 width: '30%'
+            },
+            UpdateInfo:{
+                title: 'Uppdaterad',
+                width: '5%',
+                create: false,
+                edit: false,
+                display: function (data){
+                    return getUpdateInfo(data);
+                }
             }
         },
         rowInserted: function(event, data){

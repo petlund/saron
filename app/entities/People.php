@@ -48,8 +48,6 @@ class People extends SuperEntity{
                     return $this->selectEmail(LIST_EMAIL_FRIENDSHIP);       
                 case LIST_EMAIL_ENDING_FRIENDSHIP:
                     return $this->selectEmail(LIST_EMAIL_ENDING_FRIENDSHIP);       
-                case LIST_EMAIL_VOLONTAIRES:
-                    return $this->selectEmail(LIST_EMAIL_VOLONTAIRES);       
                 default:
                     return $this->selectPeople();       
             }
@@ -185,7 +183,7 @@ class People extends SuperEntity{
             break;
             case LIST_EMAIL_FRIENDSHIP:
                 $select.= DECRYPTED_EMAIL . " as entry ";
-                $where.= "and MemberStateId = " . PEOPLE_STATE_MEMBERSHIP . " ";
+                $where.= "and MemberStateId = " . PEOPLE_STATE_FRIEND . " ";
             break;
         }
         $orderby = "group by entry ";

@@ -22,11 +22,11 @@ class SaronUser{
     private $db;
     private $editor;
     private $org_editor;
-    private $userDisplayName;
     private $timeStamp;
     private $ticket;
     private $sessionOK;
     public $WP_ID;
+    public $userDisplayName;
     
     
     function __construct($db) {

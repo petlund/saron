@@ -61,19 +61,14 @@ function orgVersionTableDef(tableTitle, parentTablePath, parentId, parentTableDe
                 title: 'Beskrivning',
                 width: '70%'
             },
-            UpdaterName: {
-                edit: false,
-                create: false, 
+            UpdateInfo:{
                 title: 'Uppdaterad',
-                width: '15%'
-            },
-            Updated: {
+                width: '5%',
+                create: false,
                 edit: false,
-                create: false, 
-                title: 'Uppdaterad',
-                type: 'date',
-                displayFormat: DATE_FORMAT,
-                width: '5%'
+                display: function (data){
+                    return getUpdateInfo(data);
+                }
             }
         },
         rowInserted: function(event, data){

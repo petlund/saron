@@ -227,19 +227,14 @@ function posTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 create: false,
                 title: 'Senast beslutad'
             },
-            UpdaterName:{
-                edit: false,
-                create: false, 
-                title: 'Uppdaterare',
-                width: '5%'
-            },
-            LatestUpdated: {
-                edit: false,
-                create: false, 
+            UpdateInfo:{
                 title: 'Uppdaterad',
-                type: 'date',
-                displayFormat: DATE_FORMAT,
-                width: '5%'
+                width: '5%',
+                create: false,
+                edit: false,
+                display: function (data){
+                    return getUpdateInfo(data);
+                }
             }
         },
         recordAdded: function(event, data){

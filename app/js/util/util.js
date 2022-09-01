@@ -528,3 +528,40 @@ function getRespons(data){
     return data;    
 }
 
+function getUpdateInfo(data){
+    var updater = "";
+    var inserter = "";
+    var updated = "";
+    var inserted = "";
+    var br ="";
+    
+    if(data.record.Inserted){
+        if(data.record.InserterName)
+            inserter = 'Skapat av:<br> - ' + data.record.InserterName + '<br> - ';
+        
+        if(data.record.Inserted)
+            inserted = data.record.Inserted + '<br>';
+
+        br = '<br>';
+    }
+    if(data.record.Updated){
+        if(data.record.UpdaterName)
+            updater = br + 'Senast uppdaterat av:<br> - ' + data.record.UpdaterName + '<br> - ';
+        
+        if(data.record.Updated)
+            updated = data.record.Updated;
+    }
+
+
+    var tooltiptext = inserter + inserted + updater + updated;
+    
+    var tooltip = '<div class="tooltip">';
+    tooltip+= updated.substring(0, 10);
+    tooltip+= '<span class="tooltiptext">';
+    tooltip+= tooltiptext;
+    tooltip+= '</span>';
+    tooltip+= '</div>';
+     
+    return tooltip;
+    
+}

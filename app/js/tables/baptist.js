@@ -113,6 +113,15 @@ function baptistTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 width: '34%',
                 title: 'Not',
                 type: 'textarea'
+            },
+            UpdateInfo:{
+                title: 'Uppdaterad',
+                width: '5%',
+                create: false,
+                edit: false,
+                display: function (data){
+                    return getUpdateInfo(data);
+                }
             }
         },
         rowInserted: function(event, data){

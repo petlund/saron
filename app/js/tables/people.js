@@ -508,6 +508,15 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                 display: function (data){
                     return _setClassAndValue(data, "Comment", PERSON);
                 }       
+            },
+            UpdateInfo:{
+                title: 'Uppdaterad',
+                width: '5%',
+                create: false,
+                edit: false,
+                display: function (data){
+                    return getUpdateInfo(data);
+                }
             }
         },
         rowInserted: function(event, data){
