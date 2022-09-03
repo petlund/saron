@@ -200,15 +200,6 @@ function posTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 title: 'Förslag',
                 list: true,
             },
-            MemberStateName: {
-                title: 'Status',
-                edit: false,
-                create: false,
-                width: '4%',
-                display: function (data){
-                    return _setClassAndValue(data, "MemberStateName", PERSON);
-                }             
-            },
             pCur_Mobile: {
                 title: 'Mobil',
                 edit: false,
