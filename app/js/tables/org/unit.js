@@ -217,8 +217,11 @@ function unitTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
             }
         },
         recordUpdated: function (event, data){
-            if(data.record.ParentTreeNode_FK !== parentId)
-                moveOrgUnit(data);
+            var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
+
+            if(tablePathRoot === saron.table.unittree.name)
+                if(data.record.ParentTreeNode_FK !== parentId)
+                    moveOrgUnit(data);
 
             alowedToUpdateOrDelete(event, data, tableDef);
 
