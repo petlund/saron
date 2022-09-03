@@ -95,7 +95,7 @@ function role_role_unitType_TableDef(tableTitle, parentTablePath, parentId, pare
                 optionsSorting:'text',
                 options: function(data){
                     var url = saron.root.webapi + 'listOrganizationUnitType.php';
-                    var field = null;
+                    var field = "OrgUnitType_FK";
                     var parameters = getOptionsUrlParameters(data, saron.table.role_unittype.name, parentId, tableDef.tablePath, field);                    
                     return url + parameters;
                 }
@@ -109,7 +109,7 @@ function role_role_unitType_TableDef(tableTitle, parentTablePath, parentId, pare
                 optionsSorting:'text',
                 options: function(data){
                     var url = saron.root.webapi + 'listOrganizationRole.php';
-                    var field = null;
+                    var field = "OrgRole_FK";
                     var parameters = getOptionsUrlParameters(data, saron.table.role_unittype.name, parentId, tableDef.tablePath, field);                    
                     return url + parameters;
                 }

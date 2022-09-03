@@ -134,21 +134,19 @@ class OrganizationRole extends SuperEntity{
     
     function selectOptions(){
         
-        $sql = "Select * from ( ";
-        $sql.= "SELECT Role.Id  as Value, Concat('<u>', Role.Name, '</u>') as DisplayText from Org_Role as Role WHERE Role.RoleType = 1 ";
+        $sql = "Select * from (";
+        $sql.= "(SELECT Role.Id  as Value, Concat(' * ', Role.Name) as DisplayText from Org_Role as Role WHERE Role.RoleType = 1 )"; 
+//        $sql.= "UNION "; 
+//        $sql.= "Select -1 as Value, '-' as DisplayText "; 
         $sql.= "UNION "; 
-        $sql.= "Select null as Value, '-' as DisplayText ";
-        $sql.= "UNION "; 
-        $sql.= "SELECT Role.Id  as Value, Role.Name as DisplayText from Org_Role as Role WHERE Role.RoleType = 0 ";
-        $sql.= ") as options "; 
-        $sql.= "inner join `Org_Role-UnitType` as RUT on RUT.OrgRole_FK = value ";
-        $sql.= "inner join `Org_Tree` as Tree on RUT.OrgUnitType_FK = Tree.OrgUnitType_FK ";
+        $sql.= "(SELECT Role.Id  as Value, Role.Name as DisplayText from Org_Role as Role WHERE Role.RoleType = 0)"; 
+        $sql.= ") as Options "; 
 
         switch ($this->appCanvasPath){
             case TABLE_NAME_ROLE:
                 switch ($this->source){
                     case SOURCE_CREATE:
-                        $sql.= "WHERE Role.Id not in (Select OrgRole_FK from `Org_Role-UnitType` WHERE OrgUnitType_FK = " . $this->parentId . ") ";
+                        $sql.= "WHERE Role.Id not in (Select OrgRole_FK from `Org_Role-UnitType` WHERE OrgUnitType_FK = " . $this->parentId . ") GROUP BY Value, DisplayText order by DisplayText";
                     Break;
                     case SOURCE_EDIT:
         //                $where = "WHERE Role.RoleType = 0 ";
@@ -161,7 +159,7 @@ class OrganizationRole extends SuperEntity{
             case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_ROLE_UNITTYPE:
                 switch ($this->source){
                     case SOURCE_CREATE:
-                        $sql.= "WHERE value not in (Select OrgRole_FK from `Org_Role-UnitType` WHERE OrgUnitType_FK = " . $this->parentId . ") ";
+                        $sql.= "WHERE value not in (Select OrgRole_FK from `Org_Role-UnitType` WHERE OrgUnitType_FK = " . $this->parentId . ")  GROUP BY Value, DisplayText order by DisplayText";
                     Break;
                     case SOURCE_EDIT:
         //                $where = "WHERE Role.RoleType = 0 ";

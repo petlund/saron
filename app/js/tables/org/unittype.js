@@ -183,7 +183,7 @@ function unitTypeTableDef(tableTitle, parentTablePath, parentId, parentTableDef)
         rowInserted: function(event, data){
             alowedToUpdateOrDelete(event, data, tableDef);
 
-            if(data.record.HasRoles !== '0' || data.record.HasUnits !== '0')
+            if(data.record.HasPos !== '0' || data.record.HasUnits !== '0' || data.record.HasRole !== '0')
                 data.row.find('.jtable-delete-command-button').hide();
 
             addDialogDeleteListener(data);
@@ -208,7 +208,7 @@ function unitTypeTableDef(tableTitle, parentTablePath, parentId, parentTableDef)
                     inp[0].disabled=true;            
                 }
 
-                if(data.record.HasRole > 0){
+                if(data.record.HasPos > 0){
                     var inp = data.form.find('select[name=PosEnabled]');            
                     inp[0].disabled=true;            
                 }
