@@ -51,7 +51,9 @@ class OrganizationVersion extends SuperEntity{
         $set = "SET PrevPeople_FK = People_FK, ";        
         $set.= "PrevFunction_FK = Function_FK, ";        
         $set.= "PrevOrgSuperPos_FK = OrgSuperPos_FK, ";        
-        $set.= "PrevOrgPosStatus_FK = OrgPosStatus_FK ";        
+        $set.= "PrevOrgPosStatus_FK = OrgPosStatus_FK, ";        
+        $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
+        $set.= "Updater=" . $this->saronUser->WP_ID . " ";
         $where = "WHERE OrgPosStatus_FK in (1, 4, 5, 6)";
         $this->db->update($update, $set, $where);
     }
