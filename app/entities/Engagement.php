@@ -11,8 +11,6 @@ class Engagement extends SuperEntity{
     private $orgPosStatus_FK;
     private $orgTreeNode_FK;
     private $people_FK;
-    protected $uppercaseSearchString;
-    protected $filterType;
     private $memberState;
     private $peopleFilter;
     private $meberState; 
@@ -20,7 +18,6 @@ class Engagement extends SuperEntity{
  
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
-        $this->filterType = (String)filter_input(INPUT_GET, "filterType", FILTER_SANITIZE_STRING);
         $this->peopleFilter = new PeopleFilter($db, $saronUser);
 
         $this->memberState = new MemberState($db, $saronUser);
@@ -74,7 +71,12 @@ class Engagement extends SuperEntity{
             $where.= "WHERE p.Id = " . $this->id . " ";
         }
         else{
-            $where = "WHERE (p.MemberStateId in (" . PEOPLE_STATE_MEMBERSHIP . ", " . PEOPLE_STATE_FRIEND . ") OR "; 
+            $where = "WHERE (p.MemberStateId " . $not . "in (" . PEOPLE_STATE_MEMBERSHIP . ", " . PEOPLE_STATE_FRIEND . ") OR "; 
+
+            if($this->groupId > 0){
+                $where = "WHERE (p.MemberStateId NOT in (" . PEOPLE_STATE_MEMBERSHIP . ", " . PEOPLE_STATE_FRIEND . ") AND "; 
+            }
+            
             $where.= $this->meberState->getHasEngagement("p") . ")";            
             $where.= $this->peopleFilter->getSearchFilterSql($this->uppercaseSearchString) . " ";            
         }

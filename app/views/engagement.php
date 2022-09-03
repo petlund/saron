@@ -19,10 +19,18 @@ header("Cache-Control: no-cache, must-revalidate");
         <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/localization/jquery.jtable.se.js"></script>   
         <table >
             <tr class='saronSmallText saronFilter'>
+                <td  class="saronFilter">
+                    <form class="forms" id="mainfilter">Grupp:
+                        <select id="groupId" name="groupId" onchange="filter('<?php echo getAppCanvasName(); ECHO '\', false, \'';?>');" >
+                        <option selected="selected" value="0">Alla</option>
+                        <option value="1">Att se över</option>
+                        </select>     
+                   </form>
+                </td>
                 <td class="saronFilter">
                     Söksträng:
                     <input type="text" name="searchString" id="searchString" oninput="filter('<?php echo getAppCanvasName(); ECHO '\', false, \'';?>');"/>
-                </TD>
+                </td>
         </table>
         <div id="<?php echo getAppCanvasName();?>"></div>
     </body>

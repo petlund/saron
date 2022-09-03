@@ -8,8 +8,6 @@ require_once SARON_ROOT . 'app/entities/PeopleFilter.php';
 
 class People extends SuperEntity{
 
-    protected $uppercaseSearchString;
-    protected $filter;
     protected $personId;
     protected $homes;
     protected $peopleFilter;
@@ -21,7 +19,6 @@ class People extends SuperEntity{
         $this->memberState = new MemberState($db, $saronUser);
         $this->peopleFilter = new PeopleFilter($db, $saronUser);
         
-        $this->filter = (String)filter_input(INPUT_GET, "filter", FILTER_SANITIZE_STRING);
         $this->personId = (int)filter_input(INPUT_GET, "PersonId", FILTER_SANITIZE_NUMBER_INT);
         if($this->personId === 0){
             $this->personId = (int)filter_input(INPUT_POST, "PersonId", FILTER_SANITIZE_NUMBER_INT);
