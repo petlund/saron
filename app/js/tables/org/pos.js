@@ -218,7 +218,7 @@ function posTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 create: false,
                 title: 'Senast beslutad'
             },
-            UpdateInfo:{
+            Updated:{
                 title: 'Uppdaterad',
                 width: '5%',
                 create: false,

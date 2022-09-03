@@ -206,7 +206,7 @@ function unitTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                     return url + parameters;
                 }
             },
-            UpdateInfo:{
+            Updated:{
                 title: 'Uppdaterad',
                 width: '5%',
                 create: false,

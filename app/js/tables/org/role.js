@@ -124,7 +124,7 @@ function roleTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 width: '10%',
                 options:  { '0' : 'Verksamhetsroll', '1' : 'Organisationsroll [Org]' }
             },
-            UpdateInfo:{
+            Updated:{
                 title: 'Uppdaterad',
                 width: '5%',
                 create: false,

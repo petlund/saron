@@ -223,7 +223,7 @@ function getSQL($id){
         $sql .= "where People.Id= " . $id;
     }
     else{
-        $sql .= "where DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' "; 
+        $sql .= "where MemberStateId in (" . PEOPLE_STATE_REGISTRATED . ", " . PEOPLE_STATE_ONLY_BAPTIST . ",  " . PEOPLE_STATE_FRIEND . ",  " . PEOPLE_STATE_MEMBERSHIP . ", " . PEOPLE_STATE_MEMBERSHIP_ENDED . ")"; 
         
     }
     $sql .= " order by " . DECRYPTED_LASTNAME . " asc, address asc, DateOfBirth asc";            

@@ -114,7 +114,7 @@ function baptistTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 title: 'Not',
                 type: 'textarea'
             },
-            UpdateInfo:{
+            Updated:{
                 title: 'Uppdaterad',
                 width: '5%',
                 create: false,

@@ -104,7 +104,7 @@ function memberstateTableDef(tableTitle, parentTablePath, parentId, parentTableD
                 width: '5%',
                 options: {"0":"Nej", "1":"Ja"}
             },
-            UpdateInfo:{
+            Updated:{
                 title: 'Uppdaterad',
                 width: '5%',
                 create: false,

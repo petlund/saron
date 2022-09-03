@@ -160,7 +160,7 @@ function memberTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 width: '46%',
                 title: 'Not'
             },
-            UpdateInfo:{
+            Updated:{
                 title: 'Uppdaterad',
                 width: '5%',
                 create: false,

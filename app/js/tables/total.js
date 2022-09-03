@@ -102,7 +102,7 @@ function totalTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                     return null;
                 }
             },
-            UpdateInfo:{
+            Updated:{
                 title: 'Uppdaterad',
                 width: '5%',
                 display: function (data){

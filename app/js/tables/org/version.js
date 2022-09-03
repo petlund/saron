@@ -61,7 +61,7 @@ function orgVersionTableDef(tableTitle, parentTablePath, parentId, parentTableDe
                 title: 'Beskrivning',
                 width: '70%'
             },
-            UpdateInfo:{
+            Updated:{
                 title: 'Uppdaterad',
                 width: '5%',
                 create: false,

@@ -170,7 +170,7 @@ function unitTypeTableDef(tableTitle, parentTablePath, parentId, parentTableDef)
                 title: 'Beskrivning',
                 width: '50%'
             },
-            UpdateInfo:{
+            Updated:{
                 title: 'Uppdaterad',
                 width: '5%',
                 create: false,

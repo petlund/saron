@@ -121,7 +121,7 @@ function homeTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 width: '5%',
                 options:_letterOptions()
             },
-            UpdateInfo:{
+            Updated:{
                 title: 'Uppdaterad',
                 width: '5%',
                 create: false,

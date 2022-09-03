@@ -108,7 +108,7 @@ function keyTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 title: 'Not - Nycklar',
                 width: '30%'
             },
-            UpdateInfo:{
+            Updated:{
                 title: 'Uppdaterad',
                 width: '5%',
                 create: false,

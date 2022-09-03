@@ -91,9 +91,7 @@
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"people.php", TABLE_NAME_BIRTHDAY, "Födelsedagslista");?></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"lists.php", LIST_EMAIL, "Mailadresser");?></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"lists.php", LIST_MOBILE_INSTEAD_OF_EMAIL, "Mobilnummer för saknade emailadresser");?></li>
-                                <!--
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/DossierReport.php" target="_blank">Godkännande personuppgifter (pdf-fil för alla i registret)</a></li>
-                                -->
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"users.php", TABLE_NAME_USERS, "Användare");?></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/AddressLabels.php?type=9x3" target="_empty">Adressetiketter 9x3 (pdf-fil)</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/AddressLabels.php?type=6x3" target="_empty">Adressetiketter 6x3 (pdf-fil)</a></li>

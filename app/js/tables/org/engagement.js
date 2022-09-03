@@ -238,7 +238,7 @@ function engagementsTableDef(tableTitle, parentTablePath, parentId, parentTableD
                 title: 'Kommentar',
                 inputTitle: 'Kommentar kopplat till uppdraget ej person'
             },
-            UpdateInfo:{
+            Updated:{
                 title: 'Uppdaterad',
                 width: '5%',
                 create: false,
