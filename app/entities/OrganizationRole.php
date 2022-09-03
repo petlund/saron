@@ -149,10 +149,10 @@ class OrganizationRole extends SuperEntity{
                         $sql.= "WHERE Role.Id not in (Select OrgRole_FK from `Org_Role-UnitType` WHERE OrgUnitType_FK = " . $this->parentId . ") GROUP BY Value, DisplayText order by DisplayText";
                     Break;
                     case SOURCE_EDIT:
-        //                $where = "WHERE Role.RoleType = 0 ";
+        //  NA
                     Break;
                     default:
-        //                $where = "WHERE Role.RoleType = 0 ";
+        //  NA
                     break;
                 }
                 break;    
@@ -162,25 +162,38 @@ class OrganizationRole extends SuperEntity{
                         $sql.= "WHERE value not in (Select OrgRole_FK from `Org_Role-UnitType` WHERE OrgUnitType_FK = " . $this->parentId . ")  GROUP BY Value, DisplayText order by DisplayText";
                     Break;
                     case SOURCE_EDIT:
-        //                $where = "WHERE Role.RoleType = 0 ";
+        //  NA
                     Break;
                     default:
-        //                $where = "WHERE Role.RoleType = 0 ";
+        //  NA
                     break;
                 }
-                break;    
+            break;    
             case TABLE_NAME_UNITTREE . "/" . TABLE_NAME_UNIT . "/" . TABLE_NAME_POS:
-                $sql.= "WHERE Tree.Id = " . $this->parentId;
-            break;
+                switch ($this->source){
+                    case SOURCE_CREATE:
+                        $sql.= "WHERE value in (Select OrgRole_FK from `Org_Role-UnitType` as RUT inner join Org_Tree as Tree on Tree.OrgUnitType_FK=RUT.OrgUnitType_FK WHERE Tree.Id = " . $this->parentId . ") ";                        
+                    Break;
+                    case SOURCE_EDIT:
+        //  NA
+                    Break;
+                    default:
+        //  NA
+                    break;
+                }
+            Break;
             case TABLE_NAME_UNITLIST . "/" . TABLE_NAME_UNIT . "/" . TABLE_NAME_POS:
-                $sql.= "WHERE Tree.Id = " . $this->parentId;
-            break;
-            case TABLE_NAME_POS:
-                $sql.= "";
-            break;
-            default:
-                $sql.= "WHERE FALSE";
-            break;
+                switch ($this->source){
+                    case SOURCE_CREATE:
+                        $sql.= "WHERE value in (Select OrgRole_FK from `Org_Role-UnitType` as RUT inner join Org_Tree as Tree on Tree.OrgUnitType_FK=RUT.OrgUnitType_FK WHERE Tree.Id = " . $this->parentId . ") ";                        
+                    Break;
+                    case SOURCE_EDIT:
+        //  NA
+                    Break;
+                    default:
+        //  NA
+                    break;
+                }
         }
             
             

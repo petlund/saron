@@ -231,12 +231,21 @@ function posTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
         recordAdded: function(event, data){
         },
         recordUpdated: function(event, data){
+            var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
+            if(tablePathRoot === saron.table.pos.name)
+                data.row.find('.jtable-delete-command-button').hide();
         },
         recordDeleted: function(event, data){
         },
         rowInserted: function(event, data){
             alowedToUpdateOrDelete(event, data, tableDef);
             addDialogDeleteListener(data);
+            var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
+            if(tablePathRoot === saron.table.pos.name)
+                data.row.find('.jtable-delete-command-button').hide();
+            
+
+
         },        
         recordsLoaded: function(event, data) {
             alowedToAddRecords(event, data, tableDef);
