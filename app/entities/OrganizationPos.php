@@ -159,8 +159,11 @@ class OrganizationPos extends SuperEntity{
     
     function selectOptions(){
         $sql = "";
+        $IF_STATEMENT = "IF(Role.RoleType = 1, ' * ', '') ";
 
-        $select = "SELECT Pos.Id as Value, Concat(Role.Name, ' (', Tree.Name, ". EMBEDDED_SELECT_SUPERPOS . ", ')') as DisplayText ";
+        $select = "Select null as Value, '-' as DisplayText ";
+        $select.= "UNION "; 
+        $select.= "SELECT Pos.Id as Value, Concat(" .  $IF_STATEMENT . ", Role.Name, ' (', Tree.Name, ". EMBEDDED_SELECT_SUPERPOS . ", ')') as DisplayText ";
 
         $from = "FROM Org_Pos as Pos inner join Org_Tree as Tree on Pos.OrgTree_FK=Tree.Id ";
         $from.= "inner join Org_UnitType as UnitType on UnitType.Id = Tree.OrgUnitType_FK ";
@@ -170,22 +173,7 @@ class OrganizationPos extends SuperEntity{
         
         switch ($this->field){
             case "Id":
-            switch ($this->source){
-                case SOURCE_EDIT:            
-                    $where = "WHERE People_FK = " . $this->parentId . " "; 
-                    $sql = $select . $from . $where . $order;
-                break;
-                case SOURCE_CREATE:            
-                    $where = "WHERE Pos.OrgPosStatus_FK = 4 AND (People_FK < 1 or People_FK is null) ";
-                    $sql = $select . $from . $where . $order;
-                break;
-                default:
-                    $sql = "Select null as Value, '-' as DisplayText ";
-                    $sql.= "UNION "; 
-                    $sql.= "SELECT Pos.Id as Value, Concat(' ', Role.Name, ' (', Tree.Name, ". EMBEDDED_SELECT_SUPERPOS . ", ')') as DisplayText ";
-                    $sql.= $from;
-                break;
-            }
+                $sql.= $from;
             break;
             case "OrgSuperPos_FK":
                 $where = "WHERE Role.RoleType = 1 ";
