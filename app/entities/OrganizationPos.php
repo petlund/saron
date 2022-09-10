@@ -173,7 +173,7 @@ class OrganizationPos extends SuperEntity{
         
         switch ($this->field){
             case "Id":
-                $sql.= $from;
+                $sql.= $select . $from;
             break;
             case "OrgSuperPos_FK":
                 $where = "WHERE Role.RoleType = 1 ";

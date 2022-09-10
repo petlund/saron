@@ -228,7 +228,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                     var clientOnly = false;
                     var type = 0;
                     
-                    if(data.record.DateOfBaptism !== null){
+                    if(data.record.DateOfBaptism !== null || data.record.CongregationOfBaptismThis > 0){
                         imgFile = "baptist.png";
                         tooltip = 'Dopuppgifter saknas';
                     }

@@ -59,7 +59,7 @@ class MemberState extends SuperEntity{
     
         
     function getIsBaptistSQL($tableAlias = "People"){
-        $sql = $tableAlias . ".DateOfBaptism is not null ";
+        $sql = "(" . $tableAlias . ".DateOfBaptism is not null or " . $tableAlias . ".CongregationOfBaptism is not null) ";
         return $sql;        
     }
     
