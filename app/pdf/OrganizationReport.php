@@ -198,13 +198,35 @@ function createOrganizationCalender(db $db, TCPDF $pdf, $person, String $type){
             $line = '0';
         }
         $pdf->SetFont(FONT_FAMILY, '', 10);
-        $comment = "";
-        if(strlen($aRow['Pos_Comment']) > 0) {
-            $comment = ", " . $aRow['Pos_Comment'];            
-        }
-        
-        $pName =  $aRow['Person'];        
 
+        $responsible ="";
+        switch ($aRow['ResponsibleType']){
+            case 'Function':
+                $responsible = "[" . $aRow['Responsible'] . "]\n"; 
+            break;
+            case 'OrganisationsRole':
+                $responsible = "* " . $aRow['Responsible'] . "\n"; 
+            break;
+            default:
+                $responsible = $aRow['Responsible'] . "\n";                         
+        }
+
+
+        $roleName = "";
+        IF($aRow['RoleType']  > 0){
+            $roleName = "* " . $aRow['Role_Name'];                
+        }
+        else{
+            $roleName = $aRow['Role_Name'];                                    
+        }
+
+        if(strlen($aRow['Pos_Comment']) > 0 ){
+            $roleName.=", " . $aRow['Pos_Comment'] . "\n";
+        }
+        else{
+            $roleName.="\n";
+        }
+                        
         $state = "";
         switch ($type){
             case "proposal":
@@ -213,23 +235,13 @@ function createOrganizationCalender(db $db, TCPDF $pdf, $person, String $type){
                     
                 }
                 else{
-                    if($aRow['PersonId'] !== $aRow['PrevPersonId']){
+                    if($aRow['IsNew'] === 'New'){
                         $state = "Ny";
                     }
                 }
-
-                $comment = "";
-                if(strlen($aRow['Pos_Comment']) > 0) {
-                    $comment = ", " . $aRow['Pos_Comment'];            
-                }
-
-                $pdf->MultiCell(CELL_WIDTH * 3, CELL_HIGHT, $aRow['Role_Name'] . $comment, $line, 'L', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');                
-                if($aRow['State_Id'] === '6'){ // Funktionsansvar
-                    $pdf->MultiCell(CELL_WIDTH * 2, CELL_HIGHT, $aRow['FunctionRespons'] . "\n", $line, 'J', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', True);                     
-                }
-                else{
-                    $pdf->MultiCell(CELL_WIDTH * 2, CELL_HIGHT, $pName . "\n", $line, 'J', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', True); 
-                }
+                
+                $pdf->MultiCell(CELL_WIDTH * 3, CELL_HIGHT, $roleName, $line, 'L', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');                
+                $pdf->MultiCell(CELL_WIDTH * 2, CELL_HIGHT, $responsible , $line, 'J', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', True); 
                 $pdf->MultiCell(CELL_WIDTH, CELL_HIGHT, $state, $line, 'L', BACKGROUND_NOT_FILLED, NL, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');            
                 break;
             default:
@@ -238,22 +250,11 @@ function createOrganizationCalender(db $db, TCPDF $pdf, $person, String $type){
                     $line_comment = $line;
                     $line = '0';
                 }
-                $role = $aRow['Role_Name'];
-                if(strlen($aRow['Pos_Comment']) > 0 ){
-                    $role.=", " . $aRow['Pos_Comment'];
-                }
                 
-                $pdf->MultiCell(CELL_WIDTH * 2, CELL_HIGHT, $role . "\n", $line, 'J', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', true);
-
-                if($aRow['State_Id'] > 3){ // not checked person
-                    $pdf->MultiCell(CELL_WIDTH * 3, CELL_HIGHT, $aRow['FunctionRespons'] . "\n", $line, 'J', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', True);                     
-                    $pdf->MultiCell(CELL_WIDTH * 1, CELL_HIGHT, $aRow['State_Name'] . "\n", $line, 'J', BACKGROUND_NOT_FILLED, NL, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', True);                     
-                }
-                else{
-                    $pdf->MultiCell(CELL_WIDTH * 1.5, CELL_HIGHT, $pName . "\n", $line, 'J', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', True);                                             
-                    $pdf->MultiCell(CELL_WIDTH * 1.5, CELL_HIGHT, $aRow['People_Email']."\n", $line, 'J', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', true); 
-                    $pdf->MultiCell(CELL_WIDTH * 1, CELL_HIGHT, $aRow['People_Mobile']."\n", $line, 'J', BACKGROUND_NOT_FILLED, NL, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', true); 
-                }
+                $pdf->MultiCell(CELL_WIDTH * 2, CELL_HIGHT, $roleName, $line, 'J', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', true);
+                $pdf->MultiCell(CELL_WIDTH * 1.5, CELL_HIGHT, $responsible, $line, 'J', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', True);                                             
+                $pdf->MultiCell(CELL_WIDTH * 1.5, CELL_HIGHT, $aRow['People_Email']."\n", $line, 'J', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', true); 
+                $pdf->MultiCell(CELL_WIDTH * 1, CELL_HIGHT, $aRow['People_Mobile']."\n", $line, 'J', BACKGROUND_NOT_FILLED, NL, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', true); 
         }        
     } 
     return 'Organisationskalender - ' . $type;
@@ -261,19 +262,43 @@ function createOrganizationCalender(db $db, TCPDF $pdf, $person, String $type){
 
 function getSQL($person, $type){
     
-    $sql = "select LongName, Tree.Prefix as Tree_Prefix, Tree.Name as Tree_Name, Tree.Description as Info, Unit.Name as Unit_Name, Role.Name as Role_Name, Pos.Comment as Pos_Comment, "
+    $sql = "select LongName, Role.RoleType,Tree.Prefix as Tree_Prefix, Tree.Name as Tree_Name, Tree.Description as Info, Unit.Name as Unit_Name, Role.Name as Role_Name, Pos.Comment as Pos_Comment, "
             . "(Select SortOrder from `Org_Role-UnitType` as RUT WHERE  RUT.OrgRole_FK = Pos.OrgRole_FK and RUT.OrgUnitType_FK = Tree.OrgUnitType_FK) as SortOrder,  "
             . "PState.Name as State_Name, PState.Id as State_Id, Pos.People_FK as PersonId, "
             . "Pos.PrevPeople_FK as PrevPersonId, Unit.Name as Unit_Name, "; 
-    $sql.= "(Select T.Name from Org_Tree as T Where T.Id = PrevFunction_FK) as FunctionRespons, ";
-    $sql.= $person->getFieldSql("People", "Email", "EmailEncrypt", null, true, true);
-    $sql.= $person->getFieldSql("People", "Mobile", "MobileEncrypt", null, true, true);
-    $sql.= "IF(People.Id>0, CONCAT(";
+    $sql.= "Case ";
+    $sql.= "When  Pos.Function_FK > 0 ";
+    $sql.= "Then (Select T.Name from Org_Tree as T Where T.Id = Function_FK) ";
+    $sql.= "When  Pos.People_FK > 0 ";
+    $sql.= "Then CONCAT(";
     $sql.= $person->getFieldSql("People", null, "FirstNameEncrypt", null, true, false);
     $sql.= ", ' ', "; 
     $sql.= $person->getFieldSql("People", null, "LastNameEncrypt", null, true, false);
-    $sql.= "),";
-    $sql.= "(Select Name from Org_Role Where Org_Role.Id = -People_FK)) as Person, ";
+    $sql.= ") ";
+    $sql.= "When  Pos.OrgSuperPos_FK > 0 ";
+    $sql.= "Then (Select R.Name from Org_Role as R inner join Org_Pos as P on R.Id=P.OrgRole_FK inner join Org_Pos as PS on PS.OrgSuperPos_FK = P.Id Where PS.Id = Pos.Id) ";
+    $sql.= "End ";
+    $sql.= "as Responsible, ";
+    $sql.= "Case ";
+    $sql.= "When  Pos.Function_FK > 0 ";
+    $sql.= "Then IF(Pos.PrevFunction_FK is null, 'New', IF(Pos.Function_FK != Pos.PrevFunction_FK, 'New', 'Old')) ";
+    $sql.= "When  Pos.People_FK > 0 ";
+    $sql.= "Then IF(Pos.PrevPeople_FK is null, 'New', IF(Pos.People_FK != Pos.PrevPeople_FK, 'New', 'Old')) ";
+    $sql.= "When  Pos.OrgSuperPos_FK > 0 ";
+    $sql.= "Then IF(Pos.PrevOrgSuperPos_FK is null, 'New', IF(Pos.OrgSuperPos_FK != Pos.PrevOrgSuperPos_FK, 'New', 'Old')) ";
+    $sql.= "End ";
+    $sql.= "as IsNew, ";
+    $sql.= "Case ";
+    $sql.= "When  Pos.Function_FK > 0 ";
+    $sql.= "Then 'Function' ";
+    $sql.= "When  Pos.People_FK > 0 ";
+    $sql.= "Then 'Person' ";
+    $sql.= "When  Pos.OrgSuperPos_FK > 0 ";
+    $sql.= "Then 'OrganisationsRole' ";
+    $sql.= "End ";
+    $sql.= "as ResponsibleType, ";
+    $sql.= $person->getFieldSql("People", "Email", "EmailEncrypt", null, true, true);
+    $sql.= $person->getFieldSql("People", "Mobile", "MobileEncrypt", null, true, true);
     $sql.= "QueryPath.Path, QueryPath.rel_depth as Head_Level ";
     $sql.= "from Org_Tree as Tree ";
     $sql.= "inner join Org_UnitType as Unit on Unit.Id = Tree.OrgUnitType_FK ";
@@ -295,7 +320,7 @@ function getSQL($person, $type){
     }
     $sql.= "inner join (" . getSubSql() . ") as QueryPath on Tree.Id = QueryPath.Id ";
     $sql.= $sqlWhere;
-    $sql.= "order by QueryPath.Path, SortOrder, Role_Name, Pos_Comment, Person "; // Rut.SortOrder, 
+    $sql.= "order by QueryPath.Path, SortOrder, Role_Name, Pos_Comment, Responsible "; // Rut.SortOrder, 
     return $sql;
 }
 
