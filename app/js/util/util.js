@@ -235,18 +235,27 @@ function _keyOptions(){
 
 
 function baptistFormAuto(data, selectedValue){
-    var inp = data.form.find('input[name=CongregationOfBaptism]');
+    var DateOfBaptism = data.form.find('input[name=DateOfBaptism]');
+    var CongregationOfBaptism = data.form.find('input[name=CongregationOfBaptism]');
+    var Baptister = data.form.find('input[name=Baptister]');
+
     if(selectedValue === '0'){
-        inp[0].value = "";                                      
-        inp[0].disabled=true;
+        CongregationOfBaptism[0].value = "";                                      
+        CongregationOfBaptism[0].disabled=true;
+        DateOfBaptism[0].disabled=true;
+        Baptister[0].disabled=true;
     }
     else if(selectedValue === '1'){
-        inp[0].value = "";                                                                              
-        inp[0].disabled=false;
-}
+        CongregationOfBaptism[0].value = "";                                                                              
+        CongregationOfBaptism[0].disabled=false;
+        DateOfBaptism[0].disabled=false;
+        Baptister[0].disabled=false;
+    }
     else{
-        inp[0].value = saron.name.full_name; 
-        inp[0].disabled=true;
+        CongregationOfBaptism[0].value = saron.name.full_name; 
+        CongregationOfBaptism[0].disabled=true;
+        DateOfBaptism[0].disabled=false;
+        Baptister[0].disabled=false;
     }
 }
 

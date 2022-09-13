@@ -136,6 +136,8 @@ function baptistTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
             data.form.find('input[name=Baptister]').css('width',inputFormFieldWidth);
             data.form.find('input[name=CongregationOfBaptism]').css('width',inputFormFieldWidth);
             data.form.find('input[name=CongregationOfBaptism]')[0].disabled = true;
+            data.form.find('input[name=DateOfBaptism]')[0].disabled = true;
+            data.form.find('input[name=Baptister]')[0].disabled = true;
             data.form.find('textarea[name=Comment]').css('width',inputFormFieldWidth);
             data.form.find('select[name=CongregationOfBaptismThis]').change(function () {baptistFormAuto(data, this.value)});
 
