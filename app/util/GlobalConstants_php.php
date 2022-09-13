@@ -50,9 +50,13 @@
     Define("TABLE_NAME_STATISTICS_DETAIL",  "statistics_detail");
 
     define("LIST_MOBILE_INSTEAD_OF_EMAIL", "list_mobile_instead_of_email");
+    define("LIST_MOBILE", "list_mobile");
+    define("LIST_MOBILE_MEMBER", "list_mobile_member");
+    define("LIST_MOBILE_FRIENDSHIP", "list_mobile_friendship");
+    define("LIST_MOBILE_ENDING_FRIENDSHIP", "list_mobile_ending_friendship");
+
     define("LIST_EMAIL", "list_email");
     define("LIST_EMAIL_MEMBER", "list_email_member");
-    define("LIST_EMAIL_VOLONTAIRES", "list_email_volontaires");
     define("LIST_EMAIL_FRIENDSHIP", "list_email_friendship");
     define("LIST_EMAIL_ENDING_FRIENDSHIP", "list_email_ending_friendship");
     

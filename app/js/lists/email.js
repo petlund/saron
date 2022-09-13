@@ -32,7 +32,7 @@ $(document).ready(function () {
         mainPlaceholder.innerHTML = head;
         addPlaceholders(mainPlaceholder, mailgroups);
         for(var j=0; j<mailgroups.parameters.length; j++){
-            request(mailgroups.parameters[j]);
+            requestEmail(mailgroups.parameters[j]);
         }  
     }    
 });
@@ -49,7 +49,7 @@ function addPlaceholders(mainPlaceholder, mailgroups){
 }
 
 
-function request(parameter){
+function requestEmail(parameter){
     var url = {url: saron.root.webapi + 'listPeople.php'};
     var postData = getPostData(null, parameter.listname, null,  parameter.listname, saron.source.list, saron.responsetype.records);
     $.post(url, postData, function(json) { 
@@ -61,7 +61,7 @@ function request(parameter){
         for(var i = 0; i<cnt; i++)                
             str += data.Records[i].entry + ', ';
         
-        str += '<BR><BR>';
+        str += '<BR><BR><BR>';
         
         var listPlaceholder = document.getElementById(parameter.listname);
         listPlaceholder.innerHTML = str;

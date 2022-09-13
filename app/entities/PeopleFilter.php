@@ -90,10 +90,9 @@ class PeopleFilter{
                 return $this->getMemberStateWhereSQL($memberstates);
             case 16:    
                 //underlag för anonymisering nästa år
-
-                return "MemberStateId = " . PEOPLE_STATE_MEMBERSHIP_ENDED . " AND EXTRACT(YEAR FROM DateOfMembershipEnd) < EXTRACT(YEAR FROM Now()) OR " . 
-                       "MemberStateId = " . PEOPLE_STATE_REGISTRATED . " AND EXTRACT(YEAR FROM People.Inserted) < EXTRACT(YEAR FROM Now()) OR " . 
-                       "MemberStateId = " . PEOPLE_STATE_ONLY_BAPTIST . " AND EXTRACT(YEAR FROM DateOfBaptism) < EXTRACT(YEAR FROM Now())"; 
+                return "((MemberStateId = " . PEOPLE_STATE_MEMBERSHIP_ENDED . " AND EXTRACT(YEAR FROM DateOfMembershipEnd) < EXTRACT(YEAR FROM Now())) OR " . 
+                       "(MemberStateId = " . PEOPLE_STATE_REGISTRATED . " AND EXTRACT(YEAR FROM People.Inserted) < EXTRACT(YEAR FROM Now())) OR " . 
+                       "(MemberStateId = " . PEOPLE_STATE_ONLY_BAPTIST . " AND EXTRACT(YEAR FROM DateOfBaptism) < EXTRACT(YEAR FROM Now()))) "; 
             case 17:
                 //anonymiserade
                 $memberstates = array(PEOPLE_STATE_ANONYMiZED);

@@ -184,4 +184,20 @@ $saron->list->email_ending_friendship =  (object)array();
 $saron->list->email_ending_friendship->name = LIST_EMAIL_ENDING_FRIENDSHIP;
 $saron->list->email_ending_friendship->nameId = "#" . LIST_EMAIL_ENDING_FRIENDSHIP;
 
+$saron->list->mobile =  (object)array();
+$saron->list->mobile->name = LIST_MOBILE;
+$saron->list->mobile->nameId = "#" . LIST_MOBILE;
+
+$saron->list->mobile_member =  (object)array();
+$saron->list->mobile_member->name = LIST_MOBILE_MEMBER;
+$saron->list->mobile_member->nameId = "#" . LIST_MOBILE_MEMBER;
+
+$saron->list->mobile_friendship =  (object)array();
+$saron->list->mobile_friendship->name = LIST_MOBILE_FRIENDSHIP;
+$saron->list->mobile_friendship->nameId = "#" . LIST_MOBILE_FRIENDSHIP;
+
+$saron->list->mobile_ending_friendship =  (object)array();
+$saron->list->mobile_ending_friendship->name = LIST_MOBILE_ENDING_FRIENDSHIP;
+$saron->list->mobile_ending_friendship->nameId = "#" . LIST_MOBILE_ENDING_FRIENDSHIP;
+
 $saronJSON = json_encode($saron);

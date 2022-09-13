@@ -45,6 +45,12 @@ class People extends SuperEntity{
                     return $this->selectEmail(LIST_EMAIL_FRIENDSHIP);       
                 case LIST_EMAIL_ENDING_FRIENDSHIP:
                     return $this->selectEmail(LIST_EMAIL_ENDING_FRIENDSHIP);       
+                case LIST_MOBILE_MEMBER:
+                    return $this->selectMobile(LIST_MOBILE_MEMBER);       
+                case LIST_MOBILE_FRIENDSHIP:
+                    return $this->selectMobile(LIST_MOBILE_FRIENDSHIP);       
+                case LIST_MOBILE_ENDING_FRIENDSHIP:
+                    return $this->selectMobile(LIST_MOBILE_ENDING_FRIENDSHIP);       
                 default:
                     return $this->selectPeople();       
             }
@@ -194,8 +200,20 @@ class People extends SuperEntity{
     function selectMobile(){
         $select = "Select " . DECRYPTED_FIRSTNAME_LASTNAME_AS_NAME_FL . ", " . DECRYPTED_ALIAS_MOBILE . " ";
         $from = "FROM People ";
-        $where = "WHERE " .  $this->memberState->hasStateMembershipSQL() . " and " . DECRYPTED_MOBILE . " is not null and "; 
-        $where.= "(Select count(*) from People as p where People.HomeId=p.HomeId and " . DECRYPTED_EMAIL . " like '%@%')  = 0 ";        
+        switch($this->appCanvasName){
+            case LIST_MOBILE_MEMBER:
+                $where = "WHERE " .  $this->memberState->hasStateMembershipSQL() . "  "; 
+            break;
+            case LIST_MOBILE_ENDING_FRIENDSHIP:
+                $where = "WHERE " .  $this->memberState->getIsEndedFriendshipSQL() . " "; 
+            break;
+            case LIST_MOBILE_FRIENDSHIP:
+                $where = "WHERE (" .  $this->memberState->hasStateFriendshipSQL() . ") "; 
+            break;
+        }
+        
+        $where.= "And (" . DECRYPTED_MOBILE . " is not null) AND (Select count(*) from People as p where People.HomeId=p.HomeId and " . DECRYPTED_EMAIL . " like '%@%')  = 0 ";        
+        //$where.= "And (" . DECRYPTED_MOBILE . " is not null) and (" . DECRYPTED_EMAIL . " is null )";        
 
         $result = $this->db->select($this->saronUser, $select, $from, $where, "", "", RECORDS);    
         return $result;

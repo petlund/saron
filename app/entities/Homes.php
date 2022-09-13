@@ -127,7 +127,7 @@ class Homes extends SuperEntity{
         $sql.= "where HomeId = ";
         $sql.= $homesTableNameAndId . " "; 
 
-        $sql.= "AND DateOfDeath is null and " . DECRYPTED_LASTNAME . " NOT LIKE '%" . ANONYMOUS . "' ";
+        $sql.= "AND DateOfDeath is null and DateOfAnonymization is null  ";
         $sql.= "order by DateOfBirth) as ";
         
         if(strlen($tableAlias)>0 && $tableAlias !== ALIAS_CUR_HOMES){
