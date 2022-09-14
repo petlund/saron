@@ -71,7 +71,7 @@ class Engagement extends SuperEntity{
             $where.= "WHERE p.Id = " . $this->id . " ";
         }
         else{
-            $where = "WHERE (p.MemberStateId " . $not . "in (" . PEOPLE_STATE_MEMBERSHIP . ", " . PEOPLE_STATE_FRIEND . ") OR "; 
+            $where = "WHERE (p.MemberStateId in (" . PEOPLE_STATE_MEMBERSHIP . ", " . PEOPLE_STATE_FRIEND . ") OR "; 
 
             if($this->groupId > 0){
                 $where = "WHERE (p.MemberStateId NOT in (" . PEOPLE_STATE_MEMBERSHIP . ", " . PEOPLE_STATE_FRIEND . ") AND "; 
