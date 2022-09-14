@@ -61,11 +61,11 @@ class OrganizationVersion extends SuperEntity{
     
     function updatFriendshipDateForPeopleWidthEngagement(){
         
-        $sqlUpdate = "update People ";
-        $sqlSet   = "set DateOfFriendshipStart = Now() ";
+        $sqlUpdate = "update People as P inner join view_people_memberstate as V on P.Id = V.Id ";
+        $sqlSet   = "set P.DateOfFriendshipStart = Now() ";
         $sqlWhere = "where ";
-        $sqlWhere.= $this->memberState->getHasEngagement();  
-        $sqlWhere.="AND DateOfFriendshipStart is not null ";
+        $sqlWhere.= $this->memberState->getHasEngagement("P");  
+        $sqlWhere.="AND MemberStateId in (" . PEOPLE_STATE_MEMBERSHIP_ENDED . ", " . PEOPLE_STATE_FRIEND. ", " . PEOPLE_STATE_FRIENDSHIP_ENDED . ", " . PEOPLE_STATE_ONLY_BAPTIST . ", " . PEOPLE_STATE_REGISTRATED . "); ";
         $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
     }
 
