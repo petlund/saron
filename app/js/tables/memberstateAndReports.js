@@ -38,6 +38,7 @@ function memberstateReportTableDef(tableTitle, parentTablePath, parentId, parent
                 title: 'Id',
                 width: '3%',
                 key: true,
+                listClass: 'number',
                 list: true
             },
             Name: {
@@ -49,6 +50,7 @@ function memberstateReportTableDef(tableTitle, parentTablePath, parentId, parent
                 edit: false,
                 create: false, 
                 title: 'Antal personer',
+                listClass: 'number',
                 width: '5%'
             },
             Description: {
@@ -91,6 +93,7 @@ function memberstateReportTableDef(tableTitle, parentTablePath, parentId, parent
                 create: false, 
                 title: 'Uppdaterad',
                 type: 'date',
+                listClass: 'Date',
                 displayFormat: DATE_FORMAT,
                 width: '5%'
             }

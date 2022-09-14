@@ -38,6 +38,7 @@ function memberstateTableDef(tableTitle, parentTablePath, parentId, parentTableD
                 title: 'Id',
                 width: '3%',
                 key: true,
+                listClass: 'number',
                 list: true
             },
             Name: {
@@ -49,6 +50,7 @@ function memberstateTableDef(tableTitle, parentTablePath, parentId, parentTableD
                 edit: false,
                 create: false, 
                 title: 'Antal personer',
+                listClass: 'number',
                 width: '5%'
             },
             Description: {
@@ -56,58 +58,59 @@ function memberstateTableDef(tableTitle, parentTablePath, parentId, parentTableD
                 title: 'Beskrivning',
                 width: '30%'
             },
-            Inserted: {
-                edit: false,
-                title: 'Datum för registrering',
-                width: '5%',
-                options: {"0":"Nej", "1":"Ja"}
-            },
-            DateOfMembershipStart: {
-                edit: false,
-                title: 'Medlemskap startdatum',
-                width: '5%',
-                options: {"0":"Nej", "1":"Ja"}
-            },
-            DateOfMembershipEnd: {
-                edit: false,
-                title: 'Medlemskap avslutsdatum',
-                width: '5%',
-                options: {"0":"Nej", "1":"Ja"}
-            },
-            DateOfBaptism: {
-                edit: false,
-                title: 'Dopdatum',
-                width: '5%',
-                options: {"0":"Nej", "1":"Ja"}
-            },
-            DateOfDeath: {
-                edit: false,
-                title: 'Datum för dödsfall',
-                width: '5%',
-                options: {"0":"Nej", "1":"Ja"}
-            },
-            DateOfFriendshipStart: {
-                edit: false,
-                title: 'Datum för vänkontakt start',
-                width: '5%',
-                options: {"0":"Nej", "1":"Ja, yngre än ett år"}
-            },
-            HasEngagement: {
-                edit: false,
-                title: 'Har uppdrag',
-                width: '5%',
-                options: {"0":"Nej", "1":"Ja"}
-            },
-            DateOfAnonymization: {
-                edit: false,
-                title: 'Datum för anonymisering',
-                width: '5%',
-                options: {"0":"Nej", "1":"Ja"}
-            },
+//            Inserted: {
+//                edit: false,
+//                title: 'Datum för registrering',
+//                width: '5%',
+//                options: {"0":"Nej", "1":"Ja"}
+//            },
+//            DateOfMembershipStart: {
+//                edit: false,
+//                title: 'Medlemskap startdatum',
+//                width: '5%',
+//                options: {"0":"Nej", "1":"Ja"}
+//            },
+//            DateOfMembershipEnd: {
+//                edit: false,
+//                title: 'Medlemskap avslutsdatum',
+//                width: '5%',
+//                options: {"0":"Nej", "1":"Ja"}
+//            },
+//            DateOfBaptism: {
+//                edit: false,
+//                title: 'Dopdatum',
+//                width: '5%',
+//                options: {"0":"Nej", "1":"Ja"}
+//            },
+//            DateOfDeath: {
+//                edit: false,
+//                title: 'Datum för dödsfall',
+//                width: '5%',
+//                options: {"0":"Nej", "1":"Ja"}
+//            },
+//            DateOfFriendshipStart: {
+//                edit: false,
+//                title: 'Datum för vänkontakt start',
+//                width: '5%',
+//                options: {"0":"Nej", "1":"Ja, yngre än ett år"}
+//            },
+//            HasEngagement: {
+//                edit: false,
+//                title: 'Har uppdrag',
+//                width: '5%',
+//                options: {"0":"Nej", "1":"Ja"}
+//            },
+//            DateOfAnonymization: {
+//                edit: false,
+//                title: 'Datum för anonymisering',
+//                width: '5%',
+//                options: {"0":"Nej", "1":"Ja"}
+//            },
             Updated:{
                 title: 'Uppdaterad',
                 width: '5%',
                 create: false,
+                listClass: 'Date',
                 edit: false,
                 display: function (data){
                     return getUpdateInfo(data);
