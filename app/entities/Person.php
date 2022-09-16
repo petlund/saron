@@ -423,7 +423,7 @@ class Person extends People{
 
     function anonymization(){
         $Today = date("Y-m-d") ;
-        $result = $this->db->select($this->saronUser, "Select Id ", "From People ", "Where DateOfMembershipStart is not null and DateOfMembershipEnd is null and Id = " . $this->id, "", "");
+        $result = $this->db->select($this->saronUser, "Select Id ", "From People ", "Where Id = " . $this->id, "", "");
         $jResult = json_decode($result);
 
             
