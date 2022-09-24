@@ -1,6 +1,7 @@
 <?php
 require_once SARON_ROOT . 'app/entities/SuperEntity.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
+require_once SARON_ROOT . 'app/entities/OrganizationFilter.php';
 
 class OrganizationUnit extends SuperEntity{
     
@@ -14,6 +15,7 @@ class OrganizationUnit extends SuperEntity{
     private $orgUnitType_FK;
     private $orgRole_FK;
     private $selectionId;
+    private $organizationFilter;
     
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
@@ -30,6 +32,8 @@ class OrganizationUnit extends SuperEntity{
         $this->filter = (String)filter_input(INPUT_GET, "filter", FILTER_SANITIZE_STRING);
 
         $this->selectionId = (int)filter_input(INPUT_GET, "SelectionId", FILTER_SANITIZE_NUMBER_INT);
+        $this->organizationFilter = new OrganizationFilter($db, $saronUser);
+
     }
     
     
@@ -77,8 +81,9 @@ class OrganizationUnit extends SuperEntity{
         $rec = RECORDS;
         //filter all nodes witch not have childs and all child below curret node
         
-        $select = "Select stat.*, Tree.OrgUnitType_FK, Typ.PosEnabled, Tree.Name, Tree.ParentTreeNode_FK, Tree.Prefix, Tree.Description, Typ.Id as TypeId, Tree.Id, Typ.SubUnitEnabled, Tree.UpdaterName, Tree.Updated, ";
-//        $select.= $this->prevParentTreeNode . " as PrevParentTreeNode_FK, ParentTreeNode_FK as PrevParentTreeNode, ";
+        $select = "Select stat.*, '" . $this->uppercaseSearchString . "' as searchString, Path, ";
+        $select.= "Typ.Name as UnitTypeName, ParentUnitName, Tree.OrgUnitType_FK, Typ.PosEnabled, Tree.Name, Tree.ParentTreeNode_FK, Tree.Prefix, Tree.Description, ";
+        $select.= "Typ.Id as TypeId, Tree.Id, Typ.SubUnitEnabled, Tree.UpdaterName, Tree.Updated, ";
         $select.= $this->getAppCanvasSql();
         $select.= "(Select count(*) from Org_Tree as Tree1 where Tree1.ParentTreeNode_FK = Tree.Id) as HasSubUnit, ";
         $select.= "(Select count(*) from Org_Pos as Pos1 where Tree.Id = Pos1.OrgTree_FK) as HasPos, ";
@@ -86,6 +91,8 @@ class OrganizationUnit extends SuperEntity{
         $select.= $this->saronUser->getRoleSql(false);
         
         $from = "from Org_Tree as Tree ";
+        $from.= "inner join " . $this->subNodesSql() . " as SubNodes on SubNodes.RootId = Tree.Id ";
+        $from.= "left outer join (Select Id, Name as ParentUnitName from Org_Tree as Parent) as ParentUnit on Tree.ParentTreeNode_FK = ParentUnit.Id ";
         $from.= "inner join Org_UnitType as Typ on Tree.OrgUnitType_FK = Typ.Id ";
         $from.= "left outer join (" . $this->getStatusSQL() .  ") as stat on Tree.Id = stat.sumId ";
         
@@ -94,17 +101,23 @@ class OrganizationUnit extends SuperEntity{
         if($id < 0){
             switch ($this->appCanvasPath){
                 case TABLE_NAME_UNITTREE:            
-                    if($this->parentId < 0){
-                        $where = "WHERE ParentTreeNode_FK is null ";
+                    if($this->parentId < 1){
+                        $where = "WHERE ParentTreeNode_FK is null And ";
                     }
                     else{
-                        $where = "WHERE ParentTreeNode_FK = " . $this->parentId . " ";                    
+                        $where = "WHERE ParentTreeNode_FK = " . $this->parentId . " And ";                    
                     }
+                    $where.= $this->organizationFilter->getTreeSearchFilterSql($this->uppercaseSearchString);
                     break;
                 case TABLE_NAME_UNITTREE . "/" . TABLE_NAME_UNIT:            
-                    $where = "WHERE ParentTreeNode_FK = " . $this->parentId . " ";
+                    $where = "WHERE ";
+                    $where.= "ParentTreeNode_FK = " . $this->parentId . " And ";
+                    $where.= $this->organizationFilter->getTreeSearchFilterSql($this->uppercaseSearchString);
                     break;
                 case TABLE_NAME_UNITLIST:
+                    $where.= "WHERE ";
+                    //$where.= $this->organizationFilter->getPeopleFilterSql($this->groupId);
+                    $where.= $this->organizationFilter->getSearchFilterSql($this->uppercaseSearchString);
                 break;
                 case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_UNIT:
                     $where = "WHERE OrgUnitType_FK = " . $this->parentId . " ";
@@ -128,8 +141,30 @@ class OrganizationUnit extends SuperEntity{
         return $result;
     }
 
-   
     
+    function subNodesSql(){
+        $rootRoleLongName = "' / ', (Select group_concat(DISTINCT Role.Name SEPARATOR ' / ') as Path from Org_Pos as Pos inner join Org_Role as Role on Role.Id = Pos.OrgRole_FK WHERE Pos.OrgTree_FK = RootId group by Pos.OrgTree_FK) ";
+        $treeRoleLongName = "' / ', (Select group_concat(DISTINCT Role.Name SEPARATOR ' / ') as Path from Org_Pos as Pos inner join Org_Role as Role on Role.Id = Pos.OrgRole_FK WHERE Pos.OrgTree_FK = Tree.Id group by Pos.OrgTree_FK) ";
+        
+        $longName = "concat(IF(Prefix is not null, concat(Prefix, ' '),''), name, " . $rootRoleLongName . ") ";
+        $tLongName = "concat(IF(Prefix is not null, concat(Tree.Prefix, ' '),''), Tree.name, " . $treeRoleLongName . ") ";
+
+        $sql = "(WITH RECURSIVE Root AS (";
+        $sql.= "SELECT Id, Id as RootId, " . $longName . " as LongName ";
+        $sql.= "FROM Org_Tree ";
+        $sql.= "UNION ALL ";
+        $sql.= "SELECT Tree.Id, Root.Id as RootId, " . $tLongName.  " as LongName ";
+        $sql.= "FROM Root, Org_Tree Tree ";
+        $sql.= "WHERE Tree.ParentTreeNode_FK = Root.Id ";
+        $sql.= ") ";
+        $sql.= "SELECT RootId, group_concat(DISTINCT LongName SEPARATOR ' / ') as Path "; 
+        $sql.= "FROM Root ";
+        $sql.= "Group by RootId) "; 
+
+        return $sql;
+    }
+    
+       
     function selectSubNodesSql($nodeId){
         $sql = "(With RECURSIVE SubTree as ( ";
         $sql.= "Select Id, Name, 1 as orglevel, ParentTreeNode_FK as parent from Org_Tree ";
@@ -143,6 +178,8 @@ class OrganizationUnit extends SuperEntity{
         return $sql;
     }
     
+
+
     function getStatusSQL(){
         $sql = "WITH RECURSIVE Sub_Tree AS (";
         $sql.= "SELECT Id, Id as sumId, 'top' as sourceTable ";
@@ -150,7 +187,9 @@ class OrganizationUnit extends SuperEntity{
         $sql.= "UNION ALL ";
         $sql.= "SELECT ot.Id as Id, sumId, 'sub' as sourceTable ";
         $sql.= "FROM Org_Tree ot inner join Sub_Tree st ";
-        $sql.= "WHERE ot.ParentTreeNode_FK = st.Id) ";
+        $sql.= "WHERE ot.ParentTreeNode_FK = st.Id ";
+        $sql.= "AND " . $this->organizationFilter->getTreeSearchFilterSql($this->uppercaseSearchString, "Name");
+        $sql.= ") ";
         $sql.= "select "; 
         $sql.= "sumId, ";
         $sql.= "sum(case when OrgPosStatus_FK = 2 and sourceTable = 'top' then 1  else 0 end) as statusProposal, ";

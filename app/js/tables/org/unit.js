@@ -58,7 +58,7 @@ function unitTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 delete: false,
                 list: true,
                 display: function (data) {
-                    var childTableTitle = 'Enhetstypen "' + data.record.Name + '" har följande underenheter';
+                    var childTableTitle = data.record.Name + ' har följande underenheter';
                     var tooltip = "";
                     var imgFile = "";
                     var type = 0;
@@ -160,6 +160,12 @@ function unitTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                     return null;
                 }
             },
+            ParentUnitName:{
+                list: false,
+                edit: false,
+                create: false,
+                title: 'Överordnad enhet'                
+            },
             ParentTreeNode_FK:{
                 list: false,
                 edit: true, 
@@ -194,8 +200,20 @@ function unitTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 width: '15%',
                 title: 'Beskrivning'
             },
-            OrgUnitType_FK:{
+            UnitTypeName:{
                 list: true,
+                edit: false,
+                create: false,
+                title: 'Enhetstyp'                
+            },
+            Path:{
+                list: false,
+                edit: false,
+                create: false,
+                title: 'Path'                
+            },
+            OrgUnitType_FK:{
+                list: false,
                 title: 'Typ av enhet',
                 inputTitle: 'Typ av enhet (Kan inte ändras. Vill du ändra behöver du skapa en ny organisatorisk enhet).',
                 width: '5%',
@@ -282,7 +300,8 @@ function configUnitTableDef(tableDef){
     if(tablePathRoot === saron.table.unitlist.name 
             || tablePathRoot === saron.table.unittype.name 
             || tablePathRoot === saron.table.role.name){ 
-        //tableDef.fields.ParentTreeNode_FK.list = true; 
+        tableDef.fields.ParentUnitName.list = true; 
+        tableDef.fields.UnitTypeName.list = true; 
         //tableDef.fields.OrgPath.list = true; NOT IMPLEMENTED YET
         tableDef.fields.SubUnitEnabled.list = false;
         tableDef.fields.Prefix.list = false;

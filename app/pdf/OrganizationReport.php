@@ -332,7 +332,7 @@ function getSubSql(){
     $sql = "WITH RECURSIVE Sub_Tree AS (";
     $sql.= "SELECT Id, " . $longName . " as LongName, 'top' as nodeType, CAST(" . $longName . " AS CHAR(5000)) AS path, 0 as rel_depth ";
     $sql.= "FROM Org_Tree ";
-        $sql.= "where ParentTreeNode_FK is null ";
+    $sql.= "where ParentTreeNode_FK is null ";
     $sql.= "UNION ALL ";
     $sql.= "SELECT t.Id, " . $tLongName.  " as LongName, 'sub' as nodeType, CONCAT(d.path, ' / ', " . $tLongName.  "), rel_depth + 1 ";
     $sql.= "FROM Sub_Tree d, Org_Tree t ";

@@ -67,6 +67,7 @@ class PeopleViews {
         $selectPerson = "select People.Id as Id, concat('<b>'," . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ", '<BR>Född: </b>', DateOfBirth, if(DateOfDeath is null,'', concat (' -- ', DateOfDeath)), '<BR><B>Status: </B>', MemberStateName) as Person, ";
 
         $selectMember = "concat (";
+        $selectMember.= "'<B>Vänkontakt start: </B>', if(DateOfFriendshipStart is null,'',LEFT(DateOfFriendshipStart, 10)x§z§x§), '<BR>', ";
         $selectMember.= "'<B>Medlemskap start: </B>', if(DateOfMembershipStart is null,'',DateOfMembershipStart), '<BR>', ";
         $selectMember.= "'<B>Medlemskap avslut: </B>', if(DateOfMembershipEnd is null, '',DateOfMembershipEnd ), '<BR>', ";
         $selectMember.= "'<B>Medlemsnummer: </B>', if(MembershipNo is null,'-',MembershipNo), '<BR>', "; 

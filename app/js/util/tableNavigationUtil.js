@@ -27,7 +27,12 @@ function openChildTable(childTableDef, img, data, clientOnly){
             
     var source = saron.source.list;
     var resultType = saron.responsetype.records;        
-    var postData = getPostData(id, childTableName, parentId, tablePath, source, resultType);
+    
+    searchString = "";
+    if(data.record.searchString)
+        searchString = data.record.searchString;
+        
+    var postData = getPostData(id, childTableName, parentId, tablePath, source, resultType, searchString);
 
     tablePlaceHolder.jtable('openChildTable', tr, childTableDef, function(callBackData){
         var addButton = callBackData.childTable.find('.jtable-toolbar-item-add-record');
@@ -58,6 +63,12 @@ function _updateAfterOpenCloseAction(tablePlaceHolder, tableDef, data, openChild
     var options = {url:tableDef.actions.listAction, clientOnly:clientOnly, animationsEnabled:false};
     options.record = getPostData(data.record.Id, tableDef.tableName, null, tableDef.tablePath, saron.source.list, saron.responsetype.record);
     options.record.OpenChildTable = openChild; 
+
+    searchString = "";
+    if(data.record.searchString)
+        searchString = data.record.searchString;
+
+    options.record.searchString = searchString; 
 
     $(tablePlaceHolder).jtable('updateRecord', options); //update icon
 }

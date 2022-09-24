@@ -1,6 +1,7 @@
 <?php
 require_once SARON_ROOT . 'app/entities/SuperEntity.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
+require_once SARON_ROOT . 'app/entities/OrganizationFilter.php';
 
 class OrganizationPos extends SuperEntity{
     
@@ -13,6 +14,7 @@ class OrganizationPos extends SuperEntity{
     private $orgTree_FK;
     private $orgSuperPos_FK;
     private $memberState;
+    private $organizationFilter;
 
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
@@ -25,6 +27,7 @@ class OrganizationPos extends SuperEntity{
         $this->orgPosStatus_FK = (int)filter_input(INPUT_POST, "OrgPosStatus_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->orgRole_FK = (int)filter_input(INPUT_POST, "OrgRole_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->orgTree_FK = (int)filter_input(INPUT_POST, "OrgTree_FK", FILTER_SANITIZE_NUMBER_INT);
+        $this->organizationFilter = new OrganizationFilter($db, $saronUser);
     }
 
     function checkEngagementData(){
@@ -89,7 +92,7 @@ class OrganizationPos extends SuperEntity{
 
         
         
-        $select = "SELECT Pos.*, Tree.ParentTreeNode_FK, Role.Name, Role.RoleType, Pos.Id,  IF(Pos.Updated>Role.updated, Pos.Updated, Role.Updated) as LatestUpdated, ";
+        $select = "SELECT Pos.*,  '" . $this->uppercaseSearchString . "' as searchString, Tree.ParentTreeNode_FK, Role.Name, Role.RoleType, Pos.Id,  IF(Pos.Updated>Role.updated, Pos.Updated, Role.Updated) as LatestUpdated, ";
         $select.= $subSelectCurIndex;
         $select.= "(Select SortOrder from `Org_Role-UnitType` as RUT WHERE  RUT.OrgRole_FK = Pos.OrgRole_FK and RUT.OrgUnitType_FK = Tree.OrgUnitType_FK) as SortOrder, ";
         $select.= $this->getAppCanvasSql();
@@ -111,11 +114,17 @@ class OrganizationPos extends SuperEntity{
         $where = "";
         if($id < 0){
             switch ($this->appCanvasPath){
+                case TABLE_NAME_POS:            
+                    $where.= "WHERE ";            
+                    $where.= $this->organizationFilter->getPosRoleSearchFilterSql($this->uppercaseSearchString);
+                    break;
                 case TABLE_NAME_UNITTREE . "/" . TABLE_NAME_POS:            
-                    $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
+                    $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";// . " AND ";            
+//                    $where.= $this->organizationFilter->getPosRoleSearchFilterSql($this->uppercaseSearchString);
                     break;
                 case TABLE_NAME_UNITTREE . "/" . TABLE_NAME_UNIT . "/" . TABLE_NAME_POS:            
-                    $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
+                    $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";// . " AND ";            
+//                    $where.= $this->organizationFilter->getPosRoleSearchFilterSql($this->uppercaseSearchString);
                     break;
                 case TABLE_NAME_UNITLIST . "/" . TABLE_NAME_POS:            
                     $where.= "WHERE OrgTree_FK = " . $this->parentId . " ";            
@@ -194,7 +203,12 @@ class OrganizationPos extends SuperEntity{
         $sqlInsert.= "'" . $this->function_FK . "', ";
         $sqlInsert.= "'" . $this->comment . "', ";
         $sqlInsert.= "'" . $this->orgPosStatus_FK . "', ";
-        $sqlInsert.= "'" . $this->orgSuperPos_FK . "', ";
+        if($this->orgSuperPos_FK){
+            $sqlInsert.= "'" . $this->orgSuperPos_FK . "', ";            
+        }
+        else{
+            $sqlInsert.= "null, ";                        
+        }
         $sqlInsert.= "'" . $this->orgRole_FK . "', ";
         $sqlInsert.= "'" . $this->parentId . "', ";  //ONLY OrgTree_FK
         $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";

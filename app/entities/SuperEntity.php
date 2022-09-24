@@ -55,7 +55,9 @@ class SuperEntity {
         $this->groupId = (int)filter_input(INPUT_POST, "groupId", FILTER_SANITIZE_NUMBER_INT);    
         
         $this->uppercaseSearchString = strtoupper((String)filter_input(INPUT_POST, "searchString", FILTER_SANITIZE_STRING));
-
+        if(strlen($this->uppercaseSearchString) === 0){
+            $this->uppercaseSearchString = strtoupper((String)filter_input(INPUT_GET, "searchString", FILTER_SANITIZE_STRING));
+        }
         
         // POST for table load and GET for Options
         $this->appCanvasName = (String)filter_input(INPUT_POST, "AppCanvasName", FILTER_SANITIZE_STRING);    

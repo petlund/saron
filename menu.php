@@ -113,11 +113,11 @@
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/OrganizationReport.php?type=proposal" target="_blank">Organisationskalender förslag(pdf-fil)</a></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/OrganizationReport.php?type=vacancy" target="_blank">Organisationskalender vakanser(pdf-fil)</a></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"engagement.php", TABLE_NAME_ENGAGEMENT, "Ansvar per person");?></li>
-                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_UNITTREE, "Organisationsträd");?></li>
-                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_UNITLIST, "Organisationslista");?></li>
-                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_POS, "Positioner");?></li>
-                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_ROLE, "Roller");?></li>
-                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_UNITTYPE, "Organisatoriska enhetstyper");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organizationSearch.php", TABLE_NAME_UNITTREE, "Organisationsträd");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organizationSearch.php", TABLE_NAME_UNITLIST, "Organisationslista");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organizationSearch.php", TABLE_NAME_POS, "Positioner");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organizationSearch.php", TABLE_NAME_ROLE, "Roller");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"organizationSearch.php", TABLE_NAME_UNITTYPE, "Organisatoriska enhetstyper");?></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_ORG_ROLE_STATUS, "Bemanningsstatus");?></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_ORGVERSION, "Beslut om organisation");?></li>
                             <!-- 

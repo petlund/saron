@@ -451,7 +451,7 @@ function getURLParameters(id, appCanvasName, parentId, appCanvasPath, source, re
     
 
 
-    function getPostData(id, appCanvasName, parentId, appCanvasPath, source, resultType){
+    function getPostData(id, appCanvasName, parentId, appCanvasPath, source, resultType, searchString){
         if(parentId === null){        
             parentId = -1;
         }
@@ -460,20 +460,22 @@ function getURLParameters(id, appCanvasName, parentId, appCanvasPath, source, re
             id = -1;
         }
 
-        if(resultType === null){
+        if(resultType){
             resultType = saron.responsetype.records;
         }
 
-        if(source === null){
+        if(source){
             source = saron.source.list;
         }
+        
         
         var options = {Id:id, 
                         ParentId:parentId, 
                         AppCanvasName:appCanvasName, 
                         AppCanvasPath:appCanvasPath, 
                         Source:source, 
-                        ResultType:resultType
+                        ResultType:resultType,
+                        searchString:searchString
                     };
 
         return options;

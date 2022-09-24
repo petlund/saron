@@ -1,6 +1,7 @@
 <?php
 require_once SARON_ROOT . 'app/entities/SuperEntity.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
+require_once SARON_ROOT . 'app/entities/OrganizationFilter.php';
 
 class OrganizationUnitType extends SuperEntity{
     
@@ -9,6 +10,7 @@ class OrganizationUnitType extends SuperEntity{
     private $subUnitEnabled;
     private $posEnabled;
     private $orgRole_FK;
+    private $organizationFilter;
     
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
@@ -18,6 +20,7 @@ class OrganizationUnitType extends SuperEntity{
         $this->posEnabled = (int)filter_input(INPUT_POST, "PosEnabled", FILTER_SANITIZE_NUMBER_INT);
 
         $this->orgRole_FK = (int)filter_input(INPUT_GET, "OrgRole_FK", FILTER_SANITIZE_NUMBER_INT);
+        $this->organizationFilter = new OrganizationFilter($db, $saronUser);
     }
 
     
@@ -66,11 +69,13 @@ class OrganizationUnitType extends SuperEntity{
         $select.= "(select count(*) From `Org_Role-UnitType` WHERE OrgUnitType_FK = Typ.Id) as HasRoles, ";
         $select.= $this->saronUser->getRoleSql(false) . " ";
         $from = "FROM Org_UnitType as Typ ";
- 
+        $where = "";
+        
         if($id < 0){
             switch ($this->appCanvasPath){
                 case TABLE_NAME_UNITTYPE:            
-                    $where = "";
+                    $where.= "WHERE ";            
+                    $where.= $this->organizationFilter->getUnitTypeSearchFilterSql($this->uppercaseSearchString);
                     break;
                 case TABLE_NAME_ROLE . "/" . TABLE_NAME_UNITTYPE:            
                     $from.= "inner join `Org_Role-UnitType` as Rut on Rut.OrgUnitType_FK = Typ.Id ";

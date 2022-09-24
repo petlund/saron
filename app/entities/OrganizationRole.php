@@ -2,6 +2,7 @@
 <?php
 require_once SARON_ROOT . 'app/entities/SuperEntity.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
+require_once SARON_ROOT . 'app/entities/OrganizationFilter.php';
 
 class OrganizationRole extends SuperEntity{
     
@@ -9,6 +10,7 @@ class OrganizationRole extends SuperEntity{
     private $description;
     private $orgTreeNode_FK;
     private $roleType;
+    private $organizationFilter;
     
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
@@ -18,6 +20,7 @@ class OrganizationRole extends SuperEntity{
         $this->orgUnitType_FK = (int)filter_input(INPUT_POST, "OrgUnitType_FK", FILTER_SANITIZE_NUMBER_INT);
         $this->name = (String)filter_input(INPUT_POST, "Name", FILTER_SANITIZE_STRING);
         $this->description = (String)filter_input(INPUT_POST, "Description", FILTER_SANITIZE_STRING);
+        $this->organizationFilter = new OrganizationFilter($db, $saronUser);
         
     }
 
@@ -101,7 +104,7 @@ class OrganizationRole extends SuperEntity{
         $id = $this->getId($idFromCreate, $this->id);
         $rec = RECORDS;
         
-        $select = "SELECT *, Role.UpdaterName as UpdaterName, Role.Updated as Updated, ";
+        $select = "SELECT *,  '" . $this->uppercaseSearchString . "' as searchString, Role.UpdaterName as UpdaterName, Role.Updated as Updated, ";
         $select.= $this->getAppCanvasSql();
         $select.= "(Select count(*) from Org_Pos as Pos WHERE Pos.OrgRole_FK = Role.Id) as UsedInUnit, ";
         $select.= "(Select count(*) from `Org_Role-UnitType` as RUT WHERE RUT.OrgRole_FK = Role.Id) as UsedInUnitType, ";
@@ -113,6 +116,8 @@ class OrganizationRole extends SuperEntity{
         if($id < 0){
             switch ($this->appCanvasPath){
                 case TABLE_NAME_ROLE:            
+                    $where.= "WHERE ";            
+                    $where.= $this->organizationFilter->getRoleSearchFilterSql($this->uppercaseSearchString);
                     break;
                 case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_ROLE:            
                     $from.= "inner join `Org_Role-UnitType` as Rut on Rut.OrgRole_FK = Role.Id ";
