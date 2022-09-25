@@ -56,6 +56,7 @@ class OrganizationFilter{
             $sqlWhereSearchSubString = " like '%" . $uppercaseSearchString . "%'";
 
             $sqlWhereSearch.= "(Tree.Name " . $sqlWhereSearchSubString . " or "; 
+            $sqlWhereSearch.= "Pos.Comment " . $sqlWhereSearchSubString . " or "; 
             $sqlWhereSearch.= "Role.Name " . $sqlWhereSearchSubString . ") "; 
             return $sqlWhereSearch;    
         }        
