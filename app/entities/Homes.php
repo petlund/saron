@@ -13,6 +13,7 @@ class Homes extends SuperEntity{
     protected $Country;
     protected $Letter;
     protected $HomeId;
+    protected $filter;
 
     function __construct($db, $saronUser) {
         parent::__construct($db, $saronUser);
@@ -29,6 +30,8 @@ class Homes extends SuperEntity{
         if($this->HomeId === 0){
             $this->HomeId = (int)filter_input(INPUT_GET, "HomeId", FILTER_SANITIZE_NUMBER_INT);
         }
+        $this->filter = new HomesFilter($db, $saronUser);
+
     }
 
 
@@ -64,7 +67,6 @@ class Homes extends SuperEntity{
         $id = $this->getId($_id, $this->id);
         $TABLE_HOMES_AND_ID = "Homes.Id";    
         
-        $filter = new HomesFilter();
         $sqlSelect = SQL_STAR_HOMES . ", " .  $this->saronUser->getRoleSql(true);         
         $sqlSelect.= $this->getAppCanvasSql(true);
         $sqlSelect.= $this->getHomeSelectSql(ALIAS_CUR_HOMES, $TABLE_HOMES_AND_ID, false);
@@ -75,8 +77,8 @@ class Homes extends SuperEntity{
             $rec = RECORDS;
             switch ($this->appCanvasPath){
                 case TABLE_NAME_HOMES:            
-                    $sqlWhere.= $filter->getHomesFilterSql($this->groupId);
-                    $sqlWhere.= $filter->getSearchFilterSql($this->uppercaseSearchString);
+                    $sqlWhere.= $this->filter->getHomesFilterSql($this->groupId);
+                    $sqlWhere.= $this->filter->getSearchFilterSql($this->uppercaseSearchString);
                     break;
                 case TABLE_NAME_PEOPLE . "/" . TABLE_NAME_HOMES:            
                     $sqlWhere.= "Homes.Id = " . $this->parentId . " ";
