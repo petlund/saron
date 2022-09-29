@@ -14,11 +14,9 @@ require_once SARON_ROOT . 'app/entities/Home.php';
         $saronUser = new SaronUser($db);
         $saronUser->hasValidSaronSession(REQUIRE_EDITOR_ROLE, REQUIRE_ORG_VIEWER_ROLE);
         $home = new Home($db, $saronUser);
-        $home->checkHomeData();
-        $db->transaction_begin();
 
-        $response = $home->update();
-        
+        $db->transaction_begin();
+        $response = $home->update();       
         $db->transaction_end();
         echo $response;
     }
