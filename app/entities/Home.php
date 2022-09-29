@@ -27,6 +27,7 @@ class Home extends Homes{
     
     
     function create($FamilyName){
+        
         $this->FamilyName = $FamilyName;
         $sqlInsert = "INSERT INTO Homes (FamilyNameEncrypt, Inserter, InserterName) VALUES (";
         $sqlInsert.= $this->getEncryptedSqlString($FamilyName) . ", ";
@@ -39,6 +40,10 @@ class Home extends Homes{
     
     
     function update(){
+        $answ = $this->checkHomeData();
+        if(strpos($answ, "ERROR") !== false){
+            return $answ;
+        }
         $sqlUpdate = "UPDATE Homes ";
         $sqlSet = "SET ";
         $sqlSet.= "FamilyNameEncrypt = " . $this->getEncryptedSqlString($this->FamilyName) . ", ";
