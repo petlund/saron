@@ -3,10 +3,12 @@
     header("Pragma: no-cache"); //HTTP 1.0
     header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
     
+echo "heja1";
     require_once("config.php");
+echo "heja2";
     require_once(SARON_ROOT . "app/access/wp-authenticate.php");
     
-    
+       
     /*** Change to HTTPS ***/
         if(filter_input(INPUT_SERVER, 'HTTP_HOST', FILTER_SANITIZE_URL) !== LOCAL_DEV_APP_HOST){
         if(filter_input(INPUT_SERVER, 'HTTPS', FILTER_SANITIZE_URL) !== "on"){
@@ -63,7 +65,7 @@
                     <form class='saronSmallText' action="SaronLogin.php" method="post">            
                         <input style='width: 100%' type="text" autocomplete="off" placeholder="Användarnamn" name="log"/><BR>
                         <input style='width: 100%' type="password" autocomplete="off" placeholder="Lösenord" name="pwd"/><BR>
-                        <input style='width: 100%' type="text" autocomplete="off" placeholder="OTP code" name="wp_otp_code"/>
+                        <input style='width: 100%' type="text" autocomplete="off" placeholder="OTP code" name="wp-otp-code"/>
                        <button type="submit" value="Submit" id="loginButton" disabled="true" style="text-align: right">Logga in</button>
                     </form>
 
