@@ -85,7 +85,7 @@ function setUpPdfDoc($db, $person, $type){
         case "server":
             $typ = "Beslutad";
             $name = createOrganizationCalender($db, $pdf, $person, $type);
-            $path = SARON_ROOT . 'data/Organisationskalender.pdf';
+            $path = SARON_PDF_URI . 'Organisationskalender.pdf';
             $pdf->Output($path, 'F'); // F = File on server
             break;
         case "decided":

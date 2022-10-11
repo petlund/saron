@@ -84,9 +84,9 @@
                         </li>
                         <li>
                             <a href="#">Rapporter</a>
-                            <ul>
+                            <ul>0
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/DirectoryReport.php" target="_blank">Adresskalender (pdf-fil)</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>data/Organisationskalender.pdf" target="_blank">Organisationskalender beslutad (pdf-fil)</a></li>
+                                <li><?php echo getMenyLink(SARON_DOC_URI,"index.php", "Organisationskalender", "Organisationskalender (pdf-fil)", true);?></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/BaptistDirectoryReport.php" target="_blank">Dopregister (pdf-fil)</a></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"people.php", TABLE_NAME_BIRTHDAY, "Födelsedagslista");?></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"lists.php", LIST_EMAIL, "Mailadresser");?></li>
@@ -128,10 +128,12 @@
                         <li>
                             <a href="#">Om <?php echo NameOfRegistry;?></a>
                             <ul>
-                                <li><a href="/<?php echo SARON_URI;?>app/about/about.php">Om <?php echo NameOfRegistry;?></a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/about/gdpr.php" target="_empty">Hantering av personuppgifter</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/about/help.php" target="_empty">Hjälp Medlemsfuntioner</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/about/organisation.php" target="_empty">Hjälp Organisationsfunktioner</a></li>
+                                <a href="/<?php echo SARON_URI;?>app/about/index.php">Om Saron</a>
+                                <li><?php echo getMenyLink(SARON_DOC_URI,"index.php", "common", "Allmänt", true);?></li>
+                                <li><?php echo getMenyLink(SARON_DOC_URI,"index.php", "help", "Arbeta med personer", true);?></li>
+                                <li><?php echo getMenyLink(SARON_DOC_URI,"index.php", "organisation", "Arbeta med organisation", true);?></li>
+                                <li><?php echo getMenyLink(SARON_DOC_URI,"index.php", "account", "Uppsättning av konto", true);?></li>
+                                <li><?php echo getMenyLink(SARON_DOC_URI,"index.php", "about", "Om Saron");?></li>
                             </ul>
                         </li>
                         <li>
