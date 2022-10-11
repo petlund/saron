@@ -25,7 +25,7 @@ function orgVersionTableDef(tableTitle, parentTablePath, parentId, parentTableDe
         tableName: tableName,
         tablePath: tablePath,
         parentTableDef: parentTableDef,
-        title: 'Beslutslog över organisatationsförändringar',
+        title: 'Beslutslog över organisatationsförändringar (Senast beslutad organisation finns under menyn Rapporter)',
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
