@@ -128,12 +128,12 @@
                         <li>
                             <a href="#">Om <?php echo NameOfRegistry;?></a>
                             <ul>
-                                <a href="/<?php echo SARON_URI;?>app/about/index.php">Om Saron</a>
-                                <li><?php echo getMenyLink(SARON_DOC_URI,"index.php", "common", "Allmänt", true);?></li>
-                                <li><?php echo getMenyLink(SARON_DOC_URI,"index.php", "help", "Arbeta med personer", true);?></li>
-                                <li><?php echo getMenyLink(SARON_DOC_URI,"index.php", "organisation", "Arbeta med organisation", true);?></li>
+                                <li><a href="/<?php echo SARON_URI;?>app/about/index.php">Om Saron</a></li>
+                                <li><?php echo getMenyLink(SARON_DOC_URI,"index.php", "common", "Allmänt om Saron", true);?></li>
+                                <li><?php echo getMenyLink(SARON_DOC_URI,"index.php", "gdpr", "Hantering av personuppgifter", true);?></li>
+                                <li><?php echo getMenyLink(SARON_DOC_URI,"index.php", "help", "Arbeta med personinformation", true);?></li>
+                                <li><?php echo getMenyLink(SARON_DOC_URI,"index.php", "organisation", "Arbeta med organisationsinformation", true);?></li>
                                 <li><?php echo getMenyLink(SARON_DOC_URI,"index.php", "account", "Uppsättning av konto", true);?></li>
-                                <li><?php echo getMenyLink(SARON_DOC_URI,"index.php", "about", "Om Saron");?></li>
                             </ul>
                         </li>
                         <li>
