@@ -7,7 +7,7 @@ header('Access-Control-Expose-Headers: filename');
 require_once 'config.php'; 
 require_once SARON_ROOT . "app/util/AppCanvasName.php";
 
-$fileName = getAppCanvasName("about") . ".pdf";
+$fileName = getAppCanvasName("help") . ".pdf";
 $file = SARON_PDF_URI . $fileName;
 $size = filesize($file);
 
@@ -15,7 +15,6 @@ header('Content-type: application/pdf');
 header('Content-Disposition: inline; filename="' . $fileName . '"');
 header('Content-Transfer-Encoding: binary');
 
-require_once SARON_ROOT . "menu.php";
 
 ob_clean(); 
 flush();

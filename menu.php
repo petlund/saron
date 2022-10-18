@@ -84,7 +84,7 @@
                         </li>
                         <li>
                             <a href="#">Rapporter</a>
-                            <ul>0
+                            <ul>
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/DirectoryReport.php" target="_blank">Adresskalender (pdf-fil)</a></li>
                                 <li><?php echo getMenyLink(SARON_DOC_URI,"index.php", "Organisationskalender", "Organisationskalender (pdf-fil)", true);?></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/pdf/BaptistDirectoryReport.php" target="_blank">Dopregister (pdf-fil)</a></li>
