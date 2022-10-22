@@ -34,18 +34,18 @@
     define ("HEADER_FOOTER_FONT_SIZE", 10);
     define ("FONT", 'times');
 
-    $memberState = new MemberState($db, $saronUsers);
-    $sql =SQL_ALL_FIELDS . ", SortList.GroupName, ";
-    $sql.="(select count(*) from People as pp where pp.HomeId=Homes.Id) as fam_member_count ";
+    // Enable sorting familys width different familyname on mulitiple places
+    $tableQuery ="(Select distinct HomeId, " . DECRYPTED_LASTNAME . " as SortName from view_people_memberstate) as LastNameList ";
+
+    $sql =SQL_ALL_FIELDS . ", LastNameList.SortName, ";
+    $sql.="(select count(*) from view_people_memberstate as pp where pp.HomeId=Homes.Id) as fam_member_count ";
     $sql.="from "; 
-    $sql.="((Select HomeId, HomeId as hid, substr(" . DECRYPTED_LASTNAME . ", 1, 5) as SortName, ";
-    $sql.="(select max(" . DECRYPTED_LASTNAME . ") from People where hid=HomeId and substr(" . DECRYPTED_LASTNAME . ", 1, 5)=SortName and length(" . DECRYPTED_LASTNAME . ")=(select min(length(" . DECRYPTED_LASTNAME . ")) from view_people_memberstate as People where hid=HomeId and substr(" . DECRYPTED_LASTNAME . ", 1, 5)=SortName)) as GroupName ";
-    $sql.="FROM view_people_memberstate as People ";
-    $sql.="WHERE MemberStateId = " . PEOPLE_STATE_MEMBERSHIP . " ) as SortList "; 
-    $sql.="inner join view_people_memberstate as People on People.HomeId=SortList.HomeId) "; 
+    $sql.=$tableQuery;
+    $sql.="inner join view_people_memberstate as People on People.HomeId=LastNameList.HomeId "; 
     $sql.="left outer join Homes on People.HomeId = Homes.Id ";  
+
     $sql.="WHERE MemberStateId = " . PEOPLE_STATE_MEMBERSHIP . " and VisibleInCalendar=2 "; //Memberstatelogic
-    $sql.="order by SortList.GroupName, " . DECRYPTED_ADDRESS . ", Homes.Id, People.DateOfBirth"; 
+    $sql.="order by LastNameList.SortName, " . DECRYPTED_ADDRESS . ", Homes.Id, People.DateOfBirth"; 
 
     // create new PDF document
     $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -118,8 +118,8 @@
     }
 
     foreach($listResult as $aRow){
-        if($aRow['GroupName']!=$prevGroupName or $aRow['HomeId']!=$prevFamId){
-            $GroupName=$aRow['GroupName'];
+        if($aRow['SortName']!=$prevGroupName or $aRow['HomeId']!=$prevFamId){
+            $GroupName=$aRow['SortName'];
             $line_count+=$aRow['fam_member_count']+1;
             $restHight=$listSpaceHight-CELL_HIGHT*($aRow['fam_member_count']+1+$line_count);
             if($restHight<0 or $firstFamily){
@@ -139,7 +139,7 @@
                 $pdf->MultiCell($cellWidth*5, CELL_HIGHT, '', 0, 'L', 0, 1, '', '', true, 1, false, true, MAX_CELL_HIGHT, 'T');        
             }
 
-            $pdf->MultiCell($cellWidth * 2, CELL_HIGHT, $aRow['GroupName'], 0, 'L', 1, 0, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T', true);
+            $pdf->MultiCell($cellWidth * 2, CELL_HIGHT, $aRow['SortName'], 0, 'L', 1, 0, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T', true);
             $pdf->MultiCell($cellWidth * 1, CELL_HIGHT, trimPhoneNumber($aRow['Phone']), 0, 'R', 1, 0, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T', true);
             $pdf->MultiCell($cellWidth * 2, CELL_HIGHT, $aRow['Address'], 0, 'L', 1, 0, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T', true);
             $pdf->MultiCell($cellWidth * 1, CELL_HIGHT, $aRow['Zip'], 0, 'R', 1, 0, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T', true);

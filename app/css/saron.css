@@ -116,7 +116,44 @@ h3 {
 } 
 
 .saronHtmlTable {
+  border: 1px solid lightgray;
   border-collapse: collapse;
+}
+
+
+.saronHtmlTable_row {
+  padding-bottom: 8px;  
+  padding-top: 8px;  
+  padding-left: 8px;  
+  padding-right: 4px;  
+  border: 1px solid lightgray;
+}
+
+.saronHtmlTable_col {
+  padding-bottom: 8px;  
+  padding-top: 8px;  
+  padding-left: 8px;  
+  padding-right: 4px;  
+  border: 1px solid lightgray;
+}
+
+.saronHtmlTable_head{
+    vertical-align: top;   
+    text-align: left;
+    background-color: gray;
+    color: white    
+}
+
+.saronHtmlTable_odd{
+    vertical-align: top;   
+    text-align: left;
+    
+}
+
+.saronHtmlTable_even{
+    vertical-align: top;   
+    background-color: lightgrey;
+    
 }
 
 .input-text-field-long {
@@ -129,41 +166,6 @@ h3 {
 }
 
 
-.saronHtmlTable.row {
-  padding-bottom: 8px;  
-  padding-top: 8px;  
-  padding-left: 8px;  
-  padding-right: 4px;  
-  border: 1px solid lightgray;
-}
-
-.saronHtmlTable.col {
-  padding-bottom: 8px;  
-  padding-top: 8px;  
-  padding-left: 8px;  
-  padding-right: 4px;  
-  border: 1px solid lightgray;
-}
-
-.saronHtmlTable.head{
-    vertical-align: top;   
-    text-align: left;
-    background-color: gray;
-    color: white    
-}
-
-.saronHtmlTable.odd{
-    vertical-align: top;   
-    text-align: left;
-    
-}
-
-.saronHtmlTable.even{
-    vertical-align: top;   
-    text-align: left;
-    background-color: lightgrey;
-    
-}
 
 .saronMenuTable{
     padding: 0px;

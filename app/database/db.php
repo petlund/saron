@@ -303,5 +303,73 @@ class db {
         }
     }
     
-    
+    function getResultSetAsHTMLTable($sql){
+        if(TEST_ENV === true){
+            $this->php_dev_error_log("sqlQuery", "INFO SQL: " . $sql . "\r\n");
+            //syslog(LOG_INFO, "INFO SQL: " . $sql . "\r\n");
+        }
+        $listResult = $this->connection->query($sql);
+        if(!$listResult){
+            $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
+            echo "SQL-Error in statement: <br>" .  $sql . "<br>" .  $technicalErrMsg; 
+            $this->php_dev_error_log("Exception in sqlQuery function", $sql);
+            return false;
+        }
+        
+
+        $nFields = mysqli_num_fields($listResult);
+        $nRows = mysqli_num_rows($listResult);
+
+        while($listRow = mysqli_fetch_array($listResult, MYSQLI_BOTH)){
+            $listRows[] = $listRow;
+        }
+        $fields = mysqli_fetch_fields($listResult);
+                
+        $html = "<table class='saronHtmlTable'>";
+        $html.= "<tr class='saronHtmlTable_row'>";
+        for($c=0;$c<$nFields;  $c++){
+            $html.= "<th class='saronHtmlTable_col'>";
+            $html.= $fields[$c]->name;
+            $html.= "</th>";
+        }
+        $html.= "</tr>";
+        for($r = 0; $r < $nRows; $r++){
+            if($r/2 % 2 ){
+                $html.= "<tr class='saronHtmlTable_odd saronHtmlTable_row'>";            
+            }
+            else{
+                $html.= "<tr class='saronHtmlTable_even saronHtmlTable_row'>";            
+            }
+            for($c=0;$c<$nFields;  $c++){
+                if($fields[$c]->type === 1){ 
+                    $align = 'number';
+                }
+                elseif($fields[$c]->type === 3){ 
+                    $align = 'number';
+                }
+                elseif($fields[$c]->type === 8){ 
+                    $align = 'number';
+                }
+                elseif($fields[$c]->type === 10){ 
+                    $align = 'number';
+                }
+                else { 
+                    $align = 'text';
+                }
+                if($r/2 % 2 ){
+                    $html.= "<td class='saronHtmlTable_odd saronHtmlTable_col " . $align .  "'>";            
+                }
+                else{
+                    $html.= "<td class='saronHtmlTable_even saronHtmlTable_col " . $align .  "'>";            
+                }
+                $field = $listRows[$r][$c];
+                $html.= $field;
+                $html.= "</td>";
+            }
+            $html.= "</tr>";
+        }
+        $html.= "</table>";
+        return $html;
+    }
 }
+    
