@@ -115,8 +115,6 @@ class Person extends People{
                 $this->DateOfMembershipEnd = $this->DateOfDeath;
             }
             
-//            $this->OldHomeId = $this->HomeId;
-//            $this->HomeId = null;
             $this->Email = null;
             $this->Mobile = null;
         }
@@ -423,12 +421,12 @@ class Person extends People{
 
     function anonymization(){
         $Today = date("Y-m-d") ;
-        $result = $this->db->select($this->saronUser, "Select Id ", "From People ", "Where Id = " . $this->id, "", "");
-        $jResult = json_decode($result);
-
+        $result = $this->db->select($this->saronUser, "Select KeyToExp, KeyToChurch,  " . DECRYPTED_ALIAS_COMMENT_KEY , " From People ", "Where Id = " . $this->id, "", "");
+        $jResults = json_decode($result);
+        $jResult = $jResults->Records[0];
             
-        if($jResult->TotalRecordCount !== '1'){
-            $error["Message"] = "Ingen anonymisering är genomförd. En enskild individ kan inte säkerställas.";
+        if(($jResult->KeyToExp === 2 or $jResult->KeyToChurch === 2) or strlen($jResult->CommentKey)>0){
+            $error["Message"] = "Det finns uppgifter om nyckelinnehav. Säkerställ att nycklarna är återlämnade innan anonymiseringen utförs.";
         }
         
         if(strlen($error["Message"])>0){
