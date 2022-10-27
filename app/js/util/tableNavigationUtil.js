@@ -28,7 +28,7 @@ function openChildTable(childTableDef, img, data, clientOnly){
     var source = saron.source.list;
     var resultType = saron.responsetype.records;        
     
-    searchString = "";
+    var searchString = "";
     if(data.record.searchString)
         searchString = data.record.searchString;
         
@@ -64,7 +64,7 @@ function _updateAfterOpenCloseAction(tablePlaceHolder, tableDef, data, openChild
     options.record = getPostData(data.record.Id, tableDef.tableName, null, tableDef.tablePath, saron.source.list, saron.responsetype.record);
     options.record.OpenChildTable = openChild; 
 
-    searchString = "";
+    var searchString = "";
     if(data.record.searchString)
         searchString = data.record.searchString;
 
