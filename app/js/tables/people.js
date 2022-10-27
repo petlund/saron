@@ -289,23 +289,22 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                 sorting: false,
                 display: function(data){
                     var childTableTitle = data.record.Name + ' har nedanstående uppdrag';
-                    var tooltip = "";
+                    var tooltip = "Inga uppdrag";
                     var imgFile = "";
-
-                    var childTableDef = engagementsTableDef(childTableTitle, tablePath, data.record.Id, tableDef); // PersonId point to childtable unic id   
+                    var clientOnly = true;
+                    var type = 0;
 
                     if(data.record.Engagement ===  '0'){
-                        var $imgEmpty = getImageTag(data, "empty.png", tooltip, childTableDef, -1);
-                        return $imgEmpty;
+                        tooltip = 'Inga uppdrag';
+                        imgFile = "pos.png";
                     }
                     else{
                         tooltip = 'Har ' + data.record.Engagement + ' förtroendeuppdrag';
                         imgFile = "haspos.png";
-                    }                    
-
-                    var clientOnly = true;
-                    var type = 0;
-
+                    }  
+                    
+                    var childTableDef = engagementsTableDef(childTableTitle, tablePath, data.record.Id, tableDef);  
+                    childTableDef.parentTableDef = tableDef;
                     var $imgChild = getImageTag(data, imgFile, tooltip, childTableDef, type);
                     var $imgClose = getImageCloseTag(data, childTableDef, type);
                         
