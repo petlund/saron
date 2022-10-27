@@ -68,7 +68,7 @@ function peopleEngagementTableDef(tableTitle, parentTablePath, parentId, parentT
                         imgFile = "pos.png";
                     }
                     else{
-                        tooltip = 'Uppdragslista';
+                        tooltip = 'Har ' + data.record.Engagement + ' förtroendeuppdrag';
                         imgFile = "haspos.png";
                     }                    
 
@@ -290,7 +290,7 @@ function engagementsTableDef(tableTitle, parentTablePath, parentId, parentTableD
 function configEngagementstTableDef(tableDef){
     var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
 
-    if(tablePathRoot === saron.table.statistics.name){
+    if(tablePathRoot !== saron.table.engagement.name){
         tableDef.actions.updateAction  = null;
         tableDef.actions.createAction  = null;        
     }
