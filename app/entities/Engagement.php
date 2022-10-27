@@ -66,15 +66,16 @@ class Engagement extends SuperEntity{
         $from = "from view_people_memberstate as p left outer join Homes as h on h.id = p.HomeId ";
         
         $where = "";
-        if($this->id > 0){
+        if($id > 0){
             $rec=RECORD;
-            $where.= "WHERE p.Id = " . $this->id . " ";
+            $where.= "WHERE p.Id = " . $id . " ";
         }
         else{
             $where = "WHERE (p.MemberStateId in (" . PEOPLE_STATE_MEMBERSHIP . ", " . PEOPLE_STATE_FRIEND . ") OR "; 
 
             if($this->groupId > 0){
                 $where = "WHERE (p.MemberStateId NOT in (" . PEOPLE_STATE_MEMBERSHIP . ", " . PEOPLE_STATE_FRIEND . ") AND "; 
+                // MISSING PROPOSAL
             }
             
             $where.= $this->meberState->getHasEngagement("p") . ")";            
