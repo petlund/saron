@@ -540,7 +540,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
             var dbox = document.getElementsByClassName('ui-dialog-title');            
             for(var i=0; i<dbox.length; i++){
                 dbox[i].innerHTML=headLine;
-                dbox[i].css('width',inputFormWidth);
+                data.form.css('width',inputFormWidth);
             }
 
             data.form.css('width',inputFormWidth);
