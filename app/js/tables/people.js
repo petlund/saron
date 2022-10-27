@@ -330,7 +330,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                     var tooltip = "Skapa personakt PDF";
                     var $imgPdf = getImageTag(data, "pdf.png", tooltip, null, -1);
                     $imgPdf.click(function () {                        
-                        window.open(saron.root.pdf + 'DossierReport.php?Id=' + data.record.Id, '_blank');
+                        window.open(saron.root.reports + 'DossierReport.php?Id=' + data.record.Id, '_blank');
                     });                
                 return $imgPdf;
                 }

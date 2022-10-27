@@ -85,16 +85,16 @@
                         <li>
                             <a href="#">Rapporter</a>
                             <ul>
-                                <li><a href="/<?php echo SARON_URI;?>app/pdf/DirectoryReport.php" target="_blank">Adresskalender (pdf-fil)</a></li>
+                                <li><a href="/<?php echo SARON_URI . SARON_REPORTS_URI;?>DirectoryReport.php" target="_blank">Adresskalender (pdf-fil)</a></li>
                                 <li><?php echo getMenyLink(SARON_DOC_URI,"index.php", "Organisationskalender", "Organisationskalender (pdf-fil)", true);?></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/pdf/BaptistDirectoryReport.php" target="_blank">Dopregister (pdf-fil)</a></li>
+                                <li><a href="/<?php echo SARON_URI . SARON_REPORTS_URI;?>BaptistDirectoryReport.php" target="_blank">Dopregister (pdf-fil)</a></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"people.php", TABLE_NAME_BIRTHDAY, "Födelsedagslista");?></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"lists.php", LIST_EMAIL, "Mailadresser");?></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"lists.php", LIST_MOBILE_INSTEAD_OF_EMAIL, "Mobilnummer för saknade emailadresser");?></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/pdf/DossierReport.php" target="_blank">Godkännande personuppgifter (pdf-fil för alla i registret)</a></li>
+                                <li><a href="/<?php echo SARON_URI . SARON_REPORTS_URI;?>DossierReport.php" target="_blank">Godkännande personuppgifter (pdf-fil för alla i registret)</a></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"users.php", TABLE_NAME_USERS, "Användare");?></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/pdf/AddressLabels.php?type=9x3" target="_empty">Adressetiketter 9x3 (pdf-fil)</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/pdf/AddressLabels.php?type=6x3" target="_empty">Adressetiketter 6x3 (pdf-fil)</a></li>
+                                <li><a href="/<?php echo SARON_URI . SARON_REPORTS_URI;?>AddressLabels.php?type=9x3" target="_empty">Adressetiketter 9x3 (pdf-fil)</a></li>
+                                <li><a href="/<?php echo SARON_URI . SARON_REPORTS_URI;?>AddressLabels.php?type=6x3" target="_empty">Adressetiketter 6x3 (pdf-fil)</a></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_MEMBER_STATE_REPORT, "Medlemsstatus och rapporter");?></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_MEMBER_STATE, "Medlemsstatus");?></li>
                             </ul>
@@ -110,8 +110,8 @@
                         <li>
                             <a href="#">Organisation</a>
                             <ul>
-                                <li><a href="/<?php echo SARON_URI;?>app/pdf/OrganizationReport.php?type=proposal" target="_blank">Organisationskalender förslag(pdf-fil)</a></li>
-                                <li><a href="/<?php echo SARON_URI;?>app/pdf/OrganizationReport.php?type=vacancy" target="_blank">Organisationskalender vakanser(pdf-fil)</a></li>
+                                <li><a href="/<?php echo SARON_URI . SARON_REPORTS_URI;?>OrganizationReport.php?type=proposal" target="_blank">Organisationskalender förslag(pdf-fil)</a></li>
+                                <li><a href="/<?php echo SARON_URI . SARON_REPORTS_URI;?>OrganizationReport.php?type=vacancy" target="_blank">Organisationskalender vakanser(pdf-fil)</a></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"engagement.php", TABLE_NAME_ENGAGEMENT, "Ansvar per person");?></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"organizationSearch.php", TABLE_NAME_UNITTREE, "Organisationsträd");?></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"organizationSearch.php", TABLE_NAME_UNITLIST, "Organisationslista");?></li>

@@ -65,7 +65,7 @@ function totalTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 display: function (data) {
                     var $imgPdf = $('<img src="' + saron.root.images + 'pdf.png" title="Skapa personakt PDF" />');
                     $imgPdf.click(function () {                        
-                        window.open(saron.root.pdf + 'DossierReport.php?Id=' + data.record.Id, '_blank');
+                        window.open(saron.root.reports + 'DossierReport.php?Id=' + data.record.Id, '_blank');
                     });                
                 return $imgPdf;
                 }

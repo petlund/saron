@@ -17,6 +17,7 @@ $saron->uri->webapi = SARON_WEBAPI_URI;
 $saron->root->webapi = "/" . SARON_URI . SARON_WEBAPI_URI;
 $saron->uri->pdf = SARON_PDF_URI;
 $saron->root->pdf = "/" . SARON_URI . SARON_PDF_URI;
+$saron->root->reports = "/" . SARON_URI . SARON_REPORTS_URI;
 
 
 $saron->userrole = (object)array();
