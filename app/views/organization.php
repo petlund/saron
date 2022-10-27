@@ -4,8 +4,7 @@
     header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
     require_once "config.php";
     require_once SARON_ROOT . "menu.php";
-    require_once SARON_ROOT . "app/util/AppCanvasName.php";
-    
+    require_once SARON_ROOT . "app/util/AppCanvasName.php";    
 ?>
 <html>   
     <Head>
