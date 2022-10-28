@@ -124,10 +124,16 @@ function posTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                     return url + parameters;
                 }
             },
+            RelatedResponsibility:{
+                title: 'Relaterat ansvar',
+                edit: false,
+                create: false
+            },
             OrgPosStatus_FK: {
                 width: '5%',
                 title: 'Status',
                 defaultValue: '4',
+                list: false,
                 options: function(data){                    
                     var url = saron.root.webapi + 'listOrganizationPosStatus.php';
                     var field = "OrgPosStatus_FK";
@@ -234,18 +240,21 @@ function posTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
             var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
             if(tablePathRoot === saron.table.pos.name)
                 data.row.find('.jtable-delete-command-button').hide();
+            if(data.record.NumberOfSuperPosInstances > 0)
+                data.row.find('.jtable-delete-command-button').hide();
         },
         recordDeleted: function(event, data){
         },
         rowInserted: function(event, data){
             alowedToUpdateOrDelete(event, data, tableDef);
             addDialogDeleteListener(data);
+            
             var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
             if(tablePathRoot === saron.table.pos.name)
                 data.row.find('.jtable-delete-command-button').hide();
-            
 
-
+            if(data.record.NumberOfSuperPosInstances > 0)
+                data.row.find('.jtable-delete-command-button').hide();
         },        
         recordsLoaded: function(event, data) {
             alowedToAddRecords(event, data, tableDef);

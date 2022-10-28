@@ -70,6 +70,18 @@ class OrganizationPos extends SuperEntity{
         $midTooltipString = "</u><span class=\"tooltiptext\">";
         $postTooltipString = "</span></div>";
 
+        $relatedSuperPos = "(Select IF(Pos.OrgPosStatus_FK = 1, ";
+        $relatedSuperPos.= "GROUP_CONCAT('<b>', r2.Name, '</b> (', t2.Name, ') ' SEPARATOR '<br>') "; 
+        $relatedSuperPos.= ",IF(Pos.OrgPosStatus_FK = 2, ";
+        $relatedSuperPos.= "GROUP_CONCAT('<b style=\"background:yellow;\">', r2.Name, '</b> (', t2.Name, ') ' SEPARATOR '<br>') "; 
+        $relatedSuperPos.= ", ";
+        $relatedSuperPos.= "GROUP_CONCAT('<b style=\"background:red;\">', r2.Name, '</b> (', t2.Name, ') ' SEPARATOR '<br>')) "; 
+        $relatedSuperPos.= ")";
+        $relatedSuperPos.= "from Org_Role as r2 inner join Org_Pos as p2 on p2.OrgRole_FK = r2.Id inner join Org_Tree as t2 on t2.Id = p2.OrgTree_FK ";
+        $relatedSuperPos.= "WHERE Pos.Id=p2.OrgSuperPos_FK ) as RelatedResponsibility, "; 
+        
+        
+        
         $statusSql = "'<BR>Rollen är: ', (Select Name from Org_PosStatus as Stat Where Id = P.OrgPosStatus_FK) ";
         
         $subSelectCur = "(case "
@@ -90,9 +102,11 @@ class OrganizationPos extends SuperEntity{
                     . "ELSE 1 "
                 . "end) as ResourceType , ";
 
-        
+        $orgSuperPosInstances = "(Select count(*) from Org_Pos as np where np.OrgSuperPos_FK = Pos.Id) as NumberOfSuperPosInstances ";
         
         $select = "SELECT Pos.*,  '" . $this->uppercaseSearchString . "' as searchString, Tree.ParentTreeNode_FK, Role.Name, Role.RoleType, Pos.Id,  IF(Pos.Updated>Role.updated, Pos.Updated, Role.Updated) as LatestUpdated, ";
+        $select.= $orgSuperPosInstances . ", ";
+        $select.= $relatedSuperPos;        
         $select.= $subSelectCurIndex;
         $select.= "(Select SortOrder from `Org_Role-UnitType` as RUT WHERE  RUT.OrgRole_FK = Pos.OrgRole_FK and RUT.OrgUnitType_FK = Tree.OrgUnitType_FK) as SortOrder, ";
         $select.= $this->getAppCanvasSql();
@@ -267,16 +281,17 @@ class OrganizationPos extends SuperEntity{
         else{
             $set.= "OrgSuperPos_FK=null, ";            
         }
-        if($this->function_FK > 0){
-            $set.= "Function_FK=" . $this->function_FK . ", ";
-        }
-        else{
-            $set.= "Function_FK=null, ";            
-        }
+
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater=" . $this->saronUser->WP_ID . " ";
         $where = "WHERE Id=" . $this->id;
         $response = $this->db->update($update, $set, $where);
+
+        $update2 = "UPDATE Org_Pos "; 
+        $set2 = "SET OrgPosStatus_FK = " . $this->orgPosStatus_FK . " ";  
+        $where2 = "WHERE OrgSuperPos_FK= " . $this->id;
+
+        $response2 = $this->db->update($update2, $set2, $where2);
         
         return $this->select($this->id);
     }

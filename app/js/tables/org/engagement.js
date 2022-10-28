@@ -68,7 +68,7 @@ function peopleEngagementTableDef(tableTitle, parentTablePath, parentId, parentT
                         imgFile = "pos.png";
                     }
                     else{
-                        tooltip = 'Har ' + data.record.Engagement + ' förtroendeuppdrag';
+                        tooltip = 'Har förtroendeuppdrag';
                         imgFile = "haspos.png";
                     }                    
 
