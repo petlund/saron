@@ -150,8 +150,13 @@ function posTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 create: true,
                 edit: true,
                 list: false,
-                options: function(data){                    
-                    return {'1':'Ansvarig person','2':'Organisationsroll', '3':'Alternativt funktion' };
+                dependsOn: 'OrgRole_FK',
+                options: function(data){
+                    var url = saron.root.webapi + 'listOrganizationRole.php';
+                    var field = "ResourceType";
+                    var parentId = data.dependedValues.OrgRole_FK;
+                    var parameters = getOptionsUrlParameters(data, saron.table.pos.name,  parentId, tableDef.tablePath, field);                    
+                    return url + parameters;
                 }
             },
             People_FK: {
@@ -181,8 +186,8 @@ function posTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 }
             },
             Function_FK: {
-                title: 'Alternativt funktionsansvar',
-                inputTitle: 'Resurstyp: Alternativt funktionsansvar',
+                title: 'Funktionsansvar',
+                inputTitle: 'Resurstyp: Funktionsansvar',
                 create: true,
                 edit: true,
                 list: false,

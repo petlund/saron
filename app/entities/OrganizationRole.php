@@ -136,13 +136,24 @@ class OrganizationRole extends SuperEntity{
     }
 
     
-    
     function selectOptions(){
+        IF($this->appCanvasName === "pos" && $this->field === "ResourceType"){
+            $sql = "SELECT RoleType from Org_Role where Id = " . $this->parentId;
+            $results = $this->db->sqlQuery($sql);
+            $result = $results[0];
+            IF($result["RoleType"] === '0'){
+               $result = '{"Result":"OK","Options":[{"DisplayText":"Ansvarig person","Value":"1"},{"DisplayText":"Organisationsroll","Value":"2"},{"DisplayText":"Alternativt funktion","Value":"3"}]}';
+               return $result;
+            }
+            else{
+               $result = '{"Result":"OK","Options":[{"DisplayText":"Ansvarig person","Value":"1"},{"DisplayText":"Alternativt funktion","Value":"3"}]}';
+               return $result;
+            }            
+        }
+
         
         $sql = "Select * from (";
         $sql.= "(SELECT Role.Id  as Value, Concat(' * ', Role.Name) as DisplayText from Org_Role as Role WHERE Role.RoleType = 1 )"; 
-//        $sql.= "UNION "; 
-//        $sql.= "Select -1 as Value, '-' as DisplayText "; 
         $sql.= "UNION "; 
         $sql.= "(SELECT Role.Id  as Value, Role.Name as DisplayText from Org_Role as Role WHERE Role.RoleType = 0)"; 
         $sql.= ") as Options "; 
