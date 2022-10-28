@@ -177,12 +177,19 @@ class OrganizationPos extends SuperEntity{
         $from = "FROM Org_Pos as Pos inner join Org_Tree as Tree on Pos.OrgTree_FK=Tree.Id ";
         $from.= "inner join Org_UnitType as UnitType on UnitType.Id = Tree.OrgUnitType_FK ";
         $from.= "inner join Org_Role as Role on Role.Id = Pos.OrgRole_FK ";
+        $from.= "inner join Org_PosStatus as Stat on Stat.Id = Pos.OrgPosStatus_FK ";
 
         $order = "Order by DisplayText ";
-        
+
         switch ($this->field){
             case "Id":
-                $sql.= $select . $from;
+                if($this->source === SOURCE_CREATE){
+                    $where = "WHERE Stat.Id = 4 "; //Vacancy
+                    $sql.= $select . $from . $where  . $order;                    
+                }
+                else{
+                    $sql.= $select . $from;
+                }
             break;
             case "OrgSuperPos_FK":
                 $where = "WHERE Role.RoleType = 1 ";
