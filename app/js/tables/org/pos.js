@@ -65,30 +65,25 @@ function posTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 type: 'hidden',
                 defaultValue: saron.table.pos.name
             },
-            RoleType:{
+            OrgPosStatus:{
                 sorting: false,
                 width: "1%",
                 edit: false,
                 create: false,
                 display: function (data) {
                     var src;
-                    if(data.record.RoleType === '-1'){
-                        src = getImageTag(data, 'orgpos.png', "Rollen finns på fler ställen", saron.table.role.name, -1)
-                    }
-                    else{
-                        switch (data.record.OrgPosStatus_FK){
-                            case '1':
-                                src = getImageTag(data, 'haspos.png', "Avstämd", saron.table.role.name, -1);
-                                break;
-                            case '2':
-                                src = getImageTag(data, 'haspos_Y.png', "Förslag", saron.table.role.name, -1);
-                                break;
-                            case '4':
-                                src = getImageTag(data, 'haspos_R.png', "Vakant", saron.table.role.name, -1);
-                                break;
-                            default:                            
-                                src = getImageTag(data, 'pos.png', "Tillsätts ej", saron.table.role.name, -1);
-                        }
+                    switch (data.record.OrgPosStatus_FK){
+                        case '1':
+                            src = getImageTag(data, 'haspos.png', "Avstämd", saron.table.role.name, -1);
+                            break;
+                        case '2':
+                            src = getImageTag(data, 'haspos_Y.png', "Förslag", saron.table.role.name, -1);
+                            break;
+                        case '4':
+                            src = getImageTag(data, 'haspos_R.png', "Vakant", saron.table.role.name, -1);
+                            break;
+                        default:                            
+                            src = getImageTag(data, 'pos.png', "Tillsätts ej", saron.table.role.name, -1);
                     }
                     var $imgRole = $(src);
                     return $imgRole;
