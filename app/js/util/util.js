@@ -238,6 +238,9 @@ function baptistFormAuto(data, selectedValue){
     var DateOfBaptism = data.form.find('input[name=DateOfBaptism]');
     var CongregationOfBaptism = data.form.find('input[name=CongregationOfBaptism]');
     var Baptister = data.form.find('input[name=Baptister]');
+    
+    if(!selectedValue)
+        selectedValue = data.record.CongregationOfBaptismThis;
 
     if(selectedValue === '0'){
         CongregationOfBaptism[0].value = "";                                      

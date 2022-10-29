@@ -139,7 +139,10 @@ function baptistTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
             data.form.find('input[name=DateOfBaptism]')[0].disabled = true;
             data.form.find('input[name=Baptister]')[0].disabled = true;
             data.form.find('textarea[name=Comment]').css('width',inputFormFieldWidth);
-            data.form.find('select[name=CongregationOfBaptismThis]').change(function () {baptistFormAuto(data, this.value)});
+            data.form.find('select[name=CongregationOfBaptismThis]').change(function () {
+                baptistFormAuto(data, this.value);
+            });
+            baptistFormAuto(data);
 
             var dbox = document.getElementsByClassName('ui-dialog-title');            
             for(var i=0; i<dbox.length; i++)
