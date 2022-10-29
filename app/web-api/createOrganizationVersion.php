@@ -9,7 +9,7 @@ require_once SARON_ROOT . 'app/database/db.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
 require_once SARON_ROOT . 'app/entities/Person.php';
 require_once SARON_ROOT . 'app/entities/OrganizationVersion.php';
-require_once SARON_ROOT . 'app/pdf/OrganizationReport.php';
+require_once SARON_ROOT . 'app/reports/OrganizationReport.php';
 
 
     try{
