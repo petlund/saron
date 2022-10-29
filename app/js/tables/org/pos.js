@@ -210,7 +210,7 @@ function posTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 title: 'Mobil',
                 edit: false,
                 create: false,
-                width: '10%',               
+                width: '7%',               
                 display: function (data){
                     return _setClassAndValue(data, "pCur_Mobile", PERSON);
                 }       
