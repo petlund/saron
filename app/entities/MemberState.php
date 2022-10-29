@@ -59,13 +59,18 @@ class MemberState extends SuperEntity{
     
         
     function getIsBaptistSQL($tableAlias = "People"){
-        $sql = "(" . $tableAlias . ".DateOfBaptism is not null or " . $tableAlias . ".CongregationOfBaptism is not null) ";
+        $sql = "(" . $tableAlias . ".DateOfBaptism is not null or " . $tableAlias . ". CongregationOfBaptism is not null) ";
         return $sql;        
     }
     
     
-    function getHasEngagement($tableAlias = "People"){
-        return "(SELECT Count(*) from Org_Pos as Pos Where " . $tableAlias . ".Id = Pos.People_FK > 0) ";
+    function getHasEngagement($tableAlias = "People", $orgPosStatus_FK =-1){
+        $subSql = "";
+        if($orgPosStatus_FK > 0){
+            $subSql = "and Pos.OrgPosStatus_FK = " . $orgPosStatus_FK . " ";
+        }
+        $sql = "(SELECT Count(*) from Org_Pos as Pos Where " . $tableAlias . ".Id = Pos.People_FK " . $subSql . ") > 0  ";
+        return $sql;
         
     }
     

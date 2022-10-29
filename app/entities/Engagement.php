@@ -65,21 +65,27 @@ class Engagement extends SuperEntity{
         
         $from = "from view_people_memberstate as p left outer join Homes as h on h.id = p.HomeId ";
         
-        $where = "";
+        $where = "WHERE ";
         if($id > 0){
             $rec=RECORD;
-            $where.= "WHERE p.Id = " . $id . " ";
+            $where.= "p.Id = " . $id . " ";
         }
         else{
-            $where = "WHERE (p.MemberStateId in (" . PEOPLE_STATE_MEMBERSHIP . ", " . PEOPLE_STATE_FRIEND . ") OR "; 
-
-            if($this->groupId > 0){
-                $where = "WHERE (p.MemberStateId NOT in (" . PEOPLE_STATE_MEMBERSHIP . ", " . PEOPLE_STATE_FRIEND . ") AND "; 
-                // MISSING PROPOSAL
+            if($this->groupId === 0){
+                $where.= "(p.MemberStateId in (" . PEOPLE_STATE_MEMBERSHIP . ", " . PEOPLE_STATE_FRIEND . ") OR "; 
+                $where.= $this->meberState->getHasEngagement("p") . ") ";            
+                $where.= $this->peopleFilter->getSearchFilterSql($this->uppercaseSearchString) . " ";            
+            }
+            else{
+                $orgPosStatus_FK=2; //Porposal
+                $where.= "((p.MemberStateId NOT in (" . PEOPLE_STATE_MEMBERSHIP . ", " . PEOPLE_STATE_FRIEND . ") AND ";
+                $where.= $this->meberState->getHasEngagement("p") . ") ";            
+                $where.= $this->peopleFilter->getSearchFilterSql($this->uppercaseSearchString) . ") OR ";            
+                $where.= "((p.MemberStateId in (" . PEOPLE_STATE_MEMBERSHIP . ", " . PEOPLE_STATE_FRIEND . ") AND "; 
+                $where.= $this->meberState->getHasEngagement("p", $orgPosStatus_FK) . ") ";            
+                $where.= $this->peopleFilter->getSearchFilterSql($this->uppercaseSearchString) . ") ";            
             }
             
-            $where.= $this->meberState->getHasEngagement("p") . ")";            
-            $where.= $this->peopleFilter->getSearchFilterSql($this->uppercaseSearchString) . " ";            
         }
         
         $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $rec);        
