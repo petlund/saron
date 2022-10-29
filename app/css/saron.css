@@ -357,7 +357,7 @@ ul{
 }
 
 
-.Residents, .FamilyName, .Address, .City, .Country, .Co, .Letter, .PreviousCongregation, .NextCongregation, .VisibleInCalendar, .Comment, .CongregationOfBaptism, .Baptister, .Email, .user_email, .MemberState, .LongHomeName, .Gender, .event_type, .MemberStateName{    
+.Residents, .FamilyName, .Address, .City, .Country, .Co, .Letter, .PreviousCongregation, .NextCongregation, .VisibleInCalendar, .Comment, .CongregationOfBaptism, .Baptister, .Email, .pCur_Email, .user_email, .MemberState, .LongHomeName, .Gender, .event_type, .MemberStateName{    
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
@@ -365,7 +365,7 @@ ul{
     text-align: left;    
 }
 
-.number, .Date, .AgeInterval, .PosOccurrency, .Phone, .Zip, .Mobile, .DateOfMembershipStart, .MembershipNo, .DateOfMembershipEnd, .DateOfBaptism, .DateOfDeath, .Age, .NextBirthday, .event_date, .number_of_members, .number_of_new_members, .number_of_finnished_members, .number_of_dead, .number_of_baptist_people, .avg_age, .avg_membership_time, .diff, .Amount, .KeyToChurch, .KeyToExp, .saron-number, .SortOrder{
+.number, .Date, .AgeInterval, .PosOccurrency, .Phone, .Zip, .Mobile, .pCur_Mobile, .DateOfMembershipStart, .MembershipNo, .DateOfMembershipEnd, .DateOfBaptism, .DateOfDeath, .Age, .NextBirthday, .event_date, .number_of_members, .number_of_new_members, .number_of_finnished_members, .number_of_dead, .number_of_baptist_people, .avg_age, .avg_membership_time, .diff, .Amount, .KeyToChurch, .KeyToExp, .saron-number, .SortOrder{
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;

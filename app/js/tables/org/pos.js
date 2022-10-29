@@ -210,13 +210,19 @@ function posTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 title: 'Mobil',
                 edit: false,
                 create: false,
-                width: '10%'               
+                width: '10%',               
+                display: function (data){
+                    return _setClassAndValue(data, "pCur_Mobile", PERSON);
+                }       
             },
             pCur_Email: {
                 title: 'Mail',
                 edit: false,
                 create: false,
-                width: '10%'                
+                width: '10%', 
+                display: function (data){
+                    return _setMailClassAndValue(data, "pCur_Email", '', PERSON);
+                }                       
             },
             PrevResponsible: {
                 width: '10%',

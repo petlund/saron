@@ -89,12 +89,9 @@ function _setClassAndValueAltNull(data, field, nullValue, type){
 
 
 function _setMailClassAndValue(data, field, nullValue, type){
-    var mail = data.record.Email;
-    if(mail === null || mail === undefined)
-        mail = data.record.user_email;
-    
-    if(mail === undefined)
-        mail = null;
+    var mail = null;
+    if(data.record[field])
+        mail = data.record[field];
     
     var mailRef = null;
     if(mail!==null)
@@ -245,7 +242,9 @@ function baptistFormAuto(data, selectedValue){
     if(selectedValue === '0'){
         CongregationOfBaptism[0].value = "";                                      
         CongregationOfBaptism[0].disabled=true;
+        DateOfBaptism[0].value = "";
         DateOfBaptism[0].disabled=true;
+        Baptister[0].value = "";
         Baptister[0].disabled=true;
     }
     else if(selectedValue === '1'){
