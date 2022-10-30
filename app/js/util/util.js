@@ -568,12 +568,12 @@ function getUpdateInfo(data){
 
     var tooltiptext = inserter + inserted + updater + updated;
     
-    var tooltip = '<div class="tooltip">';
+    var tooltip = '<div class="Updated"><div class="tooltip">';
     tooltip+= updated.substring(0, 10);
     tooltip+= '<span class="tooltiptext">';
     tooltip+= tooltiptext;
     tooltip+= '</span>';
-    tooltip+= '</div>';
+    tooltip+= '</div></div>';
      
     return tooltip;
     

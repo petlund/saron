@@ -82,12 +82,11 @@ h3 {
     border-bottom: 1px dotted black;
   }
 
-  .tooltip .tooltiptext {
+  .tooltiptext {
     visibility: hidden;
     width: 180px;
     background-color: yellow;
     color: #000;
-    text-align: left;
     border-radius: 6px;
     padding: 5px 0;
 
@@ -365,7 +364,7 @@ ul{
     text-align: left;    
 }
 
-.number, .Date, .AgeInterval, .PosOccurrency, .Phone, .Zip, .Mobile, .pCur_Mobile, .DateOfMembershipStart, .MembershipNo, .DateOfMembershipEnd, .DateOfBaptism, .DateOfDeath, .Age, .NextBirthday, .event_date, .number_of_members, .number_of_new_members, .number_of_finnished_members, .number_of_dead, .number_of_baptist_people, .avg_age, .avg_membership_time, .diff, .Amount, .KeyToChurch, .KeyToExp, .saron-number, .SortOrder{
+.number, .Date, .Updated, .AgeInterval, .PosOccurrency, .Phone, .Zip, .Mobile, .pCur_Mobile, .DateOfMembershipStart, .MembershipNo, .DateOfMembershipEnd, .DateOfBaptism, .DateOfDeath, .Age, .NextBirthday, .event_date, .number_of_members, .number_of_new_members, .number_of_finnished_members, .number_of_dead, .number_of_baptist_people, .avg_age, .avg_membership_time, .diff, .Amount, .KeyToChurch, .KeyToExp, .saron-number, .SortOrder{
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
