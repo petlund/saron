@@ -149,17 +149,9 @@ class People extends SuperEntity{
 
     
     function selectPeopleOptions(){
-        
-        $SELECT_PERSSON = "(SELECT Concat('" . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . "',' - ', '" . MemberStateName . "' FROM view_people_memberstate as P inner join Org_Pos as Pos on P.Id = Pos.People_FK WHERE Pos.OrgRole_FK = Role.Id) ";
-        $SELECT_CONCAT = "concat(' ', Name , ' (', " . $SELECT_PERSSON . ", ')')";
-        $SELECT_CONCAT_NULL = "concat(' ', Name , ' (-)')";
-        
-//        $select = "select -Id as Value, IF(" . $SELECT_CONCAT . " is null, " . $SELECT_CONCAT_NULL . ", " . $SELECT_CONCAT . ") as DisplayText FROM Org_Role as Role WHERE RoleType=1 ";//and Role.Id not in (select OrgRole_FK from Org_Pos group by OrgRole_FK) "; //RoleTYpe 1 -> "OrgRole"
-//        $select.= "Union "; 
         $select = "SELECT null as Value, '-' as DisplayText "; 
         $select.= "Union "; 
-        $select.= "select Id as Value, concat(" . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . ", ' (', " . MemberStateName . ", ')') as DisplayText ";
-        
+        $select.= "select Id as Value, concat(" . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . ", ' (', MemberStateName , ')') as DisplayText ";
         
         $where = "WHERE MemberStateId in (" . PEOPLE_STATE_MEMBERSHIP . ", " . PEOPLE_STATE_FRIEND . ") " ;
         
