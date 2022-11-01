@@ -241,7 +241,7 @@ function posInstancesTableDef(tableTitle, parentTablePath, parentId, parentTable
                 title: 'Rollnamn'                
             },            
             UnitName:{
-                title: 'Enhhetsnamn'                
+                title: 'Enhetsnamn'                
             },            
             Amount:{
                 title: 'Antal positioner'
