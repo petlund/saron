@@ -44,22 +44,19 @@ class OrganizationRoleUnitType extends SuperEntity{
     function selectPosInstances(){
         $resultType = RECORDS;
         
-        $select = "SELECT * , ";
+        $select = "SELECT ";
         $select.= $this->getAppCanvasSql();
-        $select.= $this->saronUser->getRoleSql(false) . " ";
-        $from = "from `Org_Role-UnitType` as RUT right outer join  
-	(Select 
-	UnitType.Id as UnitTypeId, UnitType.Name as UnitTypeName, Role.Id as RoleId, Role.Name as RoleName, Tree.Id as TreeId, Tree.Name as UnitName, 
-	count(*) as Amount
-	FROM Org_Pos as Pos 
-		inner join Org_Role Role on Pos.OrgRole_FK = Role.Id 
-		inner join Org_Tree as Tree on Tree.Id = Pos.OrgTree_FK 
-		inner join Org_UnitType as UnitType on Tree.OrgUnitType_FK = UnitType.Id
-	group by 
-	   UnitType.Id, UnitType.Name, Role.Id, Tree.Id, Tree.Name, Role.Name) as Instances
-        on RUT.OrgRole_FK = Instances.RoleId and RUT.OrgUnitType_FK = Instances.UnitTypeId ";
-
-        $where = "WHERE Id = " . $this->parentId . " ";
+        $select.= $this->saronUser->getRoleSql(false) . ", ";
+        $select.= "UnitType.Id as UnitTypeId, UnitType.Name as UnitTypeName, Role.Id as RoleId, Role.Name as RoleName, Tree.Id as TreeId, Tree.Name as UnitName, ";
+        $select.= "'unittype/role-unittype/pos_instances' AS AppCanvasPath, 'pos_instances' AS AppCanvasName, 'edit' as user_role, ";
+        $select.= "(Select count(*) from Org_Pos as P inner join Org_Tree as T on P.OrgTree_FK=T.Id where P.OrgRole_FK= Role.Id and T.Id = Tree.Id ) as Amount ";
+        
+        $from = "from`Org_Role-UnitType` as RUT ";
+        $from.= "inner join Org_UnitType as UnitType on RUT.OrgUnitType_FK = UnitType.Id ";
+        $from.= "inner join Org_Role as Role on RUT.OrgRole_FK = Role.Id ";
+        $from.= "inner join Org_Tree as Tree on Tree.OrgUnitType_FK = UnitType.Id ";
+        
+        $where = "WHERE RUT.Id = " . $this->parentId . " ";
         
         $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $resultType);    
         return $result;        
@@ -103,19 +100,6 @@ class OrganizationRoleUnitType extends SuperEntity{
         return $result;        
     }
     
-
-//    function selectRole($id){
-//        $select = "SELECT * ";
-//        $select.= $this->getAppCanvasSql();
-//        $select.= $this->saronUser->getRoleSql(false) . " ";
-//        $from = "FROM Org_Role-UnitType";
-//        $where = "WHERE OrgRole_FK = ";
-//
-//        $result = $this->db->select($this->saronUser, $select , $from, $where, $this->getSortSql(), $this->getPageSizeSql(), $this->resultType);    
-//        return $result;        
-//    }
-//    
-//
 
     function checkData(){
         $error = array();
