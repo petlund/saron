@@ -98,6 +98,10 @@ class PeopleFilter{
                 //anonymiserade
                 $memberstates = array(PEOPLE_STATE_ANONYMiZED);
                 return $this->getMemberStateWhereSQL($memberstates);
+            case 20:
+                //Församlingens vänner
+                $memberstates = array(PEOPLE_STATE_REGISTRATED);
+                return $this->getMemberStateWhereSQL($memberstates);
             default :
                 $memberstates = array(PEOPLE_STATE_MEMBERSHIP);
                 return $this->getMemberStateWhereSQL($memberstates);

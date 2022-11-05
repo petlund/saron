@@ -78,17 +78,19 @@ h3 {
 
   .tooltip {
     position: relative;
+    float: right;
     display: inline-block;
     border-bottom: 1px dotted black;
   }
 
   .tooltiptext {
+    text-align: left;
     visibility: hidden;
     width: 180px;
     background-color: yellow;
     color: #000;
     border-radius: 6px;
-    padding: 5px 0;
+    padding: 10px;
 
     /* Position the tooltip */
     position: absolute;
@@ -101,6 +103,8 @@ h3 {
     visibility: visible;
   }
 
+  .Updated {
+  }
   
 .jtable {
     font-size: 100%;
@@ -364,7 +368,7 @@ ul{
     text-align: left;    
 }
 
-.number, .Date, .Updated, .AgeInterval, .PosOccurrency, .Phone, .Zip, .Mobile, .pCur_Mobile, .DateOfMembershipStart, .MembershipNo, .DateOfMembershipEnd, .DateOfBaptism, .DateOfDeath, .Age, .NextBirthday, .event_date, .number_of_members, .number_of_new_members, .number_of_finnished_members, .number_of_dead, .number_of_baptist_people, .avg_age, .avg_membership_time, .diff, .Amount, .KeyToChurch, .KeyToExp, .saron-number, .SortOrder{
+.number, .Date, .AgeInterval, .PosOccurrency, .Phone, .Zip, .Mobile, .pCur_Mobile, .DateOfMembershipStart, .MembershipNo, .DateOfMembershipEnd, .DateOfBaptism, .DateOfDeath, .Age, .NextBirthday, .event_date, .number_of_members, .number_of_new_members, .number_of_finnished_members, .number_of_dead, .number_of_baptist_people, .avg_age, .avg_membership_time, .diff, .Amount, .KeyToChurch, .KeyToExp, .saron-number, .SortOrder{
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;

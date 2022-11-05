@@ -32,6 +32,7 @@ require_once SARON_ROOT . "app/util/AppCanvasName.php";
                     <form class="forms" id="mainfilter">Grupp:
                         <select id="groupId" name="groupId" onchange="filter('<?php echo getAppCanvasName(); ECHO '\', false, \'';?>');" >
                         <option selected="selected" value="0">Medlemmar</option>
+                        <option value="20">Rgisterförd</option>
                         <option value="1">Dopregister</option>
                         <option value="2">Senast ändrade personer</option>
                         <option value="3">Nya medlemmar <?php include('../util/CurrentYear.php');?></option>

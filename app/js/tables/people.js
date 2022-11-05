@@ -41,24 +41,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
         defaultSorting: 'LongHomeName ASC, DateOfBirth ASC', //Set default sorting   
         messages: {addNewRecord: 'Ny person'},
         actions: {
-            listAction:  saron.root.webapi + 'listPeople.php',
-//            listAction: function (postData, jtParams) {
-//                postData.searchString = $('#searchString').val();
-//                return $.Deferred(function ($dfd) {
-//                    $.ajax({
-//                        url: saron.root.webapi + 'listPeople.php?jtStartIndex=' + jtParams.jtStartIndex + '&jtPageSize=' + jtParams.jtPageSize + '&jtSorting=' + jtParams.jtSorting,
-//                        type: 'POST',
-//                        dataType: 'json',
-//                        data: postData, //"groupId": 12, "searchString": "Peter"},
-//                        success: function (data) {
-//                            $dfd.resolve(data);
-//                        },
-//                        error: function () {
-//                            $dfd.reject();
-//                        }
-//                    });
-//                });
-//            },            
+            listAction:  saron.root.webapi + 'listPeople.php',     
             createAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $dfd.done(function(data){
@@ -71,7 +54,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                         dataType: 'json',
                         data: postData,
                         success: function (data) {
-                            var groupId = 12;
+                            var groupId = 20;
                             $("#groupId").val(groupId);
                             $("#searchString").val(data.Record.LastName);
 
@@ -448,37 +431,6 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                     return _setClassAndValue(data, "Phone", HOME);
                 }                  
             },
-//            DateOfFriendshipStart:{
-//                list: false,
-//                edit: false,
-//                displayFormat: DATE_FORMAT,
-//                type: 'date',
-//                title: 'Vänkontakt start',
-//                inputTitle: 'Sätt datum för start av vänkontakt - Förstadium till medlemskap. Mailfunktionen stämmer av behovet om ett år.'
-//            },
-//            DateOfMembershipStart:{
-//                create: true,
-//                edit: false,
-//                list: false,
-//                type: 'date',
-//                displayFormat: DATE_FORMAT,
-//                title: 'Medlemskap start'
-//            }, 
-//            MembershipNo: {
-//                list: false, 
-//                edit: false,
-//                create: true, 
-//                title: 'Medlemsnummer',
-//                display: function (data){
-//                    return _setClassAndValue(data, "MembershipNo", PERSON);
-//                },       
-//                options: function (data){
-//                    var url = saron.root.webapi + 'listPeople.php';
-//                    var field = "MembershipNo";
-//                    var parameters = getOptionsUrlParameters(data, tableName, parentId, tablePath, field);                    
-//                    return url + parameters;
-//                }
-//            },
             MemberStateName: {
                 title: 'Status',
                 edit: false,
@@ -488,16 +440,6 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                     return _setClassAndValue(data, "MemberStateName", PERSON);
                 }
             },
-//            VisibleInCalendar: {
-//                edit: false,
-//                title: 'Kalender',
-//                inputTitle: 'Synlig i adresskalendern',
-//                width: '4%',             
-//                display: function (data){
-//                    return _setClassAndValue(data, "VisibleInCalendar", PERSON);
-//                },       
-//                options:_visibilityOptions()
-//            },
             DateOfMembershipEnd: {
                 list: false,
                 edit: true,
@@ -570,8 +512,6 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
       
         },
         recordUpdated: function (event, data){
-//            _updatePeopleFields(data);
-            
         },
         formClosed: function (event, data){
             if(data.formType === saron.formtype.edit)
