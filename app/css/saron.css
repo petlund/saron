@@ -78,7 +78,6 @@ h3 {
 
   .tooltip {
     position: relative;
-    float: right;
     display: inline-block;
     border-bottom: 1px dotted black;
   }
@@ -104,6 +103,7 @@ h3 {
   }
 
   .Updated {
+    float: right;
   }
   
 .jtable {
