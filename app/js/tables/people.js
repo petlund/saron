@@ -42,26 +42,40 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
         messages: {addNewRecord: 'Ny person'},
         actions: {
             listAction:  saron.root.webapi + 'listPeople.php',
+//            listAction: function (postData, jtParams) {
+//                postData.searchString = $('#searchString').val();
+//                return $.Deferred(function ($dfd) {
+//                    $.ajax({
+//                        url: saron.root.webapi + 'listPeople.php?jtStartIndex=' + jtParams.jtStartIndex + '&jtPageSize=' + jtParams.jtPageSize + '&jtSorting=' + jtParams.jtSorting,
+//                        type: 'POST',
+//                        dataType: 'json',
+//                        data: postData, //"groupId": 12, "searchString": "Peter"},
+//                        success: function (data) {
+//                            $dfd.resolve(data);
+//                        },
+//                        error: function () {
+//                            $dfd.reject();
+//                        }
+//                    });
+//                });
+//            },            
             createAction: function(postData) {
                 return $.Deferred(function ($dfd) {
+                    $dfd.done(function(data){
+                        var options = {Id: data.Record.Id, AppCanvasName: tableName, AppCanvasPath: tableName, "Source":"create"};
+                        $(saron.table.people.nameId).jtable('load', options);                
+                    });
                     $.ajax({
                         url: saron.root.webapi + 'createPerson.php',    
                         type: 'POST',
                         dataType: 'json',
                         data: postData,
                         success: function (data) {
-                            if(data.Result === 'OK'){
-                                $dfd.resolve(data);
-                                var groupId = 12;
-                                $("#groupId").val(groupId);
-                                $("#searchString").val(data.Record.LastName);
-                                var options = {searchString: data.Record.LastName, groupId:groupId, AppCanvasName: tableName, AppCanvasPath: tableName};
+                            var groupId = 12;
+                            $("#groupId").val(groupId);
+                            $("#searchString").val(data.Record.LastName);
 
-                                $(saron.table.people.nameId).jtable('load', options, function (){
-                                });
-                            }
-                            else
-                                $dfd.resolve(data);
+                            $dfd.resolve(data);
                         },
                         error: function () {
                             $dfd.reject();
@@ -373,12 +387,14 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
             },
             LastName: {
                 title: 'Efternamn',
+                inputTitle: 'Obligatorisk: Efternamn',
                 list: false,
                 edit: true,
                 create: true
             },
             FirstName: {
                 title: 'Förnamn',
+                inputTitle: 'Obligatorisk: Förnamn',
                 list: false,
                 edit: true,
                 create: true 
@@ -395,6 +411,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
             },
             DateOfBirth: {
                 title: 'Född',
+                inputTitle: 'Obligatorisk: Född',
                 width: '5%',
                 displayFormat: DATE_FORMAT,
                 type: 'date',
@@ -431,36 +448,37 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                     return _setClassAndValue(data, "Phone", HOME);
                 }                  
             },
-            DateOfFriendshipStart:{
-                list: false,
-                displayFormat: DATE_FORMAT,
-                type: 'date',
-                title: 'Vänkontakt start',
-                inputTitle: 'Sätt datum för start av vänkontakt - Förstadium till medlemskap. Mailfunktionen stämmer av behovet om ett år.'
-            },
-            DateOfMembershipStart:{
-                create: true,
-                edit: true,
-                list: false,
-                type: 'date',
-                displayFormat: DATE_FORMAT,
-                title: 'Medlemskap start'
-            }, 
-            MembershipNo: {
-                list: false, 
-                edit: false,
-                create: true, 
-                title: 'Medlemsnummer',
-                display: function (data){
-                    return _setClassAndValue(data, "MembershipNo", PERSON);
-                },       
-                options: function (data){
-                    var url = saron.root.webapi + 'listPeople.php';
-                    var field = "MembershipNo";
-                    var parameters = getOptionsUrlParameters(data, tableName, parentId, tablePath, field);                    
-                    return url + parameters;
-                }
-            },
+//            DateOfFriendshipStart:{
+//                list: false,
+//                edit: false,
+//                displayFormat: DATE_FORMAT,
+//                type: 'date',
+//                title: 'Vänkontakt start',
+//                inputTitle: 'Sätt datum för start av vänkontakt - Förstadium till medlemskap. Mailfunktionen stämmer av behovet om ett år.'
+//            },
+//            DateOfMembershipStart:{
+//                create: true,
+//                edit: false,
+//                list: false,
+//                type: 'date',
+//                displayFormat: DATE_FORMAT,
+//                title: 'Medlemskap start'
+//            }, 
+//            MembershipNo: {
+//                list: false, 
+//                edit: false,
+//                create: true, 
+//                title: 'Medlemsnummer',
+//                display: function (data){
+//                    return _setClassAndValue(data, "MembershipNo", PERSON);
+//                },       
+//                options: function (data){
+//                    var url = saron.root.webapi + 'listPeople.php';
+//                    var field = "MembershipNo";
+//                    var parameters = getOptionsUrlParameters(data, tableName, parentId, tablePath, field);                    
+//                    return url + parameters;
+//                }
+//            },
             MemberStateName: {
                 title: 'Status',
                 edit: false,
@@ -470,16 +488,16 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                     return _setClassAndValue(data, "MemberStateName", PERSON);
                 }
             },
-            VisibleInCalendar: {
-                edit: false,
-                title: 'Kalender',
-                inputTitle: 'Synlig i adresskalendern',
-                width: '4%',             
-                display: function (data){
-                    return _setClassAndValue(data, "VisibleInCalendar", PERSON);
-                },       
-                options:_visibilityOptions()
-            },
+//            VisibleInCalendar: {
+//                edit: false,
+//                title: 'Kalender',
+//                inputTitle: 'Synlig i adresskalendern',
+//                width: '4%',             
+//                display: function (data){
+//                    return _setClassAndValue(data, "VisibleInCalendar", PERSON);
+//                },       
+//                options:_visibilityOptions()
+//            },
             DateOfMembershipEnd: {
                 list: false,
                 edit: true,

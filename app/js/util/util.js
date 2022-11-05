@@ -341,6 +341,23 @@ function filter(appCanvasName, reloaded){
 }
 
 
+
+function urlParamToJson(postData){
+    var params = postData.split("&");
+
+    // Create the destination object.
+    var obj = {};
+
+    // iterate the splitted String and assign the key and values into the obj.
+    for (var i in params) {
+      var keys = params[i].split("=");
+      obj[keys[0]] = keys[1];
+    }
+
+    return obj;
+}
+
+
 function includedIn(currentTableId, requiredTableId){
     if(requiredTableId.includes(currentTableId))
         return true;

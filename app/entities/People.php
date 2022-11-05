@@ -115,6 +115,9 @@ class People extends SuperEntity{
         }
         else{
             $rec = RECORD;
+            if($this->source === SOURCE_CREATE){
+                $rec = RECORDS;
+            }
             $sqlWhere.= "People.Id = " . $id . " ";
         }
         $result =  $this->db->select($this->saronUser, $sqlSelect, SQL_FROM_PEOPLE_LEFT_JOIN_HOMES, $sqlWhere, $this->getSortSql(), $this->getPageSizeSql(), $rec);
