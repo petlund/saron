@@ -50,6 +50,9 @@
 
     Define("TABLE_NAME_STATISTICS_DETAIL",  "statistics_detail");
 
+    define("TABLE_NAME_CHANGE", "Changes");
+    
+    
     define("LIST_MOBILE_INSTEAD_OF_EMAIL", "list_mobile_instead_of_email");
     define("LIST_MOBILE", "list_mobile");
     define("LIST_MOBILE_MEMBER", "list_mobile_member");

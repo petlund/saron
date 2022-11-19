@@ -334,7 +334,9 @@ class Statistics extends SuperEntity{
 
         $sqlWhere = "WHERE EXTRACT(YEAR FROM year)=" . $statisticYear;
         
-        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
+        $dateString = substr($statisticTimeStamp, 0, 10);
+        $user = new SaronMetaUser(-1, "System");
+        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, 'Statistics', 'year', $dateString, 'Update statististics', '', $user);
     }
 
 }

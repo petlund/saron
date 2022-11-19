@@ -1,5 +1,6 @@
 <?php
 require_once "config.php";
+require_once SARON_ROOT . 'app/entities/SaronMetaUser.php'; 
 require_once SARON_ROOT . "app/access/SaronCookie.php";
 require_once SARON_ROOT . "app/access/Ticket.php";
 require_once SARON_ROOT . "app/database/db.php";
@@ -48,7 +49,7 @@ require_once SARON_ROOT . "app/database/db.php";
         try{
             $db = new db();
             $wpUser = wp_get_current_user();
-            deletePersistentSaron($db, $wpUser->ID);
+            deletePersistentSaron($db, $wpUser->ID, 'Logout', $wpUser->display_name);
         } 
         catch (Exception $ex) {
             ;
@@ -60,8 +61,10 @@ require_once SARON_ROOT . "app/database/db.php";
     
     
     
-    function deletePersistentSaron($db, $id){
-        $db->delete("DELETE FROM SaronUser WHERE WP_ID = " . $id);
+    function deletePersistentSaron($db, $id, $changeType, $displayName){
+        $sql = "DELETE FROM SaronUser WHERE WP_ID = " . $id;
+        $user = new SaronMetaUser(-1, $displayName);
+        $db->delete($sql, "SaronUser", "WP_ID", $id, $changeType, '', $user);
     }
     
     
@@ -101,7 +104,7 @@ require_once SARON_ROOT . "app/database/db.php";
     function insertSaronSessionUser($wp_id, $editor, $org_editor, $userDisplayName ){
         $db = new db();        
 
-        deletePersistentSaron($db, $wp_id);   
+        deletePersistentSaron($db, $wp_id, null, $userDisplayName);   
         
         $sql = "INSERT INTO SaronUser (AccessTicket, Editor, Org_Editor, WP_ID, UserDisplayName) values (";
         $sql.= getAccessTicket() . ", "; 
@@ -110,8 +113,10 @@ require_once SARON_ROOT . "app/database/db.php";
         $sql.= $wp_id . ", '";
         $sql.= $userDisplayName . "') ";
         echo $sql;
-        try{
-            $lastId = $db->insert($sql, "SaronUser", "Id");
+        try{        
+            $user = new SaronMetaUser($wp_id, $userDisplayName);
+
+            $lastId = $db->insert($sql, "SaronUser", "Id", 'Login', '', $user);
             $result = $db->sqlQuery("Select AccessTicket from SaronUser where Id = " . $lastId);
     
             $ticket = "";

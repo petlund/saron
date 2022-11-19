@@ -13,12 +13,13 @@
  */
 
 require_once "config.php";
+require_once SARON_ROOT . 'app/entities/SaronMetaUser.php'; 
 require_once SARON_ROOT . 'app/access/SaronCookie.php'; 
 require_once SARON_ROOT . "app/access/Ticket.php";
 require_once SARON_ROOT . 'app/database/queries.php'; 
 require_once SARON_ROOT . 'app/database/db.php';
 
-class SaronUser{
+class SaronUser extends SaronMetaUser{
     private $db;
     private $editor;
     private $org_editor;
@@ -41,7 +42,9 @@ class SaronUser{
             $this->userDisplayName = $attributes[0]["UserDisplayName"];
             $this->WP_ID = $attributes[0]["WP_ID"];
             $this->timeStamp = $attributes[0]["Time_Stamp"];
-        }
+
+            parent::__construct($this->WP_ID, $this->userDisplayName);
+}
         catch(Exception $error){
             error_log($error . "\n\n");
         }
@@ -162,7 +165,7 @@ class SaronUser{
     public function update(){
 
         if($this->db->fieldValueExist($this->WP_ID, -1, "WP_ID", "SaronUser")){
-            return $this->db->update("Update SaronUser ", "Set Last_Activity = Now() ", "where WP_ID=" . $this->WP_ID);
+            return $this->db->update("Update SaronUser ", "Set Last_Activity = Now() ", "where WP_ID=" . $this->WP_ID, 'SaronUser', 'WP_ID', -1, null, null,$this);
         }
         else{
             throw new Exception($this->getErrorMessage("(7) Your session is out of scope. " ));
@@ -178,7 +181,7 @@ class SaronUser{
                 . "OR " . NOW_TIME_STAMP_DIFF . " > " . COOCKIE_EXPIRES . " "
                 . "OR WP_ID=" . $wp_id;
         
-        $this->db->delete($sql);
+        $this->db->delete($sql, 'SaronUser', 'id', $wp_id, null, '',$this);
     }
  
     
@@ -292,8 +295,8 @@ class SaronUser{
             $set.= "Time_Stamp = Now() ";
             $where = "WHERE AccessTicket = '" . $oldTicket . "'";
 
-            $this->db->update($update, $set, $where);
-            
+            $this->db->update($update, $set, $where, 'SaronUser', 'WP_ID', -1, null, null, $this);
+
             $result2 = $this->db->sqlQuery("Select AccessTicket from SaronUser where Id = " . $id);
     
             $ticket = "";

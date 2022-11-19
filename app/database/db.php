@@ -56,8 +56,16 @@ class db {
     }
     
     
-    public function delete($sqlDelete){
-        if(!$listResult = $this->connection->query($sqlDelete)){
+    public function delete($sqlDelete, $keyTable, $keyColumn, $key, $changeType, $description, $saronUser){
+            if($changeType !== null){
+                $preSql = "Select * from " . $keyTable . " Where " . $keyColumn . " = " . $key;
+                $preListResult = $this->sqlQuery($preSql);
+                if($description === null){
+                    $description = $this->createDeleteDescription($preListResult);
+                }
+                $this->updateChangeLog($changeType, $description, $saronUser);
+            }
+            if(!$listResult = $this->connection->query($sqlDelete)){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
 //            $this->php_dev_error_log("delete", $sqlDelete);
             throw new Exception($this->jsonErrorMessage("Exception in delete function", null, $technicalErrMsg));
@@ -68,12 +76,26 @@ class db {
         }                
     }
 
-    public function update($update, $set, $where){
+    public function update($update, $set, $where, $keyTable, $keyColumn, $key, $changeType, $description, $saronUser){
         $sql = $update . $set . $where;
+        
+        $prevPostSql = "Select * from " . $keyTable . " Where " . $keyColumn . " = " . $key;
+        $prevListResult=null;
+        if($changeType !== null){
+            $prevListResult = $this->sqlQuery($prevPostSql);
+        }
         if(!$listResult = $this->connection->query($sql)){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
             $this->php_dev_error_log("update", $sql);
             throw new Exception($this->jsonErrorMessage("Exception in update function", null, $technicalErrMsg));
+        }
+        
+        if($changeType !== null){
+            $postListResult = $this->sqlQuery($prevPostSql);
+            if($description === null){
+                $description = $this->createUpdateDescription($prevListResult, $postListResult);
+            }
+            $this->updateChangeLog($changeType, $description, $saronUser);
         }
         return true;
     } 
@@ -128,7 +150,7 @@ class db {
     }
     
         
-    public function insert($insert, $keyTable, $keyColumn){
+    public function insert($insert, $keyTable, $keyColumn, $changeType, $description, $saronUser){
         $LastId = "0";
         try{
             if(!$listResult = $this->connection->query($insert)){
@@ -140,9 +162,18 @@ class db {
                     throw new Exception($this->jsonErrorMessage("SQL-Error in LAST_INSERT_ID() statement after insert.", null, $this->connection->error));
                 }
                 else{
+                    $LastId = 0;
                     while($listRow = mysqli_fetch_array($listResult)){
                         $LastId = $listRow[$keyColumn];
-                    }      
+                    }
+                    if($changeType !== null){
+                        $postSql = "Select * from " . $keyTable . " Where " . $keyColumn . " = " . $LastId;
+                        $postListResult = $this->sqlQuery($postSql);
+                        if($description === null){
+                            $description = $this->createInsertDescription($postListResult);
+                        }
+                        $this->updateChangeLog($changeType, $description, $saronUser);
+                    }
                 }
             }
             return $LastId;
@@ -371,5 +402,84 @@ class db {
         $html.= "</table>";
         return $html;
     }
+    
+    private function updateChangeLog($changeType, $description, $saronUser){
+        $sqlInsert = "INSERT INTO Changes (ChangeType, User, Description, Inserter, InserterName) ";
+        $sqlInsert.= "VALUES (";
+        $sqlInsert.= "'" . $changeType . "', ";
+        $sqlInsert.= "'" . $saronUser->userDisplayName . "', ";
+        $sqlInsert.= '"' . $description . '", ';
+        $sqlInsert.= $saronUser->WP_ID . ", ";
+        $sqlInsert.= "'" . $saronUser->userDisplayName . "')";
+        
+        $this->insert($sqlInsert, 'Changes', 'Id', null, '', $saronUser);
+
+        $sqlDelete = "DELETE FROM Changes where DATEDIFF(Now(), Inserted) > " . CHANGE_LOG_IN_DAYS;
+        $this->delete($sqlDelete, 'Changes', 'Id', -1, null, '', $saronUser);
+    }
+
+    
+    
+    private function createInsertDescription($listRow){
+        $rowObj = new ArrayObject($listRow[0]);
+        
+        $description = "<b>Tillägg</b><br>";
+        $iterator = $rowObj->getIterator();
+        
+        while( $iterator->valid() ){
+            $key = $iterator->key(); 
+            $value = $iterator->current();
+            $description.= "<b>" . $key . ": </b>" . $value . ", ";
+
+            $iterator->next();
+        }
+        
+        return $description;
+    }
+    
+    
+    
+    private function createDeleteDescription($listRow){
+        if(empty($listRow)){
+            return "";
+        }
+        $rowObj = new ArrayObject($listRow[0]);
+        
+        $description = "<b>Borttag</b><br>";
+        $iterator = $rowObj->getIterator();
+        
+        while( $iterator->valid() ){
+            $key = $iterator->key(); 
+            $value = $iterator->current();
+            $description.= "<b>" . $key . ": </b>" . $value . ", ";
+
+            $iterator->next();
+        }
+        
+        return $description;
+    }
+    
+    
+    
+    private function createUpdateDescription($prevListRow, $postListRow){
+        $prevObj = new ArrayObject($prevListRow[0]);
+        $postObj = new ArrayObject($postListRow[0]);
+        
+        $description = "<b>Ändring</b><br>";
+        $iterator = $prevObj->getIterator();
+        
+        while( $iterator->valid() ){
+            $key = $iterator->key(); 
+            $prevValue = $iterator->current();
+            $postValue = $postObj[$key];
+            if($prevValue !== $postValue){
+                $description.= "<b>" . $key . ": </b>" . $prevValue . " => " . $postValue . "<br>";
+            }
+
+            $iterator->next();
+        }
+        
+        return $description;
+    }    
 }
     

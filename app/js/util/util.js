@@ -585,8 +585,14 @@ function getUpdateInfo(data){
 
     var tooltiptext = inserter + inserted + updater + updated;
     
+    
+    var cellText = updated.substring(0, 10);
+    if(cellText.length === 0)
+        cellText = inserted.substring(0, 10);
+    
+    
     var tooltip = '<div class="Updated"><div class="tooltip">';
-    tooltip+= updated.substring(0, 10);
+    tooltip+= cellText;
     tooltip+= '<span class="tooltiptext">';
     tooltip+= tooltiptext;
     tooltip+= '</span>';

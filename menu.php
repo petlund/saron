@@ -105,6 +105,7 @@
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"statistics.php", TABLE_NAME_STATISTICS, "Medlemsstatistik");?></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/charts.php">Medlemsstatistik grafik</a></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"efk.php", TABLE_NAME_EFK, "EFK-statistik");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"changelog.php", TABLE_NAME_CHANGE, "Ändringslog");?></li>
                             </ul>
                         </li>
                         <li>

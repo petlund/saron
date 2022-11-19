@@ -164,6 +164,10 @@ $saron->table->users = (object)array();
 $saron->table->users->nameId = "#" . TABLE_NAME_USERS ;
 $saron->table->users->name = TABLE_NAME_USERS ;
 
+$saron->table->changelog =  (object)array();
+$saron->table->changelog->name = TABLE_NAME_CHANGE;
+$saron->table->changelog->nameId = "#" . TABLE_NAME_CHANGE;
+
 $saron->list = (object)array();
 $saron->list->mobile_instead_of_email =  (object)array();
 $saron->list->mobile_instead_of_email->nameId = "#" . LIST_MOBILE_INSTEAD_OF_EMAIL;
