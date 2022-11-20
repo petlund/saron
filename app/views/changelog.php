@@ -10,7 +10,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title><?php echo NameOfRegistry;?> - email</title>
+        <title><?php echo NameOfRegistry;?> - Log</title>
    </head>
     <body>
         <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "changelog.js");?>"></script>     
