@@ -11,7 +11,7 @@ require_once SARON_ROOT . "menu.php";
 <html>
     <head>
         <meta charset="UTF-8">
-        <title><?php echo NameOfRegistry;?> - Användare</title>
+        <title><?php echo NameOfRegistry;?> - TEST</title>
    </head>
     <body>
         <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "test.js");?>"></script>     

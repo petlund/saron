@@ -10,7 +10,7 @@ header("Cache-Control: no-cache, must-revalidate");
 <html>   
     <Head>
         <meta charset="UTF-8">
-        <title><?php echo NameOfRegistry;?> - Organisation</title> 
+        <title><?php echo NameOfRegistry;?> - Ansvar</title> 
     </Head>
     <body> 
        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "engagement.js");?>"></script>     
