@@ -58,12 +58,12 @@ class db {
     
     public function delete($sqlDelete, $keyTable, $keyColumn, $key, $changeType, $description, $saronUser){
             if($changeType !== null){
-                $preSql = "Select * from " . $keyTable . " Where " . $keyColumn . " = " . $key;
+                $preSql = $this->getChangeValidationSQL($keyTable, $keyColumn, $key);
                 $preListResult = $this->sqlQuery($preSql);
                 if($description === null){
                     $description = $this->createDeleteDescription($preListResult);
                 }
-                $this->updateChangeLog($changeType, $description, $saronUser);
+                $this->updateChangeLog($keyTable, $keyColumn, $key, $changeType, $description, $saronUser);
             }
             if(!$listResult = $this->connection->query($sqlDelete)){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
@@ -79,7 +79,7 @@ class db {
     public function update($update, $set, $where, $keyTable, $keyColumn, $key, $changeType, $description, $saronUser){
         $sql = $update . $set . $where;
         
-        $prevPostSql = "Select * from " . $keyTable . " Where " . $keyColumn . " = " . $key;
+        $prevPostSql = $this->getChangeValidationSQL($keyTable, $keyColumn, $key);
         $prevListResult=null;
         if($changeType !== null){
             $prevListResult = $this->sqlQuery($prevPostSql);
@@ -95,7 +95,7 @@ class db {
             if($description === null){
                 $description = $this->createUpdateDescription($prevListResult, $postListResult);
             }
-            $this->updateChangeLog($changeType, $description, $saronUser);
+            $this->updateChangeLog($keyTable, $keyColumn, $key, $changeType, $description, $saronUser);
         }
         return true;
     } 
@@ -167,12 +167,12 @@ class db {
                         $LastId = $listRow[$keyColumn];
                     }
                     if($changeType !== null){
-                        $postSql = "Select * from " . $keyTable . " Where " . $keyColumn . " = " . $LastId;
+                        $postSql = $this->getChangeValidationSQL($keyTable, $keyColumn, $LastId);
                         $postListResult = $this->sqlQuery($postSql);
                         if($description === null){
                             $description = $this->createInsertDescription($postListResult);
                         }
-                        $this->updateChangeLog($changeType, $description, $saronUser);
+                        $this->updateChangeLog($keyTable, $keyColumn, $LastId, $changeType, $description, $saronUser);
                     }
                 }
             }
@@ -403,11 +403,12 @@ class db {
         return $html;
     }
     
-    private function updateChangeLog($changeType, $description, $saronUser){
-        $sqlInsert = "INSERT INTO Changes (ChangeType, User, Description, Inserter, InserterName) ";
+    private function updateChangeLog($keyTable, $keyColumn, $key, $changeType, $description, $saronUser){
+        $sqlInsert = "INSERT INTO Changes (ChangeType, User, BusinessKey, Description, Inserter, InserterName) ";
         $sqlInsert.= "VALUES (";
         $sqlInsert.= "'" . $changeType . "', ";
         $sqlInsert.= "'" . $saronUser->userDisplayName . "', ";
+        $sqlInsert.= '"' . $this->getBusinessKey($keyTable, $keyColumn, $key) . '", ';
         $sqlInsert.= '"' . $description . '", ';
         $sqlInsert.= $saronUser->WP_ID . ", ";
         $sqlInsert.= "'" . $saronUser->userDisplayName . "')";
@@ -427,9 +428,10 @@ class db {
         $iterator = $rowObj->getIterator();
         
         while( $iterator->valid() ){
-            $key = $iterator->key(); 
+            $key = $iterator->key();
+
             $value = $iterator->current();
-            $description.= "<b>" . $key . ": </b>" . $value . ", ";
+            $description.= "<b>" . $key . ": </b>'" . $value . "'<br> ";
 
             $iterator->next();
         }
@@ -451,7 +453,7 @@ class db {
         while( $iterator->valid() ){
             $key = $iterator->key(); 
             $value = $iterator->current();
-            $description.= "<b>" . $key . ": </b>" . $value . ", ";
+            $description.= "<b>" . $key . ": </b>'" . $value . "'<br> ";
 
             $iterator->next();
         }
@@ -472,14 +474,93 @@ class db {
             $key = $iterator->key(); 
             $prevValue = $iterator->current();
             $postValue = $postObj[$key];
-            if($prevValue !== $postValue){
-                $description.= "<b>" . $key . ": </b>" . $prevValue . " => " . $postValue . "<br>";
+            
+            if(!($this->str_ends_with($key, 'Encrypt') OR $this->str_ends_with($key, 'Hidden'))){
+                if($prevValue !== $postValue){
+                    $description.= "<b>" . $key . ": </b>'" . $prevValue . "' <b>==></b> '" . $postValue . "'<br>";
+                }
+                else{// enable if you want to se all fields
+                    //$description.= "<b>" . $key . ": </b>" . $prevValue . "<br>";                
+                }
             }
-
             $iterator->next();
         }
         
         return $description;
     }    
+    
+    
+    private function getChangeValidationSQL($keyTable, $keyColumn, $key){
+        switch ($keyTable){
+            case 'People':
+                return SQL_STAR_PEOPLE . "From view_people_memberstate as People Where " . $keyColumn . " = " . $key;
+            case 'Homes':
+                return SQL_STAR_HOMES . " From Homes Where " . $keyColumn . " = " . $key;
+            case 'view_organization':
+                return 'SELECT *, ' . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE_MEMBERSTATENAME . " as Person From view_organization Where " . $keyColumn . " = " . $key;
+            default:
+                return "Select * from " . $keyTable . " Where " . $keyColumn . " = " . $key;
+        }
+    }
+    
+    
+    private function getBusinessKey($keyTable, $keyColumn, $key){
+
+        switch ($keyTable){
+            case 'People':
+                $sql = 'SELECT ' . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . "as Name From view_people_memberstate as People Where Id = " . $key;
+                return $this->getBusinessKeyValue($sql, 'Name');
+            case 'Homes':
+                $sql =  'SELECT ' . DECRYPTED_ALIAS_FAMILYNAME . " From Homes Where Id = " . $key;
+                return $this->getBusinessKeyValue($sql, 'FamilyName');
+            case 'News':
+                $sql = "SELECT * From News Where id  = " . $key;
+                return $this->getBusinessKeyValue($sql, 'news_date');
+            case 'view_organization':
+                $sql = "SELECT * From view_organization Where id  = " . $key;
+                return $this->getBusinessKeyValue($sql, 'PosKeyValue');
+            case 'SaronUser':
+                return '';
+            default:
+                return 'Ej definerad';
+        }
+    }
+    
+    
+    private function getBusinessKeyValue($sql, $fieldName){
+        $result = $this->sqlQuery($sql);
+        if($result){
+            $resultObj = new ArrayObject($result[0]);
+            $businessKey = $resultObj[$fieldName];
+            return $businessKey;
+        }
+        return 'Ej definerad';
+        
+    }
+    
+    
+    
+    private function str_ends_with($haystack, $needle){
+        $haystack_len = strlen($haystack);
+        $needle_len = strlen($needle);
+        
+        if($haystack_len === 0){
+            return false;
+        }
+            
+        if($needle_len  === 0){
+            return false;
+        }
+            
+        if($needle_len  > $haystack_len){
+            return false;
+        }
+        $haystack_suffix = substr($haystack, $haystack_len - $needle_len);
+        if($haystack_suffix === $needle){
+            return true;
+        }
+        return false;
+    }
+        
 }
     

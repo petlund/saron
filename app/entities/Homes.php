@@ -199,6 +199,8 @@ class Homes extends SuperEntity{
             "and HomeId is not " . $this->HomeId; 
         }
         $deleteSql = "delete from Homes where Homes.Id not in (select Homeid from People where HomeId is not null " . $oldHomeIdString . " group by HomeId)";
-        $this->db->delete($deleteSql);
+        $user = new SaronMetaUser();
+
+        $this->db->delete($deleteSql, 'Homes', 'Id', -1, 'Radera tomma hem', '', $user);
     }    
 }

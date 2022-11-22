@@ -52,9 +52,13 @@ function changelogTableDef(tableTitle, tablePath, parentId, parentTableDef){
                 title: 'Användare',
                 width: '10%'
             },
+            BusinessKey: {
+                title: 'Identitet',
+                width: '15%'
+            },
             Description: {
                 title: 'Beskrivning',
-                width: '70%'
+                width: '55%'
             },
             Inserted:{
                 title: 'Genomförd',

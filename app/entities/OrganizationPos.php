@@ -270,7 +270,7 @@ class OrganizationPos extends SuperEntity{
             $set.= "People_FK=null, ";            
         }
         if($this->function_FK > 0){
-            $set.= "Function_FK=" . $this->people_FK . ", ";
+            $set.= "Function_FK=" . $this->function_FK . ", ";
         }
         else{
             $set.= "Function_FK=null, ";            
@@ -285,13 +285,13 @@ class OrganizationPos extends SuperEntity{
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater=" . $this->saronUser->WP_ID . " ";
         $where = "WHERE Id=" . $this->id;
-        $response = $this->db->update($update, $set, $where);
+        $response = $this->db->update($update, $set, $where, 'view_organization', 'Id', $this->id, 'Ansvar', null, $this->saronUser);
 
         $update2 = "UPDATE Org_Pos "; 
         $set2 = "SET OrgPosStatus_FK = " . $this->orgPosStatus_FK . " ";  
         $where2 = "WHERE OrgSuperPos_FK= " . $this->id;
 
-        $response2 = $this->db->update($update2, $set2, $where2);
+        $response2 = $this->db->update($update2, $set2, $where2, 'view_organization', 'Id', $this->id, 'Ansvar Organisationsroll', null, $this->saronUser);
         
         return $this->select($this->id);
     }
@@ -306,7 +306,7 @@ class OrganizationPos extends SuperEntity{
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater=" . $this->saronUser->WP_ID . " ";
         $where = "WHERE Id=" . $this->id;
-        $response = $this->db->update($update, $set, $where);
+        $response = $this->db->update($update, $set, $where, 'view_organization', 'Id', $this->id, 'Ansvar Organisationsroll', null, $this->saronUser);
                 
         return $this->select($this->id);
     }

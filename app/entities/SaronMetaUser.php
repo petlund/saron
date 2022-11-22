@@ -18,7 +18,7 @@ class SaronMetaUser{
     public $userDisplayName;
     
     
-    function __construct($WP_ID, $userDisplayName) {
+    function __construct($WP_ID=-1, $userDisplayName='System') {
         $this->WP_ID = $WP_ID;
         $this->userDisplayName = $userDisplayName;
     }    
