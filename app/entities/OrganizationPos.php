@@ -270,7 +270,7 @@ class OrganizationPos extends SuperEntity{
             $set.= "People_FK=null, ";            
         }
         if($this->function_FK > 0){
-            $set.= "Function_FK=" . $this->people_FK . ", ";
+            $set.= "Function_FK=" . $this->function_FK . ", ";
         }
         else{
             $set.= "Function_FK=null, ";            
