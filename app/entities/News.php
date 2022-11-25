@@ -52,7 +52,7 @@ class News extends SuperEntity{
         $sqlInsert.= "'" . $this->information . "', ";
         $sqlInsert.= "'" . $this->severity . "', ";
         $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "')";
-        $id = $this->db->insert($sqlInsert, "News", "id", "Ny Nyhet", null, $this->saronUser);
+        $id = $this->db->insert($sqlInsert, "News", "id", "Tidpunkt", null, $this->saronUser);
         $result =  $this->select($id);
         return $result;
     }
@@ -69,12 +69,12 @@ class News extends SuperEntity{
         $set.= "severity='" . $this->severity . "', ";        
         $set.= "writer='" . $this->saronUser->getDisplayName() . "' ";
         $where = "WHERE id=" . $this->id;
-        $this->db->update($update, $set, $where, 'News', 'id', $this->id, 'Uppdaterad nyhet', null, $this->saronUser);        
+        $this->db->update($update, $set, $where, 'News', 'id', $this->id, 'Tidpunkt', null, $this->saronUser);        
         return $this->select($this->id);
     }
 
     function delete(){
         $sql = "delete from News where id=" . $this->id;
-        return $this->db->delete($sql, "News", 'id', $this->id, "Borttag av nyhet", null, $this->saronUser);
+        return $this->db->delete($sql, "News", 'id', $this->id, "Tidpunkt", null, $this->saronUser);
     }
 }

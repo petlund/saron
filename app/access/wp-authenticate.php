@@ -49,7 +49,8 @@ require_once SARON_ROOT . "app/database/db.php";
         try{
             $db = new db();
             $wpUser = wp_get_current_user();
-            deletePersistentSaron($db, $wpUser->ID, 'Logout', $wpUser->display_name);
+            $user = new SaronMetaUser($wpUser->ID, $wpUser->display_name);
+            deletePersistentSaron($db, $wpUser->ID, 'Logout', $user);
         } 
         catch (Exception $ex) {
             ;
@@ -61,10 +62,9 @@ require_once SARON_ROOT . "app/database/db.php";
     
     
     
-    function deletePersistentSaron($db, $id, $changeType, $displayName){
-        $sql = "DELETE FROM SaronUser WHERE WP_ID = " . $id;
-        $user = new SaronMetaUser(-1, $displayName);
-        $db->delete($sql, "SaronUser", "WP_ID", $id, $changeType, '', $user);
+    function deletePersistentSaron($db, $userId, $changeType, $user, $createlogPost=true){
+        $sql = "DELETE FROM SaronUser WHERE WP_ID = " . $userId;
+        $db->delete($sql, "SaronUser", "WP_ID", $userId, 'Användarid', $changeType, $user, $createlogPost);
     }
     
     
@@ -94,17 +94,18 @@ require_once SARON_ROOT . "app/database/db.php";
         $userDisplayName = $wpUser->display_name;
         $wp_id = $wpUser->ID;
 
-        
-        $ticket = insertSaronSessionUser($wp_id, $editor, $org_editor, $userDisplayName);
+        $user = new SaronMetaUser($wp_id, $userDisplayName);
+        $ticket = insertSaronSessionUser($wp_id, $editor, $org_editor, $user);
         setSaronCookie($ticket);
     }
     
     
     
-    function insertSaronSessionUser($wp_id, $editor, $org_editor, $userDisplayName ){
+    function insertSaronSessionUser($wp_id, $editor, $org_editor, $user ){
         $db = new db();        
 
-        deletePersistentSaron($db, $wp_id, null, $userDisplayName);   
+        $sytem = new SaronMetaUser();
+        deletePersistentSaron($db, $wp_id, 'Städa bort gamla sessioner', $sytem);   
         
         $sql = "INSERT INTO SaronUser (AccessTicket, Editor, Org_Editor, WP_ID, UserDisplayName) values (";
         $sql.= getAccessTicket() . ", "; 
@@ -114,9 +115,7 @@ require_once SARON_ROOT . "app/database/db.php";
         $sql.= $userDisplayName . "') ";
         echo $sql;
         try{        
-            $user = new SaronMetaUser($wp_id, $userDisplayName);
-
-            $lastId = $db->insert($sql, "SaronUser", "Id", 'Login', '', $user);
+            $lastId = $db->insert($sql, "SaronUser", "Id", 'Användarid', 'Login', $user);
             $result = $db->sqlQuery("Select AccessTicket from SaronUser where Id = " . $lastId);
     
             $ticket = "";

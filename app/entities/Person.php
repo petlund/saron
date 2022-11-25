@@ -243,7 +243,7 @@ class Person extends People{
         $sqlInsert.= $this->getEncryptedSqlString($this->Comment) . ", ";
         $sqlInsert.= $this->getZeroToNull($this->HomeId) . ") ";
  
-        $this->id = $this->db->insert($sqlInsert, "People", "Id", 'Tillägg av ny person', null, $this->saronUser);
+        $this->id = $this->db->insert($sqlInsert, "People", "Id", 'Personid', null, $this->saronUser);
         return $this->select(RECORD);
     }
 
@@ -340,7 +340,7 @@ class Person extends People{
         $sqlSet.= "UpdaterName = '" . $this->saronUser->userDisplayName . "' ";
         $sqlWhere = "where Id=" . $this->id . ";";
 
-        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, 'People', 'Id', $this->id, 'Person', null, $this->saronUser);
+        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, 'People', 'Id', $this->id, 'Personid', null, $this->saronUser);
         return $this->selectPersonAfterUpdate($this->id);
     }
     
@@ -360,7 +360,7 @@ class Person extends People{
         $sqlSet.= "UpdaterName = '" . $this->saronUser->userDisplayName . "' ";
         $sqlWhere = "where Id=" . $this->id . ";";
 
-        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, 'People', 'Id', $this->id, 'Person (Medlemskap)', null, $this->saronUser);
+        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, 'People', 'Id', $this->id, 'Personid', null, $this->saronUser);
         return $this->selectPersonAfterUpdate($this->id);
 
     }
@@ -378,7 +378,7 @@ class Person extends People{
         $sqlSet.= "UpdaterName = '" . $this->saronUser->userDisplayName . "' ";
         $sqlWhere = "where Id=" . $this->id . ";";
         
-        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, 'People', 'Id', $this->id, 'Person (Dop)', null, $this->saronUser);
+        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, 'People', 'Id', $this->id, 'Personid', null, $this->saronUser);
         return $this->selectPersonAfterUpdate($this->id);
  
     }
@@ -393,7 +393,7 @@ class Person extends People{
         $sqlSet.= "Updater = " . $this->saronUser->WP_ID . ", ";
         $sqlSet.= "UpdaterName = '" . $this->saronUser->userDisplayName . "' ";
         $sqlWhere = "WHERE Id=" . $this->id;
-        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere,  'People', 'Id', $this->id, 'Person (Nycklar)', null, $this->saronUser);
+        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere,  'People', 'Id', $this->id, 'Personid', null, $this->saronUser);
         return $this->selectPersonAfterUpdate($this->id);
         
     }    
@@ -453,7 +453,7 @@ class Person extends People{
 
         $sql.= "HomeId = NULL ";
         $sql.= "where Id=" . $this->id;
-        return $this->db->delete($sql, 'People', 'Id', $this->id,  'Anonymisering', '', $this->saronUser); 
+        return $this->db->delete($sql, 'People', 'Id', $this->id,  'Personid', 'Anonymiserad', $this->saronUser); 
        
     }    
 }

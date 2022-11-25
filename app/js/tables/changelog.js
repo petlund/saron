@@ -44,16 +44,16 @@ function changelogTableDef(tableTitle, tablePath, parentId, parentTableDef){
                 type: 'hidden',
                 defaultValue: saron.table.changelog.name
             },
-            ChangeType: {
-                title: 'Typ av ändring',
-                width: '10%'
-            },
             User: {
                 title: 'Användare',
                 width: '10%'
             },
+            ChangeType: {
+                title: 'Typ av ändring',
+                width: '10%'
+            },
             BusinessKey: {
-                title: 'Identitet',
+                title: 'Nyckelvärde',
                 width: '15%'
             },
             Description: {

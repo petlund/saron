@@ -7,6 +7,7 @@ class Statistics extends SuperEntity{
 
     function __construct($db, $saronUser) {
         parent::__construct($db, $saronUser);
+        
     }
     
     function select(){
@@ -296,7 +297,8 @@ class Statistics extends SuperEntity{
     
     private function insert(){
         $sqlInsert = "Insert into Statistics values (Now(),0,0,0,0,0,0,0,0)";
-        $this->db->insert($sqlInsert, "Statistics", "Year");
+        $user = new SaronMetaUser();
+        $this->db->insert($sqlInsert, "Statistics", "year", "Datum", null, $user);
     }
 
     private function update($statisticYear, $statisticTimeStamp){//Memberstatelogic
@@ -336,7 +338,7 @@ class Statistics extends SuperEntity{
         
         $dateString = substr($statisticTimeStamp, 0, 10);
         $user = new SaronMetaUser();
-        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, 'Statistics', 'year', $dateString, 'Update statististics', '', $user);
+        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, 'Statistics', 'year', $statisticYear, 'Datum', '', $user);
     }
 
 }

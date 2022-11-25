@@ -56,16 +56,17 @@ class db {
     }
     
     
-    public function delete($sqlDelete, $keyTable, $keyColumn, $key, $changeType, $description, $saronUser){
-            if($changeType !== null){
-                $preSql = $this->getChangeValidationSQL($keyTable, $keyColumn, $key);
-                $preListResult = $this->sqlQuery($preSql);
-                if($description === null){
-                    $description = $this->createDeleteDescription($preListResult);
-                }
-                $this->updateChangeLog($keyTable, $keyColumn, $key, $changeType, $description, $saronUser);
+    public function delete($sqlDelete, $keyTable, $keyColumn, $key, $businessKeyName, $description, $saronUser, $createLogPost = true){
+        $changeType = "Borttag";
+        if($createLogPost){
+            $preSql = $this->getChangeValidationSQL($keyTable, $keyColumn, $key);
+            $preListResult = $this->sqlQuery($preSql);
+            if($description === null){
+                $description = $this->createDeleteDescription($preListResult, $changeType);
             }
-            if(!$listResult = $this->connection->query($sqlDelete)){
+            $this->insertLogPost($keyTable, $keyColumn, $key, $changeType, $businessKeyName, $description, $saronUser);
+        }
+        if(!$listResult = $this->connection->query($sqlDelete)){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
 //            $this->php_dev_error_log("delete", $sqlDelete);
             throw new Exception($this->jsonErrorMessage("Exception in delete function", null, $technicalErrMsg));
@@ -76,12 +77,14 @@ class db {
         }                
     }
 
-    public function update($update, $set, $where, $keyTable, $keyColumn, $key, $changeType, $description, $saronUser){
+    public function update($update, $set, $where, $keyTable, $keyColumn, $key, $businessKeyName, $description, $saronUser, $createLogPost = true){
+        $changeType = "Uppdatering";
+
         $sql = $update . $set . $where;
         
         $prevPostSql = $this->getChangeValidationSQL($keyTable, $keyColumn, $key);
         $prevListResult=null;
-        if($changeType !== null){
+        if($businessKeyName !== null){
             $prevListResult = $this->sqlQuery($prevPostSql);
         }
         if(!$listResult = $this->connection->query($sql)){
@@ -90,12 +93,12 @@ class db {
             throw new Exception($this->jsonErrorMessage("Exception in update function", null, $technicalErrMsg));
         }
         
-        if($changeType !== null){
+        if($createLogPost){
             $postListResult = $this->sqlQuery($prevPostSql);
             if($description === null){
-                $description = $this->createUpdateDescription($prevListResult, $postListResult);
+                $description = $this->createUpdateDescription($prevListResult, $postListResult, $changeType);
             }
-            $this->updateChangeLog($keyTable, $keyColumn, $key, $changeType, $description, $saronUser);
+            $this->insertLogPost($keyTable, $keyColumn, $key, $changeType, $businessKeyName, $description, $saronUser);
         }
         return true;
     } 
@@ -150,7 +153,8 @@ class db {
     }
     
         
-    public function insert($insert, $keyTable, $keyColumn, $changeType, $description, $saronUser){
+    public function insert($insert, $keyTable, $keyColumn, $businessKeyName, $description, $saronUser, $createLogPost = true){
+        $changeType = "Tillägg";
         $LastId = "0";
         try{
             if(!$listResult = $this->connection->query($insert)){
@@ -166,13 +170,13 @@ class db {
                     while($listRow = mysqli_fetch_array($listResult)){
                         $LastId = $listRow[$keyColumn];
                     }
-                    if($changeType !== null){
+                    if($createLogPost){
                         $postSql = $this->getChangeValidationSQL($keyTable, $keyColumn, $LastId);
                         $postListResult = $this->sqlQuery($postSql);
                         if($description === null){
-                            $description = $this->createInsertDescription($postListResult);
+                            $description = $this->createInsertDescription($postListResult, $changeType);
                         }
-                        $this->updateChangeLog($keyTable, $keyColumn, $LastId, $changeType, $description, $saronUser);
+                        $this->insertLogPost($keyTable, $keyColumn, $LastId, $changeType, $businessKeyName, $description, $saronUser);
                     }
                 }
             }
@@ -403,28 +407,28 @@ class db {
         return $html;
     }
     
-    private function updateChangeLog($keyTable, $keyColumn, $key, $changeType, $description, $saronUser){
+    private function insertLogPost($keyTable, $keyColumn, $key, $changeType, $businessKeyName, $description, $saronUser){
         $sqlInsert = "INSERT INTO Changes (ChangeType, User, BusinessKey, Description, Inserter, InserterName) ";
         $sqlInsert.= "VALUES (";
         $sqlInsert.= "'" . $changeType . "', ";
         $sqlInsert.= "'" . $saronUser->userDisplayName . "', ";
-        $sqlInsert.= '"' . $this->getBusinessKey($keyTable, $keyColumn, $key) . '", ';
+        $sqlInsert.= '"' . $this->getBusinessKey($keyTable, $keyColumn, $key, $businessKeyName) . '", ';
         $sqlInsert.= '"' . $description . '", ';
         $sqlInsert.= $saronUser->WP_ID . ", ";
         $sqlInsert.= "'" . $saronUser->userDisplayName . "')";
         
-        $this->insert($sqlInsert, 'Changes', 'Id', null, '', $saronUser);
+        $this->insert($sqlInsert, 'Changes', 'Id', null, '', $saronUser, false);
 
         $sqlDelete = "DELETE FROM Changes where DATEDIFF(Now(), Inserted) > " . CHANGE_LOG_IN_DAYS;
-        $this->delete($sqlDelete, 'Changes', 'Id', -1, null, '', $saronUser);
+        $this->delete($sqlDelete, 'Changes', 'Id', -1, null, '', $saronUser, false);
     }
 
     
     
-    private function createInsertDescription($listRow){
+    private function createInsertDescription($listRow, $changeType){
         $rowObj = new ArrayObject($listRow[0]);
         
-        $description = "<b>Tillägg</b><br>";
+        $description = "<b>" . $changeType . "</b><br>";
         $iterator = $rowObj->getIterator();
         
         while( $iterator->valid() ){
@@ -441,13 +445,13 @@ class db {
     
     
     
-    private function createDeleteDescription($listRow){
+    private function createDeleteDescription($listRow, $changeType){
         if(empty($listRow)){
             return "";
         }
         $rowObj = new ArrayObject($listRow[0]);
         
-        $description = "<b>Borttag</b><br>";
+        $description = "<b>" . $changeType . "</b><br>";
         $iterator = $rowObj->getIterator();
         
         while( $iterator->valid() ){
@@ -463,11 +467,11 @@ class db {
     
     
     
-    private function createUpdateDescription($prevListRow, $postListRow){
+    private function createUpdateDescription($prevListRow, $postListRow, $changeType){
         $prevObj = new ArrayObject($prevListRow[0]);
         $postObj = new ArrayObject($postListRow[0]);
         
-        $description = "<b>Ändring</b><br>";
+        $description = "";
         $iterator = $prevObj->getIterator();
         
         while( $iterator->valid() ){
@@ -485,15 +489,17 @@ class db {
             }
             $iterator->next();
         }
-        
-        return $description;
+        if(strlen($description)>0){
+            return "<b>" . $changeType . "</b><br>" . $description;
+        }
+        return "<b>Ingen " . $changeType . "</b>";
     }    
     
     
     private function getChangeValidationSQL($keyTable, $keyColumn, $key){
         switch ($keyTable){
             case 'People':
-                return SQL_STAR_PEOPLE . "From view_people_memberstate as People Where " . $keyColumn . " = " . $key;
+                return SQL_STAR_PEOPLE . " From view_people_memberstate as People Where " . $keyColumn . " = " . $key;
             case 'Homes':
                 return SQL_STAR_HOMES . " From Homes Where " . $keyColumn . " = " . $key;
             case 'view_organization':
@@ -504,34 +510,39 @@ class db {
     }
     
     
-    private function getBusinessKey($keyTable, $keyColumn, $key){
+    private function getBusinessKey($keyTable, $keyColumn, $key, $businessKeyName){
 
         switch ($keyTable){
             case 'People':
-                $sql = 'SELECT ' . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . "as Name From view_people_memberstate as People Where Id = " . $key;
-                return $this->getBusinessKeyValue($sql, 'Name');
+                $sql = 'SELECT ' . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE_MEMBERSTATENAME . " as KeyValue From view_people_memberstate as People Where Id = " . $key;
+                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
             case 'Homes':
-                $sql =  'SELECT ' . DECRYPTED_ALIAS_FAMILYNAME . " From Homes Where Id = " . $key;
-                return $this->getBusinessKeyValue($sql, 'FamilyName');
+                $sql =  'SELECT ' . DECRYPTED_FAMILYNAME . " as KeyValue From Homes Where Id = " . $key;
+                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
             case 'News':
-                $sql = "SELECT * From News Where id  = " . $key;
-                return $this->getBusinessKeyValue($sql, 'news_date');
+                $sql = "SELECT news_date as KeyValue  From News Where id  = " . $key;
+                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
             case 'view_organization':
-                $sql = "SELECT * From view_organization Where id  = " . $key;
-                return $this->getBusinessKeyValue($sql, 'PosKeyValue');
+                $sql = "SELECT PosKeyValue as KeyValue From view_organization Where id  = " . $key;
+                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
+            case 'MemberState':
+                $sql = "SELECT Name as KeyValue From MemberState Where id  = " . $key;
+                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
             case 'SaronUser':
-                return '';
+                return '<b>' . $businessKeyName . '</b> ';
+            case 'Statistics':
+                return 'Datum';
             default:
                 return 'Ej definerad';
         }
     }
     
     
-    private function getBusinessKeyValue($sql, $fieldName){
+    private function getBusinessKeyValue($sql){
         $result = $this->sqlQuery($sql);
         if($result){
             $resultObj = new ArrayObject($result[0]);
-            $businessKey = $resultObj[$fieldName];
+            $businessKey = $resultObj['KeyValue'];
             return $businessKey;
         }
         return 'Ej definerad';

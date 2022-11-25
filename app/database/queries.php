@@ -49,7 +49,8 @@ require_once SARON_ROOT . 'app/entities/MemberState.php';
     define("DECRYPTED_FIRSTNAME_LASTNAME_AS_NAME_FL", "concat(" . DECRYPTED_FIRSTNAME . ", ' ', " . DECRYPTED_LASTNAME . ") as Name_FL");
     define("DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME", "concat(" . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ") as Name");
     define("DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE", "concat(" . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ", ' ', " . DATE_OF_BIRTH . ") ");
-    define("DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE_MEMBERSTATENAME", "concat(" . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ", ' ', DATE_FORMAT(DateOfBirthHidden, " . DATE_FORMAT . "), ' - ', " . MemberStateNameHidden . ") ");
+    define("DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE_MEMBERSTATENAME", "concat(" . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ", ' ', DATE_FORMAT(DateOfBirth, " . DATE_FORMAT . "), ' - ', MemberStateName) ");
+    define("DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE_MEMBERSTATENAME_HIDDEN", "concat(" . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ", ' ', DATE_FORMAT(DateOfBirthHidden, " . DATE_FORMAT . "), ' - ', MemberStateNameHidden) ");
     define("DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE_AS_APPIDENTITYNAME", DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . "as AppIdentityName ");
 
     define("ALIAS_CUR_HOMES", "Homes");

@@ -165,7 +165,7 @@ class SaronUser extends SaronMetaUser{
     public function update(){
 
         if($this->db->fieldValueExist($this->WP_ID, -1, "WP_ID", "SaronUser")){
-            return $this->db->update("Update SaronUser ", "Set Last_Activity = Now() ", "where WP_ID=" . $this->WP_ID, 'SaronUser', 'WP_ID', -1, null, null,$this);
+            return $this->db->update("Update SaronUser ", "Set Last_Activity = Now() ", "where WP_ID=" . $this->WP_ID, 'SaronUser', 'WP_ID', -1, null, null,null, false);
         }
         else{
             throw new Exception($this->getErrorMessage("(7) Your session is out of scope. " ));
@@ -180,8 +180,8 @@ class SaronUser extends SaronMetaUser{
                 . "where " . NOW_LAST_ACTIVITY_DIFF. " > " . SESSION_EXPIRES . " "
                 . "OR " . NOW_TIME_STAMP_DIFF . " > " . COOCKIE_EXPIRES . " "
                 . "OR WP_ID=" . $wp_id;
-        
-        $this->db->delete($sql, 'SaronUser', 'id', $wp_id, null, '',$this);
+        $user = new SaronMetaUser();
+        $this->db->delete($sql, 'SaronUser', 'id', $wp_id, 'Användarid', 'Användarid dolt SaronUser cleanSaronUser', $user, false);
     }
  
     
@@ -295,7 +295,7 @@ class SaronUser extends SaronMetaUser{
             $set.= "Time_Stamp = Now() ";
             $where = "WHERE AccessTicket = '" . $oldTicket . "'";
 
-            $this->db->update($update, $set, $where, 'SaronUser', 'WP_ID', -1, null, null, $this);
+//            $this->db->update($update, $set, $where, 'SaronUser', 'WP_ID', -1, null, null, $this);
 
             $result2 = $this->db->sqlQuery("Select AccessTicket from SaronUser where Id = " . $id);
     
