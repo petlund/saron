@@ -55,7 +55,7 @@ class OrganizationVersion extends SuperEntity{
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater=" . $this->saronUser->WP_ID . " ";
         $where = "WHERE OrgPosStatus_FK = 1 ";
-        $this->db->update($update, $set, $where);
+        $this->db->update($update, $set, $where, 'Org_Version', 'Id', $this->id, 'Organisationsversion','Beslutsdatum', null, $this->saronUser);
     }
     
     
@@ -66,7 +66,7 @@ class OrganizationVersion extends SuperEntity{
         $sqlWhere = "where ";
         $sqlWhere.= $this->memberState->getHasEngagement("P");  
         $sqlWhere.="AND MemberStateId in (" . PEOPLE_STATE_MEMBERSHIP_ENDED . ", " . PEOPLE_STATE_FRIEND. ", " . PEOPLE_STATE_FRIENDSHIP_ENDED . ", " . PEOPLE_STATE_ONLY_BAPTIST . ", " . PEOPLE_STATE_REGISTRATED . "); ";
-        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere);
+        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, "Org_Version", "Id", $this->id, 'Organisationsversion','Beslutsdatum', null, $this->saronUser);
     }
 
 
@@ -78,7 +78,7 @@ class OrganizationVersion extends SuperEntity{
         $set.= "information = '". $this->information . "', ";        
         $set.= "UpdaterName = '". $this->saronUser->getDisplayName() . "' ";        
         $where = "WHERE id = "  . $this->id;
-        $this->db->update($update, $set, $where);        
+        $this->db->update($update, $set, $where, "Org_Version", "Id", $this->id, 'Organisationsversion','Beslutsdatum', null, $this->saronUser);        
 
         $result =  $this->select($this->id, RECORD);
         return $result;
@@ -95,7 +95,7 @@ class OrganizationVersion extends SuperEntity{
         $sqlInsert.= "'" . $this->information . "', ";
         $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "')";
         
-        $id = $this->db->insert($sqlInsert, "Org_Version", "id");
+        $id = $this->db->insert($sqlInsert, "Org_Version", "Id", $this->id, 'Organisationsversion','Beslutsdatum', null, $this->saronUser);
         $result =  $this->select($id, RECORD);
         
         return $result;

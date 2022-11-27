@@ -82,13 +82,7 @@ class OrganizationPosStatus extends SuperEntity{
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater='" . $this->saronUser->WP_ID . "' ";
         $where = "WHERE Id=" . $this->id;
-        $this->db->update($update, $set, $where, 'Org_PosStatus', 'id', $this->id, 'Bemanningsstatus', null, $this->saronUser);
+        $this->db->update($update, $set, $where, 'Org_PosStatus', 'Id', $this->id, 'Bemanningsstatus','Namn på bemanningsstatus', null, $this->saronUser);
         return $this->select($this->id, RECORD);
-    }
-
-    
-    
-    function delete(){
-        return $this->db->delete("delete from Org_UnitType where Id=" . $this->id);
     }
 }

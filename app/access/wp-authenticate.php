@@ -49,8 +49,10 @@ require_once SARON_ROOT . "app/database/db.php";
         try{
             $db = new db();
             $wpUser = wp_get_current_user();
-            $user = new SaronMetaUser($wpUser->ID, $wpUser->display_name);
-            deletePersistentSaron($db, $wpUser->ID, 'Logout', $user);
+            if($wpUser->ID > 0){
+                $user = new SaronMetaUser($wpUser->ID, $wpUser->display_name);
+                deletePersistentSaron($db, $wpUser->ID, 'Logout', $user);
+            }
         } 
         catch (Exception $ex) {
             ;
@@ -62,9 +64,9 @@ require_once SARON_ROOT . "app/database/db.php";
     
     
     
-    function deletePersistentSaron($db, $userId, $changeType, $user, $createlogPost=true){
+    function deletePersistentSaron($db, $userId, $description, $user, $createlogPost=true){
         $sql = "DELETE FROM SaronUser WHERE WP_ID = " . $userId;
-        $db->delete($sql, "SaronUser", "WP_ID", $userId, 'Användarid', $changeType, $user, $createlogPost);
+        $db->delete($sql, "SaronUser", "WP_ID", $userId, 'Användarsession', 'Användarnamn', $description, $user, $createlogPost);
     }
     
     
@@ -94,18 +96,19 @@ require_once SARON_ROOT . "app/database/db.php";
         $userDisplayName = $wpUser->display_name;
         $wp_id = $wpUser->ID;
 
-        $user = new SaronMetaUser($wp_id, $userDisplayName);
-        $ticket = insertSaronSessionUser($wp_id, $editor, $org_editor, $user);
+        $ticket = insertSaronSessionUser($wp_id, $userDisplayName, $editor, $org_editor );
         setSaronCookie($ticket);
     }
     
     
     
-    function insertSaronSessionUser($wp_id, $editor, $org_editor, $user ){
+    function insertSaronSessionUser($wp_id, $userDisplayName, $editor, $org_editor){
         $db = new db();        
 
-        $sytem = new SaronMetaUser();
-        deletePersistentSaron($db, $wp_id, 'Städa bort gamla sessioner', $sytem);   
+        $system = new SaronMetaUser();
+        $wp_user = new SaronMetaUser($wp_id, $userDisplayName);
+        
+        deletePersistentSaron($db, $wp_id, 'Städat bort gamla sessioner', $system);   
         
         $sql = "INSERT INTO SaronUser (AccessTicket, Editor, Org_Editor, WP_ID, UserDisplayName) values (";
         $sql.= getAccessTicket() . ", "; 
@@ -115,7 +118,7 @@ require_once SARON_ROOT . "app/database/db.php";
         $sql.= $userDisplayName . "') ";
         echo $sql;
         try{        
-            $lastId = $db->insert($sql, "SaronUser", "Id", 'Användarid', 'Login', $user);
+            $lastId = $db->insert($sql, "SaronUser", "Id", 'Användarsession', 'Användarnamn', 'Login', $wp_user);
             $result = $db->sqlQuery("Select AccessTicket from SaronUser where Id = " . $lastId);
     
             $ticket = "";

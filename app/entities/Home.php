@@ -34,7 +34,7 @@ class Home extends Homes{
         $sqlInsert.= $this->saronUser->WP_ID . ", '";
         $sqlInsert.= $this->saronUser->userDisplayName . "' ";
         $sqlInsert.= ");";
-        $HomeId = $this->db->insert($sqlInsert, ALIAS_CUR_HOMES, "Id", 'Familjenamn', null, $this->saronUser);
+        $HomeId = $this->db->insert($sqlInsert, ALIAS_CUR_HOMES, "Id", 'Hem', 'Familjenamn', null, $this->saronUser);
         return $HomeId;
     }
     
@@ -57,7 +57,7 @@ class Home extends Homes{
         $sqlSet.= "UpdaterName = '" . $this->saronUser->userDisplayName . "', ";
         $sqlSet.= "Country = " . $this->getSqlString($this->Country) . " ";     
         $sqlWhere = "WHERE Id=" . $this->id . ";";
-        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, 'Homes', 'Id', $this->id, 'Familjenamn', null, $this->saronUser);
+        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, 'Homes', 'Id', $this->id, 'Hem','Familjenamn', null, $this->saronUser);
         
         return $this->select($this->id);
     }    

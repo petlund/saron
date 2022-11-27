@@ -8,7 +8,9 @@ class OrganizationRoleUnitType extends SuperEntity{
     private $description;
     private $orgRole_FK;
     private $sortOrder;
-    private $orgUnitType_FK;    
+    private $orgUnitType_FK;   
+    private $businessKeyName;
+
     
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
@@ -88,7 +90,7 @@ class OrganizationRoleUnitType extends SuperEntity{
                 break;
             case TABLE_NAME_ROLE . "/" . TABLE_NAME_ROLE_UNITTYPE:
                 $where = "WHERE RUT.OrgRole_FK = " . $this->parentId . " ";
-                break;
+            break;
             }
         }
         else{
@@ -125,24 +127,28 @@ class OrganizationRoleUnitType extends SuperEntity{
         $this->checkData();
         switch ($this->appCanvasPath){
             case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_ROLE_UNITTYPE:
-                $OrgUnitType_FK =  $this->parentId;
-                $OrgRole_FK = $this->orgRole_FK;
+                $this->OrgUnitType_FK =  $this->parentId;
+                $this->OrgRole_FK = $this->orgRole_FK;
+                $this->businessKeyName = "Namn på enhethetstyp";
+                $this->key=OrgRole_FK;
                 break;
             case TABLE_NAME_ROLE . "/" . TABLE_NAME_ROLE_UNITTYPE:
-                $OrgRole_FK = $this->parentId;
-                $OrgUnitType_FK =  $this->orgUnitType_FK;
+                $this->OrgRole_FK = $this->parentId;
+                $this->OrgUnitType_FK =  $this->orgUnitType_FK;
+                $this->businessKeyName = "Rollnamn";
+                $this->key=OrgUnitType_FK;
                 break;
         }
 
         $sqlInsert = "INSERT INTO `Org_Role-UnitType` (OrgRole_FK, SortOrder, OrgUnitType_FK, UpdaterName, Updater) ";
         $sqlInsert.= "VALUES (";
-        $sqlInsert.= "'" . $OrgRole_FK . "', ";
+        $sqlInsert.= "'" . $this->OrgRole_FK . "', ";
         $sqlInsert.= "'" . $this->sortOrder . "', ";
-        $sqlInsert.= "'" . $OrgUnitType_FK . "', ";
+        $sqlInsert.= "'" . $this->OrgUnitType_FK . "', ";
         $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "', ";
         $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
         
-        $id = $this->db->insert($sqlInsert, "`Org_Role-UnitType`", "Id");
+        $id = $this->db->insert($sqlInsert, "org_role_unittype_view", "Id", 'Koppling mellan Enhetstyp och Roll', "Kopplingsid", null, $this->saronUser);
         return $this->select($id);
     }
 
@@ -155,13 +161,23 @@ class OrganizationRoleUnitType extends SuperEntity{
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "SortOrder=" . $this->sortOrder . " ";        
         $where = "WHERE Id=" . $this->id;
-        $this->db->update($update, $set, $where);
+        $this->db->update($update, $set, $where, $this->id, 'Koppling mellan Enhetstyp och Roll', "Kopplingsid", null, $this->saronUser);
         return $this->select($this->id);
     }
 
     
 
     function delete(){
-        return $this->db->delete("delete from `Org_Role-UnitType` where Id=" . $this->id);
+        switch ($this->appCanvasPath){
+            case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_ROLE_UNITTYPE:
+                $this->businessKeyName = "Namn på enhethetstyp";
+                break;
+            case TABLE_NAME_ROLE . "/" . TABLE_NAME_ROLE_UNITTYPE:
+                $this->businessKeyName = "Rollnamn";
+                break;
+        }
+        
+        $sql="delete from `Org_Role-UnitType` where Id=" . $this->id;
+        return $this->db->delete($sql,'org_role_unittype_view', 'Id', $this->id, 'Koppling mellan Enhetstyp och Roll', "Kopplingsid", null, $this->saronUser);
     }
 }

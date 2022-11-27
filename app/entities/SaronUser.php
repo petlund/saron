@@ -165,7 +165,7 @@ class SaronUser extends SaronMetaUser{
     public function update(){
 
         if($this->db->fieldValueExist($this->WP_ID, -1, "WP_ID", "SaronUser")){
-            return $this->db->update("Update SaronUser ", "Set Last_Activity = Now() ", "where WP_ID=" . $this->WP_ID, 'SaronUser', 'WP_ID', -1, null, null,null, false);
+            return $this->db->update("Update SaronUser ", "Set Last_Activity = Now() ", "where WP_ID=" . $this->WP_ID, 'SaronUser', 'WP_ID', $this->WP_ID, 'Användare', 'Användarnamn', null,null, false);
         }
         else{
             throw new Exception($this->getErrorMessage("(7) Your session is out of scope. " ));
@@ -181,7 +181,7 @@ class SaronUser extends SaronMetaUser{
                 . "OR " . NOW_TIME_STAMP_DIFF . " > " . COOCKIE_EXPIRES . " "
                 . "OR WP_ID=" . $wp_id;
         $user = new SaronMetaUser();
-        $this->db->delete($sql, 'SaronUser', 'id', $wp_id, 'Användarid', 'Användarid dolt SaronUser cleanSaronUser', $user, false);
+        $this->db->delete($sql, 'SaronUser', 'id', $wp_id, 'Användarsession', 'Användarnamn','Bortstädning av gamla sessioner', $user, false);
     }
  
     

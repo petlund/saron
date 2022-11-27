@@ -243,12 +243,13 @@ class OrganizationRole extends SuperEntity{
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater='" . $this->saronUser->WP_ID . "' ";
         $where = "WHERE Id=" . $this->id;
-        $this->db->update($update, $set, $where);
+        $this->db->update($update, $set, $where, 'Org_Role', 'Id', $this->id, 'Roll','Rollnamn', null, $this->saronUser);
         return $this->select($this->id, RECORD);
     }
 
     function delete(){
-        return $this->db->delete("delete from Org_Role where Id=" . $this->id);
+        $sql="delete from Org_Role where Id=" . $this->id;
+        return $this->db->delete($sql, 'Org_Role', 'Id', $this->id, 'Roll','Rollnamn', null, $this->saronUser);
     }
 }
 

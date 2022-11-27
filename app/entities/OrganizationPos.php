@@ -234,7 +234,7 @@ class OrganizationPos extends SuperEntity{
         $sqlInsert.= "'" . $this->parentId . "', ";  //ONLY OrgTree_FK
         $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
         
-        $id = $this->db->insert($sqlInsert, "Org_Pos", "Id");
+        $id = $this->db->insert($sqlInsert, "view_organization", "Id", "Position", "Positionsnamn", null, $this->saronUser);
         
         $result = $this->select($id);
         return $result;
@@ -285,13 +285,13 @@ class OrganizationPos extends SuperEntity{
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater=" . $this->saronUser->WP_ID . " ";
         $where = "WHERE Id=" . $this->id;
-        $response = $this->db->update($update, $set, $where, 'view_organization', 'Id', $this->id, 'Ansvar', null, $this->saronUser);
+        $response = $this->db->update($update, $set, $where, 'view_organization', 'Id', $this->id, 'Position','Positionsnamn', null, $this->saronUser);
 
         $update2 = "UPDATE Org_Pos "; 
         $set2 = "SET OrgPosStatus_FK = " . $this->orgPosStatus_FK . " ";  
         $where2 = "WHERE OrgSuperPos_FK= " . $this->id;
 
-        $response2 = $this->db->update($update2, $set2, $where2, 'view_organization', 'Id', $this->id, 'Ansvar Organisationsroll', null, $this->saronUser);
+        $response2 = $this->db->update($update2, $set2, $where2, 'view_organization', 'Id', $this->id, 'Superposition', 'Positionsnamn', null, $this->saronUser, false);
         
         return $this->select($this->id);
     }
@@ -306,13 +306,13 @@ class OrganizationPos extends SuperEntity{
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater=" . $this->saronUser->WP_ID . " ";
         $where = "WHERE Id=" . $this->id;
-        $response = $this->db->update($update, $set, $where, 'view_organization', 'Id', $this->id, 'Ansvar Organisationsroll', null, $this->saronUser);
+        $response = $this->db->update($update, $set, $where, 'view_organization', 'Id', $this->id, 'Ansvar', 'Position',null, $this->saronUser);
                 
         return $this->select($this->id);
     }
 
     
     function delete(){
-        return  $this->db->delete("delete from Org_Pos where Id=" . $this->id);
+        return  $this->db->delete("delete from Org_Pos where Id=" . $this->id, "view_organization", "Id", $this->id, "Position", "Positionsnamn", null, $this->saronUser);
     }
 }

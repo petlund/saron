@@ -195,7 +195,7 @@ class OrganizationUnitType extends SuperEntity{
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater='" . $this->saronUser->WP_ID . "' ";
         $where = "WHERE id=" . $this->id;
-        $this->db->update($update, $set, $where);
+        $this->db->update($update, $set, $where, 'Org_UnitType', 'Id', $this->id, 'EnhetsTyp','Namn på enhetstyp', null, $this->saronUser);
         return $this->select($this->id);
     }
 

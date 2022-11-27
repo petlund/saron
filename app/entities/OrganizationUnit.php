@@ -256,7 +256,7 @@ class OrganizationUnit extends SuperEntity{
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater='" . $this->saronUser->WP_ID . "' ";
         $where = "WHERE Id=" . $this->id;
-        $this->db->update($update, $set, $where);
+        $this->db->update($update, $set, $where, 'Org_Tree', 'Id', $this->id, 'Enhet','Enhetsnamn', null, $this->saronUser);
         return $this->select();
     }
 
