@@ -172,7 +172,7 @@ class OrganizationUnitType extends SuperEntity{
         $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "', ";
         $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
         
-        $id = $this->db->insert($sqlInsert, "Org_UnitType", "Id");
+        $id = $this->db->insert($sqlInsert, "Org_UnitType", "Id", 'EnhetsTyp','Namn på enhetstyp', null, $this->saronUser);
         return $this->select($id);
     }
     
@@ -200,6 +200,7 @@ class OrganizationUnitType extends SuperEntity{
     }
 
     function delete(){
-        return $this->db->delete("delete from Org_UnitType where Id=" . $this->id);
+        $sql = "delete from Org_UnitType where Id=" . $this->id;
+        return $this->db->delete($sql, "Org_UnitType", "Id", $this->id, "EnhetsTyp", "Namn på enhetstyp", null, $this->saronUser);
     }
 }

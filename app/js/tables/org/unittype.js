@@ -180,20 +180,20 @@ function unitTypeTableDef(tableTitle, parentTablePath, parentId, parentTableDef)
                 }
             }
         },
+        recordUpdated: function(event, data){
+            alowedToUpdateOrDelete(event, data, tableDef);
+
+            if(data.record.HasRoles !== '0' || data.record.HasUnits !== '0'|| data.record.HasRoles !== '0')
+                data.row.find('.jtable-delete-command-button').hide();
+        },        
         rowInserted: function(event, data){
             alowedToUpdateOrDelete(event, data, tableDef);
 
-            if(data.record.HasPos !== '0' || data.record.HasUnits !== '0' || data.record.HasRole !== '0')
+            if(data.record.HasPos !== '0' || data.record.HasUnits !== '0'|| data.record.HasRoles !== '0') 
                 data.row.find('.jtable-delete-command-button').hide();
 
             addDialogDeleteListener(data);
                         
-        },        
-        recordUpdated: function(event, data){
-            alowedToUpdateOrDelete(event, data, tableDef);
-
-            if(data.record.HasRoles !== '0' || data.record.HasUnits !== '0')
-                data.row.find('.jtable-delete-command-button').hide();
         },        
         recordsLoaded: function(event, data) {
             alowedToAddRecords(event, data, tableDef);
@@ -236,9 +236,7 @@ function  configUnitTypeTableDef(tableDef){
 
     var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
 
-    if(tablePathRoot === saron.table.unittype.name){
-    }
-    else if(tablePathRoot === saron.table.role.name){ 
+    if(tablePathRoot === saron.table.role.name){ 
         tableDef.actions.createAction = null;
     }    
     

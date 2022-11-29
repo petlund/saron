@@ -181,9 +181,7 @@ function configRoleTableDef(tableDef){
 
     var tablePathRoot = getRootElementFromTablePath(tableDef.tablePath);
 
-    if(tablePathRoot === saron.table.unittype.name){
-    }
-    else if(tablePathRoot === saron.table.unittype.name){ 
+    if(tablePathRoot === saron.table.unittype.name){ 
         tableDef.actions.createAction = null;
     }   
 }

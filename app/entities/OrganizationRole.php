@@ -228,7 +228,7 @@ class OrganizationRole extends SuperEntity{
         $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "', ";
         $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
         
-        $id = $this->db->insert($sqlInsert, "Org_Role", "Id");
+        $id = $this->db->insert($sqlInsert, "Org_Role", "Id", 'Roll','Rollnamn', null, $this->saronUser);
         return $this->select($id, RECORD);
     }
     

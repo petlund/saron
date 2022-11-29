@@ -194,6 +194,8 @@ class Homes extends SuperEntity{
 
     
     function deleteEmptyHomes(){
+        $description = '<b>Borttag av Hem</b><br>';
+        $description.= 'Gäller hem som saknar koppling till personer';
         $oldHomeIdString = "";
         if($this->HomeId > 0){
             "and HomeId is not " . $this->HomeId; 
@@ -201,6 +203,6 @@ class Homes extends SuperEntity{
         $deleteSql = "delete from Homes where Homes.Id not in (select Homeid from People where HomeId is not null " . $oldHomeIdString . " group by HomeId)";
         $user = new SaronMetaUser();
 
-        $this->db->delete($deleteSql, 'Homes', 'Id', -1, 'Hem','Familjenamn', '<b>Borttag</b><br>Hem som saknar kopplingar till personer', $user);
+        $this->db->delete($deleteSql, 'Homes', 'Id', -1, 'Hem','Familjenamn', $description, $user);
     }    
 }

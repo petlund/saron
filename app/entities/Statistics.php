@@ -338,7 +338,7 @@ class Statistics extends SuperEntity{
         
         $dateString = substr($statisticTimeStamp, 0, 10);
         $user = new SaronMetaUser();
-        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, 'Statistics', 'year', $statisticYear, 'Datum', '', $user);
+        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, 'Statistics', 'Id', $statisticYear, 'Statistik', 'Statistikår', null, $user);
     }
 
 }

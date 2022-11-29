@@ -47,11 +47,13 @@ require_once SARON_ROOT . "app/database/db.php";
         //$ticket = getTicketFromCookie();
         removeSaronCookie();
         try{
+            $description = "<b>Borttag av Användarsession</b><br>";
+            $description.= "Logout";
             $db = new db();
             $wpUser = wp_get_current_user();
             if($wpUser->ID > 0){
                 $user = new SaronMetaUser($wpUser->ID, $wpUser->display_name);
-                deletePersistentSaron($db, $wpUser->ID, 'Logout', $user);
+                deletePersistentSaron($db, $wpUser->ID, $description, $user);
             }
         } 
         catch (Exception $ex) {
@@ -104,11 +106,12 @@ require_once SARON_ROOT . "app/database/db.php";
     
     function insertSaronSessionUser($wp_id, $userDisplayName, $editor, $org_editor){
         $db = new db();        
-
+        $description = "<b>Borttag av Användarsession</b><br>";
+        $description.= "Städat bort gamla sessioner";
         $system = new SaronMetaUser();
         $wp_user = new SaronMetaUser($wp_id, $userDisplayName);
         
-        deletePersistentSaron($db, $wp_id, 'Städat bort gamla sessioner', $system);   
+        deletePersistentSaron($db, $wp_id, $description, $system);   
         
         $sql = "INSERT INTO SaronUser (AccessTicket, Editor, Org_Editor, WP_ID, UserDisplayName) values (";
         $sql.= getAccessTicket() . ", "; 
@@ -117,8 +120,10 @@ require_once SARON_ROOT . "app/database/db.php";
         $sql.= $wp_id . ", '";
         $sql.= $userDisplayName . "') ";
         echo $sql;
-        try{        
-            $lastId = $db->insert($sql, "SaronUser", "Id", 'Användarsession', 'Användarnamn', 'Login', $wp_user);
+        try{
+            $description = "<b>Tillägg av Användarsession</b><br>";
+            $description.= "Login";
+            $lastId = $db->insert($sql, "SaronUser", "Id", 'Användarsession', 'Användarnamn', $description, $wp_user);
             $result = $db->sqlQuery("Select AccessTicket from SaronUser where Id = " . $lastId);
     
             $ticket = "";

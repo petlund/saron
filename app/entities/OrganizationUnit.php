@@ -228,7 +228,7 @@ class OrganizationUnit extends SuperEntity{
         $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "', ";
         $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
         
-        $id = $this->db->insert($sqlInsert, "Org_Tree", "Id");
+        $id = $this->db->insert($sqlInsert, "Org_Tree", "Id", "Organisatorisk enhet", "Enhetsnamn", null, $this->saronUser);
         return $this->select($id);
     }
     
@@ -256,12 +256,13 @@ class OrganizationUnit extends SuperEntity{
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater='" . $this->saronUser->WP_ID . "' ";
         $where = "WHERE Id=" . $this->id;
-        $this->db->update($update, $set, $where, 'Org_Tree', 'Id', $this->id, 'Enhet','Enhetsnamn', null, $this->saronUser);
+        $this->db->update($update, $set, $where, 'Org_Tree', 'Id', $this->id, 'Organisatorisk Enhet','Enhetsnamn', null, $this->saronUser);
         return $this->select();
     }
 
     function delete(){
-        return $this->db->delete("delete from Org_Tree where Id=" . $this->id);
+        $sql = "delete from Org_Tree where Id=" . $this->id;
+        return $this->db->delete($sql, "Org_Tree", "Id", $this->id, "Organisatorisk enhet", "Enhetsnamn", null, $this->saronUser);
     }
 }
 

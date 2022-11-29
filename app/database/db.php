@@ -1,11 +1,13 @@
 <?php
 require_once "config.php";
 require_once SARON_ROOT . "app/database/queries.php";
+require_once SARON_ROOT . "app/database/BusinessLogger.php";
 require_once SARON_ROOT . "app/util/GlobalConstants_php.php";
  
 class db {
-    
+    private $businessLogger;
     private $connection;
+    
     function __construct() {
         mysqli_report(MYSQLI_REPORT_STRICT);
         $appErrorMsg="";
@@ -17,9 +19,9 @@ class db {
             $appErrorMsg="";
         }
         catch(Exception $error){  
-            echo $this->jsonErrorMessage($appErrorMsg, $error, $sql="");
-            throw new Exception($this->jsonErrorMessage($appErrorMsg, $error, $sql=""));                               
-        }            
+            echo $this->jsonErrorMessage($appErrorMsg, $error, "");
+            throw new Exception($this->jsonErrorMessage($appErrorMsg, $error, ""));                               
+        }
     }
     
     
@@ -57,34 +59,38 @@ class db {
     
     
     public function insert($insert, $keyTable, $keyColumn, $businessEntityName, $businessKeyName, $description, $saronUser, $createLogPost = true){
+        $this->businessLogger = new BusinessLogger($this);
+
         $changeType = "Tillägg av " . $businessEntityName;
-        $LastId = "0";
+        $lastId = "0";
         try{
+            $this->php_dev_error_log("====== insert ======<br>", $insert);
             if(!$listResult = $this->connection->query($insert)){
-                throw new Exception($this->jsonErrorMessage("SQL-Error in insert statement!", null, $this->connection->error));
+                throw new Exception($this->jsonErrorMessage("SQL-Error in insert statement! ", null, $this->connection->error));
             }
             else{
                 $sql = "Select " . $keyColumn . " from " . $keyTable . " Where " . $keyColumn . " = LAST_INSERT_ID()";
+                $this->php_dev_error_log("====== select after insert ======<br>", $sql);
                 if(!$listResult = $this->connection->query($sql)){
                     throw new Exception($this->jsonErrorMessage("SQL-Error in LAST_INSERT_ID() statement after insert.", null, $this->connection->error));
                 }
                 else{
-                    $LastId = 0;
+                    $lastId = 0;
                     while($listRow = mysqli_fetch_array($listResult)){
-                        $LastId = $listRow[$keyColumn];
+                        $lastId = $listRow[$keyColumn];
                     }
                     if($createLogPost){
-                        $postSql = $this->getChangeValidationSQL($keyTable, $keyColumn, $LastId);
+                        $postSql = $this->businessLogger->getChangeValidationSQL($keyTable, $keyColumn, $lastId);
                         $postListResult = $this->sqlQuery($postSql);
                         if($description === null){
-                            $description = $this->createInsertDescription($postListResult, $changeType);
+                            $description = $this->businessLogger->createInsertDescription($postListResult, $changeType);
                         }
-                        $businessKeyValue = $this->getBusinessKey($keyTable, $keyColumn, $key, $businessKeyName, $businessKeyValue, $saronUser);
-                        $this->insertLogPost($keyTable, $keyColumn, $LastId, $changeType, $businessKeyName, $businessKeyValue, $description, $saronUser);
+                        $businessKeyValue = $this->businessLogger->getBusinessKey($keyTable, $keyColumn, $lastId, $businessKeyName, $saronUser);
+                        $this->businessLogger->insertLogPost($keyTable, $keyColumn, $lastId, $changeType, $businessKeyName, $businessKeyValue, $description, $saronUser);
                     }
                 }
             }
-            return $LastId;
+            return $lastId;
         }
         catch(Exception $error){
             $this->php_dev_error_log("Exception in insert function: " . $error->getMessage(), $insert);
@@ -95,29 +101,32 @@ class db {
     
     
     public function update($update, $set, $where, $keyTable, $keyColumn, $key, $businessEntityName, $businessKeyName, $description, $saronUser, $createLogPost = true){
+        $this->businessLogger = new BusinessLogger($this);
+
         $businessKeyValue = "";
         $changeType = "Uppdatering av " . $businessEntityName;
 
         $sql = $update . $set . $where;
 
         $prevListResult = null;
-        $prevPostSql = $this->getChangeValidationSQL($keyTable, $keyColumn, $key);
+        $prevPostSql = $this->businessLogger->getChangeValidationSQL($keyTable, $keyColumn, $key);
         if($createLogPost){
-            $businessKeyValue = $this->getBusinessKey($keyTable, $keyColumn, $key, $businessKeyName, $businessKeyValue, $saronUser);
+            $businessKeyValue = $this->businessLogger->getBusinessKey($keyTable, $keyColumn, $key, $businessKeyName, $saronUser);
             $prevListResult = $this->sqlQuery($prevPostSql);
         }
+        
+        $this->php_dev_error_log("====== update ======<br>", $sql);
         if(!$listResult = $this->connection->query($sql)){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
-            $this->php_dev_error_log("update", $sql);
             throw new Exception($this->jsonErrorMessage("Exception in update function", null, $technicalErrMsg));
         }
         
         if($createLogPost){
             $postListResult = $this->sqlQuery($prevPostSql);
             if($description === null){
-                $description = $this->createUpdateDescription($prevListResult, $postListResult, $changeType);
+                $description = $this->businessLogger->createUpdateDescription($prevListResult, $postListResult, $changeType);
             }
-            $this->insertLogPost($keyTable, $keyColumn, $key, $changeType, $businessKeyName, $businessKeyValue, $description, $saronUser);
+            $this->businessLogger->insertLogPost($keyTable, $keyColumn, $key, $changeType, $businessKeyName, $businessKeyValue, $description, $saronUser);
         }
         return true;
     } 
@@ -125,19 +134,22 @@ class db {
     
     
     public function delete($sqlDelete, $keyTable, $keyColumn, $key, $businessEntityName, $businessKeyName, $description, $saronUser, $createLogPost = true){
+        $this->businessLogger = new BusinessLogger($this);
+
         $changeType = "Borttag av " . $businessEntityName;
         if($createLogPost){
-            $preSql = $this->getChangeValidationSQL($keyTable, $keyColumn, $key);
+            $preSql = $this->businessLogger->getChangeValidationSQL($keyTable, $keyColumn, $key);
             $preListResult = $this->sqlQuery($preSql);
             if($description === null){
-                $description = $this->createDeleteDescription($preListResult, $changeType);
+                $description = $this->businessLogger->createDeleteDescription($preListResult, $changeType);
             }
-            $businessKeyValue = $this->getBusinessKey($keyTable, $keyColumn, $key, $businessKeyName, $saronUser);
-            $this->insertLogPost($keyTable, $keyColumn, $key, $changeType, $businessKeyName, $businessKeyValue, $description, $saronUser);
+            $businessKeyValue = $this->businessLogger->getBusinessKey($keyTable, $keyColumn, $key, $businessKeyName, $saronUser);
+            $this->businessLogger->insertLogPost($keyTable, $keyColumn, $key, $changeType, $businessKeyName, $businessKeyValue, $description, $saronUser);
         }
+
+        $this->php_dev_error_log("====== delete ======<br>", $sqlDelete);
         if(!$listResult = $this->connection->query($sqlDelete)){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
-//            $this->php_dev_error_log("delete", $sqlDelete);
             throw new Exception($this->jsonErrorMessage("Exception in delete function", null, $technicalErrMsg));
         }
         else{
@@ -241,8 +253,7 @@ class db {
     
     public function sqlQuery($sql){
         if(TEST_ENV === true){
-            $this->php_dev_error_log("sqlQuery", "INFO SQL: " . $sql . "\r\n");
-            //syslog(LOG_INFO, "INFO SQL: " . $sql . "\r\n");
+            $this->php_dev_error_log("====== sqlQuery =====", "INFO SQL: " . $sql . "\r\n");
         }
         $listResult = $this->connection->query($sql);
         if(!$listResult){
@@ -411,189 +422,6 @@ class db {
         }
         $html.= "</table>";
         return $html;
-    }
-    
-    private function insertLogPost($keyTable, $keyColumn, $key, $changeType, $businessKeyName, $businessKeyValue, $description, $saronUser){
-        $sqlInsert = "INSERT INTO Changes (ChangeType, User, BusinessKey, Description, Inserter, InserterName) ";
-        $sqlInsert.= "VALUES (";
-        $sqlInsert.= "'" . $changeType . "', ";
-        $sqlInsert.= "'" . $saronUser->userDisplayName . "', ";
-        $sqlInsert.= '"' . $businessKeyValue . '", ';
-        $sqlInsert.= '"' . $description . '", ';
-        $sqlInsert.= $saronUser->WP_ID . ", ";
-        $sqlInsert.= "'" . $saronUser->userDisplayName . "')";
-        
-        $this->insert($sqlInsert, 'Changes', 'Id', '',null, '', $saronUser, false);
-
-        $sqlDelete = "DELETE FROM Changes where DATEDIFF(Now(), Inserted) > " . CHANGE_LOG_IN_DAYS;
-        $this->delete($sqlDelete, 'Changes', 'Id', -1, '', null, '', $saronUser, false);
-    }
-
-    
-    
-    private function createInsertDescription($listRow, $changeType){
-        $rowObj = new ArrayObject($listRow[0]);
-        
-        $description = "<b>" . $changeType . "</b><br>";
-        $iterator = $rowObj->getIterator();
-        
-        while( $iterator->valid() ){
-            $key = $iterator->key();
-            if(!($this->str_ends_with($key, 'Encrypt') OR $this->str_ends_with($key, 'Hidden'))){
-                $value = $iterator->current();
-                $description.= "<b>" . $key . ": </b>'" . $value . "'<br> ";
-            }
-            $iterator->next();
-        }
-        
-        return $description;
-    }
-    
-    
-    
-    private function createDeleteDescription($listRow, $changeType){
-        if(empty($listRow)){
-            return "";
-        }
-        $rowObj = new ArrayObject($listRow[0]);
-        
-        $description = "<b>" . $changeType . "</b><br>";
-        $iterator = $rowObj->getIterator();
-        
-        while( $iterator->valid() ){
-            $key = $iterator->key(); 
-            if(!($this->str_ends_with($key, 'Encrypt') OR $this->str_ends_with($key, 'Hidden'))){
-                $value = $iterator->current();
-                $description.= "<b>" . $key . ": </b>'" . $value . "'<br> ";
-            }
-            $iterator->next();
-        }
-        
-        return $description;
-    }
-    
-    
-    
-    private function createUpdateDescription($prevListRow, $postListRow, $changeType){
-        $prevObj = new ArrayObject($prevListRow[0]);
-        $postObj = new ArrayObject($postListRow[0]);
-        
-        $description = "";
-        $iterator = $prevObj->getIterator();
-        
-        while( $iterator->valid() ){
-            $key = $iterator->key(); 
-            $prevValue = $iterator->current();
-            $postValue = $postObj[$key];
-            
-            if(!($this->str_ends_with($key, 'Encrypt') OR $this->str_ends_with($key, 'Hidden'))){
-                if($prevValue !== $postValue){
-                    $description.= "<b>" . $key . ": </b>'" . $prevValue . "' <b>==></b> '" . $postValue . "'<br>";
-                }
-                else{// enable if you want to se all fields
-                    //$description.= "<b>" . $key . ": </b>" . $prevValue . "<br>";                
-                }
-            }
-            $iterator->next();
-        }
-        if(strlen($description)>0){
-            return "<b>" . $changeType . "</b><br>" . $description;
-        }
-        return "<b>Ingen " . $changeType . "</b>";
-    }    
-    
-    
-    private function getChangeValidationSQL($keyTable, $keyColumn, $key){
-        switch ($keyTable){
-            case 'People':
-                return SQL_STAR_PEOPLE . " From view_people_memberstate as People Where " . $keyColumn . " = " . $key;
-            case 'Homes':
-                return SQL_STAR_HOMES . " From Homes Where " . $keyColumn . " = " . $key;
-            case 'view_organization':
-                return 'SELECT *, ' . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE_MEMBERSTATENAME_HIDDEN . " as Person From view_organization Where " . $keyColumn . " = " . $key;
-            default:
-                return "Select * from " . $keyTable . " Where " . $keyColumn . " = " . $key;
-        }
-    }
-    
-    
-    private function getBusinessKey($keyTable, $keyColumn, $key, $businessKeyName, $user){
-
-        switch ($keyTable){
-            case 'People':
-                $sql = 'SELECT ' . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE_MEMBERSTATENAME . " as KeyValue From view_people_memberstate as People Where Id = " . $key;
-                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
-            case 'Homes':
-                $sql =  'SELECT ' . DECRYPTED_FAMILYNAME . " as KeyValue From Homes Where Id = " . $key;
-                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
-            case 'News':
-                $sql = "SELECT news_date as KeyValue  From News Where id  = " . $key;
-                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
-            case 'view_organization':
-                $sql = "SELECT PosKeyValue as KeyValue From view_organization Where id  = " . $key;
-                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
-            case 'MemberState':
-                $sql = "SELECT Name as KeyValue From MemberState Where id  = " . $key;
-                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
-            case 'Org_Role':
-                $sql = "SELECT Name as KeyValue From Org_Role Where id  = " . $key;
-                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
-            case 'Org_Tree':
-                $sql = "SELECT Name as KeyValue From Org_Tree Where id  = " . $key;
-                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
-            case 'Org_UnitType':
-                $sql = "SELECT Name as KeyValue From Org_UnitType Where id  = " . $key;
-                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
-            case 'Org_Version':
-                $sql = "SELECT decision_date as KeyValue From Org_Version Where id  = " . $key;
-                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
-            case 'org_role_unittype_view':   
-                $sql = "SELECT Id as KeyValue From org_role_unittype_view Where id  = " . $key;
-                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
-            case 'SaronUser':
-                return '<b>' . $businessKeyName . ': </b> ' . $user->userDisplayName;
-            case 'Statistics':
-                return 'Datum';
-            default:
-                return 'Nyckel ej definerad';
-        }
-    }
-    
-    
-    private function getBusinessKeyValue($sql){
-        $result = $this->sqlQuery($sql);
-        if($result){
-            $resultObj = new ArrayObject($result[0]);
-            $businessKey = $resultObj['KeyValue'];
-            return $businessKey;
-        }
-        return 'Värde ej definerat';
-        
-    }
-    
-    
-    
-    private function str_ends_with($haystack, $needle){
-        $haystack_len = strlen($haystack);
-        $needle_len = strlen($needle);
-        
-        if($haystack_len === 0){
-            return false;
-        }
-            
-        if($needle_len  === 0){
-            return false;
-        }
-            
-        if($needle_len  > $haystack_len){
-            return false;
-        }
-        $haystack_suffix = substr($haystack, $haystack_len - $needle_len);
-        if($haystack_suffix === $needle){
-            return true;
-        }
-        return false;
-    }
-        
+    }        
 }
     

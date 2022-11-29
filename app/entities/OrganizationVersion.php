@@ -46,7 +46,10 @@ class OrganizationVersion extends SuperEntity{
     }
     
     
-    function update_Org(){
+    function update_Org($id){
+        $description = "<b>Uppdatering av organisation</b><br>";
+        $description.='<u>Avstämda</u> förslag är överförda till beslutad organisation';
+        
         $update = "update Org_Pos ";
         $set = "SET PrevPeople_FK = People_FK, ";        
         $set.= "PrevFunction_FK = Function_FK, ";        
@@ -54,19 +57,26 @@ class OrganizationVersion extends SuperEntity{
         $set.= "PrevOrgPosStatus_FK = OrgPosStatus_FK, ";        
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "Updater=" . $this->saronUser->WP_ID . " ";
-        $where = "WHERE OrgPosStatus_FK = 1 ";
-        $this->db->update($update, $set, $where, 'Org_Version', 'Id', $this->id, 'Organisationsversion','Beslutsdatum', null, $this->saronUser);
+        $where = "WHERE OrgPosStatus_FK = 1 and ("
+                . "PrevFunction_FK <> Function_FK or "
+                . "PrevPeople_FK <> People_FK or "
+                . "PrevOrgSuperPos_FK <> OrgPosStatus_FK or "
+                . "PrevOrgPosStatus_FK <> OrgPosStatus_FK) ";
+        
+        $this->db->update($update, $set, $where, 'Org_Version', 'Id', $id, 'Organisationsversion','Beslutsdatum', $description, $this->saronUser);
     }
     
     
     function updatFriendshipDateForPeopleWidthEngagement(){
+        $description = "<b>Uppdatering av Person</b><br>";
+        $description.= "Personer registrerade som vänkontakt och som har uppdrag, har fått sitt vänkontaktdatum satt till dagens datum";
         
         $sqlUpdate = "update People as P inner join view_people_memberstate as V on P.Id = V.Id ";
         $sqlSet   = "set P.DateOfFriendshipStart = Now() ";
         $sqlWhere = "where ";
         $sqlWhere.= $this->memberState->getHasEngagement("P");  
         $sqlWhere.="AND MemberStateId in (" . PEOPLE_STATE_MEMBERSHIP_ENDED . ", " . PEOPLE_STATE_FRIEND. ", " . PEOPLE_STATE_FRIENDSHIP_ENDED . ", " . PEOPLE_STATE_ONLY_BAPTIST . ", " . PEOPLE_STATE_REGISTRATED . "); ";
-        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, "Org_Version", "Id", $this->id, 'Organisationsversion','Beslutsdatum', null, $this->saronUser);
+        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, "Org_Version", "Id", -1, 'Person','Personid', $description, $this->saronUser);
     }
 
 
@@ -80,14 +90,10 @@ class OrganizationVersion extends SuperEntity{
         $where = "WHERE id = "  . $this->id;
         $this->db->update($update, $set, $where, "Org_Version", "Id", $this->id, 'Organisationsversion','Beslutsdatum', null, $this->saronUser);        
 
-        $result =  $this->select($this->id, RECORD);
-        return $result;
     }
             
     function insert(){
         $this->checkVersionData();
-        $this->update_Org();
-        $this->updatFriendshipDateForPeopleWidthEngagement();
 
         $sqlInsert = "INSERT INTO Org_Version (decision_date, information, UpdaterName) ";
         $sqlInsert.= "VALUES (";
@@ -95,7 +101,11 @@ class OrganizationVersion extends SuperEntity{
         $sqlInsert.= "'" . $this->information . "', ";
         $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "')";
         
-        $id = $this->db->insert($sqlInsert, "Org_Version", "Id", $this->id, 'Organisationsversion','Beslutsdatum', null, $this->saronUser);
+        $id = $this->db->insert($sqlInsert, "Org_Version", "Id", 'Organisationsversion','Beslutsdatum', null, $this->saronUser);
+
+        $this->update_Org($id);
+        $this->updatFriendshipDateForPeopleWidthEngagement();
+
         $result =  $this->select($id, RECORD);
         
         return $result;
