@@ -453,7 +453,7 @@ class Person extends People{
 
         $sql.= "HomeId = NULL ";
         $sql.= "where Id=" . $this->id;
-        return $this->db->delete($sql, 'People', 'Id', $this->id,  'Person','Personid', 'Anonymiserad', $this->saronUser); 
+        return $this->db->delete($sql, 'People', 'Id', $this->id,  'Person','Personid', '<b>Anonymiserad</b>', $this->saronUser); 
        
     }    
 }
