@@ -248,7 +248,6 @@ function baptistFormAuto(data, selectedValue){
         Baptister[0].disabled=true;
     }
     else if(selectedValue === '1'){
-        CongregationOfBaptism[0].value = "";                                                                              
         CongregationOfBaptism[0].disabled=false;
         DateOfBaptism[0].disabled=false;
         Baptister[0].disabled=false;
