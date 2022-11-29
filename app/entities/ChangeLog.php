@@ -3,16 +3,38 @@ require_once SARON_ROOT . 'app/entities/SuperEntity.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
 class ChangeLog extends SuperEntity{
+    private $uid;
+    private $cid;
+    
     
     function __construct($db, $saronUser){
         parent::__construct($db, $saronUser);
+        $this->uid = (String)filter_input(INPUT_POST, "uid", FILTER_SANITIZE_STRING);    
+        $this->cid = (String)filter_input(INPUT_POST, "cid", FILTER_SANITIZE_STRING);    
         
     }
     
     function select($id = -1){
+        switch ($this->resultType){
+        case OPTIONS:
+            switch ($this->field){
+            case "User":
+                return $this->selectFieldAsOptions($this->field);       
+            case "ChangeType":
+                return $this->selectFieldAsOptions($this->field);       
+            }
+            default:
+                return $this->selectRecords($id = -1); 
+        }
+    }
+    
+    
+    
+    function selectRecords($id = -1){
         $select = "SELECT *, id as Id, " . $this->saronUser->getRoleSql(false) . " ";
         if($id < 0){
-            $result = $this->db->select($this->saronUser, $select , "FROM Changes ", "", $this->getSortSql(), $this->getPageSizeSql(), RECORDS);    
+            $where = "WHERE User like '%" . $this->uid . "%' AND  ChangeType like '%" . $this->cid . "%' "; 
+            $result = $this->db->select($this->saronUser, $select , "FROM Changes ", $where, $this->getSortSql(), $this->getPageSizeSql(), RECORDS);    
             return $result;
         }
         else{
@@ -20,56 +42,22 @@ class ChangeLog extends SuperEntity{
             return $result;
         }
     }
-//    function checkNewData(){
-//        $error = array();
-//        $error["Result"] = "OK";
-//        $error["Message"] = "";
-//
-//        if(strlen($this->information) < 5){
-//            $error["Message"] = "Glöm inte att skriva ett meddelande om minst fem tecken!";
-//        }
-//        
-//        if(strlen($error["Message"])>0){
-//            $error["Result"] = "ERROR";
-//            return json_encode($error);
-//        }
-//        
-//        return true;
-//    }
-//
-//    function insert(){
-//        $checkResult = $this->checkNewData();
-//        if($checkResult!==true){
-//            return $checkResult;
-//        }
-//        $sqlInsert = "INSERT INTO News (information, severity, writer) ";
-//        $sqlInsert.= "VALUES (";
-//        $sqlInsert.= "'" . $this->information . "', ";
-//        $sqlInsert.= "'" . $this->severity . "', ";
-//        $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "')";
-//        
-//        $id = $this->db->insert($sqlInsert, "News", "id");
-//        $result =  $this->select($id);
-//        return $result;
-//    }
-//    
-//    
-//    function update(){
-//        $checkResult = $this->checkNewData();
-//        if($checkResult!==true){
-//            return $checkResult;
-//        }
-//        $update = "UPDATE News ";
-//        $set = "SET ";        
-//        $set.= "information='" . $this->information . "', ";        
-//        $set.= "severity='" . $this->severity . "', ";        
-//        $set.= "writer='" . $this->saronUser->getDisplayName() . "' ";
-//        $where = "WHERE id=" . $this->id;
-//        $this->db->update($update, $set, $where);
-//        return $this->select($this->id);
-//    }
-//
-//    function delete(){
-//        return $this->db->delete("delete from News where id=" . $this->id);
-//    }
+            
+    
+    
+    function selectFieldAsOptions($field){
+        $select = "select '' as Value, 'Alla' as DisplayText ";
+        $select.= "Union ";
+        $select.= "select " . $field . " as Value, " . $field . " as DisplayText ";
+
+        $from = "FROM Changes ";
+        
+        $where = "";
+        
+        $groupBy ="Group by " . $field . " ORDER BY DisplayText ";
+        
+        $result = $this->db->select($this->saronUser, $select, $from, $where, $groupBy, "", "Options");    
+        return $result;
+    }     
+
 }
