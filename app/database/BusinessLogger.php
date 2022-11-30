@@ -169,7 +169,7 @@ class BusinessLogger{
             
             case 'Org_Version':
                 $sql = "";
-                if(key>0){
+                if($key>0){
                     $sql = "SELECT DATE_FORMAT(decision_date, " . DATE_FORMAT . ") as KeyValue From Org_Version Where id  = " . $key;
                 }
                 else{
