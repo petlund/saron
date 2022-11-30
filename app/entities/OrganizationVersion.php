@@ -88,7 +88,9 @@ class OrganizationVersion extends SuperEntity{
         $set.= "information = '". $this->information . "', ";        
         $set.= "UpdaterName = '". $this->saronUser->getDisplayName() . "' ";        
         $where = "WHERE id = "  . $this->id;
-        $this->db->update($update, $set, $where, "Org_Version", "Id", $this->id, 'Organisationsversion','Beslutsdatum', null, $this->saronUser);        
+        $this->db->update($update, $set, $where, "Org_Version", "Id", $this->id, 'Organisationsversion','Beslutsdatum', null, $this->saronUser);  
+        $result = $this->select($this->id, RECORD);
+        return $result;
 
     }
             
