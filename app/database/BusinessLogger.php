@@ -91,6 +91,8 @@ class BusinessLogger{
         switch ($keyTable){
             case 'Statistics':
                 return "Select * from Statistics Where EXTRACT(YEAR FROM year) = " . $key;
+            case 'Org_Tree':
+                return "Select T1.*, T2.Name as ParentUnitName from Org_Tree as T1 left outer join Org_Tree as T2 on T1.ParentTreeNode_FK=T2.Id Where T1.Id = " . $key;
             case 'People':
                 return SQL_STAR_PEOPLE . " From view_people_memberstate as People Where " . $keyColumn . " = " . $key;
             case 'Homes':
@@ -159,6 +161,10 @@ class BusinessLogger{
             
             case 'Org_UnitType':
                 $sql = "SELECT Name as KeyValue From Org_UnitType Where id  = " . $key;
+                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
+            
+            case 'Org_PosStatus':
+                $sql = "SELECT Name as KeyValue From Org_PosStatus Where id  = " . $key;
                 return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
             
             case 'Org_Version':
