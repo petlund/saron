@@ -148,7 +148,7 @@ class OrganizationRoleUnitType extends SuperEntity{
         $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "', ";
         $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
         
-        $id = $this->db->insert($sqlInsert, "org_role_unittype_view", "Id", 'Koppling mellan Enhetstyp och Roll', "Kopplingsid", null, $this->saronUser);
+        $id = $this->db->insert($sqlInsert, "view_org_role_unittype", "Id", 'Koppling mellan Enhetstyp och Roll', "Kopplingsid", null, $this->saronUser);
         return $this->select($id);
     }
 
@@ -178,6 +178,6 @@ class OrganizationRoleUnitType extends SuperEntity{
         }
         
         $sql="delete from `Org_Role-UnitType` where Id=" . $this->id;
-        return $this->db->delete($sql,'org_role_unittype_view', 'Id', $this->id, 'Koppling mellan Enhetstyp och Roll', "Kopplingsid", null, $this->saronUser);
+        return $this->db->delete($sql,'view_org_role_unittype', 'Id', $this->id, 'Koppling mellan Enhetstyp och Roll', "Kopplingsid", null, $this->saronUser);
     }
 }

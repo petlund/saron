@@ -140,7 +140,7 @@ class BusinessLogger{
                 return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
             
             case 'News':
-                $sql = "SELECT DATE_FORMAT(news_date, " . DATE_FORMAT . ") as KeyValue  From News Where id  = " . $key;
+                $sql = "SELECT DATE_FORMAT(news_date, " . DATE_FORMAT . ") as KeyValue  From News Where Id  = " . $key;
                 return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
             
             case 'view_organization':
@@ -177,8 +177,8 @@ class BusinessLogger{
                 }                    
                 return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
             
-            case 'org_role_unittype_view':   
-                $sql = "SELECT Id as KeyValue From org_role_unittype_view Where id  = " . $key;
+            case 'view_org_role_unittype':   
+                $sql = "SELECT Id as KeyValue From view_org_role_unittype Where Id  = " . $key;
                 return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
         
             case 'SaronUser': 
