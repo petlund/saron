@@ -115,7 +115,7 @@ class db {
             $prevListResult = $this->sqlQuery($prevPostSql);
         }
         
-        $this->php_dev_error_log("====== update ======<br>", $sql);
+        $this->php_dev_error_log("====== update =======", $sql);
         if(!$listResult = $this->connection->query($sql)){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
             throw new Exception($this->jsonErrorMessage("Exception in update function", null, $technicalErrMsg));
