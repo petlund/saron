@@ -29,7 +29,7 @@
     <?php 
     require_once SARON_ROOT . "app/util/GlobalConstants_js.php";
 
-    include ('app/util/js.php') ?>
+    include ('app/util/distPath.php') ?>
     
     <link rel="icon" href=<?php echo Favicon;?> type="png"/>        
     <script><?php echo 'const saron = ' . $saronJSON.";";?></script> <!-- refer to app/util/GlobalConstants_js.php -->
@@ -41,15 +41,14 @@
     <link href="/<?php echo THREE_PP_URI;?>jtable/themes/lightcolor/gray/jtable.min.css" rel="stylesheet" type="text/css" />        
     <link href="/<?php echo THREE_PP_URI;?>jtable/jquery-ui-1.12.1.custom/jquery-ui.css" rel="stylesheet" type="text/css" />          
 
-    <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("util/", "menu.js");?>"></script>     
-    <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("util/", "timeout.js");?>"></script>     
-    <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("util/", "util.js");?>"></script>     
-    <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("util/", "tableNavigationUtil.js");?>"></script>     
+    <script type="text/JavaScript" src="/<?php echo getDistPath(APP_JS_UTIL, "menu.js");?>"></script>     
+    <script type="text/JavaScript" src="/<?php echo getDistPath(APP_JS_UTIL, "timeout.js");?>"></script>     
+    <script type="text/JavaScript" src="/<?php echo getDistPath(APP_JS_UTIL, "util.js");?>"></script>     
+    <script type="text/JavaScript" src="/<?php echo getDistPath(APP_JS_UTIL, "tableNavigationUtil.js");?>"></script>     
   
-    <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("util/", "security.js");?>"></script>     
+    <script type="text/JavaScript" src="/<?php echo getDistPath(APP_JS_UTIL, "security.js");?>"></script>     
+    <link rel="stylesheet" type="text/css" href="/<?php echo getDistPath(APP_CSS, "saron.css");?>">     
     
-    <link rel="stylesheet" type="text/css" href="/<?php echo SARON_URI;?>app/css/saron.css" />
-
     <body >
         <table  class='saronMenuTable saronSmallText'>
             <tr>

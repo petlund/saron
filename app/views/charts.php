@@ -16,9 +16,9 @@ require_once SARON_ROOT . "menu.php";
    </head>
     <body>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>        
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("charts/", "charts.js");?>"></script>     
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("charts/", "timeseries.js");?>"></script>     
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("charts/", "histogram.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getDistPath(APP_JS_CHARTS, "charts.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getDistPath(APP_JS_CHARTS, "timeseries.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getDistPath(APP_JS_CHARTS, "histogram.js");?>"></script>     
         <div class="saronSmallText">Grafik</div>
         <div id="StatisticsChart"></div>
         <div id="HistogramChart"></div>

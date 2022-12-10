@@ -13,7 +13,7 @@
         <title><?php echo NameOfRegistry;?> - Välkommen</title> 
     </Head>
     <body> 
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "news.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getDistPath(APP_JS_TABLES, "news.js");?>"></script>     
         <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/jquery.jtable.js"></script>
         <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/localization/jquery.jtable.se.js"></script>   
         <div class='saronSmallText'>Medlemsregister för församlingen i <?php echo ShortNameOfCongregation;?></div>

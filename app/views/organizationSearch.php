@@ -13,17 +13,17 @@
         <title><?php echo NameOfRegistry;?> - Organisation</title> 
     </Head>
     <body> 
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "unittype.js");?>"></script>     
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "unit.js");?>"></script>     
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "tree.js");?>"></script>     
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "list.js");?>"></script>     
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "role.js");?>"></script>     
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "role_unittype.js");?>"></script>     
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "status.js");?>"></script>     
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "pos.js");?>"></script>     
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/org/", "version.js");?>"></script>     
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "memberstateAndReports.js");?>"></script>     
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("tables/", "memberstate.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getDistPath(APP_JS_TABLES_ORG, "unittype.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getDistPath(APP_JS_TABLES_ORG, "unit.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getDistPath(APP_JS_TABLES_ORG, "tree.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getDistPath(APP_JS_TABLES_ORG, "list.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getDistPath(APP_JS_TABLES_ORG, "role.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getDistPath(APP_JS_TABLES_ORG, "role_unittype.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getDistPath(APP_JS_TABLES_ORG, "status.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getDistPath(APP_JS_TABLES_ORG, "pos.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getDistPath(APP_JS_TABLES_ORG, "version.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getDistPath(APP_JS_TABLES, "memberstateAndReports.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getDistPath(APP_JS_TABLES, "memberstate.js");?>"></script>     
 
         <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/jquery.jtable.js"></script>
         <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/localization/jquery.jtable.se.js"></script>   

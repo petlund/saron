@@ -13,8 +13,8 @@
         <title><?php echo NameOfRegistry;?> - email</title>
    </head>
     <body>
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("lists/", "mobileInsteadOfMail.js");?>"></script>     
-        <script type="text/JavaScript" src="/<?php echo getJsAppDistPath("lists/", "email.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getDistPath(APP_JS_LISTS, "mobileInsteadOfMail.js");?>"></script>     
+        <script type="text/JavaScript" src="/<?php echo getDistPath(APP_JS_LISTS, "email.js");?>"></script>     
         <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/jquery.jtable.js"></script>
         <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/localization/jquery.jtable.se.js"></script>                  
         
