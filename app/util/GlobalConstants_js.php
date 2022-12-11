@@ -5,6 +5,9 @@ require_once SARON_ROOT . "app/util/GlobalConstants_php.php";
 // From config.php
 // System
 $saron = (object)array(); 
+$saron->system = (object)array();
+$saron->system->change_log_length = CHANGE_LOG_IN_DAYS;
+
 // $saron->success = false; 
 $saron->uri = (object)array();
 $saron->root = (object)array();

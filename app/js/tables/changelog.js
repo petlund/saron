@@ -16,7 +16,7 @@ $(document).ready(function () {
 function changelogTableDef(tableTitle, tablePath, parentId, parentTableDef){
     
     var tableDef = {
-        title: 'Ändringslog',
+        title: 'Ändringslog (' +  saron.system.change_log_length + ' dygn)',
             paging: true, //Enable paging
             pageSize: 10, //Set page size (default: 10)
             pageList: 'minimal',
