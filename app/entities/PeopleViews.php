@@ -48,7 +48,7 @@ class PeopleViews {
     function selectPeople(){
         $sql = SQL_STAR_PEOPLE . ", ";
         $sql.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
-        $sql.= $this->homes->getLongHomeNameSql(ALIAS_CUR_HOMES, "LongHomeName", true);
+        $sql.= $this->homes->getLongHomeNameSql("People", "LongHomeName", true);
         $sql.= DECRYPTED_ALIAS_PHONE;
         return $sql;
     }

@@ -64,8 +64,8 @@ class People extends SuperEntity{
         $id = $this->getId($idFromCreate, $this->id);
 
         $tw = new PeopleViews($this->db, $this->saronUser);
-        $sqlSelect = $tw->getPeopleViewSql($this->appCanvasName, $this->saronUser) . ", ";
-        $sqlSelect.= $this->homes->getHomeSelectSql(ALIAS_CUR_HOMES, "Homes.Id", false);
+        $sqlSelect = $tw->getPeopleViewSql($this->appCanvasName, $this->saronUser);
+        //$sqlSelect.= $this->homes->getHomeSelectSql(ALIAS_CUR_HOMES, "Homes.Id", false);
         
         if(strlen($this->appCanvasPath) >0){
             $sqlSelect.= ", ";
@@ -120,7 +120,9 @@ class People extends SuperEntity{
             }
             $sqlWhere.= "People.Id = " . $id . " ";
         }
-        $result =  $this->db->select($this->saronUser, $sqlSelect, SQL_FROM_PEOPLE_LEFT_JOIN_HOMES, $sqlWhere, $this->getSortSql(), $this->getPageSizeSql(), $rec);
+        $sqlFrom = "FROM view_people_memberstate as People ";
+        //$this->getSortSql()
+        $result =  $this->db->select($this->saronUser, $sqlSelect, $sqlFrom, $sqlWhere, "", $this->getPageSizeSql(), $rec);
         return $result;
         
     }

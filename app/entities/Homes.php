@@ -148,19 +148,14 @@ class Homes extends SuperEntity{
     }
 
     function getLongHomeNameSql($tableAlias, $fieldAlias, $continue){
-        $sql = "IF(" . $tableAlias . ".Id is null, 'Inget hem', ";
-        $sql.= "concat(";
-        $sql.= $this->getFieldSql($tableAlias, "", "FamilyNameEncrypt", "", true, false);
+        $sql = "concat(";
+        $sql.= $this->getFieldSql($tableAlias, "", "FamilyNameEncrypt", "Inget hem", true, false);
         $sql.= ",' (',";
         $sql.= $this->getFieldSql($tableAlias, "", "AddressEncrypt", "Adress saknas", true, false);
         $sql.= ",', ', ";
         $sql.= $this->getFieldSql($tableAlias, "", "City", "Stad saknas", false, false);
-        $sql.= ",') ')) as ";
-        
-        if(strlen($tableAlias)>0 && $tableAlias !== ALIAS_CUR_HOMES){
-            $sql.= $tableAlias . "_";
-        }
-        
+        $sql.= ",') ') as ";
+                
         $sql.= $fieldAlias;
 
         if($continue){

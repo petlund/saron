@@ -30,7 +30,7 @@ class BusinessLogger{
         if(strlen($description)>0){
             return "<b>" . $changeType . "</b><br>" . $description;
         }
-        return "<b>Ingen " . $changeType . "</b>";
+        return "<b>Ingen " . strtolower($changeType) . "</b>";
     }
     
     
@@ -92,13 +92,14 @@ class BusinessLogger{
             case 'Statistics':
                 return "Select * from Statistics Where EXTRACT(YEAR FROM year) = " . $key;
             case 'Org_Tree':
-                return "Select T1.*, T2.Name as ParentUnitName from Org_Tree as T1 left outer join Org_Tree as T2 on T1.ParentTreeNode_FK=T2.Id Where T1.Id = " . $key;
+//                return "Select T1.*, T2.Name as ParentUnitName from Org_Tree as T1 left outer join Org_Tree as T2 on T1.ParentTreeNode_FK=T2.Id Where T1.Id = " . $key;
+                return "SELECT * From view_organization_pos Where " . $keyColumn . " = " . $key;
             case 'People':
-                return SQL_STAR_PEOPLE . " From view_people_memberstate as People Where " . $keyColumn . " = " . $key;
+                return SQL_ALL_FIELDS . " From view_people_memberstate as People Where " . $keyColumn . " = " . $key;
             case 'Homes':
                 return SQL_STAR_HOMES . " From Homes Where " . $keyColumn . " = " . $key;
-            case 'view_organization':
-                return 'SELECT *, ' . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE_MEMBERSTATENAME_HIDDEN . " as Person From view_organization Where " . $keyColumn . " = " . $key;
+            case 'Org_Pos':
+                return 'SELECT *, ' . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE_MEMBERSTATENAME_HIDDEN . " as Person From view_organization_pos Where " . $keyColumn . " = " . $key;
             default:
                 return "Select * from " . $keyTable . " Where " . $keyColumn . " = " . $key;
         }
@@ -125,7 +126,7 @@ class BusinessLogger{
     
     
     function getBusinessKey($keyTable, $keyColumn, $key, $businessKeyName, $user){
-        if(!($key > 0)){
+            if(!($key > 0)){
             return '<b>' . $businessKeyName . ':</b> *';            
         }
 
@@ -143,8 +144,8 @@ class BusinessLogger{
                 $sql = "SELECT DATE_FORMAT(news_date, " . DATE_FORMAT . ") as KeyValue  From News Where Id  = " . $key;
                 return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
             
-            case 'view_organization':
-                $sql = "SELECT PosKeyValue as KeyValue From view_organization Where id  = " . $key;
+            case 'Org_Pos':
+                $sql = "SELECT PosKeyValue as KeyValue From view_organization_pos Where id  = " . $key;
                 return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
             
             case 'MemberState':
@@ -156,7 +157,7 @@ class BusinessLogger{
                 return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
             
             case 'Org_Tree':
-                $sql = "SELECT Name as KeyValue From Org_Tree Where id  = " . $key;
+                $sql = "SELECT TreePath as KeyValue From view_organization_pos Where id  = " . $key;
                 return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
             
             case 'Org_UnitType':

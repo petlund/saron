@@ -109,8 +109,9 @@ class db {
         $sql = $update . $set . $where;
 
         $prevListResult = null;
-        $prevPostSql = $this->businessLogger->getChangeValidationSQL($keyTable, $keyColumn, $key);
+        $prevPostSql = null;
         if($createLogPost){
+            $prevPostSql = $this->businessLogger->getChangeValidationSQL($keyTable, $keyColumn, $key);
             $businessKeyValue = $this->businessLogger->getBusinessKey($keyTable, $keyColumn, $key, $businessKeyName, $saronUser);
             $prevListResult = $this->sqlQuery($prevPostSql);
         }
@@ -147,7 +148,7 @@ class db {
             $this->businessLogger->insertLogPost($keyTable, $keyColumn, $key, $changeType, $businessKeyName, $businessKeyValue, $description, $saronUser);
         }
 
-        $this->php_dev_error_log("====== delete ======<br>", $sqlDelete);
+        $this->php_dev_error_log("====== delete ======", $sqlDelete);
         if(!$listResult = $this->connection->query($sqlDelete)){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
             throw new Exception($this->jsonErrorMessage("Exception in delete function", null, $technicalErrMsg));

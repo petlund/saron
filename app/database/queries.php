@@ -18,7 +18,6 @@ require_once SARON_ROOT . 'app/entities/MemberState.php';
     define("DATE_FORMAT", "'%Y-%m-%d'");
     define("DATE_OF_BIRTH", "DATE_FORMAT(DateOfBirth, " . DATE_FORMAT . ")");
     define("DATE_OF_BIRTH_ALIAS_DATE_OF_BIRTH", DATE_OF_BIRTH . " AS DateOfBirth");
-    //        define("DATE_OF_BIRTH_ALIAS_DATE_OF_BIRTH", "'\/Date(1320259705710)\/' AS DateOfBirth");
 
     define("DECRYPTED_FIRSTNAME", "SUBSTR(AES_DECRYPT(FirstNameEncrypt, " . PKEY . "), " . SALT_LENGTH . ", " . MAX_STR_LEN .")");
     define("DECRYPTED_ALIAS_FIRSTNAME", DECRYPTED_FIRSTNAME . " as FirstName");
@@ -56,6 +55,7 @@ require_once SARON_ROOT . 'app/entities/MemberState.php';
     define("ALIAS_CUR_HOMES", "Homes");
     define("ALIAS_OLD_HOMES", "OldHome");
 
+    //$ALL_PEOPLE_FIELDS Only used in this file
     $ALL_PEOPLE_FIELDS = "People.Id, ";
     $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_FIRSTNAME . ", ";
     $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_LASTNAME . ", ";
@@ -70,15 +70,18 @@ require_once SARON_ROOT . 'app/entities/MemberState.php';
     
     define("SQL_STAR_PEOPLE", "Select " . $ALL_PEOPLE_FIELDS);
 
-    $ALL_HOME_FIELDS = "Homes.Id, ";
-    $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_FAMILYNAME . ", ";
+    $ALL_HOME_FIELDS = DECRYPTED_ALIAS_FAMILYNAME . ", ";
     $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_ADDRESS . ", ";
     $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_CO . ", ";
     $ALL_HOME_FIELDS.= "City, Zip, Country,  ";
-    $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_PHONE . ", ";
-    $ALL_HOME_FIELDS.= "Letter, Homes.Inserted, Homes.Inserter, Homes.InserterName, Homes.Updater, Homes.UpdaterName, Homes.Updated ";    
-    define("SQL_STAR_HOMES", "Select " . $ALL_HOME_FIELDS);
-    define("SQL_ALL_FIELDS", "select " . $ALL_PEOPLE_FIELDS . ", " . $ALL_HOME_FIELDS);
+    $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_PHONE . ", Letter ";
+    $HOME_FIELDS_UPDATER= "Homes.Id, Homes.Inserted, Homes.Inserter, Homes.InserterName, Homes.Updater, Homes.UpdaterName, Homes.Updated ";    
+    
+    define("SQL_STAR_HOMES", "Select " . $ALL_HOME_FIELDS . ", " . $HOME_FIELDS_UPDATER);
+    
+    define("SQL_ALL_FIELDS", "select " . $ALL_PEOPLE_FIELDS . ", " . $ALL_HOME_FIELDS . ", " . $HOME_FIELDS_UPDATER);
+    
+    define("SELECT_ALL_FIELDS_FROM_VIEW_PEOPLE_MEMBERSTATE", "select " . $ALL_PEOPLE_FIELDS . ", VisibleInCalendarText, GenderText, KeyToChurchText, KeyToExpText, " . $ALL_HOME_FIELDS . ", LetterText ");
 
     define("SQL_FROM_PEOPLE_LEFT_JOIN_HOMES", "FROM view_people_memberstate as People left outer join Homes on People.HomeId=Homes.Id "); 
     define("SQL_WHERE", "Where ");  
