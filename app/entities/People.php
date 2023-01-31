@@ -208,8 +208,9 @@ class People extends SuperEntity{
         }
         
         $where.= "And (" . DECRYPTED_MOBILE . " is not null) ";
-        $where.= "AND IF(HomeId > 0, (Select count(*) from People as p where People.HomeId=p.HomeId and " . DECRYPTED_EMAIL . " like '%@%') = 0, true) ";      
-
+        $where.= "And (" . DECRYPTED_EMAIL . " is null) ";
+        $where.= "AND IF(HomeId > 0, (Select count(*) from People as p where People.HomeId=p.HomeId and " . DECRYPTED_EMAIL . " like '%@%') = 0, true) ";    
+        
         $result = $this->db->select($this->saronUser, $select, $from, $where, "", "", RECORDS);    
         return $result;
     }
