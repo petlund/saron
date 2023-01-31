@@ -73,65 +73,49 @@ function homeTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 title: 'Familjenamn',
                 width: '10%',
                 edit: true,
-                display: function (data){
-                    return _setClassAndValue(data, "FamilyName", HOME);
-                }       
+                listClass: "FamilyName"      
             },
             Residents: {
                 title: 'Boende på adressen',
                 width: '15%',
                 edit: false,
-                display: function (data){
-                    return _setClassAndValue(data, "Residents", HOME);
-                }       
+                listClass: "Residents"
             },
             Phone: {
                 title: 'Telefon',
                 width: '10%',
                 edit: true,
-                display: function (data){
-                    return _setClassAndValue(data, "Phone", HOME);
-                }                   
+                listClass:"Phone"
             },
             Co: {
                 title: 'Co',
                 width: '10%',
                 edit: true,
-                display: function (data){
-                    return _setClassAndValue(data, "Co", HOME);
-                }       
+                listClass: "Co"
             },
             Address: {
                 title: 'Gatuadress',
                 width: '10%',
                 edit: true,
-                display: function (data){
-                    return _setClassAndValue(data, "Address", HOME);
-                }       
+                listClass: "Address"
             },
             Zip: {
                 title: 'PA',
                 width: '5%',
                 edit: true,
-                display: function (data){
-                    return _setClassAndValue(data, "Zip", HOME);
-                }       
+                listClass: "Zip"
             },
             City: {
                 title: 'Stad',
                 width: '10%',
                 edit: true,
-                display: function (data){
-                    return _setClassAndValue(data, "City", HOME);
-                }       
+                listClass: "City"
             },
             Country: {
                 title: 'Land',
                 width: '10%',
                 edit: true,
-                display: function (data){
-                    return _setClassAndValue(data, "Country", HOME);
-                }       
+                listClass: "Country"
             },
             Letter: {
                 title: 'Brevutskick',
@@ -200,27 +184,3 @@ function configHomesTableDef(tableDef){
     }
 }
 
-
-
-
-function _updateHomeFields(data){
-    _updateFields(data, "LongHomeName", HOME);                                                
-//    _updateFields(data, "LongHomeName", PERSON);                                                
-    _updateFields(data, "Residents", HOME);                                                
-    _updateFields(data, "Letter", HOME);                                                
-    _updateFields(data, "Phone", HOME);                                                
-//    _updateFields(data, "Name", PERSON);                                                
-//    _updateFields(data, "DateOfBirth", PERSON);                                                
-//    _updateFields(data, "DateOfMembershipEnd", PERSON);                                                
-//    _updateFields(data, "MemberState", PERSON);                                                
-//    _updateFields(data, "VisibleInCalendar", PERSON);                                                
-//    _updateFields(data, "Comment", PERSON);                                                
-//    _updateFields(data, "Mobile", PERSON);
-
-    if(data.record.HomeId !== data.record.OldHome_HomeId && data.record.OldHome_HomeId > 0){
-        _updateFields(data, "HomeId", OLD_HOME);                                                
-        _updateFields(data, "LongHomeName", OLD_HOME);                                                
-        _updateFields(data, "Residents", OLD_HOME);                                                
-        _updateFields(data, "Phone", OLD_HOME);            
-    }
-}

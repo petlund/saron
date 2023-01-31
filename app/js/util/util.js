@@ -123,13 +123,6 @@ function _setClassAndValue(data, field, type){
 
 
 
-function _setClassAndValuePrefix(data, field, type, prefix){
-    var returnVal = _styleSaronValue(field + ' ' + _getClassName_Id(data, field, type), prefix + ' ' + data.record[field], '');    
-    return returnVal;
-}
-
-
-
 function _setClassAndValueWidthEventType(data, field, type){
     
     var eventType = "_event_type_id_" + data.record.event_type_id;
@@ -138,15 +131,6 @@ function _setClassAndValueWidthEventType(data, field, type){
 }
 
 
-
-function _setClassAndValueAltNull(data, field, nullValue, type){
-    if(type === PERSON_AND_HOME){
-        var classNames = field + ' ' + _getClassName_Id(data, field, PERSON) + ' ' + _getClassName_Id(data, field, HOME);
-        return _styleSaronValue(classNames, data.record[field], nullValue);
-    }
-    else    
-        return _styleSaronValue(field + ' ' + _getClassName_Id(data, field, type), data.record[field], nullValue);    
-}
 
 
 function _setMailClassAndValue(data, field, nullValue, type){
@@ -232,27 +216,6 @@ function _getId(data, type){
 }
 
 
-function _updateFields(data, field, type){
-    var elementValue;
-    
-    if(field === "VisibleInCalendar")
-        elementValue = _getVisibilityOption(data.record[field]);  
-    else if(field === "Letter")
-        elementValue = _getLetterOption(data.record[field]);  
-    else if(field === "KeyToChurch" || field === "KeyToExp")
-        elementValue = _getKeyOption(data.record[field]);  
-    else
-        if(type === OLD_HOME)
-            elementValue = data.record[OLD_HOME_PREFIX + field];
-        else
-            elementValue = data.record[field];
-//            elementValue = data.serverResponse.Record[field];
-  
-    var className_Id = _getClassName_Id(data, field, type);
-    var element = document.getElementsByClassName(className_Id);
-    for(var i = 0; i<element.length;i++)
-        element[i].innerHTML = elementValue;
-}
 
 
 function _baptistOptions(){
@@ -599,9 +562,9 @@ function getImageCloseTag(data, childTableName, type){
 
 
 
-function getChildOpenClassName(data, childTableName){
-    return childTableName + '_is_open_' +  data.record.Id + ' ';
-}
+//function getChildOpenClassName(data, childTableName){
+//    return childTableName + '_is_open_' +  data.record.Id + ' ';
+//}
 
 
 

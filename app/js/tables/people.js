@@ -38,7 +38,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
         pageList: 'minimal',
         sorting: true,
         multiSorting: true,
-        defaultSorting: 'HomeId ASC, DateOfBirth ASC', //Set default sorting   
+        defaultSorting: 'Name ASC, HomeId ASC, DateOfBirth ASC', //Set default sorting   
         messages: {addNewRecord: 'Ny person'},
         actions: {
             listAction:  saron.root.webapi + 'listPeople.php',     
@@ -314,6 +314,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                 list: true,
                 title: 'Hem',
                 inputTitle: 'Välj hem',
+                optionsSorting: "text",
                 options: function(data){
                     var url = saron.root.webapi + 'listHomes.php';
                     var field = 'HomeId';
@@ -322,22 +323,26 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                 }
             },
             DateOfMembershipEnd:{
-                type: 'hidden'            },
+                type: 'hidden'            
+            },
             DateOfMembershipStart:{
-                type: 'hidden'            },
+                type: 'hidden'            
+            },
             LastName: {
                 title: 'Efternamn',
                 inputTitle: 'Obligatorisk: Efternamn',
                 list: false,
                 edit: true,
-                create: true
+                create: true,
+                listClass: "LastName"
             },
             FirstName: {
                 title: 'Förnamn',
                 inputTitle: 'Obligatorisk: Förnamn',
                 list: false,
                 edit: true,
-                create: true 
+                create: true,
+                listClass: "FirstName" 
             },
             Name: {
                 title: 'Namn',
@@ -345,9 +350,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                 list: true,
                 create: false,
                 edit: false,
-                display: function (data){
-                    return _setClassAndValue(data, "Name", PERSON);
-                }                 
+                listClass: "Name" 
             },
             DateOfBirth: {
                 title: 'Född',
@@ -355,9 +358,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                 width: '5%',
                 displayFormat: DATE_FORMAT,
                 type: 'date',
-                display: function (data){
-                    return _setClassAndValue(data, "DateOfBirth", PERSON);
-                }       
+                listClass: "DateOfBirth" 
             },
             Gender: {
                 title: 'Kön',
@@ -375,36 +376,27 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                 title: 'Mobil',
                 inputTitle: 'Mobil <BR> - Hemtelefonuppgifter matas in under "Adressuppgifter"',
                 width: '7%',
-                display: function (data){
-                    return _setClassAndValue(data, "Mobile", PERSON);
-                }       
+                listClass: "Mobile" 
             },
             Phone: {
                 title: 'Tel.',
                 edit: false,
                 width: '7%',
                 create: false,
-                display: function (data){
-                    return _setClassAndValue(data, "Phone", HOME);
-                }  
+                listClass: "Phone" 
             },
             MemberStateName: {
                 title: 'Status',
                 edit: false,
                 create: false,
                 width: '4%',
-                display: function (data){
-                    return _setClassAndValue(data, "MemberStateName", PERSON);
-                }
+                listClass: "MemberStateName" 
             },
             DateOfMembershipEnd: {
                 list: false,
                 edit: true,
-                type: 'hidden',
                 create: false,
-                defaultValue: function (data){
-                    return data.record.DateOfMembershipEnd;
-                }       
+                listClass: "DateOfMembershipEnd" 
             },
             DateOfDeath: {
                 title: 'Avliden',
@@ -413,17 +405,13 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                 type: 'date',
                 create: false,
                 edit: true,
-                display: function (data){
-                    return _setClassAndValue(data, "DateOfDeath", PERSON);
-                }       
+                listClass: "DateOfDeath" 
             },
-            Comment: {
+            DateOfDeath: {
                 title: 'Not',
                 type: 'textarea',
                 list: false,
-                display: function (data){
-                    return _setClassAndValue(data, "Comment", PERSON);
-                }       
+                listClass: "DateOfDeath" 
             },
             Updated:{
                 title: 'Uppdaterad',
