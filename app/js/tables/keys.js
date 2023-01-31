@@ -120,6 +120,7 @@ function keyTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
         },
         rowInserted: function(event, data){
             alowedToUpdateOrDelete(event, data, tableDef);
+            addAttributeForEasyUpdate(data);
         },        
         formCreated: function (event, data){
             if(data.formType === saron.formtype.edit){

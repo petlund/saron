@@ -2,6 +2,5 @@
 
 "use strict";
 
-    for(let i = 0; i < tj.end; i++){
-        console.log((tj.end * i) + ' ' + tj.text);
-    }
+var p = $(".cl");
+console.log(p.length);

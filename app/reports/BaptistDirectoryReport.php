@@ -35,7 +35,7 @@
 
     $peopleFilter = new PeopleFilter($db, $saronUser);
     $sql =SQL_STAR_PEOPLE . " ";
-    $sql.="from view_people_memberstate as People ";
+    $sql.="from view_people as People ";
     $sql.="where " . $peopleFilter->getPeopleFilterSql(1) . " "; // 1 = bpatistregistry
     $sql.="order by ";
     $sql.=DECRYPTED_LASTNAME;

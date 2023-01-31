@@ -120,7 +120,7 @@ class People extends SuperEntity{
             }
             $sqlWhere.= "People.Id = " . $id . " ";
         }
-        $sqlFrom = "FROM view_people_memberstate as People ";
+        $sqlFrom = "FROM view_people as People ";
         //$this->getSortSql()
         $result =  $this->db->select($this->saronUser, $sqlSelect, $sqlFrom, $sqlWhere, "", $this->getPageSizeSql(), $rec);
         return $result;
@@ -160,7 +160,7 @@ class People extends SuperEntity{
         
         $where = "WHERE MemberStateId in (" . PEOPLE_STATE_MEMBERSHIP . ", " . PEOPLE_STATE_FRIEND . ") " ;
         
-        $from = "FROM view_people_memberstate as People ";
+        $from = "FROM view_people as People ";
         
         $result = $this->db->select($this->saronUser, $select, $from, $where, "ORDER BY DisplayText ", "", "Options");    
         return $result;
@@ -170,7 +170,7 @@ class People extends SuperEntity{
     
     function selectEmail(){
         $select = "select ";
-        $from = " from view_people_memberstate as People ";
+        $from = " from view_people as People ";
         $where = "where " . DECRYPTED_EMAIL . " like '%@%' ";
         switch($this->appCanvasName){
             case LIST_EMAIL_MEMBER:

@@ -1,15 +1,21 @@
-DROP VIEW IF EXISTS view_people_memberstate;
+DROP VIEW IF EXISTS view_people;
 
-CREATE VIEW view_people_memberstate AS
+CREATE VIEW view_people AS
     SELECT 
         People.Id AS Id,
         People.FirstNameEncrypt AS FirstNameEncrypt,
         People.LastNameEncrypt AS LastNameEncrypt,
         People.DateOfBirth AS DateOfBirth,
+        IF(DateOfDeath is null, extract(YEAR FROM NOW()) - extract(YEAR FROM DateOfBirth), extract(YEAR FROM DateOfDeath) - extract(YEAR FROM DateOfBirth)) as Age,
         People.DateOfDeath AS DateOfDeath,
         People.PreviousCongregation AS PreviousCongregation,
         People.MembershipNo AS MembershipNo,
         People.VisibleInCalendar AS VisibleInCalendar,
+        (CASE 
+            WHEN People.VisibleInCalendar= 1 THEN 'Nej'
+            WHEN People.VisibleInCalendar= 2 THEN 'Ja'
+            ELSE '-'
+            END) AS VisibleInCalendarText,
         People.DateOfMembershipStart AS DateOfMembershipStart,
         People.DateOfMembershipEnd AS DateOfMembershipEnd,
         People.DateOfAnonymization AS DateOfAnonymization,
@@ -21,17 +27,28 @@ CREATE VIEW view_people_memberstate AS
         People.CongregationOfBaptismThis AS CongregationOfBaptismThis,
         People.Gender AS Gender,
         (CASE 
-			WHEN People.Gender= 1 THEN 'Nej'
-			WHEN People.Gender= 2 THEN 'Ja'
+            WHEN People.Gender= 1 THEN 'Nej'
+            WHEN People.Gender= 2 THEN 'Ja'
             ELSE '-'
             END) AS GenderText,
         People.EmailEncrypt AS EmailEncrypt,
         People.MobileEncrypt AS MobileEncrypt,
         People.KeyToChurch AS KeyToChurch,
+        (CASE 
+            WHEN People.KeyToChurch= 1 THEN 'Nej'
+            WHEN People.KeyToChurch= 2 THEN 'Ja'
+            ELSE '-'
+            END) AS KeyToChurchText,
         People.KeyToExp AS KeyToExp,
+        (CASE 
+            WHEN People.KeyToExp= 1 THEN 'Nej'
+            WHEN People.KeyToExp= 2 THEN 'Ja'
+            ELSE '-'
+            END) AS KeyToExpText,
         People.CommentEncrypt AS CommentEncrypt,
         People.CommentKeyEncrypt AS CommentKeyEncrypt,
         People.HomeId AS HomeId,
+        People.HomeId AS PhoneId,
         People.UpdaterName AS UpdaterName,
         People.Updater AS Updater,
         People.Updated AS Updated,
@@ -78,7 +95,15 @@ CREATE VIEW view_people_memberstate AS
         Homes.FamilyNameEncrypt AS FamilyNameEncrypt,
         Homes.PhoneEncrypt AS PhoneEncrypt,
         Homes.AddressEncrypt as AddressEncrypt,
-        Homes.City
+        Homes.CoEncrypt as CoEncrypt,
+        Homes.Zip,
+        Homes.City,
+        Homes.Country,
+        Homes.Letter,
+        (CASE 
+            WHEN Homes.Letter = 2 THEN 'Ja'
+            ELSE ''
+            END) AS LetterText
 
         FROM
         People

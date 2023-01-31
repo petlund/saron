@@ -54,6 +54,9 @@ require_once SARON_ROOT . 'app/entities/MemberState.php';
 
     define("ALIAS_CUR_HOMES", "Homes");
     define("ALIAS_OLD_HOMES", "OldHome");
+    
+    define("NUMBER_OF_ENGAGEMENT", "(Select count(*) from Org_Pos where People_FK = People.Id) ");
+    define("NUMBER_OF_ENGAGEMENT_AS_ENGAGEMENTS", NUMBER_OF_ENGAGEMENT . " as Engagements ");
 
     //$ALL_PEOPLE_FIELDS Only used in this file
     $ALL_PEOPLE_FIELDS = "People.Id, ";
@@ -66,24 +69,25 @@ require_once SARON_ROOT . 'app/entities/MemberState.php';
     $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_MOBILE . ", ";
     $ALL_PEOPLE_FIELDS.= "KeyToChurch, KeyToExp, ";
     $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_COMMENT . ", ";
-    $ALL_PEOPLE_FIELDS.= "People.HomeId, People.HomeId as OldHomeId, People.Updater, People.Updated, People.UpdaterName, People.Inserter, People.Inserted, People.InserterName, " . DECRYPTED_ALIAS_COMMENT_KEY . ", MemberStateId, MemberStateName ";
+    $ALL_PEOPLE_FIELDS.= "People.HomeId, People.HomeId as OldHomeId, People.HomeId as PhoneId, People.Updater, People.Updated, People.UpdaterName, People.Inserter, People.Inserted, People.InserterName, " . DECRYPTED_ALIAS_COMMENT_KEY . ", MemberStateId, MemberStateName, ";
+    $ALL_PEOPLE_FIELDS.= NUMBER_OF_ENGAGEMENT_AS_ENGAGEMENTS;
     
     define("SQL_STAR_PEOPLE", "Select " . $ALL_PEOPLE_FIELDS);
 
     $ALL_HOME_FIELDS = DECRYPTED_ALIAS_FAMILYNAME . ", ";
     $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_ADDRESS . ", ";
     $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_CO . ", ";
-    $ALL_HOME_FIELDS.= "City, Zip, Country,  ";
-    $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_PHONE . ", Letter ";
+    $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_PHONE . ", ";
+    $ALL_HOME_FIELDS.= "City, Zip, Country, Letter ";
     $HOME_FIELDS_UPDATER= "Homes.Id, Homes.Inserted, Homes.Inserter, Homes.InserterName, Homes.Updater, Homes.UpdaterName, Homes.Updated ";    
     
     define("SQL_STAR_HOMES", "Select " . $ALL_HOME_FIELDS . ", " . $HOME_FIELDS_UPDATER);
     
     define("SQL_ALL_FIELDS", "select " . $ALL_PEOPLE_FIELDS . ", " . $ALL_HOME_FIELDS . ", " . $HOME_FIELDS_UPDATER);
     
-    define("SELECT_ALL_FIELDS_FROM_VIEW_PEOPLE_MEMBERSTATE", "select " . $ALL_PEOPLE_FIELDS . ", VisibleInCalendarText, GenderText, KeyToChurchText, KeyToExpText, " . $ALL_HOME_FIELDS . ", LetterText ");
+    define("SELECT_ALL_FIELDS_FROM_VIEW_PEOPLE", "select " . $ALL_PEOPLE_FIELDS . ", " . $ALL_HOME_FIELDS. ", VisibleInCalendarText, GenderText, KeyToChurchText, KeyToExpText, " . $ALL_HOME_FIELDS . ", LetterText ");
 
-    define("SQL_FROM_PEOPLE_LEFT_JOIN_HOMES", "FROM view_people_memberstate as People left outer join Homes on People.HomeId=Homes.Id "); 
+    define("SQL_FROM_PEOPLE_LEFT_JOIN_HOMES", "FROM view_people as People left outer join Homes on People.HomeId=Homes.Id "); 
     define("SQL_WHERE", "Where ");  
     
     define("FORMATTED_EMAILADDRESS", "if(" . DECRYPTED_EMAIL . " not like \"\", concat(\"<p class='Email'><a href='mailto:\"," . DECRYPTED_EMAIL . ",\"'>\", " . DECRYPTED_EMAIL . ", \"</a></p>\"),'') ");

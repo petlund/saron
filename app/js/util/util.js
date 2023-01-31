@@ -3,7 +3,7 @@ ORG_ROLE, ORG_LIST, ORG_UNIT_TYPE, ORG_TREE,
 saron,
 */
 "use strict";
-
+//Util.js
 //const J_TABLE_ID = "#people";
 const HOME = 1;
 const OLD_HOME = 3;
@@ -27,6 +27,67 @@ const POS_ENABLED = "2";
 const POS_DISABLED = "1";
 const SUBUNIT_ENABLED = "2";
 const SUBUNIT_DISABLED = "1";
+const APPCANVASPATH = "AppCanvasPath";
+
+function addAttributeForEasyUpdate(data){
+    $(data.row[0]).attr("HomeId", data.record.HomeId); // Update home related data on several rows
+    $(data.row[0]).attr(APPCANVASPATH, data.record.AppCanvasPath); // Update home related data on several rows
+}
+
+
+
+function updateRelatedRows(){
+    var placeHolder = getMainTablePlaceHolderFromTablePath(saron.table.people.name);
+    var className_Id = "jtable-data-row";
+    var dataRecordKey = "data-record-key";
+    var openRows = [];
+    var parentId = -1;
+    
+    var jTableDataRows = placeHolder.find("." + className_Id);
+
+    if(jTableDataRows.length === 0)
+        return;
+
+    for(var i = 0; i < jTableDataRows.length;i++){
+        var jTableDataRow = jTableDataRows[i];
+        var id = jTableDataRow.getAttribute(dataRecordKey);
+        var tablepath = jTableDataRow.getAttribute(APPCANVASPATH);
+        
+        if(tablepath.includes("/")){
+            var tableName = getLastElementFromTablePath(tablepath);
+            var pTag = "p." + tableName + "_" + parentId;
+            var row = {pTag: pTag};
+            openRows.push(row);
+        }
+        else{
+            parentId = id;            
+        }
+    }
+
+    $(saron.table.people.nameId).jtable('reload', function(){
+        for(var i = 0; i < openRows.length;i++){
+            var openRow = openRows[i];
+            var subTable = document.querySelectorAll(openRow.pTag);
+            if(subTable)
+                if(subTable.length > 0){
+                    var img = subTable[0].firstChild;
+                    img.click();
+                }
+        }
+    });
+}
+
+
+
+function getMainTablePlaceHolderFromTag(tag, appCanvasPath){
+    if(tag !== null){
+        var tablePlaceHolder = tag.closest("div.jtable-main-container");
+        if(tablePlaceHolder.length > 0)
+            return tablePlaceHolder;
+    }
+}
+
+
 
 function _setClassAndValueHeadline(data, field, type, defaultHead, preHead, postHead){
     var value = data.record[field];

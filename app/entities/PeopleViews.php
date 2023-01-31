@@ -21,18 +21,6 @@ class PeopleViews {
     
     function getPeopleViewSql($appCanvasName, $saronUser){
         switch ($appCanvasName){
-        case TABLE_NAME_PEOPLE:
-            return $this->selectPeople() . ", " . $this->selectNoOfEngagements() . ', ' . $saronUser->getRoleSql(false);
-        case TABLE_NAME_STATISTICS:
-            return $this->selectPeople() . ", " . $this->selectNoOfEngagements() . ', ' . $saronUser->getRoleSql(false);
-        case TABLE_NAME_BIRTHDAY:
-            return $this->selectBirthday();
-        case TABLE_NAME_MEMBER:
-            return SQL_STAR_PEOPLE . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", "  . $saronUser->getRoleSql(false);
-        case TABLE_NAME_BAPTIST:
-            return SQL_STAR_PEOPLE . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", "  . $saronUser->getRoleSql(false);
-        case TABLE_NAME_KEYS:
-            return "Select People.Id as Id, People.MemberStateName, KeyToExp, KeyToChurch, DateOfBirth, People.UpdaterName, People.Updated, People.InserterName, People.Inserted, " . DECRYPTED_ALIAS_COMMENT_KEY . ", " . DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", " . $saronUser->getRoleSql(false);
         case TABLE_NAME_TOTAL:
             return $this->selectTotal() . ", " . $saronUser->getRoleSql(false);
         default:    
@@ -46,16 +34,20 @@ class PeopleViews {
     
     
     function selectPeople(){
-        $sql = SQL_STAR_PEOPLE . ", ";
+        $sql = SELECT_ALL_FIELDS_FROM_VIEW_PEOPLE . ", ";
         $sql.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
         $sql.= $this->homes->getLongHomeNameSql("People", "LongHomeName", true);
-        $sql.= DECRYPTED_ALIAS_PHONE;
+        $sql.= DECRYPTED_ALIAS_PHONE . ", ";
+        $sql.= DECRYPTED_ALIAS_COMMENT_KEY . ", ";
+        $sql.= "extract(YEAR FROM NOW()) - extract(YEAR FROM DateOfBirth) as Age, ";
+        $sql.= "STR_TO_DATE(Concat(extract(year from now()), '-',extract(Month from DateOfBirth),'-',extract(Day from DateOfBirth)),'%Y-%m-%d') as NextBirthday ";
+        
         return $sql;
     }
 
 
     function selectBirthday(){
-        $sql = SQL_ALL_FIELDS . ", ";
+        $sql = SELECT_ALL_FIELDS_FROM_VIEW_PEOPLE . ", ";
         $sql.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
         $sql.= "DateOfBirth, ";
         $sql.= "extract(YEAR FROM NOW()) - extract(YEAR FROM DateOfBirth) as Age, ";
@@ -113,7 +105,7 @@ class PeopleViews {
         $selectEngagement.= "'<B>Kön: </B>', IF(Gender=0,'-', IF(Gender=1,'Man','Kvinna')) ";
         $selectEngagement.= ") as Engagement ";  
            //
-        return $selectPerson . $selectMember . $selectBaptist . $selectAddress  . $selectOther . $this->selectNoOfEngagements() . ", People.Inserted, People.InserterName, People.UpdaterName, People.Updated " ;    
+        return $selectPerson . $selectMember . $selectBaptist . $selectAddress  . $selectOther . NUMBER_OF_ENGAGEMENT_AS_ENGAGEMENTS. ", People.Inserted, People.InserterName, People.UpdaterName, People.Updated " ;    
     }
     
 }

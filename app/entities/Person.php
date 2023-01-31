@@ -72,15 +72,7 @@ class Person extends People{
         $this->CommentKey = (String)filter_input(INPUT_POST, "CommentKey", FILTER_SANITIZE_STRING);
         }
     
-    
-    function getCurrentHomeId(){
-        return $this->HomeId;
-    }
-    
-    function getCurrentId(){
-        return $this->id;
-    }
-    
+
 
     function checkPersonData(){//Memberstatelogic
         $error = array();
@@ -340,7 +332,7 @@ class Person extends People{
         $sqlSet.= "UpdaterName = '" . $this->saronUser->userDisplayName . "' ";
         $sqlWhere = "where Id=" . $this->id . ";";
 
-        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, 'People', 'Id', $this->id, 'Person','Personid', null, $this->saronUser);
+        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, 'People', 'Id', $this->id, 'Person', 'Personid', null, $this->saronUser);
         return $this->selectPersonAfterUpdate($this->id);
     }
     
@@ -400,16 +392,17 @@ class Person extends People{
    
     
     function selectPersonAfterUpdate($id){
-        $home = new Home($this->db, $this->saronUser);
-        $sqlSelect = SQL_STAR_PEOPLE . ", " . $this->saronUser->getRoleSql(true);
+//        $home = new Home($this->db, $this->saronUser);
+        $sqlSelect = SELECT_ALL_FIELDS_FROM_VIEW_PEOPLE . ", " . $this->saronUser->getRoleSql(true);
         $sqlSelect.= $this->getAppCanvasSql(true);
         $sqlSelect.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
-        $sqlSelect.= $home->getHomeSelectSql(ALIAS_CUR_HOMES, $this->HomeId, true);
-        $sqlSelect.= $home->getHomeSelectSql(ALIAS_OLD_HOMES, $this->OldHomeId, true);
-        $sqlSelect.= $this->getAppCanvasSql(false);                  
+        $sqlSelect.= $this->OldHomeId . " as OldHomeId ";
+//        $sqlSelect.= $home->getHomeSelectSql(ALIAS_CUR_HOMES, $this->HomeId, true);
+//        $sqlSelect.= $home->getHomeSelectSql(ALIAS_OLD_HOMES, $this->OldHomeId, true);
+//        $sqlSelect.= $this->getAppCanvasSql(false);                  
         
-        $sqlFrom ="FROM view_people_memberstate as People left outer join Homes on People.HomeId=Homes.Id ";
-        $sqlFrom.="left outer join Homes as " . ALIAS_OLD_HOMES . " on " .  ALIAS_OLD_HOMES . ".Id = " . $this->OldHomeId . " ";
+        $sqlFrom ="FROM view_people as People ";
+//        $sqlFrom.="left outer join Homes as " . ALIAS_OLD_HOMES . " on " .  ALIAS_OLD_HOMES . ".Id = " . $this->OldHomeId . " ";
         
         $sqlWhere = "WHERE ";
         $sqlWhere.= "People.Id = " . $id;

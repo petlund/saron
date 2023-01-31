@@ -125,7 +125,7 @@ class Homes extends SuperEntity{
         $sql.= ", ' - ', ";
         $sql.= $this->getFieldSql($tableAlias . "Res", "", "MemberStateName", "", false, false);
         $sql.= " SEPARATOR '<BR>') ";
-        $sql.= "FROM view_people_memberstate as " . $tableAlias . "Res ";
+        $sql.= "FROM view_people as " . $tableAlias . "Res ";
         $sql.= "where HomeId = ";
         $sql.= $homesTableNameAndId . " "; 
 
@@ -170,18 +170,27 @@ class Homes extends SuperEntity{
     
     
     function selectHomesAsOptions(){
-
-        $where ="";
-        if($this->HomeId===0){
-            $sql = "SELECT 0 as Value, ' Nytt hem' as DisplayText "; 
-            $sql.= "Union "; 
-            $sql.= "SELECT -1 as Value, '  Inget hem' as DisplayText ";
-            $sql.= "Union "; 
-            $sql.= "select Id as Value, " . $this->getLongHomeNameSql(ALIAS_CUR_HOMES, "DisplayText", false);
-        }
-        else{
-            $sql.= "select Id as Value, " . $this->getLongHomeNameSql(ALIAS_CUR_HOMES, "DisplayText", false);
-            $where = "WHERE Value=" . $this->HomeId;
+        $sql = "";
+        $where = "";
+        switch ($this->field){
+            case "HomeId":
+                if($this->HomeId < 1){
+                    $sql = "SELECT 0 as Value, ' Nytt hem' as DisplayText "; 
+                    $sql.= "Union "; 
+                    $sql.= "SELECT -1 as Value, '  Inget hem' as DisplayText ";
+                    $sql.= "Union "; 
+                    $sql.= "select Id as Value, " . $this->getLongHomeNameSql(ALIAS_CUR_HOMES, "DisplayText", false);
+                }
+                else{
+                    $sql.= "select Id as Value, " . $this->getLongHomeNameSql(ALIAS_CUR_HOMES, "DisplayText", false);
+                    $where = "WHERE Value=" . $this->HomeId;
+                }
+            break;
+            case "PhoneId":
+                    $sql = "SELECT null as Value, ' ' as DisplayText "; 
+                    $sql.= "Union "; 
+                    $sql.= "select Id as Value, " .  $this->getFieldSql("", "DisplayText", "PhoneEncrypt", " ", true, false);
+            break;
         }
         $result = $this->db->select($this->saronUser, $sql, "FROM Homes ", $where, "ORDER BY DisplayText ", "", "Options");    
         return $result;

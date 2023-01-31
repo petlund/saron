@@ -90,14 +90,14 @@ function totalTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 title: 'Övriga uppgifter',
                 width: '15%'
             },
-            Engagement: {
+            Engagements: {
                 title: 'Förtroendeuppdrag',
                 width: '15%',
                 create: false,
                 edit: false,
                 display: function(data){
-                    if(data.record.Engagement > 0)
-                        return "Personen har " + data.record.Engagement + " uppdrag kopplat till sig.";
+                    if(data.record.Engagements > 0)
+                        return "Personen har " + data.record.Engagements + " uppdrag kopplat till sig.";
 
                     return null;
                 }

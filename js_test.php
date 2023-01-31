@@ -15,7 +15,7 @@ $myJSON = json_encode($saron);
 
 </head>
     <body>
-        Testar nya funktioner<br>
+        <p class="cl">Testar nya funktioner</p>
         js_test.php
     </body>
 </html>

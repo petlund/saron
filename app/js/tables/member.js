@@ -42,7 +42,7 @@ function memberTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                         success: function (data) {
                             $dfd.resolve(data);
                             if(data.Result === 'OK'){
-                                            
+                                updateRelatedRows();  
                             }
                         },
                         error: function () {
@@ -172,12 +172,9 @@ function memberTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
         },
         rowInserted: function(event, data){
             alowedToUpdateOrDelete(event, data, tableDef);
+            addAttributeForEasyUpdate(data);
         },        
         recordUpdated(data, event){
-            _updateFields(event, "MemberStateName", PERSON);                                                
-            _updateFields(event, "VisibleInCalendar", PERSON);                                                
-            _updateFields(event, "DateOfMembershipStart", PERSON);                                                
-            _updateFields(event, "DateOfMembershipEnd", PERSON);                
         },
         formCreated: function (event, data){
             data.row[0].style.backgroundColor = "yellow";

@@ -105,7 +105,7 @@ class MemberState extends SuperEntity{
 
         $from = "FROM MemberState ";
         $from.= "left outer join (select count(*) as Amount, MemberStateId ";
-        $from.= "from view_people_memberstate as People GROUP BY MemberStateId) as MemberStates on Id = MemberStateId  ";
+        $from.= "from view_people as People GROUP BY MemberStateId) as MemberStates on Id = MemberStateId  ";
         
         switch($this->appCanvasPath){
             case TABLE_NAME_MEMBER_STATE_REPORT:

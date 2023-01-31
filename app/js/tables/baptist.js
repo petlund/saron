@@ -32,9 +32,26 @@ function baptistTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
         defaultSorting: 'FamilyName ASC, DateOfBirthr ASC', //Set default sorting        
         actions: {
             listAction:   saron.root.webapi + 'listPeople.php', 
-            updateAction: saron.root.webapi + 'updatePerson.php'
-        },
-        
+            updateAction: function(data) {
+                return $.Deferred(function ($dfd) {
+                    $.ajax({
+                        url: saron.root.webapi + 'updatePerson.php',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: data,
+                        success: function (data) {
+                            $dfd.resolve(data);
+                            if(data.Result === 'OK'){
+                                updateRelatedRows();  
+                            }
+                        },
+                        error: function () {
+                            $dfd.reject();
+                        }
+                    });
+                });
+            }
+        },        
         fields: { 
             Id: {
                 key: true,
@@ -126,9 +143,9 @@ function baptistTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
         },
         rowInserted: function(event, data){
             alowedToUpdateOrDelete(event, data, tableDef);
+            addAttributeForEasyUpdate(data);
         },        
         recordUpdated(data, event){
-            _updateFields(event, "MemberStateName", PERSON);                                                
         },
         formCreated: function (event, data){
             data.row[0].style.backgroundColor = "yellow";

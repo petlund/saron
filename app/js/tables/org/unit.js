@@ -319,19 +319,19 @@ function configUnitTableDef(tableDef){
 
 function moveOrgUnit(data){
     // clone data?
-    var childTablePlaceholder_From = getChildTablePlaceHolderFromTag(data.row, data.record.AppCanvasPath);
+    var childTablePlaceholder_From = getSurroundingTableTag(data.row, data.record.AppCanvasPath);
     childTablePlaceholder_From.jtable("deleteRecord",{key: data.record.Id, clientOnly:true, animationsEnabled:true});
 
     var table_To;
     if(data.record.ParentTreeNode_FK !== null){
         var parentTableRow_To = $('tr.jtable-data-row.' + saron.table.unit.name + '_' + data.record.ParentTreeNode_FK);
         if(parentTableRow_To.length > 0){
-            var parentTable_To = getParentTablePlaceHolderFromChild(parentTableRow_To, data.record.AppCanvasPath);
+            var parentTable_To = getSurroundingTableTag(parentTableRow_To, data.record.AppCanvasPath);
             var childOpen = parentTable_To.jtable('isChildRowOpen', parentTableRow_To);
             if(childOpen){
                 var childRow_To = parentTable_To.jtable('getChildRow', parentTableRow_To);
                 var tables_To = childRow_To.find("div.jtable-main-container");
-                table_To = getChildTablePlaceHolderFromTag(tables_To, data.record.AppCanvasPath);
+                table_To = getSurroundingTableTag(tables_To, data.record.AppCanvasPath);
                 table_To.jtable('reload');
             }
             else

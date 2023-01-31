@@ -16,8 +16,6 @@ $(document).ready(function () {
 
     var postData = getPostData(null, saron.table.engagement.name, null, saron.table.engagement.name, saron.source.list, saron.responsetype.records);
     tablePlaceHolder.jtable('load', postData);
-
-
 });
 
 
@@ -53,6 +51,10 @@ function peopleEngagementTableDef(tableTitle, parentTablePath, parentId, parentT
                 type: 'hidden',
                 defaultValue: saron.table.engagement.name
             }, 
+            AppCanvasPath:{
+                type: 'hidden',
+                defaultValue: saron.table.engagement.name
+            },
             Role:{
                 width: '1%',
                 sorting: false,
@@ -63,7 +65,7 @@ function peopleEngagementTableDef(tableTitle, parentTablePath, parentId, parentT
                     var clientOnly = true;
                     var type = 0;
                     
-                    if(data.record.Engagement ===  null){
+                    if(data.record.Engagements ===  null){
                         tooltip = 'Inga uppdrag';
                         imgFile = "pos.png";
                     }
@@ -119,7 +121,7 @@ function peopleEngagementTableDef(tableTitle, parentTablePath, parentId, parentT
                 title: 'Antal',
                 width: '5%'
             },
-            Engagement: {
+            Engagements: {
                 title: 'Uppdragsöversikt',
                 width: '50%'
             }
@@ -262,6 +264,7 @@ function engagementsTableDef(tableTitle, parentTablePath, parentId, parentTableD
             alowedToAddRecords(event, data, tableDef);
         },        
         rowInserted: function(event, data){
+            addAttributeForEasyUpdate(data);
             alowedToUpdateOrDelete(event, data, tableDef);
             addDialogDeleteListener(data);            
         },        

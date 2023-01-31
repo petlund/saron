@@ -92,7 +92,7 @@ class OrganizationPos extends SuperEntity{
 
         $subSelectPrev = "(case "
                     . "WHEN Pos.PrevFunction_FK > 0 THEN (Select concat('" . $prevTooltipString . "', F.Name, '" . $midTooltipString . "','Funktionsansvar','" . $postTooltipString . "') From Org_Tree as F Where F.Id = Pos.Function_FK) "
-                    . "WHEN Pos.PrevOrgSuperPos_FK > 0 THEN (Select concat('" . $prevTooltipString . "', R.Name, '" . $midTooltipString . "'," . $this->getPersonSql("pPrev2", null, false) . ",'" . $postTooltipString . "') From Org_Pos as P inner join Org_Role as R on R.Id=P.OrgRole_FK left outer join view_people_memberstate as pPrev2 on pPrev2.Id=P.PrevPeople_FK Where P.Id = Pos.PrevOrgSuperPos_FK) "
+                    . "WHEN Pos.PrevOrgSuperPos_FK > 0 THEN (Select concat('" . $prevTooltipString . "', R.Name, '" . $midTooltipString . "'," . $this->getPersonSql("pPrev2", null, false) . ",'" . $postTooltipString . "') From Org_Pos as P inner join Org_Role as R on R.Id=P.OrgRole_FK left outer join view_people as pPrev2 on pPrev2.Id=P.PrevPeople_FK Where P.Id = Pos.PrevOrgSuperPos_FK) "
                     . "ELSE CONCAT(" . $this->getPersonSql("pPrev", null, false) . ", ' (', pPrev.MemberStateName, ')') "
                 . "end) as PrevResponsible , ";
 
@@ -121,8 +121,8 @@ class OrganizationPos extends SuperEntity{
         
         $from = "FROM Org_Pos as Pos inner join Org_Role Role on Pos.OrgRole_FK = Role.Id ";
         $from.= "inner join Org_Tree as Tree on Tree.Id = Pos.OrgTree_FK ";
-        $from.= "left outer join view_people_memberstate as pCur on pCur.Id = Pos.People_FK ";
-        $from.= "left outer join view_people_memberstate as pPrev on pPrev.Id = Pos.PrevPeople_FK ";
+        $from.= "left outer join view_people as pCur on pCur.Id = Pos.People_FK ";
+        $from.= "left outer join view_people as pPrev on pPrev.Id = Pos.PrevPeople_FK ";
         $from.= "left outer join (select Pos.Id, Pos.People_FK from Org_Pos as Pos inner join Org_Role as Role on Pos.OrgRole_FK=Role.Id where Role.RoleType=1) as SuperPos on SuperPos.Id = Pos.OrgSuperPos_FK ";        
         
         $where = "";

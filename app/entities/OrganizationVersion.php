@@ -71,7 +71,7 @@ class OrganizationVersion extends SuperEntity{
         $description = "<b>Uppdatering av Person</b><br>";
         $description.= "Personer registrerade som vänkontakt och som har uppdrag, har fått sitt vänkontaktdatum satt till dagens datum";
         
-        $sqlUpdate = "update People as P inner join view_people_memberstate as V on P.Id = V.Id ";
+        $sqlUpdate = "update People as P inner join view_people as V on P.Id = V.Id ";
         $sqlSet   = "set P.DateOfFriendshipStart = Now() ";
         $sqlWhere = "where ";
         $sqlWhere.= $this->memberState->getHasEngagement("P");  

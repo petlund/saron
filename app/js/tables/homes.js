@@ -31,7 +31,26 @@ function homeTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
         defaultSorting: "FamilyName ASC",
         actions: {
             listAction:   saron.root.webapi + 'listHomes.php',
-            updateAction: saron.root.webapi + 'updateHome.php'
+            updateAction: function(postData) {
+                return $.Deferred(function ($dfd) {
+                    $.ajax({
+                        url: saron.root.webapi + 'updateHome.php',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: postData,
+                        success: function (successData) {
+                            if(successData.Result === 'OK'){
+                                $dfd.resolve(successData); //Mandatory
+                                updateRelatedRows();                            }
+                            else
+                                $dfd.resolve(successData);
+                        },
+                        error: function () {
+                            $dfd.reject();
+                        }
+                    });
+                });
+            }
         },
         fields: {
             Id: {
@@ -131,8 +150,12 @@ function homeTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 }
             }
         },
+        recordsLoaded(event, data){
+            
+        },                    
         rowInserted: function(event, data){
             alowedToUpdateOrDelete(event, data, tableDef);
+            addAttributeForEasyUpdate(data);
         },        
         formCreated: function (event, data){
             data.row[0].style.backgroundColor = "yellow";
@@ -151,7 +174,6 @@ function homeTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
              data.row[0].style.backgroundColor = '';
         },                        
         recordUpdated: function (event, data){
-            _updateHomeFields(data);            
         }
 
     };

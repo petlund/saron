@@ -23,7 +23,7 @@ function openChildTable(childTableDef, img, data, clientOnly){
     var parentId = childTableDef.parentId;
     var childTableName = childTableDef.tableName;
     var tablePath = childTableDef.tablePath;;
-    var tablePlaceHolder = getChildTablePlaceHolderFromTag(img, tablePath);
+    var tablePlaceHolder = getSurroundingTableTag(img, tablePath);
             
     var source = saron.source.list;
     var resultType = saron.responsetype.records;        
@@ -48,7 +48,7 @@ function openChildTable(childTableDef, img, data, clientOnly){
 
 function closeChildTable(childTableDef, img, data, clientOnly){
     var tr = img.closest('.jtable-data-row');
-    var tablePlaceHolder = getChildTablePlaceHolderFromTag(img, data.record.AppCanvasPath);
+    var tablePlaceHolder = getSurroundingTableTag(img, data.record.AppCanvasPath);
     
     $(tablePlaceHolder).jtable('closeChildTable', tr, function(callBackData){
         var openChild = false;
@@ -75,26 +75,16 @@ function _updateAfterOpenCloseAction(tablePlaceHolder, tableDef, data, openChild
 
 
 
-function getChildTablePlaceHolderFromTag(tag, appCanvasPath){
+function getSurroundingTableTag(tag, appCanvasPath){
     if(tag !== null){
         var tablePlaceHolder = tag.closest('div.jtable-child-table-container');
-        if(tablePlaceHolder.length > 0)
-            return tablePlaceHolder;
+        
+        if(tablePlaceHolder !== null)
+            if(tablePlaceHolder.length > 0)
+                return tablePlaceHolder;
     }
-    var appCanvasRoot = getRootElementFromTablePath(appCanvasPath);
-    var placeHolder = $("#" + appCanvasRoot); 
-    return placeHolder;   
-}
 
-
-
-function getParentTablePlaceHolderFromChild(childPlaceHolder, appCanvasPath){
-    if(childPlaceHolder !== null){
-        var tablePlaceHolder = childPlaceHolder.closest('div.jtable-child-table-container');
-        if(tablePlaceHolder.length > 0)
-            return tablePlaceHolder;
-    }
-    var placeHolder =  getMainTablePlaceHolderFromTablePath(appCanvasPath);
+    var placeHolder = getMainTablePlaceHolderFromTablePath(appCanvasPath)
     return placeHolder;   
 }
 
@@ -111,7 +101,7 @@ function updateParentRow(event, data, tableDef){
     var parentListUrl = tableDef.parentTableDef.actions.listAction;
     var parentPostData = getPostData(tableDef.parentId, parentTableName, null, parentTablePath, null, saron.responsetype.record);
 
-    var parentPlaceHolder = getParentTablePlaceHolderFromChild(event.target, tableDef.tablePath);
+    var parentPlaceHolder = getSurroundingTableTag(event.target, tableDef.tablePath);
     var record = parentPostData;
     record.OpenChildTable = tableDef.tableName;
     record.user_role = data.user_role;

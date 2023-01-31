@@ -95,7 +95,7 @@ class BusinessLogger{
 //                return "Select T1.*, T2.Name as ParentUnitName from Org_Tree as T1 left outer join Org_Tree as T2 on T1.ParentTreeNode_FK=T2.Id Where T1.Id = " . $key;
                 return "SELECT * From view_organization_pos Where " . $keyColumn . " = " . $key;
             case 'People':
-                return SQL_ALL_FIELDS . " From view_people_memberstate as People Where " . $keyColumn . " = " . $key;
+                return SELECT_ALL_FIELDS_FROM_VIEW_PEOPLE . " From view_people as People Where " . $keyColumn . " = " . $key;
             case 'Homes':
                 return SQL_STAR_HOMES . " From Homes Where " . $keyColumn . " = " . $key;
             case 'Org_Pos':
@@ -133,7 +133,7 @@ class BusinessLogger{
         switch ($keyTable){
             
             case 'People':
-                $sql = 'SELECT ' . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE_MEMBERSTATENAME . " as KeyValue From view_people_memberstate as People Where Id = " . $key;
+                $sql = 'SELECT ' . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE_MEMBERSTATENAME . " as KeyValue From view_people as People Where Id = " . $key;
                 return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
             
             case 'Homes':
@@ -157,7 +157,7 @@ class BusinessLogger{
                 return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
             
             case 'Org_Tree':
-                $sql = "SELECT TreePath as KeyValue From view_organization_pos Where id  = " . $key;
+                $sql = "SELECT PosKeyValue as KeyValue From view_organization_pos Where id  = " . $key;
                 return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
             
             case 'Org_UnitType':

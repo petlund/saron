@@ -38,7 +38,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
         pageList: 'minimal',
         sorting: true,
         multiSorting: true,
-        defaultSorting: 'LongHomeName ASC, DateOfBirth ASC', //Set default sorting   
+        defaultSorting: 'HomeId ASC, DateOfBirth ASC', //Set default sorting   
         messages: {addNewRecord: 'Ny person'},
         actions: {
             listAction:  saron.root.webapi + 'listPeople.php',     
@@ -76,38 +76,11 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                         success: function (successData) {
                             if(successData.Result === 'OK'){
                                 $dfd.resolve(successData); //Mandatory
-                                var data = {record: successData.Record};                                
-                                var tableName = saron.table.people.name;                           
-                                var $selectedRow = $("[data-record-key=" + data.record.Id + "]"); 
-                                var moveToNewHome = (data.record.HomeId > 0 && data.record.OldHome_HomeId !== data.record.HomeId);
-                                var moveToNoHome = (data.record.HomeId === null);
-                                var move = (moveToNewHome || moveToNoHome);
-                                var isChildRowOpen = $(saron.table.people.nameId).jtable('isChildRowOpen', $selectedRow);
-                                
-                                var childTableTitle = _setClassAndValueHeadline(data, 'LongHomeName', HOME, 'Hem', 'Hem för ', '');;
-                                
-                                if(move && isChildRowOpen){
-                                    var options = getPostData(null, tableName, parentId, tablePath, saron.source.list, saron.responsetype.records);
-                                    var clientOnly = true;
-                                    var childTableDef = homeTableDef(childTableTitle, tablePath, data.record.HomeId, tableDef);
-                                    var tablePlaceHolder = $(saron.table.people.nameId);
-
-                                    tablePlaceHolder.jtable('closeChildTable', $selectedRow, function(){
-
-                                        var tablePathOpenChild = false;                                
-                                        _updateAfterOpenCloseAction(tablePlaceHolder, tableDef, data, tablePathOpenChild, clientOnly);
-                                        if(parentId > 0){
-                                            tablePlaceHolder.jtable('openChildTable', $selectedRow, childTableDef, function(callBackData){
-                                                callBackData.childTable.jtable('load', options, function(){
-                                                    var tablePathOpenChild = _getClassNameOpenChild(data, tablePath);                                
-                                                    _updateAfterOpenCloseAction(tablePlaceHolder, tableDef, data, tablePathOpenChild, clientOnly);
-                                                });
-                                            });
-                                        }
-                                    });
-                                }
-                                _updateHomeFields(data);
-                            }
+                                var data = {record: successData.Record}; 
+            
+//                                var childTableTitle = _setClassAndValueHeadline(data, 'LongHomeName', HOME, 'Hem', 'Hem för ', '');                                
+//                                var childHomeTableDef = homeTableDef(childTableTitle, tablePath, data.record.HomeId, tableDef);
+                                updateRelatedRows();                            }
                             else
                                 $dfd.resolve(successData);
                         },
@@ -124,6 +97,10 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                 list: false
             },
             ParentId:{
+                defaultValue: -1,
+                type: 'hidden'
+            },
+            OldHomeId:{
                 defaultValue: -1,
                 type: 'hidden'
             },
@@ -149,7 +126,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                     var clientOnly = false;
                     var type = 0;
 
-                    var childTableDef = homeTableDef(childTableTitle, tablePath, data.record.HomeId, tableDef); // PersonId point to childtable unic id   
+                    var childTableDef = homeTableDef(childTableTitle, tablePath, data.record.HomeId, tableDef); // PersonId point to childtable unic id
 
                     if(data.record.HomeId > 0)
                         imgFile = "home.png";
@@ -291,12 +268,12 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                     var clientOnly = true;
                     var type = 0;
 
-                    if(data.record.Engagement ===  '0'){
+                    if(data.record.Engagements ===  '0'){
                         tooltip = 'Inga uppdrag';
                         imgFile = "pos.png";
                     }
                     else{
-                        tooltip = 'Har ' + data.record.Engagement + ' förtroendeuppdrag';
+                        tooltip = 'Har ' + data.record.Engagements + ' förtroendeuppdrag';
                         imgFile = "haspos.png";
                     }  
                     
@@ -334,40 +311,20 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
             HomeId: {
                 create: true,
                 edit: true,
-                list: false,
-                title: 'Välj hem',
+                list: true,
+                title: 'Hem',
+                inputTitle: 'Välj hem',
                 options: function(data){
                     var url = saron.root.webapi + 'listHomes.php';
-                    var field = null;
+                    var field = 'HomeId';
                     var parameters = getOptionsUrlParameters(data, tableName, parentId, tablePath, field);                    
                     return url + parameters;
                 }
             },
-            OldHomeId: { // for requests
-                list: true,
-                create: false,
-                edit: true,
-                type: 'hidden',
-                defaultValue: function (data){
-                    if(data.record.HomeId > 0 || data.record.HomeId < 0)
-                       return data.record.HomeId;
-                   
-                    return "0";
-                },
-                display: function(data){
-                    return "OldHomeId: " + data.record.OldHomeId + " HomeId: " + data.record.HomeId;
-                }
-            },
-            LongHomeName: {
-                create: false,
-                edit: false,
-                list: true,
-                title: 'Hem',
-                display: function (data){
-                    data.record.OldHomeId = data.record.HomeId;
-                    return _setClassAndValueAltNull(data, "LongHomeName", NO_HOME, HOME);
-                }
-            },
+            DateOfMembershipEnd:{
+                type: 'hidden'            },
+            DateOfMembershipStart:{
+                type: 'hidden'            },
             LastName: {
                 title: 'Efternamn',
                 inputTitle: 'Obligatorisk: Efternamn',
@@ -429,7 +386,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                 create: false,
                 display: function (data){
                     return _setClassAndValue(data, "Phone", HOME);
-                }                  
+                }  
             },
             MemberStateName: {
                 title: 'Status',
@@ -479,13 +436,14 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
             }
         },
         rowInserted: function(event, data){
+            addAttributeForEasyUpdate(data);
             if (data.record.user_role !== saron.userrole.editor){
                 data.row.find('.jtable-edit-command-button').hide();
                 data.row.find('.jtable-delete-command-button').hide();
             }
         },        
         recordsLoaded: function(event, data) {
-            alowedToAddRecords(event, data, tableDef);            
+            alowedToAddRecords(event, data, tableDef);     
         },        
         formCreated: function (event, data){
             var headLine;
@@ -510,8 +468,6 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
             data.form.find('input[name=Mobile]').css('width',inputFormFieldWidth);
             data.form.find('textarea[name=Comment]').css('width',inputFormFieldWidth);
       
-        },
-        recordUpdated: function (event, data){
         },
         formClosed: function (event, data){
             if(data.formType === saron.formtype.edit)
@@ -541,20 +497,5 @@ function configPeopleTableDef(tableDef){
         tableDef.actions.createAction  = null;
     }    
 }
-
-
-function _updatePeopleFields(data){
-    _updateFields(data, "LongHomeName", PERSON);                                                
-    _updateFields(data, "Residents", HOME);                                                
-    _updateFields(data, "Residents", OLD_HOME);                                                
-    _updateFields(data, "Name", PERSON);                                                
-    _updateFields(data, "DateOfBirth", PERSON);                                                
-    _updateFields(data, "DateOfMembershipEnd", PERSON);                                                
-    _updateFields(data, "MemberStateName", PERSON);                                                
-    _updateFields(data, "VisibleInCalendar", PERSON);                                                
-    _updateFields(data, "Comment", PERSON);                                                
-    _updateFields(data, "Mobile", PERSON);
-}
-
 
 
