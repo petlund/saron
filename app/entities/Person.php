@@ -317,7 +317,6 @@ class Person extends People{
         $sqlSet.= "LastNameEncrypt=" . $this->getEncryptedSqlString($this->LastName) . ", ";
         $sqlSet.= "FirstNameEncrypt=" . $this->getEncryptedSqlString($this->FirstName) . ", ";
         $sqlSet.= "DateOfBirth=" . $this->getSqlDateString($this->DateOfBirth) . ", ";
-        $sqlSet.= "DateOfFriendshipStart=" . $this->getSqlDateString($this->DateOfFriendshipStart) . ", ";
         $sqlSet.= "Gender=" . $this->Gender . ", ";
         if($this->VisibleInCalendar > 0 ){
             $sqlSet.= "VisibleInCalendar=" . $this->VisibleInCalendar . ", ";
