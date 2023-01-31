@@ -121,8 +121,14 @@ class People extends SuperEntity{
             $sqlWhere.= "People.Id = " . $id . " ";
         }
         $sqlFrom = "FROM view_people as People ";
-        //$this->getSortSql()
-        $result =  $this->db->select($this->saronUser, $sqlSelect, $sqlFrom, $sqlWhere, "", $this->getPageSizeSql(), $rec);
+        
+        $sort = $this->getSortSql();
+        if($this->groupId === 2){
+            $sort = "order by Updated desc ";
+        }
+            
+            
+        $result =  $this->db->select($this->saronUser, $sqlSelect, $sqlFrom, $sqlWhere, $sort, $this->getPageSizeSql(), $rec);
         return $result;
         
     }
