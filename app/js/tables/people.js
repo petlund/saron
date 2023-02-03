@@ -328,6 +328,9 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
             DateOfMembershipStart:{
                 type: 'hidden'            
             },
+            DateOfAnonymization:{
+                type: 'hidden'
+            },
             LastName: {
                 title: 'Efternamn',
                 inputTitle: 'Obligatorisk: Efternamn',
