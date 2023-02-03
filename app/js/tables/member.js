@@ -80,6 +80,9 @@ function memberTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 type: 'hidden',
                 defaultValue: saron.table.member.name
             },
+            DateOfAnonymization:{
+                type: 'hidden'
+            },
             DateOfBirth: { 
                 title: 'Född',
                 width: '7%',

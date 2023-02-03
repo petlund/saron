@@ -51,6 +51,9 @@ function keyTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 defaultValue: saron.table.keys.name,
                 type: 'hidden'
             },
+            DateOfAnonymization:{
+                type: 'hidden'
+            },
             Name: {
                 title: 'Namn',
                 width: '10%',

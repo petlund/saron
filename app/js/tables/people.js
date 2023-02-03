@@ -358,6 +358,9 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                     return "OldHomeId: " + data.record.OldHomeId + " HomeId: " + data.record.HomeId;
                 }
             },
+            DateOfAnonymization:{
+                type: 'hidden'
+            },
             LongHomeName: {
                 create: false,
                 edit: false,

@@ -305,7 +305,7 @@ class Statistics extends SuperEntity{
         
         $sqlMembersSaldo="(Select count(*) from People where EXTRACT( YEAR FROM DateOfMembershipStart ) <= EXTRACT( YEAR FROM year ) and (EXTRACT( YEAR FROM DateOfMembershipEnd ) > EXTRACT( YEAR FROM year ) or DateOfMembershipEnd is null) and (EXTRACT( YEAR FROM DateOfDeath ) > EXTRACT( YEAR FROM year ) or DateOfDeath is null)) ";
         $sqlNewMemberByYear="(Select count(*) from People where EXTRACT( YEAR FROM DateOfMembershipStart) = EXTRACT( YEAR FROM year))";
-        $sqlEndingMembershipByYear="(Select count(*) from People as p where EXTRACT( YEAR FROM DateOfMembershipEnd) = EXTRACT( YEAR FROM year) or EXTRACT( YEAR FROM DateOfDeath) = EXTRACT( YEAR FROM year))";
+        $sqlEndingMembershipByYear="(Select count(*) from People as p where DateOfMembershipStart is not null and EXTRACT( YEAR FROM DateOfMembershipEnd) = EXTRACT( YEAR FROM year) or EXTRACT( YEAR FROM DateOfDeath) = EXTRACT( YEAR FROM year))";
         $sqlDeadByYear="(Select count(*) from People as p where EXTRACT( YEAR FROM DateOfDeath) = EXTRACT( YEAR FROM year))";
         $sqlBaptistByYear="(Select count(*) from People as p where EXTRACT( YEAR FROM DateOfBaptism) = EXTRACT( YEAR FROM year) and CongregationOfBaptismThis=2)";
 

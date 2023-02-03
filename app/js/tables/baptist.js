@@ -52,6 +52,9 @@ function baptistTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 type: 'hidden',
                 defaultValue: saron.table.baptist.name
             },
+            DateOfAnonymization:{
+                type: 'hidden'
+            },
             Name: {
                 title: 'Namn',
                 width: '15%',

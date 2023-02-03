@@ -65,6 +65,7 @@ class Person extends People{
         $this->MembershipNo = (int)filter_input(INPUT_POST, "MembershipNo", FILTER_SANITIZE_NUMBER_INT);
         $this->VisibleInCalendar = (int)filter_input(INPUT_POST, "VisibleInCalendar", FILTER_SANITIZE_NUMBER_INT);    
         $this->DateOfMembershipEnd = (String)filter_input(INPUT_POST, "DateOfMembershipEnd", FILTER_SANITIZE_STRING);
+        $this->DateOfAnonymization = (String)filter_input(INPUT_POST, "DateOfAnonymization", FILTER_SANITIZE_STRING);
         $this->NextCongregation = (String)filter_input(INPUT_POST, "NextCongregation", FILTER_SANITIZE_STRING);
         $this->KeyToChurch = (int)filter_input(INPUT_POST, "KeyToChurch", FILTER_SANITIZE_NUMBER_INT);
         $this->KeyToExp = (int)filter_input(INPUT_POST, "KeyToExp", FILTER_SANITIZE_NUMBER_INT);
@@ -87,7 +88,10 @@ class Person extends People{
         $error["Result"] = "OK";
         $error["Message"] = "";
 
-        if($this->db->exist($this->FirstName, $this->LastName, $this->DateOfBirth, $this->id)){
+        if(strlen($this->DateOfAnonymization) > 0 ){
+            $error["Message"] = "Personen är anonymiserad. Personuppgifter kan därför inte ändras.";
+        }
+        else if($this->db->exist($this->FirstName, $this->LastName, $this->DateOfBirth, $this->id)){
             $error["Message"] = "En person med identitet:<br><b>" . $this->FirstName . " " . $this->LastName . " " . $this->DateOfBirth . "</b><br>finns redan i databasen.";
         }
         else if(strlen($this->FirstName) === 0 or strlen($this->LastName)==0 or strlen($this->DateOfBirth) === 0){
@@ -137,7 +141,10 @@ class Person extends People{
         $error["Result"] = "OK";
         $error["Message"] = "";
 
-        if(strlen($this->DateOfMembershipStart) === 0 and strlen($this->DateOfMembershipEnd) > 0){
+        if(strlen($this->DateOfAnonymization) > 0 ){
+            $error["Message"] = "Personen är anonymiserad. Personuppgifter kan därför inte ändras.";
+        }
+        else if(strlen($this->DateOfMembershipStart) === 0 and strlen($this->DateOfMembershipEnd) > 0){
             $error["Message"] = "Personen måste ha ett datum för medlemskapets start om den ska ha ett slutdatum för medlemskapet.";
         }
         
@@ -178,7 +185,10 @@ class Person extends People{
         $error["Result"] = "ERROR";
         $error["Message"] = "";
         
-        if(strlen($this->DateOfBaptism) === 0 and strlen($this->Comment) === 0 and $this->CongregationOfBaptismThis > 0){
+        if(strlen($this->DateOfAnonymization) > 0 ){
+            $error["Message"] = "Personen är anonymiserad. Personuppgifter kan därför inte ändras.";
+        }
+        else if(strlen($this->DateOfBaptism) === 0 and strlen($this->Comment) === 0 and $this->CongregationOfBaptismThis > 0){
             $error["Message"] = "Ge en kommentar till varför dopdatum saknas eller lägg till ett dopdatum.";
         }    
  
@@ -209,7 +219,10 @@ class Person extends People{
         $error["Result"] = "ERROR";
         $error["Message"] = "";
         
-        if(($this->KeyToExp === 2 or $this->KeyToChurch === 2) and strlen($this->CommentKey)<5){
+        if(strlen($this->DateOfAnonymization) > 0 ){
+            $error["Message"] = "Personen är anonymiserad. Personuppgifter kan därför inte ändras.";
+        }
+        else if(($this->KeyToExp === 2 or $this->KeyToChurch === 2) and strlen($this->CommentKey)<5){
             $error["Message"] = "Du behöver ange en längre kommentar för nyckelinnehavet (Minst 5 tecken).";
         } 
 
@@ -439,7 +452,9 @@ class Person extends People{
         $sql.= "LastNameEncrypt = " . $this->getEncryptedSqlString(ANONYMOUS) . ", ";
         $sql.= "VisibleInCalendar = 0, ";
         $sql.= "EmailEncrypt = NULL, ";
-        $sql.= "DateOfMembershipEnd = '" . $Today . "', ";
+        if(strlen($this->DateOfMembershipStart) > 0 and strlen($this->DateOfMembershipEnd) === 0){
+            $sql.= "DateOfMembershipEnd = '" . $Today . "', ";
+        }
         $sql.= "DateOfAnonymization = '" . $Today . "', ";
         $sql.= "MobileEncrypt = NULL, ";
         $sql.= "BaptisterEncrypt = NULL, ";
