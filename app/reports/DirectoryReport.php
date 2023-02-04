@@ -37,15 +37,14 @@
     // Enable sorting familys width different familyname on mulitiple places
     $tableQuery ="(Select distinct HomeId, " . DECRYPTED_LASTNAME . " as SortName from view_people) as LastNameList ";
 
-    $sql =SQL_ALL_FIELDS . ", LastNameList.SortName, ";
-    $sql.="(select count(*) from view_people as pp where pp.HomeId=Homes.Id) as fam_member_count ";
+    $sql =SELECT_ALL_FIELDS_FROM_VIEW_PEOPLE  . ", LastNameList.SortName, ";
+    $sql.="(select count(*) from view_people as pp where pp.HomeId=People.HomeId) as fam_member_count ";
     $sql.="from "; 
     $sql.=$tableQuery;
     $sql.="inner join view_people as People on People.HomeId=LastNameList.HomeId "; 
-    $sql.="left outer join Homes on People.HomeId = Homes.Id ";  
 
     $sql.="WHERE MemberStateId = " . PEOPLE_STATE_MEMBERSHIP . " and VisibleInCalendar=2 "; //Memberstatelogic
-    $sql.="order by LastNameList.SortName, " . DECRYPTED_ADDRESS . ", Homes.Id, People.DateOfBirth"; 
+    $sql.="order by LastNameList.SortName, " . DECRYPTED_ADDRESS . ", HomeId, People.DateOfBirth"; 
 
     // create new PDF document
     $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
