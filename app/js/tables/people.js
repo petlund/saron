@@ -405,7 +405,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                 edit: true,
                 listClass: "DateOfDeath" 
             },
-            DateOfDeath: {
+            Comment: {
                 title: 'Not',
                 type: 'textarea',
                 list: false,
