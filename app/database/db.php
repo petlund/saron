@@ -260,9 +260,9 @@ class db {
         if(TEST_ENV === true){
             error_log("**** DB: " . $method . " " . $msg . " *****");
             if(strlen($sql)>0){
-                error_log($sql);
+                error_log($sql . "\r\n");
             }            
-            error_log("\r\n****** END ******\r\n\r\n");
+            error_log("****** END ******\r\n\r\n");
         }
     }    
     
