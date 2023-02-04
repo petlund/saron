@@ -65,7 +65,7 @@ class SaronUser extends SaronMetaUser{
                 if($this->isItTimeToReNewTicket($ticket)){
                     $newTicket = $this->renewTicket($ticket);
                     setSaronCookie($newTicket);
-                    $this->db->php_dev_error_log("saronUser->hasValidSaronSession", getTicketFromCookie());
+                    $this->db->php_dev_error_log("saronUser->hasValidSaronSession", getTicketFromCookie(), "");
                 }
             }
             $this->sessionOK=true;
@@ -190,7 +190,7 @@ class SaronUser extends SaronMetaUser{
         $this->cleanSaronUser(-1);   
 
         $sql = "select * from  SaronUser where "
-                . "AccessTicket='" . $ticket . "'"
+                . "AccessTicket='" . $ticket . "' "
                 . "AND " . NOW_LAST_ACTIVITY_DIFF . " < " . SESSION_EXPIRES . " "
                 . "AND " . NOW_TIME_STAMP_DIFF. " < " . COOCKIE_EXPIRES;        
         
@@ -218,7 +218,7 @@ class SaronUser extends SaronMetaUser{
         $sql = "select if(" . NOW_TIME_STAMP_DIFF . " > " . TICKET_RENEWIAL_PERIOD_IN_SEC . ","
                 . "if(" . NOW_LAST_ACTIVITY_DIFF . " > " . SESSION_EXPIRES . ", -1, 1)"
                 . ",0) as Answer "
-                . "from SaronUser Where AccessTicket = '" . $ticket ."'";
+                . "from SaronUser Where AccessTicket = '" . $ticket . "' ";
 
         $result = $this->db->sqlQuery($sql);
 
@@ -254,7 +254,7 @@ class SaronUser extends SaronMetaUser{
         . "AND (Org_Editor >= " . $org_editor . " OR Editor >= " . $editor . ")";
     
         if(!$listResult = $this->db->sqlQuery($sql)){
-            $this->php_dev_error_log("Exception in exist function", $sql);
+            $this->php_dev_error_log("checkTicket", "Exception", $sql);
             throw new Exception($this->getErrorMessage("(4) Your session is out of scope. "));
         }
         
@@ -273,7 +273,7 @@ class SaronUser extends SaronMetaUser{
         try{
             $this->db->transaction_begin();
             $sql = "Select Id from SaronUser where "
-                    . "AccessTicket = '" . $oldTicket . "'"
+                    . "AccessTicket = '" . $oldTicket . "' "
                     . "AND " . NOW_LAST_ACTIVITY_DIFF . " < " . SESSION_EXPIRES . " "
                     . "AND " . NOW_TIME_STAMP_DIFF. " < " . COOCKIE_EXPIRES;
 
@@ -303,7 +303,7 @@ class SaronUser extends SaronMetaUser{
             foreach($result2 as $aRow){
                 $ticket = $aRow["AccessTicket"];
             }
-            $this->db->php_dev_error_log("saronUser->renewTicket", $ticket);
+            $this->db->php_dev_error_log("saronUser->renewTicket", $ticket, "");
             $this->db->transaction_end();
 
             return $ticket;

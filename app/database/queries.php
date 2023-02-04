@@ -52,6 +52,9 @@ require_once SARON_ROOT . 'app/entities/MemberState.php';
     define("DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE_MEMBERSTATENAME_HIDDEN", "concat(" . DECRYPTED_LASTNAME . ", ' ', " . DECRYPTED_FIRSTNAME . ", ' ', DATE_FORMAT(DateOfBirthHidden, " . DATE_FORMAT . "), ' - ', MemberStateNameHidden) ");
     define("DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE_AS_APPIDENTITYNAME", DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE . "as AppIdentityName ");
 
+    define("DECRYPTED_BUSINESS_KEY", "SUBSTR(AES_DECRYPT(BusinessKeyEncrypt, " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .") as BusinessKey ");
+    define("DECRYPTED_DESCRIPTION", "SUBSTR(AES_DECRYPT(DescriptionEncrypt, " . PKEY. "), " . SALT_LENGTH . ", " . MAX_STR_LEN .") as Description ");
+
     define("ALIAS_CUR_HOMES", "Homes");
     define("ALIAS_OLD_HOMES", "OldHome");
     

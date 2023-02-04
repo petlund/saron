@@ -4,11 +4,10 @@ require_once SARON_ROOT . 'app/database/db.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
 
-class BusinessLogger{
-    private $db;
+class BusinessLogger  extends SuperEntity{
     
-    function __construct($db) {
-        $this->db = $db;
+    function __construct($db, $saronUser) {
+        parent::__construct($db, $saronUser);
     }
     
     
@@ -22,7 +21,7 @@ class BusinessLogger{
             $key = $iterator->key();
             if(!($this->str_ends_with($key, 'Encrypt') OR $this->str_ends_with($key, 'Hidden'))){
                 $value = $iterator->current();
-                $description.= "<b>" . $key . ": </b>'" . $value . "'<br> ";
+                $description.= "<b>" . $key . ": </b>" . $value . "<br> ";
             }
             $iterator->next();
         }
@@ -48,7 +47,7 @@ class BusinessLogger{
             $key = $iterator->key(); 
             if(!($this->str_ends_with($key, 'Encrypt') OR $this->str_ends_with($key, 'Hidden'))){
                 $value = $iterator->current();
-                $description.= "<b>" . $key . ": </b>'" . $value . "'<br> ";
+                $description.= "<b>" . $key . ": </b>" . $value . "<br> ";
             }
             $iterator->next();
         }
@@ -72,7 +71,7 @@ class BusinessLogger{
             
             if(!($this->str_ends_with($key, 'Encrypt') OR $this->str_ends_with($key, 'Hidden'))){
                 if($prevValue !== $postValue){
-                    $description.= "<b>" . $key . ": </b>'" . $prevValue . "' <b>==></b> '" . $postValue . "'<br>";
+                    $description.= "<b>" . $key . ": </b>" . $prevValue . " <b>==></b> " . $postValue . "<br>";
                 }
                 else{// enable if you want to se all fields
                     //$description.= "<b>" . $key . ": </b>" . $prevValue . "<br>";                
@@ -108,12 +107,14 @@ class BusinessLogger{
     
     
     function insertLogPost($keyTable, $keyColumn, $key, $changeType, $businessKeyName, $businessKeyValue, $description, $saronUser){
-        $sqlInsert = "INSERT INTO Changes (ChangeType, User, BusinessKey, Description, Inserter, InserterName) ";
+        $sqlInsert = "INSERT INTO Changes (ChangeType, User, BusinessKey, BusinessKeyEncrypt, Description, DescriptionEncrypt, Inserter, InserterName) ";
         $sqlInsert.= "VALUES (";
         $sqlInsert.= "'" . $changeType . "', ";
         $sqlInsert.= "'" . $saronUser->userDisplayName . "', ";
-        $sqlInsert.= '"' . $businessKeyValue . '", ';
-        $sqlInsert.= '"' . $description . '", ';
+        $sqlInsert.= "'', ";
+        $sqlInsert.= $this->getEncryptedSqlString($businessKeyValue) . ', ';
+        $sqlInsert.= "'', ";
+        $sqlInsert.= $this->getEncryptedSqlString($description) . ', ';
         $sqlInsert.= $saronUser->WP_ID . ", ";
         $sqlInsert.= "'" . $saronUser->userDisplayName . "')";
         

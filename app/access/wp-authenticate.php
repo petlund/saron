@@ -106,12 +106,12 @@ require_once SARON_ROOT . "app/database/db.php";
     
     function insertSaronSessionUser($wp_id, $userDisplayName, $editor, $org_editor){
         $db = new db();        
-        $description = "<b>Borttag av Användarsession</b><br>";
-        $description.= "Städat bort gamla sessioner";
+        $description1 = "<b>Borttag av Användarsession</b><br>";
+        $description1.= "Städat bort gamla sessioner";
         $system = new SaronMetaUser();
         $wp_user = new SaronMetaUser($wp_id, $userDisplayName);
         
-        deletePersistentSaron($db, $wp_id, $description, $system);   
+        deletePersistentSaron($db, $wp_id, $description1, $system, false );   
         
         $sql = "INSERT INTO SaronUser (AccessTicket, Editor, Org_Editor, WP_ID, UserDisplayName) values (";
         $sql.= getAccessTicket() . ", "; 
@@ -119,11 +119,11 @@ require_once SARON_ROOT . "app/database/db.php";
         $sql.= $org_editor . ", ";
         $sql.= $wp_id . ", '";
         $sql.= $userDisplayName . "') ";
-        echo $sql;
+
         try{
-            $description = "<b>Tillägg av Användarsession</b><br>";
-            $description.= "Login";
-            $lastId = $db->insert($sql, "SaronUser", "Id", 'Användarsession', 'Användarnamn', $description, $wp_user);
+            $description2 = "<b>Tillägg av Användarsession</b><br>";
+            $description2.= "Login";
+            $lastId = $db->insert($sql, "SaronUser", "Id", 'Användarsession', 'Användarnamn', $description2, $wp_user);
             $result = $db->sqlQuery("Select AccessTicket from SaronUser where Id = " . $lastId);
     
             $ticket = "";

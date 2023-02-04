@@ -31,7 +31,7 @@ class ChangeLog extends SuperEntity{
     
     
     function selectRecords($id = -1){
-        $select = "SELECT *, id as Id, " . $this->saronUser->getRoleSql(false) . " ";
+        $select = "SELECT Id, ChangeType, BusinessKey, User,  " . DECRYPTED_BUSINESS_KEY . ", " . DECRYPTED_DESCRIPTION . ", Inserter, Inserted, InserterName, " . $this->saronUser->getRoleSql(false) . " ";
         if($id < 0){
             $where = "WHERE User like '%" . $this->uid . "%' AND  ChangeType like '%" . $this->cid . "%' "; 
             $result = $this->db->select($this->saronUser, $select , "FROM Changes ", $where, $this->getSortSql(), $this->getPageSizeSql(), RECORDS);    

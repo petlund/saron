@@ -76,13 +76,8 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                         success: function (successData) {
                             if(successData.Result === 'OK'){
                                 $dfd.resolve(successData); //Mandatory
-                                var data = {record: successData.Record}; 
-            
-//                                var childTableTitle = _setClassAndValueHeadline(data, 'LongHomeName', HOME, 'Hem', 'Hem för ', '');                                
-//                                var childHomeTableDef = homeTableDef(childTableTitle, tablePath, data.record.HomeId, tableDef);
-                                updateRelatedRows();                            }
-                            else
-                                $dfd.resolve(successData);
+                                updateRelatedRows();                            
+                            }
                         },
                         error: function () {
                             $dfd.reject();

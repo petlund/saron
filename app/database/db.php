@@ -39,7 +39,7 @@ class db {
     }
     
     function transaction_begin(){
-        $this->php_dev_error_log("transaction_begin", "");
+        $this->php_dev_error_log("transaction_begin", "", "");
         if(!$this->connection->autocommit(false)){
             throw new Exception($this->jsonErrorMessage("Transaktionsfel (Begin). Kan inte uppdatera."));                               
         }
@@ -47,30 +47,32 @@ class db {
   
     
     function transaction_end(){
-        $this->php_dev_error_log("transaction_end  ", "");
+        $this->php_dev_error_log("transaction_end", "", "");
         return $this->connection->autocommit(true);       
     }
     
     
     function transaction_roll_back(){
-        $this->php_dev_error_log("transaction_roll_back", "");
+        $this->php_dev_error_log("transaction_roll_back", "", "");
         return $this->connection->rollback();
     }
     
     
     public function insert($insert, $keyTable, $keyColumn, $businessEntityName, $businessKeyName, $description, $saronUser, $createLogPost = true){
-        $this->businessLogger = new BusinessLogger($this);
+        $this->businessLogger = new BusinessLogger($this,$saronUser);
 
         $changeType = "Tillägg av " . $businessEntityName;
         $lastId = "0";
         try{
-            $this->php_dev_error_log("====== insert ======<br>", $insert);
+            $this->php_dev_error_log("insert", "INFO", $insert);
             if(!$listResult = $this->connection->query($insert)){
-                throw new Exception($this->jsonErrorMessage("SQL-Error in insert statement! ", null, $this->connection->error));
+                $msg = $this->jsonErrorMessage("SQL-Error in insert statement! ", null, $this->connection->error);
+                $this->php_dev_error_log("insert", "ERROR " . $msg, $insert);
+                throw new Exception($msg);
             }
             else{
                 $sql = "Select " . $keyColumn . " from " . $keyTable . " Where " . $keyColumn . " = LAST_INSERT_ID()";
-                $this->php_dev_error_log("====== select after insert ======<br>", $sql);
+                $this->php_dev_error_log("select after insert", "INFO", $sql);
                 if(!$listResult = $this->connection->query($sql)){
                     throw new Exception($this->jsonErrorMessage("SQL-Error in LAST_INSERT_ID() statement after insert.", null, $this->connection->error));
                 }
@@ -93,15 +95,15 @@ class db {
             return $lastId;
         }
         catch(Exception $error){
-            $this->php_dev_error_log("Exception in insert function: " . $error->getMessage(), $insert);
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
+            $this->php_dev_error_log("insert", "Exception: " . $technicalErrMsg, $insert);
             throw new Exception($this->jsonErrorMessage("Error in insert function", null, $technicalErrMsg));
         }
     }     
     
     
     public function update($update, $set, $where, $keyTable, $keyColumn, $key, $businessEntityName, $businessKeyName, $description, $saronUser, $createLogPost = true){
-        $this->businessLogger = new BusinessLogger($this);
+        $this->businessLogger = new BusinessLogger($this, $saronUser);
 
         $businessKeyValue = "";
         $changeType = "Uppdatering av " . $businessEntityName;
@@ -116,7 +118,7 @@ class db {
             $prevListResult = $this->sqlQuery($prevPostSql);
         }
         
-        $this->php_dev_error_log("====== update =======", $sql);
+        $this->php_dev_error_log("update", "INFO",  $sql);
         if(!$listResult = $this->connection->query($sql)){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
             throw new Exception($this->jsonErrorMessage("Exception in update function", null, $technicalErrMsg));
@@ -135,7 +137,7 @@ class db {
     
     
     public function delete($sqlDelete, $keyTable, $keyColumn, $key, $businessEntityName, $businessKeyName, $description, $saronUser, $createLogPost = true){
-        $this->businessLogger = new BusinessLogger($this);
+        $this->businessLogger = new BusinessLogger($this, $saronUser);
 
         $changeType = "Borttag av " . $businessEntityName;
         if($createLogPost){
@@ -148,9 +150,10 @@ class db {
             $this->businessLogger->insertLogPost($keyTable, $keyColumn, $key, $changeType, $businessKeyName, $businessKeyValue, $description, $saronUser);
         }
 
-        $this->php_dev_error_log("====== delete ======", $sqlDelete);
+        $this->php_dev_error_log("delete", "INFO", $sqlDelete);
         if(!$listResult = $this->connection->query($sqlDelete)){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
+             $this->php_dev_error_log("delete", "Error " . $technicalErrMsg, $sqlDelete);
             throw new Exception($this->jsonErrorMessage("Exception in delete function", null, $technicalErrMsg));
         }
         else{
@@ -166,8 +169,9 @@ class db {
         $sql.= "UPPER(" . $field . ") like UPPER('" . $value . "') AND Id <> " . $id . " ";
         
         if(!$listResult = $this->connection->query($sql)){
-            $this->php_dev_error_log("Exception in exist function", $sql);
-            throw new Exception($this->jsonErrorMessage("SQL-Error in select /exist/ statement!", null, $sql));
+            $msg = $this->jsonErrorMessage("SQL-Error in select /exist/ statement!", null, $sql);
+            $this->php_dev_error_log("fieldValueExist", "Exception" . $msg , "");
+            throw new Exception($msg);
         }
         $countRows = "0";
         while($countRow = mysqli_fetch_array($listResult)){
@@ -193,8 +197,9 @@ class db {
         }
         
         if(!$listResult = $this->connection->query($sql)){
-            $this->php_dev_error_log("Exception in exist function", $sql);
-            throw new Exception($this->jsonErrorMessage("SQL-Error in select /exist/ statement!", null, $sql));
+            $msg = $this->jsonErrorMessage("SQL-Error in select /exist/ statement!", null, $sql);
+            $this->php_dev_error_log("Exist", "Exception", "");
+            throw new Exception($msg);
         }
         $countRows = "0";
         while($countRow = mysqli_fetch_array($listResult)){
@@ -217,7 +222,7 @@ class db {
             return $this->selectSeparate($saronUser, $sqlSelect, $sqlCount, $responstype);
         }
         catch(Exception $error){
-            $this->php_dev_error_log("Exception in select function", $sqlSelect);
+            $this->php_dev_error_log("select", "Exception" . $error->getMessage(), $sqlSelect);
             throw new Exception($error->getMessage());
         }
     } 
@@ -226,21 +231,21 @@ class db {
     
     public function selectSeparate($saronUser, $sqlSelect, $sqlCount, $responstype=RECORDS){
         if(TEST_ENV === true){
-            $this->php_dev_error_log("selectSeparate", "INFO SQL: " . $sqlSelect . "\r\n");
+            $this->php_dev_error_log("selectSeparate", "INFO",  $sqlSelect);
             //syslog(LOG_INFO, "INFO SQL: " . $sql . "\r\n");
         }
 
         $listResult = $this->connection->query($sqlSelect);
         if(!$listResult){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
-            $this->php_dev_error_log("Exception in select function part 1", $sqlSelect);
+            $this->php_dev_error_log("select function part 1 ", "Exception" . $technicalErrMsg, $sqlSelect);
             throw new Exception($this->jsonErrorMessage("SQL-Error in select /list/ statement!", null, $technicalErrMsg));
         }
         
         $countResult = $this->connection->query($sqlCount);
         if(!$countResult){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
-            $this->php_dev_error_log("Exception in select function part 2", $sqlSelect);
+            $this->php_dev_error_log("select function part 2 ", "Exception" . $technicalErrMsg, $sqlSelect);
             throw new Exception($this->jsonErrorMessage("SQL-Error in select count statement!", null, $technicalErrMsg));
         }
 
@@ -251,16 +256,25 @@ class db {
     } 
     
     
+    function php_dev_error_log($method, $msg, $sql){
+        if(TEST_ENV === true){
+            error_log("**** DB: " . $method . " " . $msg . " *****");
+            if(strlen($sql)>0){
+                error_log($sql);
+            }            
+            error_log("\r\n****** END ******\r\n\r\n");
+        }
+    }    
     
     public function sqlQuery($sql){
         if(TEST_ENV === true){
-            $this->php_dev_error_log("====== sqlQuery =====", "INFO SQL: " . $sql . "\r\n");
+            $this->php_dev_error_log("sqlQuery", "INFO", $sql);
         }
         $listResult = $this->connection->query($sql);
         if(!$listResult){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
-            echo "SQL-Error in statement: <br>" .  $sql . "<br>" .  $technicalErrMsg; 
-            $this->php_dev_error_log("Exception in sqlQuery function", $sql);
+            echo "SQL-Error in statement: \r\n" .  $sql . "\r\n" .  $technicalErrMsg; 
+            $this->php_dev_error_log("sqlQuery", "Exception" . $technicalErrMsg, $sql);
             return false;
         }
         $result = $this->resultSetToArray($listResult, RECORDS);
@@ -333,39 +347,33 @@ class db {
         $jsonResult = json_encode($jTableResult);
 
         if($responstype === RECORD AND $countRows > 1){
-            $this->php_dev_error_log("processRowSet", "");
-            throw new Exception($this->jsonErrorMessage("Error i json_encode funktionen! Not a unic Record", null, " -- processRowSet"));            
+            $msg = $this->jsonErrorMessage("Error i json_encode funktionen! Not a unic Record", null, " -- processRowSet");
+            $this->php_dev_error_log("processRowSet", $msg, "");
+            throw new Exception($msg);            
         }
         
         
         if($jsonResult===false){
-            $this->php_dev_error_log("processRowSet", "");
-            throw new Exception($this->jsonErrorMessage("Error i json_encode funktionen!", null, " -- processRowSet"));
+            $msg = $this->jsonErrorMessage("Error i json_encode funktionen!", null, " -- processRowSet");
+            $this->php_dev_error_log("processRowSet", $msg, "");
+            throw new Exception($msg);
         }
         return $jsonResult;
     }    
     
     
-    
-    function php_dev_error_log($method, $msg){
-        if(TEST_ENV === true){
-            error_log("**** DB: " . $method . " *****");
-            if(strlen($msg)>0){
-                error_log($msg . "\n\n");
-            }            
-        }
-    }
+
     
     function getResultSetAsHTMLTable($sql){
         if(TEST_ENV === true){
-            $this->php_dev_error_log("sqlQuery", "INFO SQL: " . $sql . "\r\n");
+            $this->php_dev_error_log("sqlQuery", "INFO",  $sql);
             //syslog(LOG_INFO, "INFO SQL: " . $sql . "\r\n");
         }
         $listResult = $this->connection->query($sql);
         if(!$listResult){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
-            echo "SQL-Error in statement: <br>" .  $sql . "<br>" .  $technicalErrMsg; 
-            $this->php_dev_error_log("Exception in sqlQuery function", $sql);
+            echo "SQL-Error in statement: \r\n" .  $sql . "\r\n" .  $technicalErrMsg; 
+            $this->php_dev_error_log("getResultSetAsHTMLTable", "Exception " . $technicalErrMsg, $sql);
             return false;
         }
         
