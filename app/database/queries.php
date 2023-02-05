@@ -72,7 +72,7 @@ require_once SARON_ROOT . 'app/entities/MemberState.php';
     $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_MOBILE . ", ";
     $ALL_PEOPLE_FIELDS.= "KeyToChurch, KeyToExp, ";
     $ALL_PEOPLE_FIELDS.= DECRYPTED_ALIAS_COMMENT . ", ";
-    $ALL_PEOPLE_FIELDS.= "People.HomeId, People.HomeId as OldHomeId, People.HomeId as PhoneId, People.Updater, People.Updated, People.UpdaterName, People.Inserter, People.Inserted, People.InserterName, " . DECRYPTED_ALIAS_COMMENT_KEY . ", MemberStateId, MemberStateName, ";
+    $ALL_PEOPLE_FIELDS.= "People.HomeId, People.HomeId as OldHomeId, People.Updater, People.Updated, People.UpdaterName, People.Inserter, People.Inserted, People.InserterName, " . DECRYPTED_ALIAS_COMMENT_KEY . ", MemberStateId, MemberStateName, ";
     $ALL_PEOPLE_FIELDS.= NUMBER_OF_ENGAGEMENT_AS_ENGAGEMENTS;
     
     define("SQL_STAR_PEOPLE", "Select " . $ALL_PEOPLE_FIELDS);
