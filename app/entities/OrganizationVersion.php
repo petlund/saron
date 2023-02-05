@@ -33,7 +33,7 @@ class OrganizationVersion extends SuperEntity{
 
         if(strlen($this->information) < 5){
             $error["Result"] = "ERROR";
-            $error["Message"] = "Namnge beslutsmötet. ";
+            $error["Message"] = "Beskrivningen ska ange vilket beslutsmöte som är aktuellt och vara minst fem tecken.  ";
             throw new Exception(json_encode($error));
         }
          
