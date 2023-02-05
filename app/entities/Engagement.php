@@ -63,7 +63,7 @@ class Engagement extends SuperEntity{
         $select.= "CONCAT(Zip, ' ', City) AS Hosted, ";
         $select.= $this->saronUser->getRoleSql(false) . " ";
         
-        $from = "from view_people as p left outer join Homes as h on h.id = p.HomeId ";
+        $from = "from view_people as p ";
         
         $where = "WHERE ";
         if($id > 0){

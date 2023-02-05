@@ -79,6 +79,7 @@
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"people.php", TABLE_NAME_KEYS, " - Nyckelinnehav");?></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"homes.php",  TABLE_NAME_HOMES, "Hem");?></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"people.php", TABLE_NAME_TOTAL, "Registeröversikt");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"changelog.php", TABLE_NAME_CHANGE, "Ändringslogg");?></li>
                             </ul>
                         </li>
                         <li>
@@ -104,7 +105,6 @@
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"statistics.php", TABLE_NAME_STATISTICS, "Medlemsstatistik");?></li>
                                 <li><a href="/<?php echo SARON_URI;?>app/views/charts.php">Medlemsstatistik grafik</a></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"efk.php", TABLE_NAME_EFK, "EFK-statistik");?></li>
-                                <li><?php echo getMenyLink(SARON_VIEW_URI,"changelog.php", TABLE_NAME_CHANGE, "Ändringslogg");?></li>
                             </ul>
                         </li>
                         <li>
@@ -120,6 +120,7 @@
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"organizationSearch.php", TABLE_NAME_UNITTYPE, "Organisatoriska enhetstyper");?></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_ORG_ROLE_STATUS, "Bemanningsstatus");?></li>
                                 <li><?php echo getMenyLink(SARON_VIEW_URI,"organization.php", TABLE_NAME_ORGVERSION, "Beslut om organisation");?></li>
+                                <li><?php echo getMenyLink(SARON_VIEW_URI,"changelog.php", TABLE_NAME_CHANGE, "Ändringslogg");?></li>
                             <!-- 
                                 <li><?php //echo getMenyLink(SARON_VIEW_URI,"organization.php", ORG_GRAPH, " --Grafisk presentation");?></li>
                             -->

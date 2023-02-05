@@ -59,14 +59,13 @@ class OrganizationUnit extends SuperEntity{
         case SOURCE_LIST:
             break;
         case SOURCE_EDIT:
-            $where = "WHERE Tree.Id <> " . $this->id . " ";    
+            $where = "WHERE NOT (Typ.SubUnitEnabled = 1 OR Tree.Id IN (" . $this->selectSubNodesSql($this->id) . ")) ";
             break;
         default:
             $where = "";    
             break;
         }
         If($this->filter === 'yes'){
-            $where = "WHERE NOT (Typ.SubUnitEnabled = 0 OR Tree.Id IN (" . $this->selectSubNodesSql($this->id) . ")) ";
         }        
 
         $result = $this->db->select($this->saronUser, $select , $from, $where, "Order by DisplayText ", "", "Options");    
