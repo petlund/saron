@@ -94,11 +94,6 @@ class Person extends People{
         }
         
 
-        if((strlen($this->DateOfMembershipStart) > 0 or strlen($this->DateOfMembershipEnd) > 0) and strlen($this->DateOfFriendshipStart) > 0){
-            $error["Message"] = "En medlem eller före detta medlem ska inte ha ett datum för start av vänkontakt.";
-        }
-
-
         if(strlen($error["Message"])>0){
             $error["Result"] = "ERROR";
             return json_encode($error);

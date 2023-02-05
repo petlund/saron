@@ -318,6 +318,9 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                 }
             },
             LongHomeName: {
+                create: false,
+                edit: false,
+                list: true,
                 title: 'Hem'
             },
             DateOfMembershipEnd:{
@@ -392,12 +395,6 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                 create: false,
                 width: '4%',
                 listClass: "MemberStateName" 
-            },
-            DateOfMembershipEnd: {
-                list: false,
-                edit: true,
-                create: false,
-                listClass: "DateOfMembershipEnd" 
             },
             DateOfDeath: {
                 title: 'Avliden',

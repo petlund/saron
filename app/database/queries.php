@@ -6,7 +6,7 @@ require_once SARON_ROOT . 'app/entities/MemberState.php';
     openssl_pkey_export($res, $privkey);
     define ("PKEY", "'" . $privkey . "'");
     define("SALT_LENGTH", 13);
-    define("MAX_STR_LEN", 250);
+    define("MAX_STR_LEN", 4096);
     define("ENCRYPTED_TABLE_COLUMN_SUFFIX", "Encrypt");
     
     define("DOSSIER_REPORT", "DossierReport");
