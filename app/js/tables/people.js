@@ -38,7 +38,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
         pageList: 'minimal',
         sorting: true,
         multiSorting: true,
-        defaultSorting: 'Name ASC, HomeId ASC, DateOfBirth ASC', //Set default sorting   
+        defaultSorting: 'LongHomeName ASC, DateOfBirth ASC', //Set default sorting    //Set default sorting   
         messages: {addNewRecord: 'Ny person'},
         actions: {
             listAction:  saron.root.webapi + 'listPeople.php',     
@@ -306,7 +306,7 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
             HomeId: {
                 create: true,
                 edit: true,
-                list: true,
+                list: false,
                 title: 'Hem',
                 inputTitle: 'Välj hem',
                 optionsSorting: "text",
@@ -316,6 +316,9 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                     var parameters = getOptionsUrlParameters(data, tableName, parentId, tablePath, field);                    
                     return url + parameters;
                 }
+            },
+            LongHomeName: {
+                title: 'Hem'
             },
             DateOfMembershipEnd:{
                 type: 'hidden'            
