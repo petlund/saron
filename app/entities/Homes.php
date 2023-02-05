@@ -186,11 +186,6 @@ class Homes extends SuperEntity{
                     $where = "WHERE Value=" . $this->HomeId;
                 }
             break;
-            case "PhoneId":
-                    $sql = "SELECT null as Value, ' ' as DisplayText "; 
-                    $sql.= "Union "; 
-                    $sql.= "select Id as Value, " .  $this->getFieldSql("", "DisplayText", "PhoneEncrypt", " ", true, false);
-            break;
         }
         $result = $this->db->select($this->saronUser, $sql, "FROM Homes ", $where, "ORDER BY DisplayText ", "", "Options");    
         return $result;
