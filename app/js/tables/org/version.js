@@ -58,7 +58,7 @@ function orgVersionTableDef(tableTitle, parentTablePath, parentId, parentTableDe
                 displayFormat: DATE_FORMAT
             },
             information: {
-                title: 'Beskrivning',
+                title: 'Ange beslutsmöte (Årsmöte, Församlingsmöte, Församlingsledningsmöte)',
                 width: '70%'
             },
             Updated:{
