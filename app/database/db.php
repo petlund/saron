@@ -267,9 +267,7 @@ class db {
     }    
     
     public function sqlQuery($sql){
-        if(TEST_ENV === true){
-            $this->php_dev_error_log("sqlQuery", "INFO", $sql);
-        }
+        $this->php_dev_error_log("sqlQuery", "INFO", $sql);
         $listResult = $this->connection->query($sql);
         if(!$listResult){
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
