@@ -49,7 +49,7 @@ function posTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
         fields: {
             Id: {
                 key: true,
-                list: false,
+                list: true,
                 create: false,
                 edit: false
             },         
@@ -203,7 +203,7 @@ function posTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 create: false,
                 edit: false,
                 width: '15%',
-                title: 'Förslag',
+                title: 'Nytt beslutsunderlag',
                 list: true,
             },
             pCur_Mobile: {
@@ -228,7 +228,7 @@ function posTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 width: '10%',
                 edit: false,
                 create: false,
-                title: 'Senast beslutad'
+                title: 'Senast beslutad organisation'
             },
             Updated:{
                 title: 'Uppdaterad',

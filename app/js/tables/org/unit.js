@@ -24,7 +24,7 @@ function unitTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
         pageList: 'minimal',
         sorting: true, //Enable sorting
         multiSorting: true,
-        defaultSorting: "Name",        
+        defaultSorting: "Prefix, Name",        
         messages: {addNewRecord: 'Lägg till en ny organisatorisk enhet.'},
         actions: {
             listAction:   saron.root.webapi  +  'listOrganizationUnit.php',

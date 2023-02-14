@@ -1,0 +1,11 @@
+Id,People_FK,PrevPeople_FK,Function_FK,PrevFunction_FK,OrgPosStatus_FK,PrevOrgPosStatus_FK,OrgSuperPos_FK,PrevOrgSuperPos_FK,OrgRole_FK,OrgTree_FK,Updater,Updated,UpdaterName,Comment
+283,10,10,NULL,-1,1,4,NULL,NULL,121,188,1,"2023-02-11 10:36:46",saron,"R Ingen ändring"
+284,368,368,NULL,-1,2,1,NULL,NULL,119,188,1,"2023-02-11 10:36:53",saron,"R Samma person som förslag"
+285,171,175,NULL,NULL,1,1,NULL,NULL,124,188,1,"2023-02-11 10:37:54",saron,"R Nytt förslag person"
+286,NULL,7,NULL,NULL,2,1,553,NULL,123,188,1,"2023-02-11 10:38:27",saron,"R nytt försalg org roll"
+287,128,128,NULL,-1,2,1,NULL,NULL,120,188,1,"2023-02-11 10:39:06",saron,"R nytt förslag funktion"
+288,164,175,NULL,NULL,1,1,NULL,NULL,122,188,1,"2023-02-11 10:39:48",saron,"R Ny avstämd person"
+496,NULL,418,254,-1,1,1,NULL,NULL,129,188,1,"2023-02-11 10:40:15",saron,"R Ny avstämd funktion"
+497,NULL,-1,NULL,-1,1,1,184,553,129,188,1,"2023-02-11 10:40:44",saron,"R Ny avst&#39;md org roll"
+529,437,NULL,NULL,-1,1,4,NULL,NULL,123,188,1,"2023-02-11 10:43:39",saron,"R Ny avstämd Person"
+556,NULL,NULL,NULL,186,4,NULL,NULL,NULL,121,188,1,"2023-02-11 10:43:18",saron,"R Vakant Funktion"

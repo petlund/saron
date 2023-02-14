@@ -60,10 +60,28 @@ class OrganizationVersion extends SuperEntity{
         $where = "WHERE OrgPosStatus_FK = 1 and ("
                 . "PrevFunction_FK <> Function_FK or "
                 . "PrevPeople_FK <> People_FK or "
-                . "PrevOrgSuperPos_FK <> OrgPosStatus_FK or "
+                . "PrevOrgSuperPos_FK <> OrgSuperPos_FK or "
                 . "PrevOrgPosStatus_FK <> OrgPosStatus_FK) ";
         
-        $this->db->update($update, $set, $where, 'Org_Version', 'Id', $id, 'Organisationsversion','Beslutsdatum', $description, $this->saronUser);
+        $sql = $this->getNewVersionSQL("PrevPeople_FK", "People_FK");
+        $sql.= $this->getNewVersionSQL("PrevFunction_FK", "Function_FK");
+        $sql.= $this->getNewVersionSQL("PrevOrgSuperPos_FK", "OrgSuperPos_FK");
+        
+        $this->db->sqlQuery($sql);
+    }
+    
+    function getNewVersionSQL($prev, $cur){
+        $update = "update Org_Pos set UpdaterName='" . $this->saronUser->getDisplayName() . "', Updater=" . $this->saronUser->WP_ID . ", ";
+        $where = "where OrgPosStatus_FK ="; 
+        $sql = $update . $prev . "=" . $cur . " "; 
+        $sql.= $where . "1 and (" . $cur . " <> " . $prev . " or (" . $cur . " > 0 and " . $prev . " is null));"; //Avstämd 
+        $sql.= $update . $prev . "= null "; 
+        $sql.= $where . "2 and " . $cur . " <> " . $prev . "; ";//Förslag
+        $sql.= $update . $prev . " = null, " . $cur . " = null ";
+        $sql.= $where . "4 and (" . $cur . " < 1 or " . $cur . " is null) and (" . $prev . " > 0 or " . $cur . " is not null);";//Vakant
+        $sql.= $update . $prev . " = null, " . $cur . " = null ";
+        $sql.= $where . "5 and (" . $cur . " < 1 or " . $cur . " is null) and (" . $prev . " > 0 or " . $cur . " is not null);";//Tillsätts ej
+        return $sql;
     }
     
     
