@@ -49,7 +49,7 @@ class Engagement extends SuperEntity{
 
         $subWhere = "where (Pos.People_FK = p.Id or SuperPos.People_FK = p.Id) and Stat.Id < 3 "; // Only proposal and committed
         $subGroupBy ="";    
-        $subOrderBy = "Order by EngagementList) as Engagement, ";
+        $subOrderBy = "Order by EngagementList) as Engagements, ";
         $subQuery1 = $subSelect1 . $subFrom . $subWhere . $subGroupBy . $subOrderBy;
         $subQuery2 = $subSelect2 . $subFrom . $subWhere . $subGroupBy . ") as Cnt, ";
         
