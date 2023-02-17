@@ -218,7 +218,7 @@ function unitTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 inputTitle: 'Typ av enhet (Kan inte ändras. Vill du ändra behöver du skapa en ny organisatorisk enhet).',
                 width: '5%',
                 options: function (data){
-                    var field = null;                    
+                    var field = "OrgUnitType_FK";                    
                     var url = saron.root.webapi + 'listOrganizationUnitType.php';
                     var parameters = getOptionsUrlParameters(data, tableName, parentId, null, field);                    
                     return url + parameters;
