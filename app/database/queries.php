@@ -90,7 +90,6 @@ require_once SARON_ROOT . 'app/entities/MemberState.php';
     
     define("SELECT_ALL_FIELDS_FROM_VIEW_PEOPLE", "select " . $ALL_PEOPLE_FIELDS . ", " . $ALL_HOME_FIELDS. ", VisibleInCalendarText, GenderText, KeyToChurchText, KeyToExpText, " . $ALL_HOME_FIELDS . ", LetterText ");
 
-    define("SQL_FROM_PEOPLE_LEFT_JOIN_HOMES", "FROM view_people as People left outer join Homes on People.HomeId=Homes.Id "); 
     define("SQL_WHERE", "Where ");  
     
     define("FORMATTED_EMAILADDRESS", "if(" . DECRYPTED_EMAIL . " not like \"\", concat(\"<p class='Email'><a href='mailto:\"," . DECRYPTED_EMAIL . ",\"'>\", " . DECRYPTED_EMAIL . ", \"</a></p>\"),'') ");

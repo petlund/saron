@@ -218,7 +218,7 @@ function createDossier(TCPDF $pdf, $id){
 }
 
 function getSQL($id){
-    $sql = SQL_ALL_FIELDS . SQL_FROM_PEOPLE_LEFT_JOIN_HOMES;
+    $sql = SELECT_ALL_FIELDS_FROM_VIEW_PEOPLE . "FROM view_people as People ";
     if ($id>0){
         $sql .= "where People.Id= " . $id;
     }
