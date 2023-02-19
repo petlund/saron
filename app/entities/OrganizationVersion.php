@@ -46,42 +46,38 @@ class OrganizationVersion extends SuperEntity{
     }
     
     
-    function update_Org($id){
+    function update_Org(){
         $description = "<b>Uppdatering av organisation</b><br>";
         $description.='<u>Avstämda</u> förslag är överförda till beslutad organisation';
         
-        $update = "update Org_Pos ";
-        $set = "SET PrevPeople_FK = People_FK, ";        
-        $set.= "PrevFunction_FK = Function_FK, ";        
-        $set.= "PrevOrgSuperPos_FK = OrgSuperPos_FK, ";        
-        $set.= "PrevOrgPosStatus_FK = OrgPosStatus_FK, ";        
-        $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
-        $set.= "Updater=" . $this->saronUser->WP_ID . " ";
-        $where = "WHERE OrgPosStatus_FK = 1 and ("
-                . "PrevFunction_FK <> Function_FK or "
-                . "PrevPeople_FK <> People_FK or "
-                . "PrevOrgSuperPos_FK <> OrgSuperPos_FK or "
-                . "PrevOrgPosStatus_FK <> OrgPosStatus_FK) ";
-        
-        $sql = $this->getNewVersionSQL("PrevPeople_FK", "People_FK");
-        $sql.= $this->getNewVersionSQL("PrevFunction_FK", "Function_FK");
-        $sql.= $this->getNewVersionSQL("PrevOrgSuperPos_FK", "OrgSuperPos_FK");
-        
-        $this->db->sqlQuery($sql);
+        $this->updatePos(POS_STATE_AGREED, "PrevPeople_FK", "People_FK");
+        $this->updatePos("NA", "PrevPeople_FK", "People_FK");
+        $this->updatePos(POS_STATE_AGREED, "PrevFunction_FK", "Function_FK");
+        $this->updatePos("NA", "PrevFunction_FK", "Function_FK");
+        $this->updatePos(POS_STATE_AGREED, "PrevOrgSuperPos_FK", "OrgSuperPos_FK");
+        $this->updatePos("NA", "PrevOrgSuperPos_FK", "OrgSuperPos_FK");
     }
+
     
-    function getNewVersionSQL($prev, $cur){
-        $update = "update Org_Pos set UpdaterName='" . $this->saronUser->getDisplayName() . "', Updater=" . $this->saronUser->WP_ID . ", ";
-        $where = "where OrgPosStatus_FK ="; 
-        $sql = $update . $prev . "=" . $cur . " "; 
-        $sql.= $where . "1 and (" . $cur . " <> " . $prev . " or (" . $cur . " > 0 and " . $prev . " is null));"; //Avstämd 
-        $sql.= $update . $prev . "= null "; 
-        $sql.= $where . "2 and " . $cur . " <> " . $prev . "; ";//Förslag
-        $sql.= $update . $prev . " = null, " . $cur . " = null ";
-        $sql.= $where . "4 and (" . $cur . " < 1 or " . $cur . " is null) and (" . $prev . " > 0 or " . $cur . " is not null);";//Vakant
-        $sql.= $update . $prev . " = null, " . $cur . " = null ";
-        $sql.= $where . "5 and (" . $cur . " < 1 or " . $cur . " is null) and (" . $prev . " > 0 or " . $cur . " is not null);";//Tillsätts ej
-        return $sql;
+    
+    function updatePos($posState, $prev, $cur){
+        $update = "update Org_Pos ";
+        $set = "set UpdaterName='" . $this->saronUser->getDisplayName() . "', Updater=" . $this->saronUser->WP_ID . ", ";
+        $where = "where OrgPosStatus_FK ";
+        If($posState === POS_STATE_AGREED){
+            $set.= $prev . " = " . $cur . " "; 
+            $where.= "= " . POS_STATE_AGREED . " ";
+        }
+        else{
+            $set.= $prev . " =  null "; 
+            $where.= "<> " . POS_STATE_AGREED . " ";
+        }
+        $where.= "and (";
+        $where.= "(" . $cur . " is null and " . $prev . " is not null) or";  
+        $where.= "(" . $cur . " is not null and " . $prev . " is null) or";  
+        $where.= "(" . $cur . " <> " . $prev . ")";  
+        $where.= ");";
+        $this->db->update($update, $set, $where);        
     }
     
     
@@ -123,7 +119,7 @@ class OrganizationVersion extends SuperEntity{
         
         $id = $this->db->insert($sqlInsert, "Org_Version", "Id", 'Organisationsversion','Beslutsdatum', null, $this->saronUser);
 
-        $this->update_Org($id);
+        $this->update_Org();
         $this->updatFriendshipDateForPeopleWidthEngagement();
 
         $result =  $this->select($id, RECORD);
