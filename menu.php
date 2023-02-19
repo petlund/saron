@@ -24,15 +24,17 @@
 <html>
   <head> 
     <meta charset="UTF-8">
-<!--        <meta name="viewport" content="width=device-width, initial-scale=1.0">
--->
+
     <?php 
     require_once SARON_ROOT . "app/util/GlobalConstants_js.php";
 
     include ('app/util/distPath.php') ?>
     
     <link rel="icon" href=<?php echo Favicon;?> type="png"/>        
-    <script><?php echo 'const saron = ' . $saronJSON.";";?></script> <!-- refer to app/util/GlobalConstants_js.php -->
+    <meta http-equiv="Content-Security-Policy" content="script-src <?php  $nonce = New Nonce($db, $saronUser); echo $nonce->getCSPNonce();?> 'self'; form-action 'self' https://apis.google.com">
+
+    <link rel="icon" href=<?php echo Favicon;?> type="png"/>        
+    <script nonce=<?php echo $nonce->getScriptNonce();?>><?php echo 'const saron = ' . $saronJSON . ";";?></script> <!-- refer to app/util/GlobalConstants_js.php -->
 
     <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/jquery-3.3.1.js"></script>

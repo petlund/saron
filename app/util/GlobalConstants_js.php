@@ -1,6 +1,7 @@
 <?php
 require_once "config.php";
 require_once SARON_ROOT . "app/util/GlobalConstants_php.php";
+require_once SARON_ROOT . "app/access/Nonce.php";
 
 // From config.php
 // System
@@ -209,3 +210,4 @@ $saron->list->mobile_ending_friendship->name = LIST_MOBILE_ENDING_FRIENDSHIP;
 $saron->list->mobile_ending_friendship->nameId = "#" . LIST_MOBILE_ENDING_FRIENDSHIP;
 
 $saronJSON = json_encode($saron);
+
