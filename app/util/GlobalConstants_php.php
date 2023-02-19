@@ -22,6 +22,11 @@
     Define("PEOPLE_STATE_ONLY_BAPTIST",  3);
     Define("PEOPLE_STATE_ANONYMiZED",  4);
 
+    Define("POS_STATE_AGREED", 1);
+    Define("POS_STATE_PROPOSAL", 2);
+    Define("POS_STATE_VACANCY", 4);
+    Define("POS_STATE_NOT_USED", 5);
+    
 // People    
     Define("TABLE_NAME_PEOPLE",  "people");
 

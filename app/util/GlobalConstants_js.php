@@ -201,4 +201,13 @@ $saron->list->mobile_ending_friendship =  (object)array();
 $saron->list->mobile_ending_friendship->name = LIST_MOBILE_ENDING_FRIENDSHIP;
 $saron->list->mobile_ending_friendship->nameId = "#" . LIST_MOBILE_ENDING_FRIENDSHIP;
 
+$saron->pos =  (object)array();
+$saron->pos->state =  (object)array();
+$saron->pos->state->agreed =  POS_STATE_AGREED;
+$saron->pos->state->propsal =  POS_STATE_PROPOSAL;
+$saron->pos->state->vacancy =  POS_STATE_VACANCY;
+$saron->pos->state->not_used =  POS_STATE_NOT_USED;
+
+
+
 $saronJSON = json_encode($saron);

@@ -33,7 +33,7 @@ class OrganizationVersion extends SuperEntity{
 
         if(strlen($this->information) < 5){
             $error["Result"] = "ERROR";
-            $error["Message"] = "Namnge beslutsmötet. ";
+            $error["Message"] = "Beskrivningen ska ange vilket beslutsmöte som är aktuellt och vara minst fem tecken.  ";
             throw new Exception(json_encode($error));
         }
          
@@ -47,15 +47,34 @@ class OrganizationVersion extends SuperEntity{
     
     
     function update_Org(){
+        $this->updatePos(POS_STATE_AGREED, "PrevPeople_FK", "People_FK");
+        $this->updatePos("NA", "PrevPeople_FK", "People_FK");
+        $this->updatePos(POS_STATE_AGREED, "PrevFunction_FK", "Function_FK");
+        $this->updatePos("NA", "PrevFunction_FK", "Function_FK");
+        $this->updatePos(POS_STATE_AGREED, "PrevOrgSuperPos_FK", "OrgSuperPos_FK");
+        $this->updatePos("NA", "PrevOrgSuperPos_FK", "OrgSuperPos_FK");
+    }
+
+    
+    
+    function updatePos($posState, $prev, $cur){
         $update = "update Org_Pos ";
-        $set = "SET PrevPeople_FK = People_FK, ";        
-        $set.= "PrevFunction_FK = Function_FK, ";        
-        $set.= "PrevOrgSuperPos_FK = OrgSuperPos_FK, ";        
-        $set.= "PrevOrgPosStatus_FK = OrgPosStatus_FK, ";        
-        $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
-        $set.= "Updater=" . $this->saronUser->WP_ID . " ";
-        $where = "WHERE OrgPosStatus_FK = 1 ";
-        $this->db->update($update, $set, $where);
+        $set = "set UpdaterName='" . $this->saronUser->getDisplayName() . "', Updater=" . $this->saronUser->WP_ID . ", ";
+        $where = "where OrgPosStatus_FK ";
+        If($posState === POS_STATE_AGREED){
+            $set.= $prev . " = " . $cur . " "; 
+            $where.= "= " . POS_STATE_AGREED . " ";
+        }
+        else{
+            $set.= $prev . " =  null "; 
+            $where.= "<> " . POS_STATE_AGREED . " ";
+        }
+        $where.= "and (";
+        $where.= "(" . $cur . " is null and " . $prev . " is not null) or";  
+        $where.= "(" . $cur . " is not null and " . $prev . " is null) or";  
+        $where.= "(" . $cur . " <> " . $prev . ")";  
+        $where.= ");";
+        $this->db->update($update, $set, $where);        
     }
     
     

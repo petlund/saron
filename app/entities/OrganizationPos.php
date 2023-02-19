@@ -221,7 +221,12 @@ class OrganizationPos extends SuperEntity{
         $sqlInsert = "INSERT INTO Org_Pos (People_FK, Function_FK, Comment, OrgPosStatus_FK, OrgSuperPos_FK, OrgRole_FK, OrgTree_FK, Updater) ";
         $sqlInsert.= "VALUES (";
         $sqlInsert.= "'" . $this->people_FK . "', ";
-        $sqlInsert.= "'" . $this->function_FK . "', ";
+        if($this->function_FK){
+            $sqlInsert.= "'" . $this->function_FK . "', ";
+        }
+        else{
+            $sqlInsert.= "null, ";                        
+        }
         $sqlInsert.= "'" . $this->comment . "', ";
         $sqlInsert.= "'" . $this->orgPosStatus_FK . "', ";
         if($this->orgSuperPos_FK){
