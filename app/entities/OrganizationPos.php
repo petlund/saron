@@ -218,7 +218,7 @@ class OrganizationPos extends SuperEntity{
     
     function insertNewPos(){
         $this->checkEngagementData();
-        $sqlInsert = "INSERT INTO Org_Pos (People_FK, Function_FK, Comment, OrgPosStatus_FK, OrgSuperPos_FK, OrgRole_FK, OrgTree_FK, Updater) ";
+        $sqlInsert = "INSERT INTO Org_Pos (People_FK, Function_FK, Comment, OrgPosStatus_FK, OrgSuperPos_FK, OrgRole_FK, OrgTree_FK, UpdaterName, Updater) ";
         $sqlInsert.= "VALUES (";
         $sqlInsert.= "'" . $this->people_FK . "', ";
         if($this->function_FK){
@@ -236,7 +236,8 @@ class OrganizationPos extends SuperEntity{
             $sqlInsert.= "null, ";                        
         }
         $sqlInsert.= "'" . $this->orgRole_FK . "', ";
-        $sqlInsert.= "'" . $this->parentId . "', ";  //ONLY OrgTree_FK
+        $sqlInsert.= "'" . $this->parentId . "', "; 
+        $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "', ";  
         $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
         
         $id = $this->db->insert($sqlInsert, "Org_Pos", "Id", "Position", "Position", null, $this->saronUser);
