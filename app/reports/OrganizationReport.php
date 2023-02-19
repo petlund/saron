@@ -10,7 +10,9 @@
     $saronUser;
     $person;
 
-
+    define("NEW_RESOURCE", 'New');
+    define("CURRENT_RESOURCE", 'Old');
+    
     $type = (String)filter_input(INPUT_GET, "type", FILTER_SANITIZE_STRING);
 
     if(strlen($type) > 0){
@@ -121,7 +123,8 @@ function createOrganizationCalender(db $db, TCPDF $pdf, $person, String $type){
     define ("CELL_WIDTH", 30);
     define ("BACKGROUND_FILLED", 1);
     define ("BACKGROUND_NOT_FILLED", 0);
-
+    $maxCalculatedHight = 240;
+    
     $longName = '';
     
     $listResult = $db->sqlQuery(getSQL($person, $type));
@@ -152,14 +155,12 @@ function createOrganizationCalender(db $db, TCPDF $pdf, $person, String $type){
         case "vacancy":
             $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, "Vakanta uppdrag - " . date("Y-m-d", time()), 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_HEAD_CELL_HIGHT, 'T', true);
             break;
-        case "vacancy":
-            $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, "Vakanta uppdrag - " . date("Y-m-d", time()), 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_HEAD_CELL_HIGHT, 'T', true);
-            break;
         default:
             $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, "Beslutad organisation - " . $decisionDate, 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_HEAD_CELL_HIGHT, 'T', true);
     }
 
     
+    $calculatedHight = MAX_HEAD_CELL_HIGHT;
     foreach($listResult as $aRow){
         if($longName !== $aRow['LongName']){
             $cnt = 0;
@@ -167,27 +168,35 @@ function createOrganizationCalender(db $db, TCPDF $pdf, $person, String $type){
             
             If($aRow['Head_Level'] === "0"){
                 $pdf->Ln();
+                $calculatedHight+=MAX_HEAD_CELL_HIGHT;
                 $pdf->SetFont(FONT_FAMILY, 'B', 16);
-                $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, $longName, 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_HEAD_CELL_HIGHT, 'T', true);
+                $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, $longName, 'B', 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_HEAD_CELL_HIGHT, 'T', true);
 //                $pdf->MultiCell(ORG_UNIT_TYPE_CELL_WIDTH, CELL_HIGHT, $aRow['Unit_Name'], 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');
+                $calculatedHight+=MAX_HEAD_CELL_HIGHT;
             }
             else If($aRow['Head_Level'] === "1"){
                 $pdf->SetFont(FONT_FAMILY, 'B', 14);
+                $calculatedHight+=MAX_HEAD_CELL_HIGHT;
                 $pdf->Ln();
-                $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, $longName, 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_HEAD_CELL_HIGHT, 'T');
+                $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, $longName, 'B', 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_HEAD_CELL_HIGHT, 'T');
+                $calculatedHight+=MAX_HEAD_CELL_HIGHT;
             }
             else{
                 $pdf->SetFont(FONT_FAMILY, 'P', 12);
+                $calculatedHight+=MAX_HEAD_CELL_HIGHT;
                 $pdf->Ln();                
-                $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, $longName, 0, 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');
+                $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, $longName, 'B', 'L', BACKGROUND_FILLED, NL, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');
+                $calculatedHight+=MAX_CELL_HIGHT;
                 
             }
             $info = $aRow['Info'];
             if(strlen($info) > 0){
                 $pdf->SetFont(FONT_FAMILY, 'I', 10);
-                $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, ' - ' . $info, '', 'L', BACKGROUND_NOT_FILLED, NL, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');                
+                $pdf->MultiCell(FULL_PAGE_WIDTH, CELL_HIGHT, ' - ' . $info, 'B', 'L', BACKGROUND_NOT_FILLED, NL, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');                
+                $calculatedHight+=MAX_CELL_HIGHT;
             }
         }
+        
 
         $cnt++;
         if($cnt > 2){
@@ -228,34 +237,47 @@ function createOrganizationCalender(db $db, TCPDF $pdf, $person, String $type){
         }
                         
         $state = "";
-        switch ($type){
-            case "proposal":
-                if($aRow['State_Id'] > 1){
-                    $state=$aRow['State_Name'];
-                    
+        if( $type === "proposal"){
+            switch($aRow['State_Id']){
+            case 1:
+                if($aRow['IsNew'] === NEW_RESOURCE){
+                    $state = "Ny";
                 }
                 else{
-                    if($aRow['IsNew'] === 'New'){
-                        $state = "Ny";
-                    }
+                    $state="";
                 }
-                
+            break;
+            case 5:
+                $state="Tillsätts ej";
+            break;
+            default:
+                $state="Vakant";
+                $responsible = "";
+            }
+            if($aRow['State_Id']>0){
                 $pdf->MultiCell(CELL_WIDTH * 3, CELL_HIGHT, $roleName, $line, 'L', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');                
                 $pdf->MultiCell(CELL_WIDTH * 2, CELL_HIGHT, $responsible , $line, 'J', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', True); 
                 $pdf->MultiCell(CELL_WIDTH, CELL_HIGHT, $state, $line, 'L', BACKGROUND_NOT_FILLED, NL, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');            
-                break;
-            default:
-                $line_comment = '0';
-                if(strlen($aRow['Pos_Comment']) > 0){
-                    $line_comment = $line;
-                    $line = '0';
-                }
-                
-                $pdf->MultiCell(CELL_WIDTH * 2, CELL_HIGHT, $roleName, $line, 'J', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', true);
-                $pdf->MultiCell(CELL_WIDTH * 1.5, CELL_HIGHT, $responsible, $line, 'J', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', True);                                             
-                $pdf->MultiCell(CELL_WIDTH * 1.5, CELL_HIGHT, $aRow['People_Email']."\n", $line, 'J', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', true); 
-                $pdf->MultiCell(CELL_WIDTH * 1, CELL_HIGHT, $aRow['People_Mobile']."\n", $line, 'J', BACKGROUND_NOT_FILLED, NL, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', true); 
-        }        
+                $calculatedHight+=MAX_CELL_HIGHT;
+            }
+        }
+        else{
+            $line_comment = '0';
+            if(strlen($aRow['Pos_Comment']) > 0){
+                $line_comment = $line;
+                $line = '0';
+            }
+
+            $pdf->MultiCell(CELL_WIDTH * 2, CELL_HIGHT, $roleName, $line, 'J', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', true);
+            $pdf->MultiCell(CELL_WIDTH * 1.5, CELL_HIGHT, $responsible, $line, 'J', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', True);                                             
+            $pdf->MultiCell(CELL_WIDTH * 1.5, CELL_HIGHT, $aRow['People_Email']."\n", $line, 'J', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', true); 
+            $pdf->MultiCell(CELL_WIDTH * 1, CELL_HIGHT, $aRow['People_Mobile']."\n", $line, 'J', BACKGROUND_NOT_FILLED, NL, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'M', true); 
+            $calculatedHight+=MAX_CELL_HIGHT;
+        }
+        if($calculatedHight > $maxCalculatedHight){
+            $pdf->AddPage();
+            $calculatedHight=0;
+        }
     } 
     return 'Organisationskalender - ' . $type;
 }
@@ -281,11 +303,11 @@ function getSQL($person, $type){
     $sql.= "as Responsible, ";
     $sql.= "Case ";
     $sql.= "When  Pos.Function_FK > 0 ";
-    $sql.= "Then IF(Pos.PrevFunction_FK is null, 'New', IF(Pos.Function_FK != Pos.PrevFunction_FK, 'New', 'Old')) ";
+    $sql.= "Then IF(Pos.PrevFunction_FK is null, '" . NEW_RESOURCE . "', IF(Pos.Function_FK != Pos.PrevFunction_FK, '" . NEW_RESOURCE . "', '" . CURRENT_RESOURCE . "')) ";
     $sql.= "When  Pos.People_FK > 0 ";
-    $sql.= "Then IF(Pos.PrevPeople_FK is null, 'New', IF(Pos.People_FK != Pos.PrevPeople_FK, 'New', 'Old')) ";
+    $sql.= "Then IF(Pos.PrevPeople_FK is null, '" . NEW_RESOURCE . "', IF(Pos.People_FK != Pos.PrevPeople_FK, '" . NEW_RESOURCE . "', '" . CURRENT_RESOURCE . "')) ";
     $sql.= "When  Pos.OrgSuperPos_FK > 0 ";
-    $sql.= "Then IF(Pos.PrevOrgSuperPos_FK is null, 'New', IF(Pos.OrgSuperPos_FK != Pos.PrevOrgSuperPos_FK, 'New', 'Old')) ";
+    $sql.= "Then IF(Pos.PrevOrgSuperPos_FK is null, '" . NEW_RESOURCE . "', IF(Pos.OrgSuperPos_FK != Pos.PrevOrgSuperPos_FK, '" . NEW_RESOURCE . "', '" . CURRENT_RESOURCE . "')) ";
     $sql.= "End ";
     $sql.= "as IsNew, ";
     $sql.= "Case ";
