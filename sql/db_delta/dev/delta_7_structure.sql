@@ -15,6 +15,11 @@ CHANGE COLUMN id Id INT UNSIGNED NOT NULL AUTO_INCREMENT ;
 ALTER TABLE Org_Version 
 CHANGE COLUMN id Id INT UNSIGNED NOT NULL AUTO_INCREMENT ;
 
+ALTER TABLE `Changes` 
+DROP COLUMN `Description`,
+DROP COLUMN `BusinessKey`;
+
+
 -- create view view_org_role_unittype <== file
 -- CREATE VIEW view_organization_tree AS <== file
 -- CREATE VIEW view_organization_pos  <== file
