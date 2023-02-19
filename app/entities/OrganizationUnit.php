@@ -60,17 +60,15 @@ class OrganizationUnit extends SuperEntity{
             $where.= "";    
             break;
         case SOURCE_EDIT:
-            if($this->appCanvasName === TABLE_NAME_UNIT){
-                $where.= "WHERE NOT (Typ.SubUnitEnabled = 1 OR Tree.Id IN (" . $this->selectSubNodesSql($this->id) . ")) ";
-            } 
-            else {
-                $where.= "";                
-            }
+            $where = "WHERE Tree.Id <> " . $this->id . " ";    
             break;
         default:
             $where.= "";    
             break;
         }
+        If($this->filter === 'yes'){
+            $where = "WHERE NOT (Typ.SubUnitEnabled = 0 OR Tree.Id IN (" . $this->selectSubNodesSql($this->id) . ")) ";
+        }        
 
         $result = $this->db->select($this->saronUser, $select , $from, $where, "Order by DisplayText ", "", "Options");    
         return $result; 
