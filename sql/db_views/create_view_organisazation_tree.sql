@@ -1,4 +1,4 @@
-Drop VIEW view_organization_tree;
+DROP VIEW IF EXISTS view_organization_tree;
 
 CREATE VIEW view_organization_tree AS (
 		with recursive Org_Tree_Root as (

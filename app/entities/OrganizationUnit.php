@@ -56,15 +56,26 @@ class OrganizationUnit extends SuperEntity{
         $where = "";    
 
         switch ($this->source){
-        case SOURCE_LIST:
+            case SOURCE_LIST:
+                $where.= "";    
+                break;
+            case SOURCE_EDIT:
+                if($this->appCanvasName === TABLE_NAME_UNIT){
+                    $where.= "WHERE NOT (Typ.SubUnitEnabled = 1 OR Tree.Id IN (" . $this->selectSubNodesSql($this->id) . ")) ";
+                } 
+                else {
+                    $where.= "";                
+                    If($this->field === 'ParentTreeNode_FK'){
+                        $where = "WHERE NOT (Typ.SubUnitEnabled = 1 OR Tree.Id IN (" . $this->selectSubNodesSql($this->id) . ")) ";
+                    }
+                    else{
+                    $where = "WHERE Tree.Id <> " . $this->id . " ";    
+
+                    }
+                }
+                break;
+            default:
             $where.= "";    
-            break;
-        case SOURCE_EDIT:
-            $where = "WHERE Tree.Id <> " . $this->id . " ";    
-            break;
-        default:
-            $where.= "";    
-            break;
         }
         If($this->filter === 'yes'){
             $where = "WHERE NOT (Typ.SubUnitEnabled = 0 OR Tree.Id IN (" . $this->selectSubNodesSql($this->id) . ")) ";
