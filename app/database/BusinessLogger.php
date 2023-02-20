@@ -123,7 +123,7 @@ class BusinessLogger  extends SuperEntity{
         if($key === "severity"){
             return false;
         }
-        if($key === "RoleType>>>>"){ // RoleTypeName
+        if($key === "RoleType"){
             return false;
         }
         if($key === ""){
@@ -147,6 +147,8 @@ class BusinessLogger  extends SuperEntity{
                 return "Select * from Statistics Where EXTRACT(YEAR FROM year) = " . $key;
             case 'Org_Tree':
                 return "SELECT * From view_organization_tree Where " . $keyColumn . " = " . $key;
+            case 'Org_Role':
+                return "SELECT * From view_role Where " . $keyColumn . " = " . $key;
             case 'People':
                 return SELECT_ALL_FIELDS_FROM_VIEW_PEOPLE . " From view_people as People Where " . $keyColumn . " = " . $key;
             case 'Homes':
@@ -206,7 +208,7 @@ class BusinessLogger  extends SuperEntity{
                 return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
             
             case 'Org_Role':
-                $sql = "SELECT Name as KeyValue From Org_Role Where id  = " . $key;
+                $sql = "SELECT Name as KeyValue From view_role Where id  = " . $key;
                 return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
             
             case 'Org_Tree':
