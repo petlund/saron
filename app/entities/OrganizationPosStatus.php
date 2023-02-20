@@ -32,7 +32,8 @@ class OrganizationPosStatus extends SuperEntity{
     function selectDefault($idFromCreate = -1){
         $id = $this->getId($idFromCreate, $this->id);
         $rec = RECORDS;
-        $select = "SELECT *, " . $this->saronUser->getRoleSql(false) . " ";
+        $select = "SELECT *, " . $this->saronUser->getRoleSql(false) . ", ";
+        $select.="(select count(*) from Org_Pos Where OrgPosStatus_FK = Org_PosStatus.Id) as Amount ";
         $from = "FROM Org_PosStatus ";
         
         if($id > 0){

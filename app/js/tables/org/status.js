@@ -28,8 +28,7 @@ function statusTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
         tableName: tableName,
         tablePath: tablePath,
         parentTableDef: parentTableDef,
-        title: 'Status',
-        parentTableDef: parentTableDef,
+        title: 'Status på positioner',
         paging: true, //Enable paging
         pageSize: 10, //Set page size (default: 10)
         pageList: 'minimal',
@@ -48,9 +47,11 @@ function statusTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
             },
             Id: {
                 key: true,
-                list: false,
+                list: true,
                 edit: false,
-                create: false
+                create: false,
+                width: '3%',
+                title: 'Id'
             },
             Name: {
                 edit: false,
@@ -58,9 +59,13 @@ function statusTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 title: 'Benämning',
                 width: '15%'
             },
+            Amount: {
+                title: 'Antal',
+                width: '3%'
+            },
             Description: {
                 title: 'Beskrivning',
-                width: '50%'
+                width: '74%'
             },
             Updated:{
                 title: 'Uppdaterad',
