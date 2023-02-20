@@ -2,10 +2,10 @@
 
 require_once SARON_ROOT . 'app/database/db.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
+define("EMPTY_FIELD", "[TOM]");
 
 
 class BusinessLogger  extends SuperEntity{
-    
     function __construct($db, $saronUser) {
         parent::__construct($db, $saronUser);
     }
@@ -19,9 +19,14 @@ class BusinessLogger  extends SuperEntity{
         
         while( $iterator->valid() ){
             $key = $iterator->key();
-            if(!($this->str_ends_with($key, 'Encrypt') OR $this->str_ends_with($key, 'Hidden'))){
+            if($this->isKeyValid($key)){
                 $value = $iterator->current();
-                $description.= "<b>" . $key . ": </b>" . $value . "<br> ";
+                if(strlen($value) === 0){
+                    $description.= "<b>" . $key . ": </b>" . EMPTY_FIELD . "<br> ";                    
+                }
+                else{
+                    $description.= "<b>" . $key . ": </b>" . $value . "<br> ";
+                }
             }
             $iterator->next();
         }
@@ -45,9 +50,14 @@ class BusinessLogger  extends SuperEntity{
         
         while( $iterator->valid() ){
             $key = $iterator->key(); 
-            if(!($this->str_ends_with($key, 'Encrypt') OR $this->str_ends_with($key, 'Hidden'))){
+            if($this->isKeyValid($key)){
                 $value = $iterator->current();
-                $description.= "<b>" . $key . ": </b>" . $value . "<br> ";
+                if(strlen($value) === 0){
+                    $description.= "<b>" . $key . ": </b>" . EMPTY_FIELD . "<br> ";                    
+                }
+                else{
+                    $description.= "<b>" . $key . ": </b>" . $value . "<br> ";
+                }
             }
             $iterator->next();
         }
@@ -69,12 +79,17 @@ class BusinessLogger  extends SuperEntity{
             $prevValue = $iterator->current();
             $postValue = $postObj[$key];
             
-            if(!($this->str_ends_with($key, 'Encrypt') OR $this->str_ends_with($key, 'Hidden'))){
+            if($this->isKeyValid($key)){
                 if($prevValue !== $postValue){
-                    $description.= "<b>" . $key . ": </b>" . $prevValue . " <b>==></b> " . $postValue . "<br>";
-                }
-                else{// enable if you want to se all fields
-                    //$description.= "<b>" . $key . ": </b>" . $prevValue . "<br>";                
+                    if(strlen($prevValue) === 0 AND strlen($postValue) > 0){
+                        $description.= "<b>" . $key . ": </b>" . EMPTY_FIELD . " <b>==></b> " . $postValue . "<br>";
+                    }
+                    if(strlen($prevValue) > 0 AND strlen($postValue) === 0){
+                        $description.= "<b>" . $key . ": </b>" . $prevValue . " <b>==></b> " . EMPTY_FIELD . "<br>";
+                    }
+                    if(strlen($prevValue) > 0 AND strlen($postValue) > 0){
+                        $description.= "<b>" . $key . ": </b>" . $prevValue . " <b>==></b> " . $postValue . "<br>";
+                    }
                 }
             }
             $iterator->next();
@@ -86,8 +101,48 @@ class BusinessLogger  extends SuperEntity{
     }    
     
     
+    function isKeyValid($key){
+        if($this->str_ends_with($key, 'Encrypt')){
+            return false;
+        }
+        if($this->str_ends_with($key, 'Hidden')){
+            return false;
+        }
+        if($key === "Id"){
+            return false;
+        }
+        if($key === "Updater"){
+            return false;
+        }
+        if($key === "HomeId"){
+            return false;
+        }
+        if($key === "OldHomeId"){
+            return false;
+        }
+        if($key === "severity"){
+            return false;
+        }
+        if($key === "RoleType>>>>"){ // RoleTypeName
+            return false;
+        }
+        if($key === ""){
+            return false;
+        }
+        if($key === ""){
+            return false;
+        }
+        if($key === ""){
+            return false;
+        }
+        return true;
+    }
+    
+    
     function getChangeValidationSQL($keyTable, $keyColumn, $key){
         switch ($keyTable){
+            case 'News':
+                return "Select * from view_news Where Id = " . $key;
             case 'Statistics':
                 return "Select * from Statistics Where EXTRACT(YEAR FROM year) = " . $key;
             case 'Org_Tree':
@@ -106,18 +161,16 @@ class BusinessLogger  extends SuperEntity{
     
     
     function insertLogPost($keyTable, $keyColumn, $key, $changeType, $businessKeyName, $businessKeyValue, $description, $saronUser){
-        $sqlInsert = "INSERT INTO Changes (ChangeType, User, BusinessKey, BusinessKeyEncrypt, Description, DescriptionEncrypt, Inserter, InserterName) ";
+        $sqlInsert = "INSERT INTO Changes (ChangeType, User, BusinessKeyEncrypt, DescriptionEncrypt, Inserter, InserterName) ";
         $sqlInsert.= "VALUES (";
         $sqlInsert.= "'" . $changeType . "', ";
         $sqlInsert.= "'" . $saronUser->userDisplayName . "', ";
-        $sqlInsert.= "'', ";
         $sqlInsert.= $this->getEncryptedSqlString($businessKeyValue) . ', ';
-        $sqlInsert.= "'', ";
         $sqlInsert.= $this->getEncryptedSqlString($description) . ', ';
         $sqlInsert.= $saronUser->WP_ID . ", ";
         $sqlInsert.= "'" . $saronUser->userDisplayName . "')";
         
-        $this->db->insert($sqlInsert, 'Changes', 'Id', '',null, '', $saronUser, false);
+            $this->db->insert($sqlInsert, 'Changes', 'Id', '',null, '', $saronUser, false);
 
         $sqlDelete = "DELETE FROM Changes where DATEDIFF(Now(), Inserted) > " . CHANGE_LOG_IN_DAYS;
         $this->db->delete($sqlDelete, 'Changes', 'Id', -1, '', null, '', $saronUser, false);
@@ -141,7 +194,7 @@ class BusinessLogger  extends SuperEntity{
                 return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
             
             case 'News':
-                $sql = "SELECT DATE_FORMAT(news_date, " . DATE_FORMAT . ") as KeyValue  From News Where Id  = " . $key;
+                $sql = "SELECT DATE_FORMAT(news_date, " . DATE_FORMAT . ") as KeyValue From view_news Where Id  = " . $key;
                 return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
             
             case 'Org_Pos':
