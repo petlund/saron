@@ -19,6 +19,8 @@ ALTER TABLE `Changes`
 DROP COLUMN `Description`,
 DROP COLUMN `BusinessKey`;
 
+ALTER TABLE Org_Version 
+DROP COLUMN `writer`;
 
 -- create view view_org_role_unittype <== file
 -- CREATE VIEW view_organization_tree AS <== file

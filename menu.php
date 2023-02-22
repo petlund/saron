@@ -30,8 +30,10 @@
 
     include ('app/util/distPath.php') ?>
     
-    <link rel="icon" href=<?php echo Favicon;?> type="png"/>        
+    <link rel="icon" href=<?php echo Favicon;?> type="png"/>     
+<!--    
     <meta http-equiv="Content-Security-Policy" content="script-src <?php  $nonce = New Nonce($db, $saronUser); echo $nonce->getCSPNonce();?> 'self' https://apis.google.com">
+-->
     <link rel="icon" href=<?php echo Favicon;?> type="png"/>        
     <script nonce=<?php echo $nonce->getScriptNonce();?>><?php echo 'const saron = ' . $saronJSON . ";";?></script> <!-- refer to app/util/GlobalConstants_js.php -->
 

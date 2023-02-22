@@ -49,7 +49,7 @@ function posTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
         fields: {
             Id: {
                 key: true,
-                list: true,
+                list: false,
                 create: false,
                 edit: false
             },         
