@@ -21,7 +21,7 @@ header("Cache-Control: no-cache, must-revalidate");
             <tr class='saronSmallText saronFilter'>
                 <td  class="saronFilter">
                     <form class="forms" id="mainfilter">Grupp:
-                        <select id="groupId" name="groupId" onchange="filter('<?php echo getAppCanvasName(); ECHO '\', false, \'';?>');" >
+                        <select id="groupId" name="groupId"  class="filter" >
                         <option selected="selected" value="0">Alla</option>
                         <option value="1">Att se över</option>
                         </select>     
@@ -29,7 +29,7 @@ header("Cache-Control: no-cache, must-revalidate");
                 </td>
                 <td class="saronFilter">
                     Söksträng:
-                    <input type="text" name="searchString" id="searchString" oninput="filter('<?php echo getAppCanvasName(); ECHO '\', false, \'';?>');"/>
+                    <input type="text" name="searchString" id="searchString" class="filter"/>
                 </td>
         </table>
         <div id="<?php echo getAppCanvasName();?>"></div>
