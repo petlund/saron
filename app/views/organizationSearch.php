@@ -32,7 +32,7 @@
             <tr class="saronFilter">
                 <td  class="saronFilter">
                     Sök i organisationstruktur:
-                    <input type="text" name="searchString" id="searchString" oninput="filter('<?php  echo getAppCanvasName(); ECHO '\', false, \'';?>');"/>
+                    <input type="text" name="searchString" id="searchString" class="filter"/>
                 </td>
             </tr>
         </table>

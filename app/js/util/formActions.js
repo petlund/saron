@@ -82,10 +82,35 @@ function posFormAuto(data, selectedValue){
 }
 
 
+$(document).ready(function () {
+    var f = $(".filter");
+    var eventType = "";
+    if(f)
+        for(var i = 0; i < f.length; i++){
+            if(f[i].tagName === "INPUT")
+                eventType = "keyup";
+            else
+                eventType = "change";
+            
+            f[i].addEventListener(eventType, () => filter());
+        }
+        
+            
+});
 
-function filter(appCanvasName, reloaded){
-    if(reloaded)
-        $('#searchString').val('');
+
+
+function filter(e){
+    var urlParams = window.location.search;
+    var searchParams = new URLSearchParams(urlParams);
+    var appCanvasName = searchParams.get('AppCanvasName');
+    var reloaded = false; 
+
+//    if(appCanvasName === saron.table.homes.name)
+//        reloaded = true;
+//    
+//    if(reloaded)
+//        $('#searchString').val('');
 
     var options = {searchString: $('#searchString').val(), 
                     groupId: $('#groupId').val(), 

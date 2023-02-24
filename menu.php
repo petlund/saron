@@ -31,11 +31,9 @@
     include ('app/util/distPath.php') ?>
     
     <link rel="icon" href=<?php echo Favicon;?> type="png"/>     
-<!--    
-    <meta http-equiv="Content-Security-Policy" content="script-src <?php  $nonce = New Nonce($db, $saronUser); echo $nonce->getCSPNonce();?> 'self' https://apis.google.com">
--->
+    <meta http-equiv="Content-Security-Policy" content="script-src <?php  $nonce = New Nonce($db, $saronUser); echo $nonce->getCSPNonce();?> 'self'">
     <link rel="icon" href=<?php echo Favicon;?> type="png"/>        
-    <script nonce=<?php echo $nonce->getScriptNonce();?>><?php echo 'const saron = ' . $saronJSON . ";";?></script> <!-- refer to app/util/GlobalConstants_js.php -->
+    <script nonce=<?php echo $nonce->getScriptNonce();?>><?php echo 'const saron = ' . $saronJSON . ";";?></script>
 
     <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="/<?php echo THREE_PP_URI;?>jtable/jquery-3.3.1.js"></script>
