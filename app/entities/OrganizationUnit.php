@@ -155,18 +155,18 @@ class OrganizationUnit extends SuperEntity{
 
     
     function subNodesSql(){
-        $rootRoleLongName = "' / ', (Select group_concat(DISTINCT Role.Name SEPARATOR ' / ') as Path from Org_Pos as Pos inner join Org_Role as Role on Role.Id = Pos.OrgRole_FK WHERE Pos.OrgTree_FK = RootId group by Pos.OrgTree_FK) ";
-        $treeRoleLongName = "' / ', (Select group_concat(DISTINCT Role.Name SEPARATOR ' / ') as Path from Org_Pos as Pos inner join Org_Role as Role on Role.Id = Pos.OrgRole_FK WHERE Pos.OrgTree_FK = Tree.Id group by Pos.OrgTree_FK) ";
+        $rootRoleLongName = "' / ', IF((select count(*) from Org_Pos where OrgTree_FK = Org_Tree.Id), (Select group_concat(DISTINCT Role.Name SEPARATOR ' / ') as Path from Org_Pos as Pos inner join Org_Role as Role on Role.Id = Pos.OrgRole_FK WHERE Pos.OrgTree_FK = RootId group by Pos.OrgTree_FK),'') ";
+        $treeRoleLongName = "' / ', IF((select count(*) from Org_Pos where OrgTree_FK = Tree.Id), (Select group_concat(DISTINCT Role.Name SEPARATOR ' / ') as Path from Org_Pos as Pos inner join Org_Role as Role on Role.Id = Pos.OrgRole_FK WHERE Pos.OrgTree_FK = Tree.Id group by Pos.OrgTree_FK),'') ";
         
-        $longName = "concat(IF(Prefix is not null, concat(Prefix, ' '),''), name, " . $rootRoleLongName . ") ";
+        $longName = "concat(IF(Prefix is not null, concat(Prefix, ' '),''), Org_Tree.name, " . $rootRoleLongName . ") ";
         $tLongName = "concat(IF(Prefix is not null, concat(Tree.Prefix, ' '),''), Tree.name, " . $treeRoleLongName . ") ";
 
         $sql = "(WITH RECURSIVE Root AS (";
-        $sql.= "SELECT Id, Id as RootId, " . $longName . " as LongName ";
-        $sql.= "FROM Org_Tree ";
+        $sql.= "SELECT Org_Tree.Id, Org_Tree.Id as RootId, " . $longName . " as LongName ";
+        $sql.= "FROM Org_Tree inner join Org_UnitType on Org_Tree.OrgUnitType_FK = Org_UnitType.Id ";
         $sql.= "UNION ALL ";
-        $sql.= "SELECT Tree.Id, Root.Id as RootId, " . $tLongName.  " as LongName ";
-        $sql.= "FROM Root, Org_Tree Tree ";
+        $sql.= "SELECT Tree.Id, RootId, " . $tLongName.  " as LongName ";
+        $sql.= "FROM Root, Org_Tree Tree  inner join Org_UnitType on Tree.OrgUnitType_FK = Org_UnitType.Id ";
         $sql.= "WHERE Tree.ParentTreeNode_FK = Root.Id ";
         $sql.= ") ";
         $sql.= "SELECT RootId, group_concat(DISTINCT LongName SEPARATOR ' / ') as Path "; 
