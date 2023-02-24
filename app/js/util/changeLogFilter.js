@@ -28,11 +28,22 @@ $.getJSON(saron.root.webapi + "listChangeLog.php?Field=ChangeType&ResultType=Opt
     $("#cid").html(stringToAppend);
 });
 
+$(document).ready(function () {
+    var f = $(".changeLogFilter");
+    var eventType = "";
+    if(f)
+        for(var i = 0; i < f.length; i++){
+            eventType = "change";
+            
+            f[i].addEventListener(eventType, () => changeLogFilter());
+        }
+});
 
 
-function changeLogFilter(appCanvasName, reloaded){
-    if(reloaded)
-        $('#searchString').val('');
+function changeLogFilter(){
+    var urlParams = window.location.search;
+    var searchParams = new URLSearchParams(urlParams);
+    var appCanvasName = searchParams.get('AppCanvasName');
 
     var options = {uid: $('#uid').val(), 
                     cid: $('#cid').val(), 

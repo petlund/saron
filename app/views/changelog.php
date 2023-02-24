@@ -23,13 +23,13 @@
                 <td  class="saronFilter">
                     <form class="forms" id="mainfilter">
                         Användare:
-                        <select id="uid" name="user" onchange="changeLogFilter('<?php echo getAppCanvasName(); ECHO '\', false, \'';?>');" >
+                        <select id="uid" name="user" class="changeLogFilter" >
                             <option selected="selected" value="">Alla</option>
                             <option value="saron">saron</option>
                             <option value="System">System</option>
                         </select>
                         Typ av ändring:
-                        <select id="cid" name="change" onchange="changeLogFilter('<?php echo getAppCanvasName(); ECHO '\', false, \'';?>');" >
+                        <select id="cid" name="change" class="changeLogFilter">
                             <option selected="selected" value="">Alla</option>
                         </select>     
                    </form>

@@ -94,23 +94,14 @@ $(document).ready(function () {
             
             f[i].addEventListener(eventType, () => filter());
         }
-        
-            
 });
 
 
 
-function filter(e){
+function filter(){
     var urlParams = window.location.search;
     var searchParams = new URLSearchParams(urlParams);
     var appCanvasName = searchParams.get('AppCanvasName');
-    var reloaded = false; 
-
-//    if(appCanvasName === saron.table.homes.name)
-//        reloaded = true;
-//    
-//    if(reloaded)
-//        $('#searchString').val('');
 
     var options = {searchString: $('#searchString').val(), 
                     groupId: $('#groupId').val(), 
