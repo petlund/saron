@@ -15,7 +15,7 @@ class News extends SuperEntity{
     }
     
     function select($id = -1){
-        $select = "SELECT *, id as Id, " . $this->saronUser->getRoleSql(false) . " ";
+        $select = "SELECT *, " . $this->saronUser->getRoleSql(false) . " ";
         if($id < 0){
             $result = $this->db->select($this->saronUser, $select , "FROM News ", "", $this->getSortSql(), $this->getPageSizeSql(), RECORDS);    
             return $result;
