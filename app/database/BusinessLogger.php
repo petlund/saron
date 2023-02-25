@@ -3,7 +3,7 @@
 require_once SARON_ROOT . 'app/database/db.php';
 require_once SARON_ROOT . 'app/entities/SaronUser.php';
 define("EMPTY_FIELD", "[TOM]");
-
+define("DIFF_ARROW", "<b> ==> </b>");
 
 class BusinessLogger  extends SuperEntity{
     function __construct($db, $saronUser) {
@@ -82,13 +82,13 @@ class BusinessLogger  extends SuperEntity{
             if($this->isKeyValid($key)){
                 if($prevValue !== $postValue){
                     if(strlen($prevValue) === 0 AND strlen($postValue) > 0){
-                        $description.= "<b>" . $key . ": </b>" . EMPTY_FIELD . " <b>==></b> " . $postValue . "<br>";
+                        $description.= "<b>" . $key . ": </b>" . EMPTY_FIELD . DIFF_ARROW . $postValue . "<br>";
                     }
                     if(strlen($prevValue) > 0 AND strlen($postValue) === 0){
-                        $description.= "<b>" . $key . ": </b>" . $prevValue . " <b>==></b> " . EMPTY_FIELD . "<br>";
+                        $description.= "<b>" . $key . ": </b>" . $prevValue . DIFF_ARROW . EMPTY_FIELD . "<br>";
                     }
                     if(strlen($prevValue) > 0 AND strlen($postValue) > 0){
-                        $description.= "<b>" . $key . ": </b>" . $prevValue . " <b>==></b> " . $postValue . "<br>";
+                        $description.= "<b>" . $key . ": </b>" . $prevValue . DIFF_ARROW . $postValue . "<br>";
                     }
                 }
             }
