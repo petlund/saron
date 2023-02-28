@@ -61,6 +61,8 @@ class OrganizationVersion extends SuperEntity{
     
     
     function updatePos($posState, $prev, $cur){
+        $description = "<b>Uppdatering av funktionärer</b><br>";
+        $description.= "Föreslagna överenskomna förändringar för ansvar i uppdrag överförs till beslutad organisation.";
         $update = "update Org_Pos ";
         $set = "set UpdaterName='" . $this->saronUser->getDisplayName() . "', Updater=" . $this->saronUser->WP_ID . ", ";
         $where = "where OrgPosStatus_FK ";
@@ -77,7 +79,7 @@ class OrganizationVersion extends SuperEntity{
         $where.= "(" . $cur . " is not null and " . $prev . " is null) or";  
         $where.= "(" . $cur . " <> " . $prev . ")";  
         $where.= ");";
-        $this->db->update($update, $set, $where);        
+        $this->db->update($update, $set, $where, "Org_Version", "Id", -1, 'Person','Personid', $description, $this->saronUser);        
     }
     
     

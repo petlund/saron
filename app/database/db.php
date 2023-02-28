@@ -266,7 +266,7 @@ class db {
         }
     }    
     
-    public function sqlQuery($sql){
+    public function sqlQuery($sql, $toArray=true){
         $this->php_dev_error_log("sqlQuery", "INFO", $sql);
         $listResult = $this->connection->query($sql);
         if(!$listResult){
@@ -275,12 +275,13 @@ class db {
             $this->php_dev_error_log("sqlQuery", "Exception" . $technicalErrMsg, $sql);
             return false;
         }
-        $result = $this->resultSetToArray($listResult, RECORDS);
-    
-        return $result;
+        if($toArray){
+            $result = $this->resultSetToArray($listResult, RECORDS);
+            return $result;
+        }
+        return $listResult;
     }
 
-    
     
     private function jsonErrorMessage($appErrorMsg, $connectionError=null, $sqlError=""){
         $error = array();
