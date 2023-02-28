@@ -31,7 +31,7 @@
     include ('app/util/distPath.php') ?>
     
     <link rel="icon" href=<?php echo Favicon;?> type="png"/>     
-    <meta http-equiv="Content-Security-Policy" content="script-src <?php  $nonce = New Nonce($db, $saronUser); echo $nonce->getCSPNonce();?> 'self'">
+    <meta http-equiv="Content-Security-Policy" content="script-src <?php  $nonce = New Nonce($db, $saronUser); echo $nonce->getCSPNonce();?> 'self' https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js">
     <link rel="icon" href=<?php echo Favicon;?> type="png"/>        
     <script nonce=<?php echo $nonce->getScriptNonce();?>><?php echo 'const saron = ' . $saronJSON . ";";?></script>
 
