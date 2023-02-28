@@ -85,11 +85,11 @@ CREATE VIEW view_people AS
             ELSE 1
         END) AS MemberStateId,
         (SELECT 
-                memberstate.Name
+                MemberState.Name
             FROM
-                memberstate
+                MemberState
             WHERE
-                memberstate.Id = MemberStateId) AS MemberStateName,
+                MemberState.Id = MemberStateId) AS MemberStateName,
 
         Homes.FamilyNameEncrypt AS FamilyNameEncrypt,
         Homes.PhoneEncrypt AS PhoneEncrypt,

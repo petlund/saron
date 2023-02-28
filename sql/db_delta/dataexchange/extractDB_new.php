@@ -25,8 +25,10 @@ echo "// extract people<br>";
 $listResult1 = $db->sqlQuery(SQL_STAR_PEOPLE . " from People");
     $listRowsP = array();
     $pCols = 27;
-    $colNames = "(Id, FirstNameEncrypt, LastNameEncrypt, DateOfBirth, DateOfDeath, PreviousCongregation, MembershipNo, VisibleInCalendar, DateOfMembershipStart, DateOfMembershipEnd, NextCongregation, DateOfBaptism, BaptisterEncrypt, CongregationOfBaptism, CongregationOfBaptismThis, Gender, EmailEncrypt, MobileEncrypt, KeyToChurch, KeyToExp, CommentEncrypt, HomeId, Updater, Updated, Inserter, Inserted, CommentKeyEncrypt) ";
-    $cases = array(0,1,1,2,2,3,0,0,2,2,3,2,1,3,0,0,1,1,0,0,1,0,0,2,0,2,1);
+    $colNames = "(Id, FirstNameEncrypt, LastNameEncrypt, DateOfBirth, DateOfDeath, PreviousCongregation, MembershipNo, VisibleInCalendar, DateOfMembershipStart, DateOfMembershipEnd, NextCongregation, DateOfBaptism, BaptisterEncrypt, "
+            . "CongregationOfBaptism, CongregationOfBaptismThis, Gender, EmailEncrypt, MobileEncrypt, KeyToChurch, KeyToExp, CommentEncrypt, HomeId, Updater, Updated, Inserter, Inserted, CommentKeyEncrypt"
+            . ") ";
+    $cases = array(0,1,1,2,2,3,0,0,2,2,3,2,1,3,0,0,1,1,0,0,1,0,0,2,0,2,1,2,0,3,2,); 
     echo "\$db->delete(\"delete from People\");<br>";
 
     while($listRowP = mysqli_fetch_array($listResult1)){
@@ -80,8 +82,9 @@ $listResult1 = $db->sqlQuery(SQL_STAR_PEOPLE . " from People");
 
 $listResult2 = $db->sqlQuery(SQL_STAR_HOMES . " from Homes");
     $pCols = 9;
-    $colNames = "(Id, FamilyNameEncrypt, AddressEncrypt, CoEncrypt, City, Zip, Country, PhoneEncrypt, Letter) ";
-    $cases = array(0,1,1,1,3,3,3,1,0);
+    $colNames = "(Id, FamilyNameEncrypt, AddressEncrypt, CoEncrypt, City, Zip, Country, PhoneEncrypt, Letter, "
+            . "Updated, Updater, UpdaterName. Inserted, Inserter, InserterName) ";
+    $cases = array(0,1,1,1,3,3,3,1,0,2,0,2,2,0,2); 
     echo "\$db->delete(\"delete from Homes\");<br>";
     while($listRow2 = mysqli_fetch_array($listResult2)){
         $sql="";

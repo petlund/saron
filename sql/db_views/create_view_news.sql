@@ -2,10 +2,10 @@ DROP VIEW IF EXISTS view_news;
 
 CREATE VIEW `view_news` AS
     SELECT 
-        year as Id,
-        year as year,
-        news_date as news_date
+        Id as Id,
+        news_date as news_date,
         severity as severity,
+        information as information,
         (CASE 
             WHEN severity= 0 THEN 'Meddelande'
             WHEN severity= 1 THEN 'Viktigt meddelande'
@@ -15,4 +15,4 @@ CREATE VIEW `view_news` AS
         ) AS severityText,
         writer as writer        
     FROM
-        news
+        News

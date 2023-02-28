@@ -1,6 +1,6 @@
 DROP VIEW IF EXISTS view_organization_tree;
 
-CREATE VIEW view_organization_tree AS (
+CREATE VIEW view_organization_tree AS
     with recursive Org_Tree_Root as (
         select 
                 Org_Tree.Id AS Id,
@@ -40,5 +40,4 @@ CREATE VIEW view_organization_tree AS (
                 Org_Tree.ParentTreeNode_FK = Org_Tree_Root.Id
     ) 
     Select * from Org_Tree_Root
-) ;
 
