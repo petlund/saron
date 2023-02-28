@@ -44,6 +44,8 @@ class OrganizationPos extends SuperEntity{
         if($this->orgPosStatus_FK > 2){
             if($this->appCanvasPath === TABLE_NAME_ENGAGEMENT . "/" . TABLE_NAME_ENGAGEMENTS){
                 $this->people_FK=null;
+                $this->function_FK = null; 
+                $this->orgSuperPos_FK = null;
             }
             if($this->people_FK > 0 or $this->function_FK > 0 or $this->orgSuperPos_FK > 0){
                 $error["Message"] = "Ingen funktion, roll eller person ska anges som ansvarig.";
