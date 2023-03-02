@@ -19,8 +19,8 @@ $saron->uri->images = SARON_IMAGES_URI;
 $saron->root->images = "/" . SARON_URI . SARON_IMAGES_URI;
 $saron->uri->webapi = SARON_WEBAPI_URI;
 $saron->root->webapi = "/" . SARON_URI . SARON_WEBAPI_URI;
-$saron->uri->pdf = SARON_PDF_URI;
-$saron->root->pdf = "/" . SARON_URI . SARON_PDF_URI;
+//$saron->uri->pdf = SARON_PDF_URI;
+//$saron->root->pdf = "/" . SARON_URI . SARON_PDF_URI;
 $saron->root->reports = "/" . SARON_URI . SARON_REPORTS_URI;
 
 
