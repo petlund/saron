@@ -23,13 +23,13 @@ define("DATABASE", "database");     // The database name.
 //
 define("COOKIE_NAME", "Saron");
 define("COOCKIE_EXPIRES", 3600);
-define("SESSION_EXPIRES", 600);
+define("SESSION_EXPIRES", 60);
 define("COOCKIE_PATH", '/saron');
 define("COOCKIE_DOMAIN", '');
 define("COOCKIE_SECURE", true);
 define("COOCKIE_HTTP_ONLY", true);
 define("COOCKIE_SAMESITE", "Strict");
-define("TICKET_RENEWIAL_PERIOD_IN_SEC", 60);
+define("TICKET_RENEWIAL_PERIOD_IN_SEC", 10);
 
 // APPROVAL TEXT FOR GDPR AGREEMENT WITH THE MEMBERS
 define ("APPROVAL", "Jag godkänner ....");
