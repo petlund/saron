@@ -129,7 +129,7 @@ class BusinessLogger  extends SuperEntity{
         if($key === "ParentTreeNode_FK"){
             return false;
         }
-        if($key === ""){
+        if($key === "OrgUnitType_FK"){
             return false;
         }
         if($key === ""){
