@@ -35,20 +35,7 @@ var timeout;
             setUserLastActivityTime();
         }
     }
-
-
-    function setUserLastActivityTime(){
-        var httpCall = $.get(saron.root.webapi + 'updateSaronUser.php', function() {})
-        .done(function(data){
-            if(data.includes('ERROR'))
-                window.location.replace(saron.root.saron + 'app/access/SaronLogin.php?logout=true');             
-        })
-        .fail(function() {
-        })
-        .always(function() {
-        });
-    }
-        
+       
         
         
     function checkTimerDiff(){
@@ -103,13 +90,28 @@ var timeout;
                     if(str.startsWith(off))
                         title.innerHTML = on + str.slice(off.length, str.length);
                 }
-            else
+            else{
                 if(str.startsWith(off))
                     title.innerHTML = str.slice(off.length, str.length);
                 if(str.startsWith(on))
                     title.innerHTML = str.slice(on.length, str.length);
             }
         }
+    }
+
+
+
+    function setUserLastActivityTime(){
+        var httpCall = $.get(saron.root.webapi + 'updateSaronUser.php', function() {})
+        .done(function(data){
+            if(data.includes('ERROR'))
+                window.location.replace(saron.root.saron + 'app/access/SaronLogin.php?logout=true');             
+        })
+        .fail(function() {
+        })
+        .always(function() {
+        });
+    }
 
 
 
