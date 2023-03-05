@@ -49,48 +49,35 @@ class SaronUser extends SaronMetaUser{
             error_log($error . "\n\n");
         }
     }
- 
-    
-    
-    private function load($ticket){
-        $this->cleanSaronUser(-1);   
 
-        $sql = "select * from  SaronUser where "
-                . "AccessTicket='" . $ticket . "' "
-                . "AND " . NOW_LAST_ACTIVITY_DIFF . " < " . SESSION_EXPIRES . " "
-                . "AND " . NOW_TIME_STAMP_DIFF. " < " . COOCKIE_EXPIRES;        
-        
-        $attributes = $this->db->sqlQuery($sql);
-        
-        if(count($attributes) === 0){
-            throw new exception($this->getErrorMessage("You are not authorized for this service"));
-        }
+    
+    
+    public function hasValidSaronSession($requireEditor=0, $requireOrg=0, $checkTicketRenewalTime=false){
+        try{
+            $ticket = getTicketFromCookie();
             
-        return $attributes;       
-    }    
-    
-
-    
-    function getLoginHeadLine(){
-        echo "Inloggad som " . $this->getNameAndRole(); 
-    }
-
-    
-        
-    function getDBConnectHeadLine(){
-    
-        $headline =  "Databas: " . DATABASE;
-        if($this->sessionOK){
-            $headline.= " - Anslutning  OK!";
-            echo $headline;
+            if(strlen($ticket) === 0){  
+                throw new Exception($this->getErrorMessage("(9) Your session is out of scope. "));
+            }
+                        
+            $this->checkTicket($ticket, $requireEditor, $requireOrg);
+            if($checkTicketRenewalTime){
+                if($this->isItTimeToReNewTicket($ticket)){
+                    $newTicket = $this->renewTicket($ticket);
+                    setSaronCookie($newTicket);
+                    $this->db->saron_dev_log(LOG_INFO, "SaronUser", "hasValidSaronSession", "Yes! " . getTicketFromCookie(), "");
+                }
+            }
+            $this->sessionOK=true;
+            return true;
         }
-        else{
-            $headline.= " - Anslutning  ERROR!";
-            echo $headline;
+        catch(Exception $ex){
+            $this->sessionOK=false;
+            $this->db->saron_dev_log(LOG_INFO, "SaronUser", "hasValidSaronSession", "No! " . getTicketFromCookie(), "");
+            throw new Exception($this->getErrorMessage("(8) Your session is out of scope. " . $ex));
         }
-
     }
-
+    
     
     
     public function isEditor(){
@@ -117,7 +104,6 @@ class SaronUser extends SaronMetaUser{
     
 
 
-    
     public function getRole(){
         if($this->isEditor()){
             return SARON_ROLE_EDITOR;
@@ -167,18 +153,18 @@ class SaronUser extends SaronMetaUser{
     
     
     
-//    public function select(){
-//        $select = "SELECT Time_Stamp ";
-//        $from = "FROM SaronUser ";
-//        $where = "WHERE AccessTicket = '" . $this->ticket. "' ";
-//        $result = $this->db->select($this, $select, $from, $where, "", "", RECORD);
-//        return $result;
-//    }
+    public function select(){
+        $select = "SELECT Time_Stamp ";
+        $from = "FROM SaronUser ";
+        $where = "WHERE AccessTicket = '" . $this->ticket. "' ";
+        $result = $this->db->select($this, $select, $from, $where, "", "", RECORD);
+        return $result;
+    }
 
 
-    //Sets ui activity time
+    
     public function update(){
-        
+
         if($this->db->fieldValueExist($this->WP_ID, -1, "WP_ID", "SaronUser")){
             return $this->db->update("Update SaronUser ", "Set Last_Activity = Now() ", "where WP_ID=" . $this->WP_ID, 'SaronUser', 'WP_ID', $this->WP_ID, 'Användare', 'Användarnamn', null,null, false);
         }
@@ -187,33 +173,7 @@ class SaronUser extends SaronMetaUser{
             
         }
     }
-
     
-    
-    public function hasValidSaronSession($requireEditor=0, $requireOrg=0, $checkTicketRenewalTime=false){
-        try{
-            $ticket = getTicketFromCookie();
-            
-            if(strlen($ticket) === 0){  
-                throw new Exception($this->getErrorMessage("(9) Your session is out of scope. "));
-            }
-                        
-            $this->checkTicket($ticket, $requireEditor, $requireOrg);
-            if($checkTicketRenewalTime){
-                if($this->isItTimeToReNewTicket($ticket)){
-                    $newTicket = $this->renewTicket($ticket);
-                    setSaronCookie($newTicket);
-                    $this->db->php_dev_error_log("saronUser->hasValidSaronSession", getTicketFromCookie(), "");
-                }
-            }
-            $this->sessionOK=true;
-            return true;
-        }
-        catch(Exception $ex){
-            $this->sessionOK=false;
-            throw new Exception($this->getErrorMessage("(8) Your session is out of scope. " . $ex));
-        }
-    }    
     
     
     private function cleanSaronUser($wp_id){
@@ -223,6 +183,34 @@ class SaronUser extends SaronMetaUser{
                 . "OR WP_ID=" . $wp_id;
         $user = new SaronMetaUser();
         $this->db->delete($sql, 'SaronUser', 'id', $wp_id, 'Användarsession', 'Användarnamn','Bortstädning av gamla sessioner', $user, false);
+    }
+ 
+    
+    
+    private function load($ticket){
+        $this->cleanSaronUser(-1);   
+
+        $sql = "select * from  SaronUser where "
+                . "AccessTicket='" . $ticket . "' "
+                . "AND " . NOW_LAST_ACTIVITY_DIFF . " < " . SESSION_EXPIRES . " "
+                . "AND " . NOW_TIME_STAMP_DIFF. " < " . COOCKIE_EXPIRES;        
+        
+        $attributes = $this->db->sqlQuery($sql);
+        
+        if(count($attributes) === 0){
+            throw new exception($this->getErrorMessage("You are not authorized for this service: " . var_dump($attributes)));
+        }
+            
+        return $attributes;       
+    }
+
+    
+    
+    private function getErrorMessage($msg){
+        $error = array();
+        $error["Result"] = "ERROR";
+        $error["Message"] = $msg;
+        return json_encode($error);
     }
     
 
@@ -247,10 +235,10 @@ class SaronUser extends SaronMetaUser{
             throw new Exception($this->getErrorMessage("(6) Your session is out of scope. "));
         }
         return false;  // It is´t time yet          
+
+    } 
     
-        }
-
-
+    
     
     private function checkTicket($ticket, $editor, $org_editor){
         if(strlen($ticket) === 0){
@@ -267,7 +255,7 @@ class SaronUser extends SaronMetaUser{
         . "AND (Org_Editor >= " . $org_editor . " OR Editor >= " . $editor . ")";
     
         if(!$listResult = $this->db->sqlQuery($sql)){
-            $this->php_dev_error_log("checkTicket", "Exception", $sql);
+            $this->db->saron_dev_log(LOG_ERR, "SaronUser", "checkTicket", "Exception", $sql);
             throw new Exception($this->getErrorMessage("(4) Your session is out of scope. "));
         }
         
@@ -308,15 +296,14 @@ class SaronUser extends SaronMetaUser{
             $set.= "Time_Stamp = Now() ";
             $where = "WHERE AccessTicket = '" . $oldTicket . "'";
 
-            $this->db->update($update, $set, $where, 'SaronUser', 'WP_ID', -1, null, null, null, $this, false);
-
+            $this->db->update($update, $set, $where, 'SaronUser', 'WP_ID', -1, 'Changes', '', 'Ticket renewal', $this, false);
             $result2 = $this->db->sqlQuery("Select AccessTicket from SaronUser where Id = " . $id);
     
             $ticket = "";
             foreach($result2 as $aRow){
                 $ticket = $aRow["AccessTicket"];
             }
-            $this->db->php_dev_error_log("saronUser->renewTicket", $ticket, "");
+            $this->db->saron_dev_log(LOG_INFO, "saronUser","renewTicket", "TICKET: " . $ticket, null);
             $this->db->transaction_end();
 
             return $ticket;
@@ -327,13 +314,25 @@ class SaronUser extends SaronMetaUser{
             throw new Exception($this->getErrorMessage("(1) Your session is out of scope. " . $ex));
         }
     }
+    
+    
+    function getLoginHeadLine(){
+        echo "Inloggad som " . $this->getNameAndRole(); 
+    }
+    
+    
+    
+    function getDBConnectHeadLine(){
+    
+        $headline =  "Databas: " . DATABASE;
+        if($this->sessionOK){
+            $headline.= " - Anslutning  OK!";
+            echo $headline;
+        }
+        else{
+            $headline.= " - Anslutning  ERROR!";
+            echo $headline;
+        }
 
-    
-    
-    private function getErrorMessage($msg){
-        $error = array();
-        $error["Result"] = "ERROR";
-        $error["Message"] = $msg;
-        return json_encode($error);
     }
 }

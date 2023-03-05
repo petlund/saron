@@ -35,10 +35,10 @@
     define ("FONT", 'times');
 
     // Enable sorting familys width different familyname on mulitiple places
-    $tableQuery ="(Select distinct HomeId, " . DECRYPTED_LASTNAME . " as SortName from view_people) as LastNameList ";
+    $tableQuery ="(Select distinct HomeId, " . DECRYPTED_LASTNAME . " as SortName from view_people WHERE MemberStateId = " . PEOPLE_STATE_MEMBERSHIP . ") as LastNameList ";
 
     $sql =SELECT_ALL_FIELDS_FROM_VIEW_PEOPLE  . ", LastNameList.SortName, ";
-    $sql.="(select count(*) from view_people as pp where pp.HomeId=People.HomeId) as fam_member_count ";
+    $sql.="(select count(*) from view_people as pp where pp.HomeId=People.HomeId and MemberStateId = " . PEOPLE_STATE_MEMBERSHIP . ") as fam_member_count ";
     $sql.="from "; 
     $sql.=$tableQuery;
     $sql.="inner join view_people as People on People.HomeId=LastNameList.HomeId "; 
