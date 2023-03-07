@@ -50,17 +50,17 @@ class OrganizationVersion extends SuperEntity{
         $description = "<b>Uppdatering av organisation</b><br>";
         $description.='<u>Avstämda</u> förslag är överförda till beslutad organisation';
         
-        $this->updatePos(POS_STATE_AGREED, "PrevPeople_FK", "People_FK");
-        $this->updatePos("NA", "PrevPeople_FK", "People_FK");
-        $this->updatePos(POS_STATE_AGREED, "PrevFunction_FK", "Function_FK");
-        $this->updatePos("NA", "PrevFunction_FK", "Function_FK");
-        $this->updatePos(POS_STATE_AGREED, "PrevOrgSuperPos_FK", "OrgSuperPos_FK");
-        $this->updatePos("NA", "PrevOrgSuperPos_FK", "OrgSuperPos_FK");
+        $this->updatePos(POS_STATE_AGREED, "PrevPeople_FK", "People_FK", "Personer");
+        $this->updatePos("NA", "PrevPeople_FK", "People_FK", "Personer");
+        $this->updatePos(POS_STATE_AGREED, "PrevFunction_FK", "Function_FK", "Organisatoriska funktioner");
+        $this->updatePos("NA", "PrevFunction_FK", "Function_FK", "Organisatoriska funktioner");
+        $this->updatePos(POS_STATE_AGREED, "PrevOrgSuperPos_FK", "OrgSuperPos_FK", "Organisationsroller");
+        $this->updatePos("NA", "PrevOrgSuperPos_FK", "OrgSuperPos_FK", "Organisationsroller");
     }
 
     
     
-    function updatePos($posState, $prev, $cur){
+    function updatePos($posState, $prev, $cur, $resourceType){
         $description = "<b>Uppdatering av funktionärer</b><br>";
         $description.= "Föreslagna överenskomna förändringar för ansvar i uppdrag överförs till beslutad organisation.";
         $update = "update Org_Pos ";
@@ -69,10 +69,14 @@ class OrganizationVersion extends SuperEntity{
         If($posState === POS_STATE_AGREED){
             $set.= $prev . " = " . $cur . " "; 
             $where.= "= " . POS_STATE_AGREED . " ";
+            
+            $description.= "Föreslagna överenskomna förändringar (" . $resourceType . ") förs över till beslutad organisation.";
         }
         else{
             $set.= $prev . " =  null "; 
             $where.= "<> " . POS_STATE_AGREED . " ";
+        
+            $description.= "Positioner med vakanser, icke överenskomna förslag och positioner som ej ska tillsättas, sätts som tomma i beslutad organisation -  " . $resourceType . ".";
         }
         $where.= "and (";
         $where.= "(" . $cur . " is null and " . $prev . " is not null) or";  
