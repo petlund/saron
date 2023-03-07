@@ -70,20 +70,20 @@ class OrganizationVersion extends SuperEntity{
             $set.= $prev . " = " . $cur . " "; 
             $where.= "= " . POS_STATE_AGREED . " ";
             
-            $description.= "Föreslagna överenskomna förändringar (" . $resourceType . ") förs över till beslutad organisation.";
+            $description.= "Föreslagna överenskomna förändringar förs över till beslutad organisation.";
         }
         else{
             $set.= $prev . " =  null "; 
             $where.= "<> " . POS_STATE_AGREED . " ";
         
-            $description.= "Positioner med vakanser, icke överenskomna förslag och positioner som ej ska tillsättas, sätts som tomma i beslutad organisation -  " . $resourceType . ".";
+            $description.= "Positioner med vakanser, icke överenskomna förslag och positioner som ej ska tillsättas, sätts som tomma i beslutad organisation.";
         }
         $where.= "and (";
         $where.= "(" . $cur . " is null and " . $prev . " is not null) or";  
         $where.= "(" . $cur . " is not null and " . $prev . " is null) or";  
         $where.= "(" . $cur . " <> " . $prev . ")";  
         $where.= ");";
-        $this->db->update($update, $set, $where, "Org_Version", "Id", -1, 'Person','Personid', $description, $this->saronUser);        
+        $this->db->update($update, $set, $where, "Org_Version", "Id", -1, $resourceType, 'id', $description, $this->saronUser);        
     }
     
     
@@ -96,7 +96,7 @@ class OrganizationVersion extends SuperEntity{
         $sqlWhere = "where ";
         $sqlWhere.= $this->memberState->getHasEngagement("P");  
         $sqlWhere.="AND MemberStateId in (" . PEOPLE_STATE_MEMBERSHIP_ENDED . ", " . PEOPLE_STATE_FRIEND. ", " . PEOPLE_STATE_FRIENDSHIP_ENDED . ", " . PEOPLE_STATE_ONLY_BAPTIST . ", " . PEOPLE_STATE_REGISTRATED . "); ";
-        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, "Org_Version", "Id", -1, 'Person','Personid', $description, $this->saronUser);
+        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, "Org_Version", "Id", -1, 'Vänkontakter','id', $description, $this->saronUser);
     }
 
 
