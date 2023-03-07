@@ -266,9 +266,13 @@ class Statistics extends SuperEntity{
         $lastMontForUpdate = 2; //prev year can be updated undtil feb (2)
         $ts = $this->getLatestStatisticTimestamp();
         
+
         if($ts->latestStatisticTimeStampYear !== $ts->currentYear){
             $this->update($ts->latestStatisticTimeStampYear, $ts->lastTimestampOfTheYear);  // close prev year              
             $this->insert(); // start a new year       
+        }
+        if($ts === null){
+            $this->insert(); // start a new year in än empty table                   
         }
         $ts = $this->getLatestStatisticTimestamp();
         $this->update($ts->latestStatisticTimeStampYear, $ts->currentTimestamp); // update current year
@@ -298,7 +302,7 @@ class Statistics extends SuperEntity{
     private function insert(){
         $sqlInsert = "Insert into Statistics values (Now(),0,0,0,0,0,0,0,0)";
         $user = new SaronMetaUser();
-        $this->db->insert($sqlInsert, "Statistics", "year", "Statistik" ,"Tidpunkt", null, $user);
+        $this->db->insert($sqlInsert, "Statistics", "year", "Statistik" ,"Tidpunkt", null, $user, false);
     }
 
     private function update($statisticYear, $statisticTimeStamp){//Memberstatelogic
@@ -338,7 +342,7 @@ class Statistics extends SuperEntity{
         
         $dateString = substr($statisticTimeStamp, 0, 10);
         $user = new SaronMetaUser();
-        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, 'Statistics', 'Id', $statisticYear, 'Statistik', 'Statistikår', null, $user);
+        $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, 'Statistics', 'Id', $statisticYear, 'Statistik', 'Statistikår', null, $user, false);
     }
 
 }
