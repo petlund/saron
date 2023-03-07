@@ -125,21 +125,22 @@ class OrganizationRoleUnitType extends SuperEntity{
 
     function insert(){
         $this->checkData();
+       
         switch ($this->appCanvasPath){
             case TABLE_NAME_UNITTYPE . "/" . TABLE_NAME_ROLE_UNITTYPE:
                 $this->OrgUnitType_FK =  $this->parentId;
                 $this->OrgRole_FK = $this->orgRole_FK;
                 $this->businessKeyName = "Namn på enhethetstyp";
-                $this->key=OrgRole_FK;
+                $this->key = $this->OrgRole_FK;
                 break;
             case TABLE_NAME_ROLE . "/" . TABLE_NAME_ROLE_UNITTYPE:
                 $this->OrgRole_FK = $this->parentId;
                 $this->OrgUnitType_FK =  $this->orgUnitType_FK;
                 $this->businessKeyName = "Rollnamn";
-                $this->key=OrgUnitType_FK;
+                $this->key = $this->OrgUnitType_FK;
                 break;
         }
-
+        
         $sqlInsert = "INSERT INTO `Org_Role-UnitType` (OrgRole_FK, SortOrder, OrgUnitType_FK, UpdaterName, Updater) ";
         $sqlInsert.= "VALUES (";
         $sqlInsert.= "'" . $this->OrgRole_FK . "', ";
