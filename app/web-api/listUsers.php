@@ -1,25 +1,25 @@
 <?php
-header("Cache-Control: no-cache, must-revalidate");
-header("Pragma: no-cache"); //HTTP 1.0
-header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
+    header("Cache-Control: no-cache, must-revalidate");
+    header("Pragma: no-cache"); //HTTP 1.0
+    header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
 
-require_once 'config.php'; 
-require_once SARON_ROOT . 'app/database/db.php';
-require_once SARON_ROOT . 'app/entities/SaronUser.php';
-require_once SARON_ROOT . 'app/entities/SaronUsers.php';
-require_once WP_ROOT . "wp-load.php";
-
-
+    require_once 'config.php'; 
+    require_once SARON_ROOT . 'app/database/db.php';
+    require_once SARON_ROOT . 'app/entities/SaronUser.php';
+    require_once SARON_ROOT . 'app/entities/SaronUsers.php';
+    require_once WP_ROOT . "wp-load.php";
+    
+    
     try{
         $db = new db();
         $saronUser = new SaronUser($db);
         $saronUser->hasValidSaronSession(REQUIRE_VIEWER_ROLE, REQUIRE_ORG_VIEWER_ROLE);
         $saronUsers = new SaronUsers($db, $saronUser);
-        $result = $saronUsers->getUsers();
-        
+        $result = $saronUsers->getSaronUsers();
+
         echo $result;
     }
     catch(Exception $error){
         echo $error->getMessage();        
                     
-    }    
+    }           

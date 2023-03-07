@@ -310,5 +310,16 @@ class SuperEntity {
         }
         return $sql;
     }
-     
+ 
+    
+    
+    function throwUiMessage($class, $function, $e){
+        $error = array();
+        $error["Result"] = "ERROR";
+        $error["Message"] = "Exception in class '" . $class . "' and function '" . $function . "':<br>" . $e;        
+        $jsonErr = json_encode($error); 
+        throw new Exception($jsonErr); 
+    }
+
+    
 }

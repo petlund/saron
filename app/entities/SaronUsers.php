@@ -15,7 +15,7 @@ class SaronUsers extends SuperEntity{
             $this->users = get_users(array('role__in' => array(SARON_ROLE_PREFIX . SARON_ROLE_EDITOR, SARON_ROLE_PREFIX . SARON_ROLE_VIEWER, SARON_ROLE_PREFIX . SARON_ROLE_ORG, "wp_otp")));
         }
         catch(Exception $e){
-            throw new Exception($e);
+            $this->throwUiMessage("SaronUsers",  "__construct", $e);
         }
         
     }
@@ -95,7 +95,7 @@ class SaronUsers extends SuperEntity{
     
     }
     
-    function creatResultRecords($sort_dimension, $sort_order){
+    function createResultRecords($sort_dimension, $sort_order){
         $this->sort($sort_dimension, $sort_order);
 
         $endIndex=0;
@@ -105,24 +105,68 @@ class SaronUsers extends SuperEntity{
         else{
             $endIndex = count($this->users);
         }
+
         $result = '{"Result":"OK","Records":[';
         for($i = $this->jtStartIndex; $i < $endIndex; $i++){
             $viewer = $this->hasPrivilege($this->users[$i]->roles, SARON_ROLE_PREFIX . SARON_ROLE_VIEWER);
             $org = $this->hasPrivilege($this->users[$i]->roles, SARON_ROLE_PREFIX . SARON_ROLE_ORG);
             $edit = $this->hasPrivilege($this->users[$i]->roles, SARON_ROLE_PREFIX . SARON_ROLE_EDITOR);
+
             
-            $result.= '{"Id":' . $this->users[$i]->ID;
-//            $result.= ',"OpenChildTable":' . $this->openChildTable ;
-            $result.= ',"display_name":"' . $this->users[$i]->display_name; 
-            $result.= '","user_login":"' . $this->users[$i]->user_login; 
-            $result.= '","user_email":"' . $this->users[$i]->user_email; 
-            $otp = $this->users[$i]->get("wp-otp");
-            $result.= '","wp_otp":"' . $otp["enabled"]; 
-            $result.= '","saron_reader":' . $viewer; 
-            $result.= ',"saron_org":' . $org; 
-            $result.= ',"saron_editor":' . $edit . '}';
-            if($i<$endIndex-1){
-                $result.=",";
+            if($this->users[$i] !== null){
+                $ID=$i;
+                if($this->users[$i]->ID !== null){
+                    $ID = $this->users[$i]->ID;
+                }
+
+                $display_name = "display_name";
+                if($this->users[$i]->display_name !== null){
+                    $display_name = $this->users[$i]->display_name;
+                }
+
+                $user_login = "user_login";
+                if($this->users[$i]->user_login !== null){
+                    $user_login = $this->users[$i]->user_login;
+                }
+
+                $user_email ="user_email";
+                if($this->users[$i]->user_email !== null){
+                    $user_email = $this->users[$i]->user_email;
+                }
+
+
+                $result.= '{"Id":' . $ID;
+    //            $result.= ',"OpenChildTable":' . $this->openChildTable ;
+                $result.= ',"display_name":"' . $display_name; 
+                $result.= '","user_login":"' . $user_login; 
+                $result.= '","user_email":"' . $user_email; 
+
+                $otp = $this->users[$i]->get("wp-otp");       
+                
+                if(is_array($otp)){
+                    if(array_key_exists("enabled",$otp)){
+                        $enabled = $otp["enabled"];
+                        if($enabled){
+                            $result.= '","wp_otp":"1"';             
+                        }
+                        else{
+                            $result.= '","wp_otp":"0"';
+                        }
+                    }
+                    else{
+                        $result.= '","wp_otp":"0"';
+                    }
+                }
+                else{
+                    $result.= '","wp_otp":"0"';
+                }
+                
+                $result.= ',"saron_reader":' . $viewer; 
+                $result.= ',"saron_org":' . $org; 
+                $result.= ',"saron_editor":' . $edit . '}';
+                if($i < $endIndex-1){
+                    $result.= ",";
+                }
             }
         }
         $result.='],"TotalRecordCount":' . count($this->users);
@@ -135,7 +179,8 @@ class SaronUsers extends SuperEntity{
 
 
 
-    function creatResultOptions($sort_dimension, $sort_order){
+    function createResultOptions($sort_dimension, $sort_order){
+        $this->throwUiMessage("SaronUsers", "createResultOptions", "manual abort");
         $usrs = Array(); 
         $this->sort($sort_dimension, $sort_order);
 
@@ -183,7 +228,7 @@ class SaronUsers extends SuperEntity{
             }    
         } 
         catch (Exception $e) {
-
+            $this->throwUiMessage("SaronUsers", "Exception in createResultOptions: " + $e);
         }
         finally {
             $cntOldUsers = count($usrs);
@@ -194,7 +239,6 @@ class SaronUsers extends SuperEntity{
                 if($i<$cntOldUsers-1){
                     $result.=',';
                 }
-
             }
             $result.=']}';
             return $result;            
@@ -215,15 +259,14 @@ class SaronUsers extends SuperEntity{
         return $result;
     }
 
-    function getUsers($resultFormat = RECORDS){
-        if($resultFormat === RECORDS){
-            return $this->creatResultRecords("display_name", "asc");
-        }
-        else if($resultFormat === OPTIONS){
-            return $this->creatResultOptions("display_name", "asc");
+
+
+    function getSaronUsers($resultFormat = RECORDS){
+        If($resultFormat === OPTIONS){
+            return $this->createResultOptions("display_name", "asc");
         }
         else{
-            return '{"Result":"ERROR, "Message":"Inget giltigt format angivet."';
+            return $this->createResultRecords("display_name", "asc");
         }
     }
 

@@ -68,7 +68,7 @@ class db {
             if(!$listResult = $this->connection->query($insert)){
                 $msg = $this->jsonErrorMessage("SQL-Error in insert statement! ", null, $this->connection->error);
                 $this->saron_dev_log(LOG_ERR, $keyTable . "/DB", "insert", $msg, $insert);
-                throw new Exception($msg);
+                throw new Exception($this->jsonErrorMessage($msg, null, $insert));
             }
             else{
                 $sql = "Select " . $keyColumn . " from " . $keyTable . " Where " . $keyColumn . " = LAST_INSERT_ID()";
@@ -172,7 +172,7 @@ class db {
         if(!$listResult = $this->connection->query($sql)){
             $msg = $this->jsonErrorMessage("SQL-Error in select /exist/ statement!", null, $sql);
             $this->saron_dev_log(LOG_ERR, "DB", "fieldValueExist: " . "Table: ".  $table . "Field: " . $field , "Exception" . $msg , "");
-            throw new Exception($msg);
+            throw new Exception($this->jsonErrorMessage("Exception in delete function", null, $msg));
         }
         $countRows = "0";
         while($countRow = mysqli_fetch_array($listResult)){
@@ -200,7 +200,7 @@ class db {
         if(!$listResult = $this->connection->query($sql)){
             $msg = $this->jsonErrorMessage("SQL-Error in select /exist/ statement!", null, $sql);
             $this->saron_dev_log(LOG_ERR, "DB", "exist: " . $FirstName . " " . $LastName . " " . $DateOfBirth, "Exception", "");
-            throw new Exception($msg);
+            throw new Exception($this->jsonErrorMessage("Exception in exist function", null, $msg));
         }
         $countRows = "0";
         while($countRow = mysqli_fetch_array($listResult)){
@@ -224,7 +224,7 @@ class db {
         }
         catch(Exception $error){
             $this->saron_dev_log(LOG_ERR, "DB","select", "Exception" . $error->getMessage(), $sqlSelect);
-            throw new Exception($error->getMessage());
+            throw new Exception($this->jsonErrorMessage("Exception in select function", $error, ""));
         }
     } 
     
@@ -338,14 +338,14 @@ class db {
         if($responstype === RECORD AND $countRows > 1){
             $msg = $this->jsonErrorMessage("Error i json_encode funktionen! Not a unic Record", null, " -- processRowSet");
             $this->saron_dev_log(LOG_ERR, "DB", "processRowSet", $msg, "");
-            throw new Exception($msg);            
+            throw new Exception($this->jsonErrorMessage("SprocessRowSet", null, $msg));
         }
         
         
         if($jsonResult===false){
             $msg = $this->jsonErrorMessage("Error i json_encode funktionen!", null, " -- processRowSet");
             $this->saron_dev_log(LOG_ERR, "DB", "processRowSet", $msg, "");
-            throw new Exception($msg);
+            throw new Exception($this->jsonErrorMessage("SprocessRowSet", null, $msg));
         }
         return $jsonResult;
     }    
@@ -362,7 +362,7 @@ class db {
             $technicalErrMsg = $this->connection->errno . ": " . $this->connection->error;
             echo "SQL-Error in statement: \r\n" .  $sql . "\r\n" .  $technicalErrMsg; 
             $this->saron_dev_log(LOG_ERR, "DB", "getResultSetAsHTMLTable", "Exception " . $technicalErrMsg, $sql);
-            return false;
+            throw new Exception($this->jsonErrorMessage("getResultSetAsHTMLTable", null, $sql));
         }
         
 
