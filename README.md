@@ -50,7 +50,7 @@ The application builds on jtable (jtable.org) and a PHP-service layer in front o
 ## Apache
 - Set up an Apache server
 - Maybe set 'AddDefaultCharset utf-8' in httpd.conf 
-- Think about the need of SSL and HTTPS
+-- The database use utf8mb4 by default
 
 ## Wordpress
 - Install wordpress
@@ -67,3 +67,15 @@ The application builds on jtable (jtable.org) and a PHP-service layer in front o
 -- You need to set up a htaccess-file adding the path to config.php
 - The application use aes encrypt. Therefor you need a certificate for encryption. 
 -- The path to server.key sets in config.php
+### web-api
+- The browser use the web-api for connection to backend.
+- It is posible to use the web-api for other purpose. 
+# Security
+- Content-Security-Policy
+-- Only javascript from saron application is alowed
+- Database encryption
+- Business log
+-- Log all changes in the application
+- Input filter in the entity layer (php)
+- OTP (Two factor authentification)
+
