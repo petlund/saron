@@ -22,21 +22,27 @@ The application builds on jtable (jtable.org) and a PHP-service layer in front o
 - Contact (Phone, Mobile, Email)
 - Membership (Member number, Start date, End date, Previous and Next congragation)
 - Baptism (Date of baptism, baptister, congregation of baptism)
-- Simple rolebased editiing
+- Simple rolebased editing
+#### Organization information
+- Organization unit
+- Organization tree
+- Role
+- Postion (and status)
 ### Reports 
 - Member directory
 - Baptist directory
 - Birthdays
 - Statistics
 - Email
-
+- Position in orgaization 
+- Business log (Log all types of changes)
 ## Future
 ### Wished functionallity
-- Multi language
+- Leave the dependency to Wordpress by adding a login server.
 # Installation
 ## Database
-- Use an existing database or set up a new MySql-Server instance.
-- Use the 'databasestructure.sql' (database - dir ) to create and set up the database 
+- Use an existing database or set up a new MySql-Server instance. Version 5 or higher.
+- Use the scripts in the sql-folder to create and set up the database 
 -- The user is a localhost-user. Maybee you have to change that...? 
 - The script create the database 'saron', tables, index and an application user 'saron'
 - The script add an 'admin' user account.  
@@ -55,7 +61,9 @@ The application builds on jtable (jtable.org) and a PHP-service layer in front o
 - Set session time out to one hour. Saron-gui has a 30 minutes time out 
 
 ## Application
-- Saron must be installed direct under web_root/wordpress/
+- Add the Saron app to web-root
 - Rename config_template.php to config.php. Update config.php with the database connection information
-- Add path to (TCPDF, /wordpress/wp-load.php)
-- Session time i set to 30 min (1800000 ms) in /wordpress/saron/saron/util/util.js. In the future this property should be moved to a better place...
+-- There a lot of paths to set.
+-- You need to set up a htaccess-file adding the path to config.php
+- The application use aes encrypt. Therefor you need a certificate for encryption. 
+-- The path to server.key sets in config.php
