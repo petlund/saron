@@ -43,7 +43,7 @@ The application builds on jtable (jtable.org) and a PHP-service layer in front o
 ## Database
 - Use an existing database or set up a new MySql-Server instance. Version 5 or higher.
 - Use the scripts in the sql-folder to create and set up the database 
--- The user is a localhost-user. Maybee you have to change that...? 
+- - The user is a localhost-user. Maybee you have to change that...? 
 - The script create the database 'saron', tables, index and an application user 'saron'
 - The script add an 'admin' user account.  
 
