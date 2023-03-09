@@ -5,7 +5,7 @@ The application builds on jtable (jtable.org) and a PHP-service layer in front o
 
 ## Main requirements
 - Webserver (PHP enabled)
-- Database mysql - Storing member information
+- Database mysql - Storing member and organization information
 - jtable - CRUD UI http://jtable.org
 - tcpdf - Dynamic creating pdf
 - Wordpress - WP-OTP plugin for enabling OTP-functionality
@@ -15,6 +15,7 @@ The application builds on jtable (jtable.org) and a PHP-service layer in front o
 
 ## Functions
 ### CRUD-functions for information about:
+#### Person information
 - Name (First and Last name)
 - Birthday (YYYY-MM-DD)
 - Address (Street, number, Zip, City, Country - Common to families)
