@@ -15,4 +15,4 @@ CREATE VIEW `view_news` AS
         ) AS severityText,
         writer as writer        
     FROM
-        News
+        News;

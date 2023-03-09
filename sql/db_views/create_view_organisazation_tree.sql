@@ -39,5 +39,5 @@ CREATE VIEW view_organization_tree AS
         where 
                 Org_Tree.ParentTreeNode_FK = Org_Tree_Root.Id
     ) 
-    Select * from Org_Tree_Root
+    Select * from Org_Tree_Root;
 

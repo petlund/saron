@@ -42,7 +42,7 @@ class Statistics extends SuperEntity{
             $where = "where extract(YEAR from year) = " . $id . " ";
         }
          
-        $sqlSelect = "SELECT *, year as Id, format(average_age, 1) as avg_age, format(average_membership_time, 1) as avg_membership_time, diff, " . $this->getAppCanvasSql(false);
+        $sqlSelect = "SELECT *, DATE_FORMAT(year, " . DATE_FORMAT . ") as Id, format(average_age, 1) as avg_age, format(average_membership_time, 1) as avg_membership_time, diff, " . $this->getAppCanvasSql(false);
         $result = $this->db->select($this->saronUser, $sqlSelect, "From Statistics ", $where, $this->getSortSql(),  $this->getPageSizeSql());    
         return $result;
     }
@@ -124,9 +124,6 @@ class Statistics extends SuperEntity{
         $sqlCount .= "(SELECT count(*) FROM `People` as p3 WHERE p3.CongregationOfBaptismThis=2 and extract(YEAR from p3.DateOfBaptism)=" . $curYear . ") "; 
         $sqlCount .= "as c;";
 
-        $preRowCountSql = "SELECT ";
-        $preRowCountSql.= "SELECT ";
-        
         $result = $this->db->selectSeparate($this->saronUser, $sql, $sqlCount, $rec);    
         return $result;        
     }

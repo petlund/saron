@@ -106,4 +106,4 @@ CREATE VIEW view_people AS
 
         FROM
         People
-        LEFT OUTER JOIN Homes ON Homes.Id = People.HomeId
+        LEFT OUTER JOIN Homes ON Homes.Id = People.HomeId;

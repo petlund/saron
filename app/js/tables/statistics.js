@@ -80,9 +80,8 @@ function statisticTableDef(tableTitle, parentTablePath, parentId, parentTableDef
             year: {
                 title: 'År',
                 width: '10%',
-                display: function (data){
-                    return _setClassAndValue(data, "year", PERSON);
-                }       
+                type: 'date',
+                listClass: 'year'
             },
             ParentId:{
                 defaultValue: -1,
@@ -93,18 +92,14 @@ function statisticTableDef(tableTitle, parentTablePath, parentId, parentTableDef
                 create: false, 
                 title: 'Medlemmar',
                 width: '10%',
-                display: function (data){
-                    return _setClassAndValue(data, "number_of_members", PERSON);
-                }       
+                listClass: 'number_of_members'
             },
             number_of_new_members:  {
                 edit: false,
                 create: false, 
                 title: 'Nya',
                 width: '10%',
-                display: function (data){
-                    return _setClassAndValue(data, "number_of_new_members", PERSON);
-                }       
+                listClass: 'number_of_new_members'
             },
             number_of_finnished_members:  {
                 edit: false,
@@ -112,54 +107,42 @@ function statisticTableDef(tableTitle, parentTablePath, parentId, parentTableDef
                 title: 'Avslutade',
                 format: 'number',
                 width: '10%',
-                display: function (data){
-                    return _setClassAndValue(data, "number_of_finnished_members", PERSON);
-                }       
+                listClass: 'number_of_finnished_members'
             },
             number_of_dead:  {
                 edit: false,
                 create: false, 
                 title: 'Avlidna',
                 width: '10%',
-                display: function (data){
-                    return _setClassAndValue(data, "number_of_dead", PERSON);
-                }       
+                listClass: 'number_of_dead'
             },
             number_of_baptist_people:  {
                 edit: false,
                 create: false, 
                 title: 'Döpta',
                 width: '10%',
-                display: function (data){
-                    return _setClassAndValue(data, "number_of_baptist_people", PERSON);
-                }       
+                listClass: 'number_of_baptist_people'
             },
             avg_age:  {
                 edit: false,
                 create: false, 
                 title: 'Medelålder',
                 width: '10%',
-                display: function (data){
-                    return _setClassAndValue(data, "avg_age", PERSON);
-                }       
+                listClass: 'avg_age'
             },
             avg_membership_time:  {
                 edit: false,
                 create: false, 
                 title: 'Medelålder',
                 width: '10%',
-                display: function (data){
-                    return _setClassAndValue(data, "avg_membership_time", PERSON);
-                }       
+                listClass: 'avg_membership_time'
             },
             diff:  {
                 edit: false,
                 create: false, 
                 title: 'Differens',
                 width: '10%',
-                display: function (data){
-                    return _setClassAndValue(data, "diff", PERSON);
-                }       
+                listClass: 'diff'
             }
         }
     };
