@@ -43,14 +43,14 @@ The application builds on jtable (jtable.org) and a PHP-service layer in front o
 ## Database
 - Use an existing database or set up a new MySql-Server instance. Version 5 or higher.
 - Use the scripts in the sql-folder to create and set up the database 
-- - The user is a localhost-user. Maybee you have to change that...? 
+ - The user is a localhost-user. Maybee you have to change that...? 
 - The script create the database 'saron', tables, index and an application user 'saron'
 - The script add an 'admin' user account.  
 
 ## Apache
 - Set up an Apache server
 - Maybe set 'AddDefaultCharset utf-8' in httpd.conf 
--- The database use utf8mb4 by default
+ - The database use utf8mb4 by default
 
 ## Wordpress
 - Install wordpress
@@ -63,19 +63,19 @@ The application builds on jtable (jtable.org) and a PHP-service layer in front o
 ## Application
 - Add the Saron app to web-root
 - Rename config_template.php to config.php. Update config.php with the database connection information
--- There a lot of paths to set.
--- You need to set up a htaccess-file adding the path to config.php
+ - There a lot of paths to set.
+ - You need to set up a htaccess-file adding the path to config.php
 - The application use aes encrypt. Therefor you need a certificate for encryption. 
--- The path to server.key sets in config.php
+ - The path to server.key sets in config.php
 ### web-api
 - The browser use the web-api for connection to backend.
 - It is posible to use the web-api for other purpose. 
 # Security
 - Content-Security-Policy
--- Only javascript from saron application is alowed
+ - Only javascript from saron application is alowed
 - Database encryption
 - Business log
--- Log all changes in the application
+ - Log all changes in the application
 - Input filter in the entity layer (php)
 - OTP (Two factor authentification)
 
