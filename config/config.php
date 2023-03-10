@@ -1,7 +1,7 @@
 <?php
 date_default_timezone_set('Europe/Stockholm');
 
-define("FullNameOfCongregation", "FÖRSAMLINFSNAMNET");
+define("FullNameOfCongregation", "FÖRSAMLINGSNAMNET");
 define("ShortNameOfCongregation", "FÖRSAMLINGSNAMNET KORT");
 define("UrlOfRegistry", "url...");
 define("UrlOfCongregation", "url");
