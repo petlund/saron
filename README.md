@@ -1,6 +1,5 @@
 # Saron
 Saron is a small application for churches to handle the contacts with their members and data on baptism and membership. 
-You could also set up an organization tree and and peopele from the registry to the positions.
 The application builds on jtable (jtable.org) and a PHP-service layer in front of a mysql database.
 - Only in Swedish yet!
 
@@ -71,7 +70,6 @@ The application builds on jtable (jtable.org) and a PHP-service layer in front o
 ### web-api
 - The browser use the web-api for connection to backend.
 - It is posible to use the web-api for other purpose. 
-
 # Security
 - Content-Security-Policy
    - Only javascript from saron application is alowed
