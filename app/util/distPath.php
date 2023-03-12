@@ -1,6 +1,9 @@
 <?php
     require_once "config.php";
-    require_once SARON_ROOT . "app/util/js_version_prefix.php";
+    $prefixFile = SARON_ROOT . "app/util/js_version_prefix.php";
+    if(file_exists($prefixFile)){
+        require_once $prefixFile;
+    }
     
     function getDistPath($uri, $fileName){
         if(JS_VERSION_PREFIX !== "JS_VERSION_PREFIX" ){
