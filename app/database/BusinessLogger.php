@@ -167,7 +167,7 @@ class BusinessLogger  extends SuperEntity{
             If($keyTable === "SaronUser"){ //When the application has been in standby longer than the ticket session time
                 $businessKeyValue = $saronUser->userDisplayName;
                 $saronUser = new SaronMetaUser();
-                $description = $description . " (Cookie för gammal.)";
+                $description = $description . " (Saron har timat ut.)";
             }
             else{
                 $businessKeyValue = "Saknad!";
