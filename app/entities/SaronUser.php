@@ -46,7 +46,8 @@ class SaronUser extends SaronMetaUser{
             parent::__construct($this->WP_ID, $this->userDisplayName);
 }
         catch(Exception $error){
-            error_log($error . "\n\n");
+            $ticket = $this->ticket;
+            $db->saron_dev_log(LOG_ERR, "SaronUser", "Constructor", $ticket, $sql="");
         }
     }
 
@@ -198,7 +199,7 @@ class SaronUser extends SaronMetaUser{
         $attributes = $this->db->sqlQuery($sql);
         
         if(count($attributes) === 0){
-            throw new exception($this->getErrorMessage("You are not authorized for this service: " . var_dump($attributes)));
+            throw new exception($this->getErrorMessage("You are not authorized for this service!" . var_dump($attributes)));
         }
             
         return $attributes;       

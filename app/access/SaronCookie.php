@@ -40,7 +40,7 @@ require_once SARON_ROOT . 'app/database/db.php';
         if(isset($_COOKIE[COOKIE_NAME])) {
             return (String)filter_input(INPUT_COOKIE, COOKIE_NAME, FILTER_SANITIZE_STRING);                
         }
-        return "";
+        return "Ticket missing or out of date.";
     }
 
     

@@ -10,6 +10,7 @@
         $saronUser->hasValidSaronSession(REQUIRE_VIEWER_ROLE, REQUIRE_ORG_VIEWER_ROLE, TICKET_RENEWAL_CHECK);
     }
     catch(Exception $ex){
+        $db->saron_dev_log(LOG_ERR, "Menu", "hasValidSaronSession or new SaronUser", $ex);
         header("Location: /" . SARON_URI . LOGOUT_URI);
         exit();                                                
     }

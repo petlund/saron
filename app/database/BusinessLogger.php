@@ -163,11 +163,24 @@ class BusinessLogger  extends SuperEntity{
     
     
     function insertLogPost($keyTable, $keyColumn, $key, $changeType, $businessKeyName, $businessKeyValue, $description, $saronUser){
+        If(strlen($businessKeyValue) === 0){
+            If($keyTable === "SaronUser"){ //When the application has been in standby longer than the ticket session time
+                $businessKeyValue = $saronUser->userDisplayName;
+                $saronUser = new SaronMetaUser();
+                $description = $description . " (Cookie för gammal.)";
+            }
+            else{
+                $businessKeyValue = "Saknad!";
+            }
+        }
+        
+        $formattedBusinessKeyValue = '<b>' . $businessKeyName . ':</b>' . $businessKeyValue;
+
         $sqlInsert = "INSERT INTO Changes (ChangeType, User, BusinessKeyEncrypt, DescriptionEncrypt, Inserter, InserterName) ";
         $sqlInsert.= "VALUES (";
         $sqlInsert.= "'" . $changeType . "', ";
         $sqlInsert.= "'" . $saronUser->userDisplayName . "', ";
-        $sqlInsert.= $this->getEncryptedSqlString($businessKeyValue) . ', ';
+        $sqlInsert.= $this->getEncryptedSqlString($formattedBusinessKeyValue) . ', ';
         $sqlInsert.= $this->getEncryptedSqlString($description) . ', ';
         $sqlInsert.= $saronUser->WP_ID . ", ";
         $sqlInsert.= "'" . $saronUser->userDisplayName . "')";
@@ -182,47 +195,38 @@ class BusinessLogger  extends SuperEntity{
     
     function getBusinessKey($keyTable, $keyColumn, $key, $businessKeyName, $user){
             if(!($key > 0)){
-            return '<b>' . $businessKeyName . ':</b> *';            
+            return '*';            
         }
 
         switch ($keyTable){
             
             case 'People':
                 $sql = 'SELECT ' . DECRYPTED_LASTNAME_FIRSTNAME_BIRTHDATE_MEMBERSTATENAME . " as KeyValue From view_people as People Where Id = " . $key;
-                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
-            
+                break;
             case 'Homes':
                 $sql =  'SELECT ' . DECRYPTED_FAMILYNAME . " as KeyValue From Homes Where Id = " . $key;
-                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
-            
+            break;     
             case 'News':
                 $sql = "SELECT DATE_FORMAT(news_date, " . DATE_FORMAT . ") as KeyValue From view_news Where Id  = " . $key;
-                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
-            
+            break;     
             case 'Org_Pos':
                 $sql = "SELECT PosKeyValue as KeyValue From view_organization_pos Where id  = " . $key;
-                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
-            
+            break;     
             case 'MemberState':
                 $sql = "SELECT Name as KeyValue From MemberState Where id  = " . $key;
-                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
-            
+            break;     
             case 'Org_Role':
                 $sql = "SELECT Name as KeyValue From view_role Where id  = " . $key;
-                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
-            
+            break;     
             case 'Org_Tree':
                 $sql = "SELECT LongName as KeyValue From view_organization_tree Where id  = " . $key;
-                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
-            
+            break;     
             case 'Org_UnitType':
                 $sql = "SELECT Name as KeyValue From Org_UnitType Where id  = " . $key;
-                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
-            
+            break;     
             case 'Org_PosStatus':
                 $sql = "SELECT Name as KeyValue From Org_PosStatus Where id  = " . $key;
-                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
-            
+            break;     
             case 'Org_Version':
                 $sql = "";
                 if($key>0){
@@ -231,23 +235,20 @@ class BusinessLogger  extends SuperEntity{
                 else{
                     $sql = "SELECT max(DATE_FORMAT(decision_date, " . DATE_FORMAT . ")) as KeyValue From Org_Version";                    
                 }                    
-                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
-            
+            break;     
             case 'view_org_role_unittype':   
                 $sql = "SELECT Id as KeyValue From view_org_role_unittype Where Id  = " . $key;
-                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
-        
+            break;     
             case 'SaronUser': 
                 $sql = "SELECT UserDisplayName as KeyValue From SaronUser Where " . $keyColumn . " = " . $key;
-                return '<b>' . $businessKeyName . ': </b> ' . $this->getBusinessKeyValue($sql);
-            
+            break;     
             case 'Statistics':
                 $sql = "SELECT year as KeyValue From Statistics Where EXTRACT(YEAR FROM year) = " . $key;
-                return '<b>' . $businessKeyName . ':</b> ' . $this->getBusinessKeyValue($sql);
-                
+            break;     
             default:
-                return 'Nyckel ej definerad';
+                return 'Nyckeltabell ej definerad';
         }
+        return $this->getBusinessKeyValue($sql);
     }
     
     
@@ -258,8 +259,7 @@ class BusinessLogger  extends SuperEntity{
             $businessKey = $resultObj['KeyValue'];
             return $businessKey;
         }
-        return 'Saknas';
-        
+        return '';        
     }
     
     
