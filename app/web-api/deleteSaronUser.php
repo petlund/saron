@@ -11,9 +11,8 @@ require_once SARON_ROOT . 'app/entities/SaronUser.php';
     try{
         $db = new db();
         $saronUser = new SaronUser($db);
-        $saronUser->hasValidSaronSession(REQUIRE_VIEWER_ROLE, REQUIRE_ORG_VIEWER_ROLE);
         $result = $saronUser->delete(); 
-                    
+        
         echo $result;
     }
     catch(Exception $error){

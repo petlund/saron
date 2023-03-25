@@ -1,17 +1,20 @@
 <?php
     require_once 'config.php';
+    require_once SARON_ROOT . 'app/logging/SysLog.php'; 
     require_once SARON_ROOT . 'app/database/queries.php';
     require_once SARON_ROOT . 'app/database/db.php';
     require_once SARON_ROOT . 'app/entities/SaronUser.php';
 
     require_once THREE_PP_PATH . 'tcpdf/tcpdf.php';
-
+    
+    $syslog = new SysLog();
     $db = new db();
     try{
         $saronUser = new SaronUser($db);
         $saronUser->hasValidSaronSession(REQUIRE_VIEWER_ROLE, REQUIRE_ORG_VIEWER_ROLE, TICKET_RENEWAL_CHECK);
     }
     catch(Exception $ex){
+        $syslog->saron_dev_log(LOG_DEBUG, "AdressLabels", "hasValidSaronSession", "No! " . getTicketFromCookie(), "");
         header("Location: /" . SARON_URI . LOGOUT_URI);
         exit();                                                
     }

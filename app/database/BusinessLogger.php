@@ -162,19 +162,22 @@ class BusinessLogger  extends SuperEntity{
     
     
     
-    function insertLogPost($keyTable, $keyColumn, $key, $changeType, $businessKeyName, $businessKeyValue, $description, $saronUser){
+    function insertLogPost($keyTable, $keyColumn, $key, $changeType, $businessKeyName, $businessKeyValue, $description, $saronUser, $wpUser=null){
         If(strlen($businessKeyValue) === 0){
             If($keyTable === "SaronUser"){ //When the application has been in standby longer than the ticket session time
-                $businessKeyValue = $saronUser->userDisplayName;
-                $saronUser = new SaronMetaUser();
-                $description = $description . " (Saron har timat ut.)";
+                if($wpUser !== null){
+                    $businessKeyValue = $wpUser->display_name;
+                }
+                else{
+                    $businessKeyValue = "Saknad!";                
+                }
             }
             else{
                 $businessKeyValue = "Saknad!";
             }
         }
-        
-        $formattedBusinessKeyValue = '<b>' . $businessKeyName . ':</b>' . $businessKeyValue;
+
+        $formattedBusinessKeyValue = '<b>' . $businessKeyName . ':</b> ' . $businessKeyValue;
 
         $sqlInsert = "INSERT INTO Changes (ChangeType, User, BusinessKeyEncrypt, DescriptionEncrypt, Inserter, InserterName) ";
         $sqlInsert.= "VALUES (";
@@ -193,7 +196,7 @@ class BusinessLogger  extends SuperEntity{
 
     
     
-    function getBusinessKey($keyTable, $keyColumn, $key, $businessKeyName, $user){
+    function getBusinessKey($keyTable, $keyColumn, $key){
             if(!($key > 0)){
             return '*';            
         }

@@ -4,13 +4,14 @@
     require_once SARON_ROOT . 'app/entities/SaronUser.php';
     require_once SARON_ROOT . 'app/util/menyLink.php';
 
+    $syslog =  new SysLog();
     $db = new db();
     try{
         $saronUser = new SaronUser($db);
         $saronUser->hasValidSaronSession(REQUIRE_VIEWER_ROLE, REQUIRE_ORG_VIEWER_ROLE, TICKET_RENEWAL_CHECK);
     }
     catch(Exception $ex){
-        $db->saron_dev_log(LOG_ERR, "Menu", "hasValidSaronSession or new SaronUser", $ex);
+        $syslog->saron_dev_log(LOG_ERR, "Menu", "hasValidSaronSession or new SaronUser", $ex);
         header("Location: /" . SARON_URI . LOGOUT_URI);
         exit();                                                
     }
@@ -141,7 +142,7 @@
                             </ul>
                         </li>
                         <li>
-                            <a href="/<?php echo SARON_URI;?>app/access/SaronLogin.php?logout=true">Logga ut</a>
+                            <a href="/<?php echo SARON_URI;?>app/access/SaronLogin.php?userlogout=true">Logga ut</a>
                         </li>
                     </ul>
                 </div></td>

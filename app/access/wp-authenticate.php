@@ -1,19 +1,44 @@
 <?php
 require_once "config.php";
+require_once SARON_ROOT . "app/logging/SysLog.php";
 require_once SARON_ROOT . 'app/entities/SaronMetaUser.php'; 
 require_once SARON_ROOT . "app/access/SaronCookie.php";
 require_once SARON_ROOT . "app/access/Ticket.php";
 require_once SARON_ROOT . "app/database/db.php";
+require_once SARON_ROOT . "app/database/BusinessLogger.php";
 
     define( 'WP_USE_THEMES', false );
 
     function authenticate() { // call only from login.php 
+        $syslog =  new SysLog();
         require_once WP_ROOT . "wp-load.php";
+
 
         /*** AUTHENTICATE WP LOGIN ATTEMPT ***/
 	$wpUser = wp_signon();
         
 	if ( is_wp_error( $wpUser ) ) {
+            $error_message = "";
+            $usedLoginName = (String)filter_input(INPUT_POST, "log", FILTER_SANITIZE_STRING);
+            if(strlen($usedLoginName) ===  0){
+                $error_message = "<b>Felaktigt inloggningsförsök</b><br>Användarnamn saknas.";
+                $usedLoginName = "...";
+            }
+            else{
+                $error = $wpUser->get_error_message("invalid_username");
+                if(strlen($error) >  0){
+                    $error_message = "<b>Felaktigt inloggningsförsök</b><br>Okänd användare.";
+                }
+                else{
+                    $error_message = "<b>Felaktigt inloggningsförsök</b>";                
+                }
+            }
+            
+            $db = new db();
+            $syslog->saron_dev_log(LOG_INFO, "wp-authenticate", "authenticate", $error_message, null);
+            $saronMetaUser = new SaronMetaUser();
+            $businessLogger = new BusinessLogger($db, $saronMetaUser);
+            $businessLogger->insertLogPost("SaronUser", "WP_ID", -1, "Login error", "Användarnamn", $usedLoginName, $error_message, $saronMetaUser);
             return false;
 	} 
         
@@ -42,33 +67,40 @@ require_once SARON_ROOT . "app/database/db.php";
     
 
     
-    function logout(){
+    function logout($saronUserLogout){
         require_once WP_ROOT . "wp-load.php";
-        //$ticket = getTicketFromCookie();
-        removeSaronCookie();
+
         try{
             $description = "<b>Borttag av Användarsession</b><br>";
             $description.= "Logout";
+            $saronUser="";
             $db = new db();
+
             $wpUser = wp_get_current_user();
-            if($wpUser->ID > 0){
-                $user = new SaronMetaUser($wpUser->ID, $wpUser->display_name);
-                deletePersistentSaron($db, $wpUser->ID, $description, $user);
+            if($saronUserLogout === 'true'){
+                $saronUser = new SaronMetaUser($wpUser->ID, $wpUser->display_name);
             }
+            else{
+                $saronUser = new SaronMetaUser();
+            }
+            $createlogPost=true;
+            deletePersistentSaron($db, $wpUser->ID, $description, $saronUser, $createlogPost, $wpUser);
         } 
         catch (Exception $ex) {
-            ;
+            $syslog =  new SysLog();
+            $syslog->saron_dev_log(LOG_DEBUG, "wp-authenticate", "logout", $ex, $sql="");
         }
         finally{
             wp_logout();
+            removeSaronCookie();
         }
     }
     
     
     
-    function deletePersistentSaron($db, $userId, $description, $user, $createlogPost=true){
+    function deletePersistentSaron($db, $userId, $description, $saronUser, $createlogPost=true, $wpUser=null){
         $sql = "DELETE FROM SaronUser WHERE WP_ID = " . $userId;
-        $db->delete($sql, "SaronUser", "WP_ID", $userId, 'Användarsession', 'Användarnamn', $description, $user, $createlogPost);
+        $db->delete($sql, "SaronUser", "WP_ID", $userId, 'Användarsession', 'Användarnamn', $description, $saronUser, $createlogPost, $wpUser);
     }
     
     

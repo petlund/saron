@@ -44,7 +44,6 @@ var timeout;
             timeout=true;
             deleteSaronUser();
             updateProgressbar(passiveTimeout);
-            window.location.replace(saron.root.saron + 'app/access/SaronLogin.php?logout=true'); 
         }
         else
             updateProgressbar(diff);
@@ -116,7 +115,8 @@ var timeout;
 
 
     function deleteSaronUser(){
-        var httpCall = $.get( saron.root.webapi + 'deleteSaronUser.php', function() {
+        var url = saron.root.webapi + 'deleteSaronUser.php';
+        var httpCall = $.get(url, function() {
             window.location.replace(saron.root.saron + 'app/access/SaronLogin.php?logout=true'); 
         })
         .done(function(){

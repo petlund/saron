@@ -14,9 +14,10 @@
         }
     }
     /*** LOG OUT CURRENT USER ***/
+    $userlogout = (String)filter_input(INPUT_GET, "userlogout", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $logout = (String)filter_input(INPUT_GET, "logout", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    if($logout === 'true'){
-       logout();
+    if($logout === 'true' || $userlogout === 'true'){
+       logout($userlogout);
     }
     
     /*** IF THE FORM HAS BEEN SUBMITTED, ATTEMPT AUTHENTICATION ***/

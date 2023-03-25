@@ -13,6 +13,7 @@
  */
 
 require_once "config.php";
+require_once SARON_ROOT . 'app/logging/SysLog.php'; 
 require_once SARON_ROOT . 'app/entities/SaronMetaUser.php'; 
 require_once SARON_ROOT . 'app/access/SaronCookie.php'; 
 require_once SARON_ROOT . "app/access/Ticket.php";
@@ -26,12 +27,14 @@ class SaronUser extends SaronMetaUser{
     private $timeStamp;
     private $ticket;
     private $sessionOK;
+    private $syslog;
     public $WP_ID;
     public $userDisplayName;
     
     
     function __construct($db) {
         $this->db = $db;
+        $this->syslog = new SysLog();
 
         $this->ticket = getTicketFromCookie();
         try{
@@ -46,11 +49,11 @@ class SaronUser extends SaronMetaUser{
             parent::__construct($this->WP_ID, $this->userDisplayName);
 }
         catch(Exception $error){
-            $ticket = $this->ticket;
-            $db->saron_dev_log(LOG_ERR, "SaronUser", "Constructor", $ticket, $sql="");
+            $this->syslog->saron_dev_log(LOG_ERR, "SaronUser", "Constructor", $this->ticket, $sql="");
+            throw new Exception($error);
         }
     }
-
+ 
     
     
     public function hasValidSaronSession($requireEditor=0, $requireOrg=0, $checkTicketRenewalTime=false){
@@ -58,15 +61,20 @@ class SaronUser extends SaronMetaUser{
             $ticket = getTicketFromCookie();
             
             if(strlen($ticket) === 0){  
-                throw new Exception($this->getErrorMessage("(9) Your session is out of scope. "));
+                throw new Exception($this->getErrorMessage("(9a) Your session is out of scope. "));
             }
-                        
-            $this->checkTicket($ticket, $requireEditor, $requireOrg);
+                  
+            
+            $ticketOk = $this->checkTicket($ticket, $requireEditor, $requireOrg);
+            if(!$ticketOk){  
+                throw new Exception($this->getErrorMessage("(9b) Your session is out of scope. "));
+            }                    
+                    ;
             if($checkTicketRenewalTime){
                 if($this->isItTimeToReNewTicket($ticket)){
                     $newTicket = $this->renewTicket($ticket);
                     setSaronCookie($newTicket);
-                    $this->db->saron_dev_log(LOG_INFO, "SaronUser", "hasValidSaronSession", "Yes! " . getTicketFromCookie(), "");
+                    $this->syslog->saron_dev_log(LOG_DEBUG, "SaronUser", "hasValidSaronSession", "Yes! " . getTicketFromCookie(), "");
                 }
             }
             $this->sessionOK=true;
@@ -74,7 +82,7 @@ class SaronUser extends SaronMetaUser{
         }
         catch(Exception $ex){
             $this->sessionOK=false;
-            $this->db->saron_dev_log(LOG_INFO, "SaronUser", "hasValidSaronSession", "No! " . getTicketFromCookie(), "");
+            $this->syslog->saron_dev_log(LOG_DEBUG, "SaronUser", "hasValidSaronSession", "No! " . getTicketFromCookie(), "");
             throw new Exception($this->getErrorMessage("(8) Your session is out of scope. " . $ex));
         }
     }
@@ -176,6 +184,12 @@ class SaronUser extends SaronMetaUser{
     }
     
     
+    public function delete(){
+        $sql = "Delete from SaronUser where WP_ID = " . $this->WP_ID;
+        $systemUser = new SaronMetaUser();
+        $this->db->delete($sql, 'SaronUser', 'WP_ID', $this->WP_ID, 'Användarsession', 'Användarnamn','', $systemUser, false);
+    }
+    
     
     private function cleanSaronUser($wp_id){
         $sql = "DELETE from SaronUser "
@@ -256,7 +270,7 @@ class SaronUser extends SaronMetaUser{
         . "AND (Org_Editor >= " . $org_editor . " OR Editor >= " . $editor . ")";
     
         if(!$listResult = $this->db->sqlQuery($sql)){
-            $this->db->saron_dev_log(LOG_ERR, "SaronUser", "checkTicket", "Exception", $sql);
+            $this->syslog->saron_dev_log(LOG_ERR, "SaronUser", "checkTicket", "Exception", $sql);
             throw new Exception($this->getErrorMessage("(4) Your session is out of scope. "));
         }
         
@@ -265,7 +279,10 @@ class SaronUser extends SaronMetaUser{
         if($countRows === '1'){
             return true;
         }
-        throw new Exception($this->getErrorMessage("(3) Your session is out of scope. "));
+        else {
+            $this->syslog->saron_dev_log(LOG_DEBUG, "SaronUser", "checkTicket", "Session i out of scope. " . getTicketFromCookie(), "");
+            return false;            
+        }
     }
     
     
@@ -304,7 +321,7 @@ class SaronUser extends SaronMetaUser{
             foreach($result2 as $aRow){
                 $ticket = $aRow["AccessTicket"];
             }
-            $this->db->saron_dev_log(LOG_INFO, "saronUser","renewTicket", "TICKET: " . $ticket, null);
+            $this->syslog->saron_dev_log(LOG_INFO, "saronUser","renewTicket", "TICKET: " . $ticket, null);
             $this->db->transaction_end();
 
             return $ticket;
