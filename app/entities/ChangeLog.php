@@ -46,7 +46,7 @@ class ChangeLog extends SuperEntity{
     
     
     function selectFieldAsOptions($field){
-        $select = "select '' as Value, 'Alla' as DisplayText ";
+        $select = "select '' as Value, '*' as DisplayText ";
         $select.= "Union ";
         $select.= "select " . $field . " as Value, " . $field . " as DisplayText ";
 
