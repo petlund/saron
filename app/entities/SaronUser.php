@@ -28,8 +28,9 @@ class SaronUser extends SaronMetaUser{
     private $ticket;
     private $sessionOK;
     private $syslog;
-    public $WP_ID;
-    public $userDisplayName;
+    private $WP_ID;
+    private $userDisplayName;
+    private $user_login;
     
     
     function __construct($db) {
@@ -44,10 +45,11 @@ class SaronUser extends SaronMetaUser{
             $this->org_editor = $attributes[0]["Org_Editor"];
             $this->userDisplayName = $attributes[0]["UserDisplayName"];
             $this->WP_ID = $attributes[0]["WP_ID"];
+            $this->user_login = $attributes[0]["UserName"];
             $this->timeStamp = $attributes[0]["Time_Stamp"];
 
-            parent::__construct($this->WP_ID, $this->userDisplayName);
-}
+            parent::__construct($this->WP_ID, $this->userDisplayName, $this->user_login);
+        }
         catch(Exception $error){
             $this->syslog->saron_dev_log(LOG_ERR, "SaronUser", "Constructor", $this->ticket, $sql="");
             throw new Exception($error);
@@ -108,7 +110,18 @@ class SaronUser extends SaronMetaUser{
     
     
     public function getDisplayName(){
-        return $this->userDisplayName ;
+        return $this->userDisplayName;
+    }
+    
+
+    public function getWP_ID(){
+        return $this->WP_ID ;
+    }
+    
+
+    
+    public function getUserName(){
+        return $this->user_login ;
     }
     
 
@@ -174,8 +187,8 @@ class SaronUser extends SaronMetaUser{
     
     public function update(){
 
-        if($this->db->fieldValueExist($this->WP_ID, -1, "WP_ID", "SaronUser")){
-            return $this->db->update("Update SaronUser ", "Set Last_Activity = Now() ", "where WP_ID=" . $this->WP_ID, 'SaronUser', 'WP_ID', $this->WP_ID, 'Användare', 'Användarnamn', null,null, false);
+        if($this->db->fieldValueExist($this->getWP_ID(), -1, "WP_ID", "SaronUser")){
+            return $this->db->update("Update SaronUser ", "Set Last_Activity = Now() ", "where WP_ID=" . $this->getWP_ID(), 'SaronUser', 'WP_ID', $this->getWP_ID(), 'Användare', 'Användarnamn', null,null, false);
         }
         else{
             throw new Exception($this->getErrorMessage("(7) Your session is out of scope. " ));
@@ -185,9 +198,9 @@ class SaronUser extends SaronMetaUser{
     
     
     public function delete(){
-        $sql = "Delete from SaronUser where WP_ID = " . $this->WP_ID;
+        $sql = "Delete from SaronUser where WP_ID = " . $this->getWP_ID();
         $systemUser = new SaronMetaUser();
-        $this->db->delete($sql, 'SaronUser', 'WP_ID', $this->WP_ID, 'Användarsession', 'Användarnamn','', $systemUser, false);
+        $this->db->delete($sql, 'SaronUser', 'WP_ID', $this->getWP_ID(), 'Användarsession', 'Användarnamn','', $systemUser, false);
     }
     
     

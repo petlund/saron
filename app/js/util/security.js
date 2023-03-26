@@ -153,8 +153,11 @@ function alowedToUpdateOrDelete(event, data, tableDef){
         break;
     case saron.table.total.name:
         if(isUserEditor(userRole)){ 
-            editButton.show();
-            deleteButton.show();
+            editButton.hide();
+            if(data.record.MemberStateId === '2') //Member
+                deleteButton.hide();
+            else
+                deleteButton.show();
         }
         else{
             editButton.hide();

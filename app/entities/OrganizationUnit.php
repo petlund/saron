@@ -238,7 +238,7 @@ class OrganizationUnit extends SuperEntity{
             $sqlInsert.= "null, ";                                
         }
         $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "', ";
-        $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
+        $sqlInsert.= "'" . $this->saronUser->getWP_ID() . "')";
         
         $id = $this->db->insert($sqlInsert, "Org_Tree", "Id", "Organisatorisk enhet", "Enhetsnamn", null, $this->saronUser);
         return $this->select($id);
@@ -266,7 +266,7 @@ class OrganizationUnit extends SuperEntity{
             $set.= "ParentTreeNode_FK=null, ";        
         }
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
-        $set.= "Updater='" . $this->saronUser->WP_ID . "' ";
+        $set.= "Updater='" . $this->saronUser->getWP_ID() . "' ";
         $where = "WHERE Id=" . $this->id;
         $this->db->update($update, $set, $where, 'Org_Tree', 'Id', $this->id, 'Organisatorisk Enhet','Enhetsnamn', null, $this->saronUser);
         return $this->select();

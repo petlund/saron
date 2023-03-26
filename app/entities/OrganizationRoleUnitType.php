@@ -147,7 +147,7 @@ class OrganizationRoleUnitType extends SuperEntity{
         $sqlInsert.= "'" . $this->sortOrder . "', ";
         $sqlInsert.= "'" . $this->OrgUnitType_FK . "', ";
         $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "', ";
-        $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
+        $sqlInsert.= "'" . $this->saronUser->getWP_ID() . "')";
         
         $id = $this->db->insert($sqlInsert, "view_org_role_unittype", "Id", 'Koppling mellan Enhetstyp och Roll', "Kopplingsid", null, $this->saronUser);
         return $this->select($id);
@@ -158,7 +158,7 @@ class OrganizationRoleUnitType extends SuperEntity{
     function update(){
         $update = "UPDATE `Org_Role-UnitType` ";
         $set = "SET ";        
-        $set.= "Updater=" . $this->saronUser->WP_ID . ", ";        
+        $set.= "Updater=" . $this->saronUser->getWP_ID() . ", ";        
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
         $set.= "SortOrder=" . $this->sortOrder . " ";        
         $where = "WHERE Id=" . $this->id;

@@ -170,7 +170,7 @@ class OrganizationUnitType extends SuperEntity{
         $sqlInsert.= "'" . $this->posEnabled . "', ";
         $sqlInsert.= "'" . $this->subUnitEnabled . "', ";
         $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "', ";
-        $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
+        $sqlInsert.= "'" . $this->saronUser->getWP_ID() . "')";
         
         $id = $this->db->insert($sqlInsert, "Org_UnitType", "Id", 'EnhetsTyp','Namn på enhetstyp', null, $this->saronUser);
         return $this->select($id);
@@ -193,7 +193,7 @@ class OrganizationUnitType extends SuperEntity{
 
         $set.= "Description='" . $this->description . "', ";        
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
-        $set.= "Updater='" . $this->saronUser->WP_ID . "' ";
+        $set.= "Updater='" . $this->saronUser->getWP_ID() . "' ";
         $where = "WHERE id=" . $this->id;
         $this->db->update($update, $set, $where, 'Org_UnitType', 'Id', $this->id, 'EnhetsTyp','Namn på enhetstyp', null, $this->saronUser);
         return $this->select($this->id);

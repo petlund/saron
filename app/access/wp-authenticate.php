@@ -77,14 +77,16 @@ require_once SARON_ROOT . "app/database/BusinessLogger.php";
             $db = new db();
 
             $wpUser = wp_get_current_user();
-            if($saronUserLogout === 'true'){
-                $saronUser = new SaronMetaUser($wpUser->ID, $wpUser->display_name);
+            if($wpUser->ID > 0){ // IF logged in
+                if($saronUserLogout === 'true'){
+                    $saronUser = new SaronMetaUser($wpUser->ID, $wpUser->display_name, $wpUser->user_login);
+                }
+                else{
+                    $saronUser = new SaronMetaUser();
+                }
+                $createlogPost=true;
+                deletePersistentSaron($db, $wpUser->ID, $description, $saronUser, $createlogPost, $wpUser);
             }
-            else{
-                $saronUser = new SaronMetaUser();
-            }
-            $createlogPost=true;
-            deletePersistentSaron($db, $wpUser->ID, $description, $saronUser, $createlogPost, $wpUser);
         } 
         catch (Exception $ex) {
             $syslog =  new SysLog();
@@ -106,11 +108,13 @@ require_once SARON_ROOT . "app/database/BusinessLogger.php";
     
     
     function isSaronUser($wpUser){
-        if(isOtpEnabled($wpUser) || isDevEnvironment($wpUser)){
-            if(getRole($wpUser) !== null){
-                return true;
+//        if($wpUser instanceof WP_User){
+            if(isOtpEnabled($wpUser) || isDevEnvironment($wpUser)){
+                if(getRole($wpUser) !== null){
+                    return true;
+                }
             }
-        }
+//        }
         return false;
     }
     
@@ -128,28 +132,30 @@ require_once SARON_ROOT . "app/database/BusinessLogger.php";
         }
         
         $userDisplayName = $wpUser->display_name;
+        $user_login = $wpUser->user_login;
         $wp_id = $wpUser->ID;
 
-        $ticket = insertSaronSessionUser($wp_id, $userDisplayName, $editor, $org_editor );
+        $ticket = insertSaronSessionUser($wp_id, $userDisplayName, $user_login, $editor, $org_editor );
         setSaronCookie($ticket);
     }
     
     
     
-    function insertSaronSessionUser($wp_id, $userDisplayName, $editor, $org_editor){
+    function insertSaronSessionUser($wp_id, $userDisplayName, $user_login, $editor, $org_editor){
         $db = new db();        
         $description1 = "<b>Borttag av Användarsession</b><br>";
         $description1.= "Städat bort gamla sessioner";
         $system = new SaronMetaUser();
-        $wp_user = new SaronMetaUser($wp_id, $userDisplayName);
+        $wp_user = new SaronMetaUser($wp_id, $userDisplayName, $user_login);
         
         deletePersistentSaron($db, $wp_id, $description1, $system, false );   
         
-        $sql = "INSERT INTO SaronUser (AccessTicket, Editor, Org_Editor, WP_ID, UserDisplayName) values (";
+        $sql = "INSERT INTO SaronUser (AccessTicket, Editor, Org_Editor, WP_ID, UserName, UserDisplayName) values (";
         $sql.= getAccessTicket() . ", "; 
         $sql.= $editor . ", ";
         $sql.= $org_editor . ", ";
         $sql.= $wp_id . ", '";
+        $sql.= $user_login . "', '";
         $sql.= $userDisplayName . "') ";
 
         try{

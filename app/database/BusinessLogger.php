@@ -132,7 +132,28 @@ class BusinessLogger  extends SuperEntity{
         if($key === "OrgUnitType_FK"){
             return false;
         }
-        if($key === ""){
+        if($key === "MemberStateId"){
+            return false;
+        }
+        if($key === "KeyToChurch"){
+            return false;
+        }
+        if($key === "KeyToExp"){
+            return false;
+        }
+        if($key === "CongregationOfBaptismThis"){
+            return false;
+        }
+        if($key === "Gender"){
+            return false;
+        }
+        if($key === "Inserter"){
+            return false;
+        }
+        if($key === "VisibleInCalendar"){
+            return false;
+        }
+        if($key === "Inserter"){
             return false;
         }
         return true;
@@ -166,7 +187,7 @@ class BusinessLogger  extends SuperEntity{
         If(strlen($businessKeyValue) === 0){
             If($keyTable === "SaronUser"){ //When the application has been in standby longer than the ticket session time
                 if($wpUser !== null){
-                    $businessKeyValue = $wpUser->display_name;
+                    $businessKeyValue = $wpUser->user_login;
                 }
                 else{
                     $businessKeyValue = "Saknad!";                
@@ -181,14 +202,14 @@ class BusinessLogger  extends SuperEntity{
 
         $sqlInsert = "INSERT INTO Changes (ChangeType, User, BusinessKeyEncrypt, DescriptionEncrypt, Inserter, InserterName) ";
         $sqlInsert.= "VALUES (";
-        $sqlInsert.= "'" . $changeType . "', ";
-        $sqlInsert.= "'" . $saronUser->userDisplayName . "', ";
+        $sqlInsert.= "'<b>" . $changeType . "</b>', ";
+        $sqlInsert.= "'<b>" . $saronUser->getUserName() . "</b>', ";
         $sqlInsert.= $this->getEncryptedSqlString($formattedBusinessKeyValue) . ', ';
         $sqlInsert.= $this->getEncryptedSqlString($description) . ', ';
-        $sqlInsert.= $saronUser->WP_ID . ", ";
-        $sqlInsert.= "'" . $saronUser->userDisplayName . "')";
+        $sqlInsert.= $saronUser->getWP_ID() . ", ";
+        $sqlInsert.= "'" . $saronUser->getDisplayName() . "')";
         
-            $this->db->insert($sqlInsert, 'Changes', 'Id', '',null, '', $saronUser, false);
+        $this->db->insert($sqlInsert, 'Changes', 'Id', '',null, '', $saronUser, false);
 
         $sqlDelete = "DELETE FROM Changes where DATEDIFF(Now(), Inserted) > " . CHANGE_LOG_IN_DAYS;
         $this->db->delete($sqlDelete, 'Changes', 'Id', -1, '', null, '', $saronUser, false);
@@ -243,7 +264,8 @@ class BusinessLogger  extends SuperEntity{
                 $sql = "SELECT Id as KeyValue From view_org_role_unittype Where Id  = " . $key;
             break;     
             case 'SaronUser': 
-                $sql = "SELECT UserDisplayName as KeyValue From SaronUser Where " . $keyColumn . " = " . $key;
+//                $sql = "SELECT UserDisplayName as KeyValue From SaronUser Where " . $keyColumn . " = " . $key;
+                $sql = "SELECT UserName as KeyValue From SaronUser Where " . $keyColumn . " = " . $key;
             break;     
             case 'Statistics':
                 $sql = "SELECT year as KeyValue From Statistics Where EXTRACT(YEAR FROM year) = " . $key;

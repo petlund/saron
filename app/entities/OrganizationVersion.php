@@ -64,7 +64,7 @@ class OrganizationVersion extends SuperEntity{
         $description = "<b>Uppdatering av funktionärer</b><br>";
         $description.= "Föreslagna överenskomna förändringar för ansvar i uppdrag överförs till beslutad organisation.";
         $update = "update Org_Pos ";
-        $set = "set UpdaterName='" . $this->saronUser->getDisplayName() . "', Updater=" . $this->saronUser->WP_ID . ", ";
+        $set = "set UpdaterName='" . $this->saronUser->getDisplayName() . "', Updater=" . $this->saronUser->getWP_ID() . ", ";
         $where = "where OrgPosStatus_FK ";
         If($posState === POS_STATE_AGREED){
             $set.= $prev . " = " . $cur . " "; 

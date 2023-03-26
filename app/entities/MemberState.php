@@ -174,7 +174,7 @@ class MemberState extends SuperEntity{
         $update = "UPDATE MemberState ";
         $set = "SET ";        
         $set.= "Description='" . $this->description . "', ";        
-        $set.= "Updater='" . $this->saronUser->WP_ID . "', ";        
+        $set.= "Updater='" . $this->saronUser->getWP_ID() . "', ";        
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "' ";        
         $where = "WHERE Id=" . $this->id;
         $this->db->update($update, $set, $where, 'MemberState', 'Id', $this->id, 'Medlemsstatus','Namn på medlemsstatus', null, $this->saronUser);

@@ -31,8 +31,8 @@ class Home extends Homes{
         $this->FamilyName = $FamilyName;
         $sqlInsert = "INSERT INTO Homes (FamilyNameEncrypt, Inserter, InserterName) VALUES (";
         $sqlInsert.= $this->getEncryptedSqlString($FamilyName) . ", ";
-        $sqlInsert.= $this->saronUser->WP_ID . ", '";
-        $sqlInsert.= $this->saronUser->userDisplayName . "' ";
+        $sqlInsert.= $this->saronUser->getWP_ID() . ", '";
+        $sqlInsert.= $this->saronUser->getDisplayName() . "' ";
         $sqlInsert.= ");";
         $HomeId = $this->db->insert($sqlInsert, ALIAS_CUR_HOMES, "Id", 'Hem', 'Familjenamn', null, $this->saronUser);
         return $HomeId;
@@ -53,8 +53,8 @@ class Home extends Homes{
         $sqlSet.= "City = " . $this->getSqlString($this->City) . ", ";
         $sqlSet.= "Zip = " . $this->getSqlString($this->Zip) . ", ";
         $sqlSet.= "Letter = " . $this->Letter . ", ";
-        $sqlSet.= "Updater = " . $this->saronUser->WP_ID. ", ";
-        $sqlSet.= "UpdaterName = '" . $this->saronUser->userDisplayName . "', ";
+        $sqlSet.= "Updater = " . $this->saronUser->getWP_ID(). ", ";
+        $sqlSet.= "UpdaterName = '" . $this->saronUser->getDisplayName() . "', ";
         $sqlSet.= "Country = " . $this->getSqlString($this->Country) . " ";     
         $sqlWhere = "WHERE Id=" . $this->id . ";";
         $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, 'Homes', 'Id', $this->id, 'Hem','Familjenamn', null, $this->saronUser);

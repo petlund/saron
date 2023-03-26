@@ -102,15 +102,6 @@ function totalTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                     return null;
                 }
             },
-            KeyToChurch: {
-                type: 'hidden'
-            },
-            KeyToExp: {
-                type: 'hidden'
-            },
-            CommentKey: {
-                type: 'hidden'
-            },
             Updated:{
                 title: 'Uppdaterad',
                 width: '5%',

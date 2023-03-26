@@ -104,8 +104,8 @@ class PeopleViews {
         $selectEngagement.= "'<B>Synlig i adresskalender: </B>', if(VisibleInCalendar=2,'Ja','Nej'), '<BR>', ";
         $selectEngagement.= "'<B>Kön: </B>', IF(Gender=0,'-', IF(Gender=1,'Man','Kvinna')) ";
         $selectEngagement.= ") as Engagement ";  
-           //
-        return $selectPerson . $selectMember . $selectBaptist . $selectAddress  . $selectOther . NUMBER_OF_ENGAGEMENT_AS_ENGAGEMENTS. ", People.Inserted, People.InserterName, People.UpdaterName, People.Updated " ;    
+         
+        return $selectPerson . $selectDates . $selectBaptist . $selectAddress  . $selectOther . NUMBER_OF_ENGAGEMENT_AS_ENGAGEMENTS. ", People.Inserted, People.InserterName, People.UpdaterName, People.Updated " ;    
     }
     
 }

@@ -240,7 +240,7 @@ class OrganizationPos extends SuperEntity{
         $sqlInsert.= "'" . $this->orgRole_FK . "', ";
         $sqlInsert.= "'" . $this->parentId . "', "; 
         $sqlInsert.= "'" . $this->saronUser->getDisplayName() . "', ";  
-        $sqlInsert.= "'" . $this->saronUser->WP_ID . "')";
+        $sqlInsert.= "'" . $this->saronUser->getWP_ID() . "')";
         
         $id = $this->db->insert($sqlInsert, "Org_Pos", "Id", "Position", "Position", null, $this->saronUser);
         
@@ -291,7 +291,7 @@ class OrganizationPos extends SuperEntity{
         }
 
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
-        $set.= "Updater=" . $this->saronUser->WP_ID . " ";
+        $set.= "Updater=" . $this->saronUser->getWP_ID() . " ";
         $where = "WHERE Id=" . $this->id;
         $response = $this->db->update($update, $set, $where, 'Org_Pos', 'Id', $this->id, 'Position','Position', null, $this->saronUser);
 
@@ -312,7 +312,7 @@ class OrganizationPos extends SuperEntity{
         $set.= "OrgPosStatus_FK='" . $this->orgPosStatus_FK . "', ";
         $set.= "People_FK=" . $this->people_FK . ", ";
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
-        $set.= "Updater=" . $this->saronUser->WP_ID . " ";
+        $set.= "Updater=" . $this->saronUser->getWP_ID() . " ";
         $where = "WHERE Id=" . $this->id;
         $response = $this->db->update($update, $set, $where, 'Org_Pos', 'Id', $this->id, 'Ansvar', 'Position',null, $this->saronUser);
                 

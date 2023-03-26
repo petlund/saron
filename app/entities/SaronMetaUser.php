@@ -1,10 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /**
  * Description of SaronUser
@@ -14,12 +9,30 @@
 
 require_once "config.php";
 class SaronMetaUser{
-    public $WP_ID;
-    public $userDisplayName;
+    private $WP_ID;
+    private $userDisplayName;
+    private $user_login;
     
     
-    function __construct($WP_ID=-1, $userDisplayName='System') {
+    function __construct($WP_ID=-1, $userDisplayName='System', $user_login='system') {
         $this->WP_ID = $WP_ID;
         $this->userDisplayName = $userDisplayName;
+        $this->user_login = $user_login;
     }    
+
+
+    public function getWP_ID(){
+        return $this->WP_ID ;
+    }
+    
+    
+    public function getUserName(){
+        return $this->user_login ;
+    }
+    
+    
+    
+    public function getDisplayName(){
+        return $this->userDisplayName ;
+    }        
 }

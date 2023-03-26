@@ -81,7 +81,7 @@ class OrganizationPosStatus extends SuperEntity{
 //        $set.= "Name='" . $this->name . "', ";        Is not editable
         $set.= "Description='" . $this->description . "', ";        
         $set.= "UpdaterName='" . $this->saronUser->getDisplayName() . "', ";        
-        $set.= "Updater='" . $this->saronUser->WP_ID . "' ";
+        $set.= "Updater='" . $this->saronUser->getWP_ID() . "' ";
         $where = "WHERE Id=" . $this->id;
         $this->db->update($update, $set, $where, 'Org_PosStatus', 'Id', $this->id, 'Bemanningsstatus','Namn på bemanningsstatus', null, $this->saronUser);
         return $this->select($this->id, RECORD);
