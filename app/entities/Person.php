@@ -237,9 +237,9 @@ class Person extends People{
         $sqlInsert.= $this->getSqlDateString($this->DateOfMembershipStart) . ", ";
         $sqlInsert.= $this->getZeroToNull($this->MembershipNo) . ", ";
         $sqlInsert.= $this->VisibleInCalendar . ", ";
-        $sqlInsert.= $this->saronUser->WP_ID . ", '";
-        $sqlInsert.= $this->saronUser->userDisplayName . "', '";
-        $sqlInsert.= $this->saronUser->userDisplayName . "', ";
+        $sqlInsert.= $this->saronUser->getWP_ID() . ", '";
+        $sqlInsert.= $this->saronUser->getDisplayName() . "', '";
+        $sqlInsert.= $this->saronUser->getDisplayName() . "', ";
         $sqlInsert.= $this->getEncryptedSqlString($this->Comment) . ", ";
         $sqlInsert.= $this->getZeroToNull($this->HomeId) . ") ";
  
@@ -336,8 +336,8 @@ class Person extends People{
         $sqlSet.= "DateOfMembershipEnd=" . $this->getSqlDateString($this->DateOfMembershipEnd) . ", ";        
         $sqlSet.= "HomeId=" . $this->getZeroToNull($this->HomeId) . ", ";
         $sqlSet.= "CommentEncrypt=" . $this->getEncryptedSqlString($this->Comment) . ", ";
-        $sqlSet.= "Updater = " . $this->saronUser->WP_ID . ", ";
-        $sqlSet.= "UpdaterName = '" . $this->saronUser->userDisplayName . "' ";
+        $sqlSet.= "Updater = " . $this->saronUser->getWP_ID() . ", ";
+        $sqlSet.= "UpdaterName = '" . $this->saronUser->getDisplayName() . "' ";
         $sqlWhere = "where Id=" . $this->id . ";";
 
         $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, 'People', 'Id', $this->id, 'Person', 'Personid', null, $this->saronUser);
@@ -356,8 +356,8 @@ class Person extends People{
         $sqlSet.= "DateOfMembershipEnd=" . $this->getSqlDateString($this->DateOfMembershipEnd) . ", ";        
         $sqlSet.= "NextCongregation=" . $this->getSqlString($this->NextCongregation) . ", ";
         $sqlSet.= "CommentEncrypt=" . $this->getEncryptedSqlString($this->Comment) . ", ";
-        $sqlSet.= "Updater = " . $this->saronUser->WP_ID  . ", ";
-        $sqlSet.= "UpdaterName = '" . $this->saronUser->userDisplayName . "' ";
+        $sqlSet.= "Updater = " . $this->saronUser->getWP_ID()  . ", ";
+        $sqlSet.= "UpdaterName = '" . $this->saronUser->getDisplayName() . "' ";
         $sqlWhere = "where Id=" . $this->id . ";";
 
         $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, 'People', 'Id', $this->id, 'Person','Personid', null, $this->saronUser);
@@ -374,8 +374,8 @@ class Person extends People{
         $sqlSet.= "CongregationOfBaptism=" . $this->getSqlString($this->CongregationOfBaptism)  . ", ";
         $sqlSet.= "CongregationOfBaptismThis=" . $this->CongregationOfBaptismThis  . ", ";
         $sqlSet.= "CommentEncrypt=" . $this->getEncryptedSqlString($this->Comment) . ", ";
-        $sqlSet.= "Updater = " . $this->saronUser->WP_ID . ", ";
-        $sqlSet.= "UpdaterName = '" . $this->saronUser->userDisplayName . "' ";
+        $sqlSet.= "Updater = " . $this->saronUser->getWP_ID() . ", ";
+        $sqlSet.= "UpdaterName = '" . $this->saronUser->getDisplayName() . "' ";
         $sqlWhere = "where Id=" . $this->id . ";";
         
         $this->db->update($sqlUpdate, $sqlSet, $sqlWhere, 'People', 'Id', $this->id, 'Person','Personid', null, $this->saronUser);
@@ -390,8 +390,8 @@ class Person extends People{
         $sqlSet.= "KeyToChurch=" . $this->KeyToChurch . ", ";
         $sqlSet.= "KeyToExp=" . $this->KeyToExp . ", ";
         $sqlSet.= "CommentKeyEncrypt=" . $this->getEncryptedSqlString($this->CommentKey) . ", ";
-        $sqlSet.= "Updater = " . $this->saronUser->WP_ID . ", ";
-        $sqlSet.= "UpdaterName = '" . $this->saronUser->userDisplayName . "' ";
+        $sqlSet.= "Updater = " . $this->saronUser->getWP_ID() . ", ";
+        $sqlSet.= "UpdaterName = '" . $this->saronUser->getDisplayName() . "' ";
         $sqlWhere = "WHERE Id=" . $this->id;
         $this->db->update($sqlUpdate, $sqlSet, $sqlWhere,  'People', 'Id', $this->id, 'Person','Personid', null, $this->saronUser);
         return $this->selectPersonAfterUpdate($this->id);
@@ -400,17 +400,12 @@ class Person extends People{
    
     
     function selectPersonAfterUpdate($id){
-//        $home = new Home($this->db, $this->saronUser);
         $sqlSelect = SELECT_ALL_FIELDS_FROM_VIEW_PEOPLE . ", " . $this->saronUser->getRoleSql(true);
         $sqlSelect.= $this->getAppCanvasSql(true);
         $sqlSelect.= DECRYPTED_LASTNAME_FIRSTNAME_AS_NAME . ", ";
         $sqlSelect.= $this->OldHomeId . " as OldHomeId ";
-//        $sqlSelect.= $home->getHomeSelectSql(ALIAS_CUR_HOMES, $this->HomeId, true);
-//        $sqlSelect.= $home->getHomeSelectSql(ALIAS_OLD_HOMES, $this->OldHomeId, true);
-//        $sqlSelect.= $this->getAppCanvasSql(false);                  
         
         $sqlFrom ="FROM view_people as People ";
-//        $sqlFrom.="left outer join Homes as " . ALIAS_OLD_HOMES . " on " .  ALIAS_OLD_HOMES . ".Id = " . $this->OldHomeId . " ";
         
         $sqlWhere = "WHERE ";
         $sqlWhere.= "People.Id = " . $id;
@@ -422,7 +417,9 @@ class Person extends People{
 
     function anonymization(){
         $Today = date("Y-m-d") ;
-        $result = $this->db->select($this->saronUser, "Select KeyToExp, KeyToChurch,  " . DECRYPTED_ALIAS_COMMENT_KEY , " From People ", "Where Id = " . $this->id, "", "");
+        $select = "Select DateOfMembershipStart, DateOfMembershipEnd, DateOfFriendshipStart, DateOfDeath, DateOfBirth, KeyToExp, KeyToChurch, " . DECRYPTED_ALIAS_COMMENT_KEY ;
+
+        $result = $this->db->select($this->saronUser, $select, " From People ", "Where Id = " . $this->id, "", "");
         $jResults = json_decode($result);
         $jResult = $jResults->Records[0];
             
@@ -440,7 +437,7 @@ class Person extends People{
         $sql.= "LastNameEncrypt = " . $this->getEncryptedSqlString(ANONYMOUS) . ", ";
         $sql.= "VisibleInCalendar = 0, ";
         $sql.= "EmailEncrypt = NULL, ";
-        if(strlen($this->DateOfMembershipStart) > 0 and strlen($this->DateOfMembershipEnd) === 0){
+        if(strlen($jResult->DateOfMembershipStart) > 0 and strlen($jResult->DateOfMembershipEnd) === 0){
             $sql.= "DateOfMembershipEnd = '" . $Today . "', ";
         }
         $sql.= "DateOfAnonymization = '" . $Today . "', ";
@@ -450,9 +447,9 @@ class Person extends People{
         $sql.= "PreviousCongregation = NULL, ";
         $sql.= "NextCongregation = NULL, ";
         $sql.= "CommentEncrypt = NULL, ";
-        $sql.= "Updater = ". $this->saronUser->WP_ID . ", ";
-        $sqlSet.= "Updater = " . $this->saronUser->WP_ID . ", ";
-        $sqlSet.= "UpdaterName = '" . $this->saronUser->userDisplayName . "' ";
+        $sql.= "Updater = ". $this->saronUser->getWP_ID() . ", ";
+        $sqlSet.= "Updater = " . $this->saronUser->getWP_ID() . ", ";
+        $sqlSet.= "UpdaterName = '" . $this->saronUser->getDisplayName() . "' ";
 
         $sql.= "HomeId = NULL ";
         $sql.= "where Id=" . $this->id;
