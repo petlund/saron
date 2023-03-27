@@ -60,6 +60,8 @@ function statusTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                 width: '15%'
             },
             Amount: {
+                create: false,
+                edit: false,
                 title: 'Antal',
                 width: '3%'
             },
