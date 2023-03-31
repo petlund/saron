@@ -100,7 +100,7 @@ CREATE VIEW view_people AS
         Homes.Country,
         Homes.Letter,
         (CASE 
-            WHEN Homes.Letter = 2 THEN 'Ja'
+            WHEN Homes.Letter = 1 THEN 'Ja'
             ELSE ''
             END) AS LetterText
 

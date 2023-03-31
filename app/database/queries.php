@@ -81,7 +81,9 @@ require_once SARON_ROOT . 'app/entities/MemberState.php';
     $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_ADDRESS . ", ";
     $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_CO . ", ";
     $ALL_HOME_FIELDS.= DECRYPTED_ALIAS_PHONE . ", ";
-    $ALL_HOME_FIELDS.= "City, Zip, Country, Letter ";
+    $ALL_HOME_FIELDS.= "City, Zip, Country, Letter, ";
+    $ALL_HOME_FIELDS.= "(CASE WHEN Letter = 1 THEN 'Ja' ELSE '' END) AS LetterText ";
+
     $HOME_FIELDS_UPDATER= "Homes.Id, Homes.Inserted, Homes.Inserter, Homes.InserterName, Homes.Updater, Homes.UpdaterName, Homes.Updated ";    
     
     define("SQL_STAR_HOMES", "Select " . $ALL_HOME_FIELDS . ", " . $HOME_FIELDS_UPDATER);
