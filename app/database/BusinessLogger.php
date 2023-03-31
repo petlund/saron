@@ -153,6 +153,15 @@ class BusinessLogger  extends SuperEntity{
         if($key === "VisibleInCalendar"){
             return false;
         }
+        if($key === "PosEnabled"){
+            return false;
+        }
+        if($key === "SubUnitEnabled"){
+            return false;
+        }
+        if($key === "Letter"){
+            return false;
+        }
         if($key === "Inserter"){
             return false;
         }
@@ -170,6 +179,8 @@ class BusinessLogger  extends SuperEntity{
                 return "SELECT * From view_organization_tree Where " . $keyColumn . " = " . $key;
             case 'Org_Role':
                 return "SELECT * From view_role Where " . $keyColumn . " = " . $key;
+            case 'Org_UnitType':
+                return "SELECT * From view_unittype Where " . $keyColumn . " = " . $key;
             case 'People':
                 return SELECT_ALL_FIELDS_FROM_VIEW_PEOPLE . " From view_people as People Where " . $keyColumn . " = " . $key;
             case 'Homes':
