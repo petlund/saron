@@ -45,8 +45,10 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
             createAction: function(postData) {
                 return $.Deferred(function ($dfd) {
                     $dfd.done(function(data){
-                        var options = {Id: data.Record.Id, AppCanvasName: tableName, AppCanvasPath: tableName, "Source":"create"};
-                        $(saron.table.people.nameId).jtable('load', options);                
+                        if(data.Record){
+                            var options = {Id: data.Record.Id, AppCanvasName: tableName, AppCanvasPath: tableName, "Source":"create"};
+                            $(saron.table.people.nameId).jtable('load', options);              
+                        }
                     });
                     $.ajax({
                         url: saron.root.webapi + 'createPerson.php',    
@@ -54,11 +56,12 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                         dataType: 'json',
                         data: postData,
                         success: function (data) {
-                            var groupId = 20;
-                            $("#groupId").val(groupId);
-                            $("#searchString").val(data.Record.LastName);
-
                             $dfd.resolve(data);
+                            if(data.Result === 'OK'){
+                                var groupId = 20;
+                                $("#groupId").val(groupId);
+                                $("#searchString").val(data.Record.LastName);
+                            }
                         },
                         error: function () {
                             $dfd.reject();
@@ -74,8 +77,8 @@ function peopleTableDef(tableTitle, parentTablePath, parentId, parentTableDef) {
                         dataType: 'json',
                         data: postData,
                         success: function (successData) {
+                            $dfd.resolve(successData); //Mandatory
                             if(successData.Result === 'OK'){
-                                $dfd.resolve(successData); //Mandatory
                                 updateRelatedRows();                            
                             }
                         },
