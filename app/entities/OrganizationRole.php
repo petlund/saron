@@ -146,7 +146,7 @@ class OrganizationRole extends SuperEntity{
                return $result;
             }
             else{
-               $result = '{"Result":"OK","Options":[{"DisplayText":"Ansvarig person","Value":"1"},{"DisplayText":"Alternativt funktion","Value":"3"}]}';
+               $result = '{"Result":"OK","Options":[{"DisplayText":"Ansvarig person","Value":"1"}]}';
                return $result;
             }            
         }
