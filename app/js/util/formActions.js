@@ -33,50 +33,50 @@ function baptistFormAuto(data, selectedValue){
 
 
 function posFormAuto(data, selectedValue){
-    var dp1 = data.form.find('select[name=People_FK]')[0];
-    var dp2 = data.form.find('select[name=OrgSuperPos_FK]')[0];
-    var dp3 = data.form.find('select[name=Function_FK]')[0];
+    var people_FK = data.form.find('select[name=People_FK]')[0];
+    var orgSuperPos_FK = data.form.find('select[name=OrgSuperPos_FK]')[0];
+    var function_FK = data.form.find('select[name=Function_FK]')[0];
 
     if(selectedValue === '3'){
-        dp1.value = null;
-        dp2.value = null;
+        people_FK.value = null;
+        orgSuperPos_FK.value = null;
         if(data.record !== undefined)
-            dp3.value = data.record.Function_FK;
+            function_FK.value = data.record.Function_FK;
         else
-            dp3.value = null;
+            function_FK.value = null;
         
-        dp1.disabled=true;
-        dp2.disabled=true;
-        dp3.disabled=false;
+        people_FK.disabled=true;
+        orgSuperPos_FK.disabled=true;
+        function_FK.disabled=false;
 
     }
     else if(selectedValue === '2'){
-        dp1.value = null;
+        people_FK.value = null;
         
         if(data.record !== undefined)
-            dp2.value = data.record.OrgSuperPos_FK;
+            orgSuperPos_FK.value = data.record.OrgSuperPos_FK;
         else
-            dp2.value = null;
+            orgSuperPos_FK.value = null;
 
-        dp3.value = null;
+        function_FK.value = null;
 
-        dp1.disabled=true;
-        dp2.disabled=false;
-        dp3.disabled=true;
+        people_FK.disabled=true;
+        orgSuperPos_FK.disabled=false;
+        function_FK.disabled=true;
 
     }
     else{
         if(data.record !== undefined)
-            dp1.value = data.record.People_FK;
+            people_FK.value = data.record.People_FK;
         else
-            dp1.value = null;
+            people_FK.value = null;
 
-        dp2.value = null;
-        dp3.value = null;
+        orgSuperPos_FK.value = null;
+        function_FK.value = null;
 
-        dp1.disabled=false;
-        dp2.disabled=true;
-        dp3.disabled=true;
+        people_FK.disabled=false;
+        orgSuperPos_FK.disabled=true;
+        function_FK.disabled=true;
 
     }
 }
