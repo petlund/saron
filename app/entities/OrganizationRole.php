@@ -152,11 +152,12 @@ class OrganizationRole extends SuperEntity{
         }
 
         
+        $sqlFrom = "from Org_Role as Role inner join `Org_Role-UnitType` as RUT on Role.Id=RUT.OrgRole_FK inner join Org_UnitType as Typ on Typ.Id=RUT.OrgUnitType_FK ";
         $sql = "Select * from (";
-        $sql.= "(SELECT Role.Id  as Value, Concat(' * ', Role.Name) as DisplayText from Org_Role as Role WHERE Role.RoleType = 1 )"; 
+        $sql.= "(SELECT Role.Id  as Value, Concat(' * ', Role.Name) as DisplayText " . $sqlFrom . "WHERE Typ.PosEnabled = 3) "; 
         $sql.= "UNION "; 
-        $sql.= "(SELECT Role.Id  as Value, Role.Name as DisplayText from Org_Role as Role WHERE Role.RoleType = 0)"; 
-        $sql.= ") as Options "; 
+        $sql.= "(SELECT Role.Id  as Value, Role.Name as DisplayText " . $sqlFrom . "WHERE Typ.PosEnabled < 3 )"; 
+        $sql.= ") as Options Order by DisplayText "; 
 
         switch ($this->appCanvasPath){
             case TABLE_NAME_ROLE:
