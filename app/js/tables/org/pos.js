@@ -277,7 +277,7 @@ function posTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
             else
                 posFormAuto(data, 1);
             
-            data.form.find('select[name=ResourceType]').change(function () {posFormAuto(data, this.value)});
+            data.form.find('select[name=ResourceType]').change(function () {posFormAuto(data, this.value);});
             
         },
         formClosed: function (event, data){
