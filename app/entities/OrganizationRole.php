@@ -157,7 +157,7 @@ class OrganizationRole extends SuperEntity{
         $sql.= "(SELECT Role.Id  as Value, Concat(' * ', Role.Name) as DisplayText " . $sqlFrom . "WHERE Typ.PosEnabled = 3) "; 
         $sql.= "UNION "; 
         $sql.= "(SELECT Role.Id  as Value, Role.Name as DisplayText " . $sqlFrom . "WHERE Typ.PosEnabled < 3 )"; 
-        $sql.= ") as Options Order by DisplayText "; 
+        $sql.= ") as Options "; 
 
         switch ($this->appCanvasPath){
             case TABLE_NAME_ROLE:
@@ -189,7 +189,7 @@ class OrganizationRole extends SuperEntity{
             case TABLE_NAME_UNITTREE . "/" . TABLE_NAME_UNIT . "/" . TABLE_NAME_POS:
                 switch ($this->source){
                     case SOURCE_CREATE:
-                        $sql.= "WHERE value in (Select OrgRole_FK from `Org_Role-UnitType` as RUT inner join Org_Tree as Tree on Tree.OrgUnitType_FK=RUT.OrgUnitType_FK WHERE Tree.Id = " . $this->parentId . ") ";                        
+                        $sql.= "WHERE value in (Select OrgRole_FK from `Org_Role-UnitType` as RUT inner join Org_Tree as Tree on Tree.OrgUnitType_FK=RUT.OrgUnitType_FK and Tree.Id = " . $this->parentId . ") ";                        
                     Break;
                     case SOURCE_EDIT:
         //  NA
@@ -202,7 +202,7 @@ class OrganizationRole extends SuperEntity{
             case TABLE_NAME_UNITLIST . "/" . TABLE_NAME_UNIT . "/" . TABLE_NAME_POS:
                 switch ($this->source){
                     case SOURCE_CREATE:
-                        $sql.= "WHERE value in (Select OrgRole_FK from `Org_Role-UnitType` as RUT inner join Org_Tree as Tree on Tree.OrgUnitType_FK=RUT.OrgUnitType_FK WHERE Tree.Id = " . $this->parentId . ") ";                        
+                        $sql.= "WHERE value in (Select OrgRole_FK from `Org_Role-UnitType` as RUT inner join Org_Tree as Tree on Tree.OrgUnitType_FK=RUT.OrgUnitType_FK and Tree.Id = " . $this->parentId . ") ";                        
                     Break;
                     case SOURCE_EDIT:
         //  NA
@@ -213,6 +213,7 @@ class OrganizationRole extends SuperEntity{
                 }
         }
             
+        $sql.= "Order by DisplayText "; 
             
         $result = $this->db->selectSeparate($this->saronUser, $sql, "Select 1",  "Options");    
         return $result; 
