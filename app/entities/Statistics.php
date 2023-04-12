@@ -297,7 +297,9 @@ class Statistics extends SuperEntity{
     }
     
     private function insert(){
-        $sqlInsert = "Insert into Statistics values (Now(),0,0,0,0,0,0,0,0)";
+        $sqlInsert = "Insert into Statistics (`year`, `number_of_members`, `number_of_new_members`, `number_of_finnished_members`, `number_of_dead`, `number_of_baptist_people`, `average_age`, `average_membership_time`, `diff`) ";
+        $sqlInsert.= "values (Now(),0,0,0,0,0,0,0,0)";
+        
         $user = new SaronMetaUser();
         $this->db->insert($sqlInsert, "Statistics", "year", "Statistik" ,"Tidpunkt", null, $user, false);
     }
