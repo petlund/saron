@@ -114,6 +114,9 @@ class BusinessLogger  extends SuperEntity{
         if($key === "Updater"){
             return false;
         }
+        if($key === "UpdaterName"){
+            return false;
+        }
         if($key === "HomeId"){
             return false;
         }
