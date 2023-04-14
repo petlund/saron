@@ -237,7 +237,7 @@ function createOrganizationCalender(db $db, TCPDF $pdf, $person, String $type){
         }
                         
         $state = "";
-        if( $type === "proposal"){
+        if( $type === "proposal" or $type === "vacancy"){
             switch($aRow['State_Id']){
             case 1:
                 if($aRow['IsNew'] === NEW_RESOURCE){
@@ -252,7 +252,9 @@ function createOrganizationCalender(db $db, TCPDF $pdf, $person, String $type){
             break;
             default:
                 $state="Vakant";
-                $responsible = "";
+                if(($aRow['ResponsibleType']) === 'Person'){
+                    $responsible = "";
+                }
             }
             if($aRow['State_Id']>0){
                 $pdf->MultiCell(CELL_WIDTH * 3, CELL_HIGHT, $roleName, $line, 'L', BACKGROUND_NOT_FILLED, TAB, '', '', true, 0, false, true, MAX_CELL_HIGHT, 'T');                
@@ -335,7 +337,7 @@ function getSQL($person, $type){
             break;
         case "vacancy":
             $sql.= "left outer join People on People.Id = Pos.People_FK ";  
-            $sqlWhere = "WHERE PState.Id = 4 ";
+            $sqlWhere = "WHERE PState.Id in (2,4) ";
             break;
         default:
             $sql.= "left outer join People on People.Id = Pos.PrevPeople_FK ";    
