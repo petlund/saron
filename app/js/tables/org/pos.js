@@ -77,7 +77,7 @@ function posTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                             src = getImageTag(data, 'haspos.png', "Avstämd", saron.table.role.name, -1);
                             break;
                         case '2':
-                            src = getImageTag(data, 'haspos_Y.png', "Förslag", saron.table.role.name, -1);
+                            src = getImageTag(data, 'haspos_Y.png', "Arbetsnamn", saron.table.role.name, -1);
                             break;
                         case '4':
                             src = getImageTag(data, 'haspos_R.png', "Vakant", saron.table.role.name, -1);

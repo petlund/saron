@@ -76,7 +76,7 @@ class OrganizationVersion extends SuperEntity{
             $set.= $prev . " =  null "; 
             $where.= "<> " . POS_STATE_AGREED . " ";
         
-            $description.= "Positioner med vakanser, icke överenskomna förslag och positioner som ej ska tillsättas, sätts som tomma i beslutad organisation.";
+            $description.= "Positioner med vakanser, icke överenskomna förslag (arbetsnamn) och positioner som ej ska tillsättas, sätts som tomma i beslutad organisation.";
         }
         $where.= "and (";
         $where.= "(" . $cur . " is null and " . $prev . " is not null) or";  

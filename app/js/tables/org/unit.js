@@ -71,7 +71,7 @@ function unitTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                         }
                         else{
                             if(data.record.statusSubProposal > 0 && data.record.statusSubVacant > 0){
-                                tooltip = 'Underorganisationer har ' + data.record.statusSubProposal + ' förslag och ' + data.record.statusSubVacant + ' vakans(er)';
+                                tooltip = 'Underorganisationer har ' + data.record.statusSubProposal + ' arbetsnamn och ' + data.record.statusSubVacant + ' vakans(er)';
                                 imgFile = "haschild_YR.png";
                             }
                             else if(data.record.statusSubProposal === "0" && data.record.statusSubVacant !== "0"){
@@ -79,7 +79,7 @@ function unitTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                                 imgFile = "haschild_R.png";
                             }
                             else if(data.record.statusSubProposal !== "0" && data.record.statusSubVacant === "0"){
-                                tooltip = 'Underorganisationer har ' + data.record.statusSubProposal + ' förslag';
+                                tooltip = 'Underorganisationer har ' + data.record.statusSubProposal + ' arbetsnamn';
                                 imgFile = "haschild_Y.png";
                             }
                             else{
@@ -127,7 +127,7 @@ function unitTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                         else{
                             if(data.record.statusProposal !== "0" && data.record.statusVacant !== "0"){
                                 imgFile = 'unit_YR.png';
-                                tooltip = data.record.statusProposal + ' Förslag och ' + data.record.statusVacant + ' vakans(er) på position(er)';
+                                tooltip = data.record.statusProposal + ' Arbetsnamn och ' + data.record.statusVacant + ' vakans(er) på position(er)';
                             }
                             else if(data.record.statusProposal === "0" && data.record.statusVacant !== "0"){
                                 imgFile = 'unit_R.png'; 
@@ -135,7 +135,7 @@ function unitTableDef(tableTitle, parentTablePath, parentId, parentTableDef){
                             }
                             else if(data.record.statusProposal !== "0" && data.record.statusVacant === "0"){
                                 imgFile = 'unit_Y.png'; 
-                                tooltip = data.record.statusProposal + ' Förslag på position(er)';
+                                tooltip = data.record.statusProposal + ' Arbetsnamn till position(er)';
                             }
                             else{
                                 imgFile = 'unit.png" title="Bemannade positioner"';

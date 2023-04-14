@@ -37,7 +37,7 @@ class OrganizationPos extends SuperEntity{
 
         if($this->orgPosStatus_FK < 3){
             if($this->people_FK < 1 and $this->function_FK < 1 and $this->orgSuperPos_FK < 1){
-                $error["Message"] = "Det saknas ett förslag eller en överenskommelse med någon person.";
+                $error["Message"] = "Det saknas ett arbetsnamn på eller en överenskommelse med någon person.";
                 throw new Exception(json_encode($error));
             }
         }

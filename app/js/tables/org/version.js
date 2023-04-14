@@ -87,7 +87,7 @@ function orgVersionTableDef(tableTitle, parentTablePath, parentId, parentTableDe
             data.form.css('width','600px');
             data.form.find('input[name=information]').css('width','580px');
             
-            var title = "Ange beslutstillfälle<div class='saronRedSmallText'>Alla förslag till förändringar införs - Kan inte ångras!</div>";
+            var title = "Ange beslutstillfälle<div class='saronRedSmallText'>Alla överenskomna förslag införs - Kan inte ångras!</div>";
             if(data.formType === saron.formtype.edit)
                 title = "Uppdatera information om beslutstillfälle."
             
