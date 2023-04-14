@@ -1,6 +1,7 @@
 <?php
 
 function addFrontPage($pdf, $pageWidth, $title){
+    define ("FONT", 'times');
     $pdf->AddPage(); // front page
     
     $pdf->SetFont(FONT, 'B', 24);

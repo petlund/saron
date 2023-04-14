@@ -1,12 +1,15 @@
 <?php
     require_once 'config.php';
     require_once SARON_ROOT . 'app/entities/SaronUser.php';
+    require_once SARON_ROOT . 'app/reports/Frontpage.php';
     require_once SARON_ROOT . 'app/entities/PeopleFilter.php';
     require_once SARON_ROOT . 'app/database/queries.php';
     require_once SARON_ROOT . 'app/database/db.php';
 
     require_once THREE_PP_PATH . 'tcpdf/tcpdf.php';
 
+    
+    
     $db = new db();
     try{
         $saronUser = new SaronUser($db);
@@ -16,7 +19,7 @@
         header("Location: /" . SARON_URI . LOGOUT_URI);
         exit();                                                
     }
-                    
+    define("TITLE", "Dopregister");                
     define ("INNER", 1);
     define ("OUTER", 2);
     define ("BOOKLET_OUTER_MARGIN", 10);
@@ -105,8 +108,12 @@
     $footerPos_Y=$pdf->getPageHeight() - CELL_HIGHT;
 
 
-    $cellWidth=($pdf->getPageWidth()-BOOKLET_INNER_MARGIN-BOOKLET_OUTER_MARGIN)/6;
+    $pageWidth=($pdf->getPageWidth()-BOOKLET_INNER_MARGIN-BOOKLET_OUTER_MARGIN);
 
+    addFrontPage($pdf, $pageWidth, TITLE);
+
+    $cellWidth=$pageWidth/6;
+    
     $NoOfBaptistDataRows=5;
 
     $line_count=0;

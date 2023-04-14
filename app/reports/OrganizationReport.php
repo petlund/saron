@@ -1,6 +1,7 @@
 <?php
     require_once 'config.php';
     require_once SARON_ROOT . 'app/entities/SaronUser.php';
+    require_once SARON_ROOT . 'app/reports/Frontpage.php';
     require_once SARON_ROOT . 'app/database/queries.php';
     require_once SARON_ROOT . 'app/database/db.php';
     require_once SARON_ROOT . 'app/entities/Person.php';
@@ -86,6 +87,8 @@ function setUpPdfDoc($db, $person, $type){
     switch ($type){
         case "server":
             $typ = "Beslutad";
+            $pageWidth=($pdf->getPageWidth()-BOOKLET_INNER_MARGIN-BOOKLET_OUTER_MARGIN);
+            addFrontPage($pdf, $pageWidth, "Organisationskalender");
             $name = createOrganizationCalender($db, $pdf, $person, $type);
             $path = SARON_PDF_URI . 'Organisationskalender.pdf';
             $pdf->Output($path, 'F'); // F = File on server
