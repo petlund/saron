@@ -2,6 +2,7 @@
 
     require_once 'config.php';
     require_once SARON_ROOT . 'app/database/queries.php';
+    require_once SARON_ROOT . 'app/reports/Frontpage.php';
     require_once SARON_ROOT . 'app/database/db.php';
     require_once SARON_ROOT . 'app/entities/SaronUser.php';
     require_once SARON_ROOT . 'app/entities/MemberState.php';
@@ -16,7 +17,8 @@
         header("Location: /" . SARON_URI . LOGOUT_URI);
         exit();                                                
     }
-    
+    define("MAX_NO_OF_HORISONTAL_CELLS", 7);
+    define("TITLE", "Adresskalender");
     
     define ("INNER", 1);
     define ("OUTER", 2);
@@ -52,9 +54,9 @@
     // set document information
     $pdf->SetCreator(UrlOfRegistry);
     $pdf->SetAuthor(FullNameOfCongregation);
-    $pdf->SetTitle('Adresskalender');
+    $pdf->SetTitle(TITLE);
     $pdf->SetSubject('');
-    $pdf->SetKeywords('Adresskalender');
+    $pdf->SetKeywords(TITLE);
 
     // set header and footer fonts
     $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
@@ -97,6 +99,12 @@
     // set color for background
     $pdf->SetFillColor(220, 220, 220);
 
+    $pageWidth=($pdf->getPageWidth()-BOOKLET_INNER_MARGIN-BOOKLET_OUTER_MARGIN);
+
+    addFrontPage($pdf, $pageWidth, TITLE);
+            
+    $cellWidth= $pageWidth/MAX_NO_OF_HORISONTAL_CELLS;
+
     $listSpaceHight=$pdf->getPageHeight() - PDF_MARGIN_HEADER - PDF_MARGIN_FOOTER-15;
 
     $prevFamId=-1;
@@ -104,9 +112,6 @@
     $GroupName="";
     $headerPos_Y=PDF_MARGIN_HEADER;
     $footerPos_Y=$pdf->getPageHeight() - CELL_HIGHT;
-
-
-    $cellWidth=($pdf->getPageWidth()-BOOKLET_INNER_MARGIN-BOOKLET_OUTER_MARGIN)/7;
 
     $line_count=0;
     $firstFamily=true;
