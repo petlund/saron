@@ -3,6 +3,7 @@ date_default_timezone_set('Europe/Stockholm');
 
 define("FullNameOfCongregation", "FÖRSAMLINGSNAMNET");
 define("ShortNameOfCongregation", "FÖRSAMLINGSNAMNET KORT");
+define("ResidenceOfCongregation", "Ortsnamn");
 define("UrlOfRegistry", "url...");
 define("UrlOfCongregation", "url");
 define("NameOfRegistry", "Saron");
