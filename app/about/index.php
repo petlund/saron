@@ -14,7 +14,7 @@
     </Head>
     <body> 
         <div class='saronSmallText'>Medlemsregister för församlingen i <?php echo ShortNameOfCongregation;
-        echo '<br>Version 2.1.1_hotfix';
+        echo '<br>Version 2.2.2_RC2';
         echo '<br><br><a href="mailto:' . EmailSysAdmin . '">' . EmailSysAdmin . '</a>';
         ?></div>
     </body>
