@@ -32,7 +32,7 @@ class BusinessLogger  extends SuperEntity{
         }
         
         if(strlen($description)>0){
-            return "<b>" . $changeType . "</b><br>" . $description;
+            return $description;
         }
         return "<b>Ingen " . strtolower($changeType) . "</b>";
     }
@@ -45,7 +45,7 @@ class BusinessLogger  extends SuperEntity{
         }
         $rowObj = new ArrayObject($listRow[0]);
         
-        $description = "<b>" . $changeType . "</b><br>";
+        $description = "";
         $iterator = $rowObj->getIterator();
         
         while( $iterator->valid() ){
@@ -95,7 +95,7 @@ class BusinessLogger  extends SuperEntity{
             $iterator->next();
         }
         if(strlen($description)>0){
-            return "<b>" . $changeType . "</b><br>" . $description;
+            return $description;
         }
         return "<b>Ingen " . $changeType . "</b>";
     }    
