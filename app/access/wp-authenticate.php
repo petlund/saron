@@ -71,8 +71,7 @@ require_once SARON_ROOT . "app/database/BusinessLogger.php";
         require_once WP_ROOT . "wp-load.php";
 
         try{
-            $description = "<b>Borttag av Användarsession</b><br>";
-            $description.= "Logout";
+            $description = "Logout";
             $saronUser="";
             $db = new db();
 
@@ -159,8 +158,7 @@ require_once SARON_ROOT . "app/database/BusinessLogger.php";
         $sql.= $userDisplayName . "') ";
 
         try{
-            $description2 = "<b>Tillägg av Användarsession</b><br>";
-            $description2.= "Login";
+            $description2 = "Login";
             $lastId = $db->insert($sql, "SaronUser", "Id", 'Användarsession', 'Användarnamn', $description2, $wp_user);
             $result = $db->sqlQuery("Select AccessTicket from SaronUser where Id = " . $lastId);
     

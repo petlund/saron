@@ -168,6 +168,9 @@ class BusinessLogger  extends SuperEntity{
         if($key === "Inserter"){
             return false;
         }
+        if($key === "Updater"){
+            return false;
+        }
         return true;
     }
     
